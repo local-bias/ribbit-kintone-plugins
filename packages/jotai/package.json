@@ -1,0 +1,30 @@
+{
+  "name": "@repo/jotai",
+  "type": "module",
+  "scripts": {
+    "lint": "eslint . --max-warnings 0",
+    "check-types": "tsc --noEmit"
+  },
+  "exports": {
+    "./*": {
+      "import": [
+        "./src/*.ts",
+        "./src/*.tsx"
+      ]
+    }
+  },
+  "dependencies": {
+    "@konomi-app/kintone-utilities": "^5.13.0",
+    "@mui/material": "^7.0.2",
+    "jotai": "^2.12.3",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "workspace:*",
+    "@types/react": "^19.1.2",
+    "@types/react-dom": "^19.1.2",
+    "typescript": "latest"
+  }
+}
