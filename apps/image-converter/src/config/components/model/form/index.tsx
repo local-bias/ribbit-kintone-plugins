@@ -1,6 +1,4 @@
-import { JotaiText } from '@/components/jotai';
-import { commonSettingsShownAtom, getConditionPropertyAtom } from '@/config/states/plugin';
-import { t } from '@/lib/i18n';
+import { commonSettingsShownAtom } from '@/config/states/plugin';
 import {
   PluginFormDescription,
   PluginFormSection,
@@ -10,18 +8,33 @@ import { useAtomValue } from 'jotai';
 import { FC } from 'react';
 import CommonSettings from './common';
 import DeleteButton from './condition-delete-button';
+import FileFieldCodeForm from './form-field-code';
+import TargetSpaceIdForm from './space-select';
+import ImageFormatSelectForm from './image-format-select';
 
 const FormContent: FC = () => {
   return (
     <div className='p-4'>
       <PluginFormSection>
-        <PluginFormTitle>{t('config.condition.memo.title')}</PluginFormTitle>
-        <PluginFormDescription last>{t('config.condition.memo.description')}</PluginFormDescription>
-        <JotaiText
-          atom={getConditionPropertyAtom('targetSpaceId')}
-          label={t('config.condition.memo.label')}
-          placeholder={t('config.condition.memo.placeholder')}
-        />
+        <PluginFormTitle>アップロード先のファイルフィールド</PluginFormTitle>
+        <PluginFormDescription last>
+          変換した画像ファイルを保存するファイルフィールドを指定します。
+        </PluginFormDescription>
+        <FileFieldCodeForm />
+      </PluginFormSection>
+      <PluginFormSection>
+        <PluginFormTitle>対象スペースフィールド</PluginFormTitle>
+        <PluginFormDescription last>
+          専用の変換・アップロードを行うフォームを設置するスペースのスペースIDを指定します。
+        </PluginFormDescription>
+        <TargetSpaceIdForm />
+      </PluginFormSection>
+      <PluginFormSection>
+        <PluginFormTitle>変換する画像フォーマット</PluginFormTitle>
+        <PluginFormDescription last>
+          アップロードされた画像を変換するフォーマットを指定します。
+        </PluginFormDescription>
+        <ImageFormatSelectForm />
       </PluginFormSection>
       <DeleteButton />
     </div>

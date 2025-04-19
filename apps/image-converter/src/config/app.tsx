@@ -19,21 +19,6 @@ import Footer from './components/model/footer';
 import Form from './components/model/form';
 import Sidebar from './components/model/sidebar';
 
-const AppContent: FC = () => {
-  return (
-    <>
-      <Sidebar />
-      <PluginContent>
-        <PluginErrorBoundary>
-          <Form />
-        </PluginErrorBoundary>
-      </PluginContent>
-      <PluginBanner url={URL_BANNER} />
-      <Footer />
-    </>
-  );
-};
-
 const App: FC = () => (
   <Suspense fallback={<LoaderWithLabel label='画面の描画を待機しています' />}>
     <Provider store={store}>
@@ -44,7 +29,14 @@ const App: FC = () => (
             <SnackbarProvider maxSnack={1}>
               <Suspense fallback={<LoaderWithLabel label='設定情報を取得しています' />}>
                 <PluginLayout>
-                  <AppContent />
+                  <Sidebar />
+                  <PluginContent>
+                    <PluginErrorBoundary>
+                      <Form />
+                    </PluginErrorBoundary>
+                  </PluginContent>
+                  <PluginBanner url={URL_BANNER} />
+                  <Footer />
                 </PluginLayout>
               </Suspense>
               <Debug />

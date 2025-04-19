@@ -1,69 +1,41 @@
-import { ThemeProvider } from '@/components/theme-provider';
 import { PLUGIN_NAME } from '@/lib/constants';
 import { manager } from '@/lib/event-manager';
 import { isProd } from '@/lib/global';
-import { t } from '@/lib/i18n';
-import { restorePluginConfig } from '@/lib/plugin';
 import { store } from '@/lib/store';
-import { PluginConfig } from '@/schema/plugin-config';
+import { getSpaceElement } from '@konomi-app/kintone-utilities';
 import { ComponentManager } from '@konomi-app/kintone-utilities-react';
-import { Alert, AlertTitle, Dialog, DialogContent, DialogTitle } from '@mui/material';
-import { Provider } from 'jotai';
-import { Rocket } from 'lucide-react';
-import config from 'plugin.config.mjs';
-import { FC, useState } from 'react';
+import App from './components';
+import { currentKintoneEventTypeAtom, pluginConfigAtom } from './states';
 
-const ROOT_ID = `🐸${config.id}-root`;
+manager.add(
+  ['app.record.create.show', 'app.record.edit.show', 'app.record.detail.show'],
+  async (event) => {
+    const config = store.get(pluginConfigAtom);
 
-const Component: FC<{ pluginConfig: PluginConfig }> = ({ pluginConfig }) => {
-  const [open, setOpen] = useState(false);
+    store.set(currentKintoneEventTypeAtom, event.type);
 
-  const handleOpen = () => setOpen(true);
-  const onClose = () => setOpen(false);
+    const componentManager = ComponentManager.getInstance();
+    componentManager.debug = !isProd;
 
-  return (
-    <>
-      <div className='🐸'>
-        <div className='fixed right-4 bottom-4 cursor-pointer' onClick={handleOpen}>
-          <Alert icon={<Rocket className='h-4 w-4' />} severity='success'>
-            <AlertTitle sx={{ fontWeight: 600 }}>{t('desktop.dialogtrigger.title')}</AlertTitle>
-            {t('desktop.dialogtrigger.content')}
-          </Alert>
-        </div>
-      </div>
-      <Dialog open={open} onClose={onClose}>
-        <DialogContent>
-          <DialogTitle>{PLUGIN_NAME}</DialogTitle>
-          <div>
-            <h3>{t('desktop.dialog.title')}</h3>
-            <div className='max-h-[40vh] overflow-y-auto'>
-              <pre className='font-mono p-4 bg-foreground text-background m-0'>
-                {JSON.stringify(pluginConfig, null, 2)}
-              </pre>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
-    </>
-  );
-};
+    for (const condition of config.conditions) {
+      const { id, targetSpaceId } = condition;
+      const spaceElement = getSpaceElement(targetSpaceId);
+      if (!spaceElement) {
+        console.warn(
+          `[${PLUGIN_NAME}] スペースID: ${targetSpaceId} のスペースフィールドが見つかりません。プラグインは無効となります。`
+        );
+        continue;
+      }
 
-manager.add(['app.record.index.show', 'app.record.detail.show'], async (event) => {
-  const config = restorePluginConfig();
+      spaceElement.classList.add('🐸');
 
-  const componentManager = ComponentManager.getInstance();
-  componentManager.debug = !isProd;
+      componentManager.renderComponent({
+        id,
+        component: <App conditionId={id} />,
+        parentElement: spaceElement,
+      });
+    }
 
-  componentManager.renderComponent({
-    id: ROOT_ID,
-    component: (
-      <Provider store={store}>
-        <ThemeProvider>
-          <Component pluginConfig={config} />
-        </ThemeProvider>
-      </Provider>
-    ),
-  });
-
-  return event;
-});
+    return event;
+  }
+);

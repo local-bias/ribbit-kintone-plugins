@@ -1,24 +1,43 @@
-import { getFormFields, kintoneAPI, getAppId } from '@konomi-app/kintone-utilities';
 import { GUEST_SPACE_ID } from '@/lib/global';
+import { flatLayout } from '@/lib/kintone';
+import { kintoneAPI } from '@konomi-app/kintone-utilities';
+import { appFormFieldsAtom, appFormLayoutState, currentAppIdAtom } from '@repo/jotai/index';
 import { atom } from 'jotai';
+import { derive } from 'jotai-derive';
 
-export const currentAppIdAtom = atom(() => {
-  const app = getAppId();
-  if (!app) {
-    throw new Error('App ID not found');
+export const currentAppFormFieldsAtom = atom((get) => {
+  return get(
+    appFormFieldsAtom({
+      appId: get(currentAppIdAtom),
+      spaceId: GUEST_SPACE_ID,
+    })
+  );
+});
+
+export const currentAppFileFieldsAtom = derive(
+  [currentAppFormFieldsAtom],
+  (currentAppFormFields) => {
+    return currentAppFormFields.filter(
+      (field) => field.type === 'FILE'
+    ) as kintoneAPI.property.File[];
   }
-  return app;
+);
+
+export const currentAppFormLayoutAtom = atom((get) => {
+  return get(
+    appFormLayoutState({
+      appId: get(currentAppIdAtom),
+      spaceId: GUEST_SPACE_ID,
+      preview: true,
+    })
+  );
 });
 
-export const appFieldsAtom = atom<Promise<kintoneAPI.FieldProperty[]>>(async (get) => {
-  const app = get(currentAppIdAtom);
-  const { properties } = await getFormFields({
-    app,
-    preview: true,
-    guestSpaceId: GUEST_SPACE_ID,
-    debug: process.env.NODE_ENV === 'development',
-  });
-
-  const values = Object.values(properties);
-  return values.sort((a, b) => a.label.localeCompare(b.label, 'ja'));
-});
+export const currentAppSpaceFieldsAtom = derive(
+  [currentAppFormLayoutAtom],
+  (currentAppFormLayout) => {
+    const fields = flatLayout(currentAppFormLayout);
+    const spaces = fields.filter((field) => field.type === 'SPACER') as kintoneAPI.layout.Spacer[];
+    return spaces.filter((space) => space.elementId);
+  }
+);

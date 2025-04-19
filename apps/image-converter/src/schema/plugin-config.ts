@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ImageFormatSchema } from './image';
 
 export const PluginConditionV1Schema = z.object({
   /**
@@ -7,6 +8,8 @@ export const PluginConditionV1Schema = z.object({
    */
   id: z.string(),
   targetSpaceId: z.string(),
+  targetFileFieldCode: z.string(),
+  imageFormat: ImageFormatSchema,
 });
 export const PluginConfigV1Schema = z.object({
   version: z.literal(1),

@@ -7,6 +7,7 @@ import {
 import { restorePluginConfig as restore } from '@konomi-app/kintone-utilities';
 import { nanoid } from 'nanoid';
 import { isProd, PLUGIN_ID } from './global';
+import { IMAGE_FORMAT_LIST } from '@/schema/image';
 
 /**
  * プラグインの設定情報が、最新の設定情報の形式に準拠しているか検証します
@@ -27,12 +28,14 @@ export const isPluginConditionMet = (condition: unknown): boolean => {
  * @returns プラグインの設定情報が利用条件を満たしている場合は`true`、そうでない場合は`false`
  */
 export const isUsagePluginConditionMet = (condition: PluginCondition) => {
-  return !!condition.targetSpaceId;
+  return !!condition.targetSpaceId && !!condition.targetFileFieldCode;
 };
 
 export const getNewCondition = (): PluginCondition => ({
   id: nanoid(),
   targetSpaceId: '',
+  targetFileFieldCode: '',
+  imageFormat: IMAGE_FORMAT_LIST[0],
 });
 
 /**
@@ -40,10 +43,7 @@ export const getNewCondition = (): PluginCondition => ({
  */
 export const createConfig = (): PluginConfig => ({
   version: 1,
-  common: {
-    memo: '',
-    fields: [],
-  },
+  common: {},
   conditions: [getNewCondition()],
 });
 
@@ -76,19 +76,4 @@ export const migrateConfig = (anyConfig: AnyPluginConfig): PluginConfig => {
 export const restorePluginConfig = (): PluginConfig => {
   const config = restore<AnyPluginConfig>(PLUGIN_ID, { debug: !isProd }) ?? createConfig();
   return migrateConfig(config);
-};
-
-export const getConditionField = <T extends keyof PluginCondition>(
-  storage: PluginConfig,
-  props: {
-    conditionIndex: number;
-    key: T;
-    defaultValue: NonNullable<PluginCondition[T]>;
-  }
-): NonNullable<PluginCondition[T]> => {
-  const { conditionIndex, key, defaultValue } = props;
-  if (!storage.conditions[conditionIndex]) {
-    return defaultValue;
-  }
-  return storage.conditions[conditionIndex][key] ?? defaultValue;
 };
