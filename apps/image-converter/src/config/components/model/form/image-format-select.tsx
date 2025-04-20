@@ -17,10 +17,10 @@ const Component: FC = () => {
   return (
     <TextField
       select
-      label='変換する画像フォーマット'
+      label='画像形式'
       value={format}
       onChange={(e) => onChange(e.target.value as ImageFormat)}
-      fullWidth
+      sx={{ width: 150 }}
     >
       {IMAGE_FORMAT_LIST.map((format) => (
         <MenuItem key={format} value={format}>
