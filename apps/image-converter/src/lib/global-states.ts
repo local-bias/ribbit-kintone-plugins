@@ -1,18 +1,17 @@
-import { atom } from 'jotai';
-import { derive } from 'jotai-derive';
-import { atomFamily } from 'jotai/utils';
-import { enqueueSnackbar } from 'notistack';
-import { convertImageFormat, isFormatSupported } from './image';
-import { ImageFormat } from '@/schema/image';
-import { loadingEndAtom, loadingStartAtom } from '@repo/jotai/index';
+import { currentKintoneEventTypeAtom, pluginConditionAtom } from '@/desktop/states';
 import {
   getCurrentRecord,
   kintoneAPI,
   setCurrentRecord,
+  updateRecord,
   uploadFile,
 } from '@konomi-app/kintone-utilities';
+import { currentAppIdAtom, loadingEndAtom, loadingStartAtom } from '@repo/jotai/index';
+import { atom } from 'jotai';
+import { atomFamily } from 'jotai/utils';
+import { enqueueSnackbar } from 'notistack';
 import { GUEST_SPACE_ID, isProd } from './global';
-import { currentKintoneEventTypeAtom, pluginConditionAtom } from '@/desktop/states';
+import { convertImageFormat, isFormatSupported } from './image';
 
 const isFormatSupportedAtom = atomFamily((format: 'webp' | 'avif' | 'jpeg' | 'png') => {
   return atom(() => {
@@ -39,7 +38,7 @@ export const handleFileDropAtom = atomFamily((conditionId: string) =>
 
       const converted = await Promise.all(
         files.map(async (file) => ({
-          name: file.name,
+          name: file.name.replace(/\.[^/.]+$/, `.${condition.imageFormat}`),
           data: await convertImageFormat(file, condition.imageFormat, 0.8),
         }))
       );
@@ -79,25 +78,44 @@ export const handleFileDropAtom = atomFamily((conditionId: string) =>
         return;
       }
 
+      const { record } = getCurrentRecord();
+      if (
+        !record[condition.targetFileFieldCode] ||
+        record[condition.targetFileFieldCode]?.type !== 'FILE'
+      ) {
+        enqueueSnackbar(
+          '保存先のファイルフィールドが存在しません。プラグインの設定を確認してください。',
+          { variant: 'error' }
+        );
+        return;
+      }
+
       if (['create', 'edit'].some((type) => currentEventType?.includes(type))) {
-        const { record } = getCurrentRecord();
-
-        if (
-          !record[condition.targetFileFieldCode] ||
-          record[condition.targetFileFieldCode]?.type !== 'FILE'
-        ) {
-          enqueueSnackbar(
-            '保存先のファイルフィールドが存在しません。プラグインの設定を確認してください。',
-            { variant: 'error' }
-          );
-          return;
-        }
-
-        (record[condition.targetFileFieldCode] as kintoneAPI.field.File).value.push(...uploaded);
+        (record[condition.targetFileFieldCode] as kintoneAPI.field.File).value = [
+          ...(record[condition.targetFileFieldCode] as kintoneAPI.field.File).value,
+          ...uploaded,
+        ];
 
         setCurrentRecord({ record });
       } else {
+        const app = get(currentAppIdAtom);
+
+        await updateRecord({
+          app,
+          guestSpaceId: GUEST_SPACE_ID,
+          id: record.$id?.value as string,
+          record: {
+            [condition.targetFileFieldCode]: {
+              value: [
+                ...(record[condition.targetFileFieldCode] as kintoneAPI.field.File).value,
+                ...uploaded,
+              ],
+            },
+          },
+        });
       }
+
+      enqueueSnackbar('変換したファイルをアップロードしました', { variant: 'success' });
 
       set(filesAtom(conditionId), files);
     } catch (error) {
