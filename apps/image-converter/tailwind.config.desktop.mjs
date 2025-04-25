@@ -1,9 +1,9 @@
 //@ts-check
 import common from './tailwind.config.common.mjs';
+import { mergeDeep } from 'remeda';
 
 /** @type { import('tailwindcss').Config } */
-export default {
-  ...common,
+const config = {
   important: '.🐸',
   corePlugins: {
     preflight: false,
@@ -14,3 +14,5 @@ export default {
     './src/desktop/**/*.{ts,tsx}',
   ],
 };
+
+export default mergeDeep(config, common);
