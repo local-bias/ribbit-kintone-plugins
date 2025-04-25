@@ -6,12 +6,7 @@
     "check-types": "tsc --noEmit"
   },
   "exports": {
-    "./*": {
-      "import": [
-        "./src/*.ts",
-        "./src/*.tsx"
-      ]
-    }
+    ".": "./src/index.ts"
   },
   "dependencies": {
     "@konomi-app/kintone-utilities": "^5.13.0",
@@ -25,6 +20,6 @@
     "@repo/typescript-config": "workspace:*",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
-    "typescript": "latest"
+    "typescript": "^5.8.3"
   }
 }
