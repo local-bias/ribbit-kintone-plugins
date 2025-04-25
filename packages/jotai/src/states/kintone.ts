@@ -11,18 +11,18 @@ export const currentAppIdAtom = atom(() => {
 });
 
 export const appFormFieldsAtom = atomFamily(
-  (params: { appId: string | number; spaceId?: string | number }) =>
+  (params: { appId: string | number; spaceId?: string | number; preview?: boolean }) =>
     atom<Promise<kintoneAPI.FieldProperty[]>>(async () => {
       const { properties } = await getFormFields({
         app: params.appId,
-        preview: true,
+        preview: params.preview,
         guestSpaceId: params.spaceId,
       });
 
       const values = Object.values(properties);
       return values.sort((a, b) => a.label.localeCompare(b.label, 'ja'));
     }),
-  (a, b) => a.appId == b.appId && a.spaceId == b.spaceId
+  (a, b) => a.appId == b.appId && a.spaceId == b.spaceId && !!a.preview === !!b.preview
 );
 
 export const appFormLayoutState = atomFamily(
