@@ -7,4 +7,5 @@
 
 import '@/lib/global';
 import './event';
+import './submit-queued-files';
 import './debug';

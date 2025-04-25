@@ -36,6 +36,11 @@ export const getNewCondition = (): PluginCondition => ({
   targetSpaceId: '',
   targetFileFieldCode: '',
   imageFormat: IMAGE_FORMAT_LIST[0],
+  targetEvents: ['create', 'edit', 'detail'],
+  dropzoneDescription: `クリックしてファイルを選択
+または
+ここにファイルをドラッグ＆ドロップ`,
+  disableVanillaFileField: false,
 });
 
 /**

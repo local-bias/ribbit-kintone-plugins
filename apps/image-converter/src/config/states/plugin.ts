@@ -182,3 +182,6 @@ export const exportPluginConfigAtom = atom(null, (get, set) => {
     set(loadingEndAtom);
   }
 });
+
+export const dropzoneDescriptionAtom = getConditionPropertyAtom('dropzoneDescription');
+export const disableVanillaFileFieldAtom = getConditionPropertyAtom('disableVanillaFileField');

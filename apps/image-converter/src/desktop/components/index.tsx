@@ -3,6 +3,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { store } from '@/lib/store';
 import { Provider } from 'jotai';
 import { SnackbarProvider } from 'notistack';
+import QueuedFiles from './queued-files';
 
 export default function App({ conditionId }: { conditionId: string }) {
   return (
@@ -10,6 +11,7 @@ export default function App({ conditionId }: { conditionId: string }) {
       <ThemeProvider>
         <SnackbarProvider>
           <ImageDropzone conditionId={conditionId} />
+          <QueuedFiles />
         </SnackbarProvider>
       </ThemeProvider>
     </Provider>

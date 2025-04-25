@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
 import { Alert, AlertTitle, Button } from '@mui/material';
-import { URL_INQUIRY } from '@repo/constants/url';
+import { URL_INQUIRY } from '@repo/constants';
 import config from 'plugin.config.mjs';
 import React, { FC, useState } from 'react';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';

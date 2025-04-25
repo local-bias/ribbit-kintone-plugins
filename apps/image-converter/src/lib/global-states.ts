@@ -1,4 +1,8 @@
-import { currentKintoneEventTypeAtom, pluginConditionAtom } from '@/desktop/states';
+import {
+  currentKintoneEventTypeAtom,
+  handleQueuedFileAddAtom,
+  pluginConditionAtom,
+} from '@/desktop/states';
 import {
   getCurrentRecord,
   kintoneAPI,
@@ -6,7 +10,7 @@ import {
   updateRecord,
   uploadFile,
 } from '@konomi-app/kintone-utilities';
-import { currentAppIdAtom, loadingEndAtom, loadingStartAtom } from '@repo/jotai/index';
+import { currentAppIdAtom, loadingEndAtom, loadingStartAtom } from '@repo/jotai';
 import { atom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
 import { enqueueSnackbar } from 'notistack';
@@ -34,6 +38,10 @@ export const handleFileDropAtom = atomFamily((conditionId: string) =>
   atom(null, async (get, set, files: File[]) => {
     try {
       set(loadingStartAtom);
+      if (!isProd) {
+        console.groupCollapsed('handleFileDropAtom');
+        console.log('🖼️ files', files);
+      }
       const condition = get(pluginConditionAtom(conditionId));
 
       const converted = await Promise.all(
@@ -91,10 +99,7 @@ export const handleFileDropAtom = atomFamily((conditionId: string) =>
       }
 
       if (['create', 'edit'].some((type) => currentEventType?.includes(type))) {
-        (record[condition.targetFileFieldCode] as kintoneAPI.field.File).value = [
-          ...(record[condition.targetFileFieldCode] as kintoneAPI.field.File).value,
-          ...uploaded,
-        ];
+        set(handleQueuedFileAddAtom(condition.targetFileFieldCode), ...uploaded);
 
         setCurrentRecord({ record });
       } else {
@@ -113,9 +118,8 @@ export const handleFileDropAtom = atomFamily((conditionId: string) =>
             },
           },
         });
+        enqueueSnackbar('変換したファイルをアップロードしました', { variant: 'success' });
       }
-
-      enqueueSnackbar('変換したファイルをアップロードしました', { variant: 'success' });
 
       set(filesAtom(conditionId), files);
     } catch (error) {
@@ -123,6 +127,9 @@ export const handleFileDropAtom = atomFamily((conditionId: string) =>
       enqueueSnackbar(`ファイルのアップロードに失敗しました: ${error}`, { variant: 'error' });
     } finally {
       set(loadingEndAtom);
+      if (!isProd) {
+        console.groupEnd();
+      }
     }
   })
 );
