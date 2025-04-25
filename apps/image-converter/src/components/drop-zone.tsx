@@ -1,36 +1,38 @@
+import { pluginConditionAtom } from '@/desktop/states';
 import { handleFileDropAtom } from '@/lib/global-states';
+import { cn } from '@/lib/utils';
 import { Loader } from '@konomi-app/ui-react';
-import { loadingAtom } from '@repo/jotai/index';
+import { loadingAtom } from '@repo/jotai';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { Image } from 'lucide-react';
+import { Upload } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
 
-function DropzoneContent() {
-  const loading = useAtomValue(loadingAtom);
-
-  if (loading) {
-    return (
-      <div className='flex flex-col items-center justify-center gap-4 text-foreground/50 text-xs'>
-        <Loader className='text-2xl' />
-      </div>
-    );
-  }
+function DropzoneDescription({ conditionId }: { conditionId: string }) {
+  const condition = useAtomValue(pluginConditionAtom(conditionId));
 
   return (
-    <div className='flex flex-col items-center justify-center gap-4 text-foreground/50 text-xs'>
-      <Image strokeWidth={1} className='w-10 h-10' />
-      <div className='flex flex-col items-center justify-center gap-1'>
-        <div>クリックしてファイルを選択</div>
-        <div className='text-foreground/30 text-[10px]'>または</div>
-        <div>ここにファイルをドラッグ＆ドロップ</div>
-      </div>
+    <div className='space-y-1'>
+      {condition.dropzoneDescription.split(/\r?\n/).map((line, index) => (
+        <div key={index} className='text-center'>
+          {line}
+        </div>
+      ))}
     </div>
+  );
+}
+
+function DropzoneIcon() {
+  const loading = useAtomValue(loadingAtom);
+  return loading ? (
+    <Loader className='text-4xl' />
+  ) : (
+    <Upload strokeWidth={1.5} className='w-9 h-9' />
   );
 }
 
 export default function ImageDropzone({ conditionId }: { conditionId: string }) {
   const onDrop = useSetAtom(handleFileDropAtom(conditionId));
-  const { getRootProps, getInputProps } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
     maxFiles: 1,
     onDrop,
     accept: {
@@ -39,10 +41,18 @@ export default function ImageDropzone({ conditionId }: { conditionId: string }) 
   });
 
   return (
-    <div className='grid border-dashed border-2 transition-colors cursor-pointer hover:bg-accent hover:border-primary/30 rounded-lg p-4'>
-      <div {...getRootProps()} className='grid grid-rows-[1fr_auto]'>
-        <input {...getInputProps()} />
-        <DropzoneContent />
+    <div {...getRootProps()}>
+      <input {...getInputProps()} />
+      <div
+        className={cn(
+          'border-dashed border-2 rounded-lg transition-colors cursor-pointer hover:bg-accent hover:border-primary/30 flex flex-col items-center justify-center gap-4 text-foreground/50 text-xs p-4',
+          {
+            'border-primary/70 bg-accent': isDragActive,
+          }
+        )}
+      >
+        <DropzoneIcon />
+        <DropzoneDescription conditionId={conditionId} />
       </div>
     </div>
   );
