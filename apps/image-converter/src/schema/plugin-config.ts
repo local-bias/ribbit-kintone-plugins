@@ -7,9 +7,20 @@ export const PluginConditionV1Schema = z.object({
    * 設定の並び替えに使用されます
    */
   id: z.string(),
+  /** DnDエリアを設置するスペースのスペースID */
   targetSpaceId: z.string(),
+  /** 変換後のファイルを保存するファイルフィールドのフィールドコード */
   targetFileFieldCode: z.string(),
+  /** 変換する画像フォーマット */
   imageFormat: ImageFormatSchema,
+  /** プラグインを有効にする画面 */
+  targetEvents: z.array(z.enum(['create', 'edit', 'detail'])),
+  /** DnDエリア内に表示する説明文 */
+  dropzoneDescription: z.string(),
+  /** 標準のファイルフィールドを無効にするかどうか */
+  disableVanillaFileField: z.boolean(),
+  // /** アップロードできるファイルサイズの上限 */
+  // maxFileSizeKB: z.number(),
 });
 export const PluginConfigV1Schema = z.object({
   version: z.literal(1),
