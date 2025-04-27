@@ -11,6 +11,7 @@
   "dependencies": {
     "@konomi-app/kintone-utilities": "^5.13.0",
     "@mui/material": "^7.0.2",
+    "immer": "^10.1.1",
     "jotai": "^2.12.3",
     "react": "^19.1.0",
     "react-dom": "^19.1.0"
