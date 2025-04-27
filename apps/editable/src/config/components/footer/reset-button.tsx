@@ -10,10 +10,10 @@ import {
   IconButton,
   Tooltip,
 } from '@mui/material';
-import { useAtomCallback } from 'jotai/utils';
+import { RESET, useAtomCallback } from 'jotai/utils';
 import { useSnackbar } from 'notistack';
 import { FC, memo, useCallback, useState } from 'react';
-import { pluginConfigAtom } from '../../states/plugin';
+import { pluginConfigAtom, selectedConditionIdAtom } from '../../states/plugin';
 
 const Component: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
@@ -26,6 +26,7 @@ const Component: FC = () => {
   const onDecisionButtonClick = useAtomCallback(
     useCallback((_, set) => {
       set(pluginConfigAtom, createConfig());
+      set(selectedConditionIdAtom, RESET);
       setOpen(false);
       enqueueSnackbar('設定をリセットしました', { variant: 'success' });
     }, [])
