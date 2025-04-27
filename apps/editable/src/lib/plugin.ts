@@ -6,6 +6,7 @@ import {
 } from '@/schema/plugin-config';
 import { restorePluginConfig as restore } from '@konomi-app/kintone-utilities';
 import { isProd, PLUGIN_ID } from './global';
+import { nanoid } from 'nanoid';
 
 /**
  * プラグインの設定情報が、最新の設定情報の形式に準拠しているか検証します
@@ -29,24 +30,25 @@ export const isUsagePluginConditionMet = (condition: PluginCondition) => {
   return !!condition.targetField && !!condition.rules.length;
 };
 
+export const getNewRule = (): kintone.plugin.Condition['rules'][number] => ({
+  type: 'equal',
+  field: '',
+  value: '',
+  editable: false,
+  connector: 'and',
+});
+
 export const getNewCondition = (): PluginCondition => ({
+  id: nanoid(),
   targetField: '',
-  rules: [
-    {
-      type: 'always',
-      field: '',
-      value: '',
-      editable: true,
-      connector: 'and',
-    },
-  ],
+  rules: [getNewRule()],
 });
 
 /**
  * プラグインの設定情報のひな形を返却します
  */
 export const createConfig = (): PluginConfig => ({
-  version: 1,
+  version: 2,
   conditions: [getNewCondition()],
 });
 
@@ -61,13 +63,34 @@ export const migrateConfig = (anyConfig: AnyPluginConfig): PluginConfig => {
   const { version } = anyConfig;
   switch (version) {
     case undefined: {
-      return migrateConfig({ ...anyConfig, version: 1 });
+      if (!('conditions' in anyConfig)) {
+        return createConfig();
+      }
+      const { conditions } = anyConfig;
+      if (!Array.isArray(conditions) || !(conditions as unknown[]).length) {
+        return createConfig();
+      }
+
+      const validConditions = (conditions as unknown[]).filter((condition) =>
+        isPluginConditionMet(condition)
+      ) as PluginCondition[];
+
+      return migrateConfig({
+        version: 1,
+        conditions: validConditions,
+      });
     }
     case 1:
+      return migrateConfig({
+        ...anyConfig,
+        version: 2,
+        conditions: anyConfig.conditions.map((condition) => ({
+          ...condition,
+          id: nanoid(),
+        })),
+      });
+    case 2:
     default: {
-      // `default` -> `config.js`と`desktop.js`のバージョンが一致していない場合に通る可能性があるため必要
-      // もし新しいバージョンを追加したらここに追加する
-      // return migrateConfig({ version: 2, ...anyConfig });
       return anyConfig;
     }
   }
