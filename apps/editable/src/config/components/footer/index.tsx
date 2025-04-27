@@ -1,20 +1,38 @@
 import { t } from '@/lib/i18n';
 import styled from '@emotion/styled';
-import { PluginFooter } from '@konomi-app/kintone-utilities-react';
+import {
+  PluginConfigExportButton,
+  PluginConfigImportButton,
+  PluginFooter,
+} from '@konomi-app/kintone-utilities-react';
 import SaveIcon from '@mui/icons-material/Save';
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
-import { Button, CircularProgress } from '@mui/material';
+import { Button } from '@mui/material';
 import { loadingAtom } from '@repo/jotai';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { FC, FCX, useCallback } from 'react';
-import { handlePluginConfigUpdateAtom } from '../../states/plugin';
-import ExportButton from './export-button';
-import ImportButton from './import-button';
+import {
+  exportPluginConfigAtom,
+  handlePluginConfigUpdateAtom,
+  importPluginConfigAtom,
+} from '../../states/plugin';
 import ResetButton from './reset-button';
 
 type Props = {
   onSaveButtonClick: () => void;
   onBackButtonClick: () => void;
+};
+
+const ImportButton: FC = () => {
+  const onClick = useSetAtom(importPluginConfigAtom);
+  const loading = useAtomValue(loadingAtom);
+  return <PluginConfigImportButton onImportButtonClick={onClick} loading={loading} />;
+};
+
+const ExportButton: FC = () => {
+  const onClick = useSetAtom(exportPluginConfigAtom);
+  const loading = useAtomValue(loadingAtom);
+  return <PluginConfigExportButton loading={loading} onExportButtonClick={onClick} />;
 };
 
 const Component: FCX<Props> = ({ className, onSaveButtonClick, onBackButtonClick }) => {
@@ -26,20 +44,18 @@ const Component: FCX<Props> = ({ className, onSaveButtonClick, onBackButtonClick
         <Button
           variant='contained'
           color='primary'
-          disabled={loading}
+          loading={loading}
           onClick={onSaveButtonClick}
-          startIcon={loading ? <CircularProgress color='inherit' size={20} /> : <SaveIcon />}
+          startIcon={<SaveIcon />}
         >
           {t('common.config.button.save')}
         </Button>
         <Button
           variant='contained'
           color='inherit'
-          disabled={loading}
+          loading={loading}
           onClick={onBackButtonClick}
-          startIcon={
-            loading ? <CircularProgress color='inherit' size={20} /> : <SettingsBackupRestoreIcon />
-          }
+          startIcon={<SettingsBackupRestoreIcon />}
         >
           {t('common.config.button.return')}
         </Button>
