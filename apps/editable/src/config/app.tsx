@@ -1,4 +1,5 @@
 import { PluginErrorBoundary } from '@/components/error-boundary';
+import { ThemeProvider } from '@/components/theme-provider';
 import {
   PluginBanner,
   PluginConfigProvider,
@@ -10,11 +11,11 @@ import { URL_BANNER, URL_PROMOTION } from '@repo/constants';
 import { store } from '@repo/jotai';
 import { Provider } from 'jotai';
 import { SnackbarProvider } from 'notistack';
+import config from 'plugin.config.mjs';
 import { FC, Suspense } from 'react';
 import Footer from './components/footer';
 import Form from './components/form';
-import { ThemeProvider } from '@/components/theme-provider';
-import config from 'plugin.config.mjs';
+import Sidebar from './components/sidebar';
 
 const Component: FC = () => (
   <Suspense fallback={<LoaderWithLabel label='画面の描画を待機しています' />}>
@@ -24,7 +25,8 @@ const Component: FC = () => (
           <PluginConfigProvider config={config}>
             <SnackbarProvider maxSnack={1}>
               <Suspense fallback={<LoaderWithLabel label='設定情報を取得しています' />}>
-                <PluginLayout singleCondition>
+                <PluginLayout>
+                  <Sidebar />
                   <PluginContent>
                     <PluginErrorBoundary>
                       <Form />

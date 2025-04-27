@@ -1,14 +1,13 @@
+import { t } from '@/lib/i18n';
 import styled from '@emotion/styled';
-import { storeStorage } from '@konomi-app/kintone-utilities';
 import { PluginFooter } from '@konomi-app/kintone-utilities-react';
 import SaveIcon from '@mui/icons-material/Save';
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import { Button, CircularProgress } from '@mui/material';
-import { loadingAtom, loadingEndAtom, loadingStartAtom } from '@repo/jotai';
-import { atom, useAtomValue, useSetAtom } from 'jotai';
-import { enqueueSnackbar } from 'notistack';
+import { loadingAtom } from '@repo/jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { FC, FCX, useCallback } from 'react';
-import { pluginConfigAtom } from '../../states/plugin';
+import { handlePluginConfigUpdateAtom } from '../../states/plugin';
 import ExportButton from './export-button';
 import ImportButton from './import-button';
 import ResetButton from './reset-button';
@@ -17,28 +16,6 @@ type Props = {
   onSaveButtonClick: () => void;
   onBackButtonClick: () => void;
 };
-
-export const handlePluginConfigUpdateAtom = atom(
-  null,
-  async (get, set, onBackButtonClick: () => void) => {
-    set(loadingStartAtom);
-    try {
-      const storage = get(pluginConfigAtom);
-
-      storeStorage(storage!, () => true);
-      enqueueSnackbar('設定を保存しました', {
-        variant: 'success',
-        action: (
-          <Button color='inherit' size='small' variant='outlined' onClick={onBackButtonClick}>
-            プラグイン一覧に戻る
-          </Button>
-        ),
-      });
-    } finally {
-      set(loadingEndAtom);
-    }
-  }
-);
 
 const Component: FCX<Props> = ({ className, onSaveButtonClick, onBackButtonClick }) => {
   const loading = useAtomValue(loadingAtom);
@@ -53,7 +30,7 @@ const Component: FCX<Props> = ({ className, onSaveButtonClick, onBackButtonClick
           onClick={onSaveButtonClick}
           startIcon={loading ? <CircularProgress color='inherit' size={20} /> : <SaveIcon />}
         >
-          設定を保存
+          {t('common.config.button.save')}
         </Button>
         <Button
           variant='contained'
@@ -64,7 +41,7 @@ const Component: FCX<Props> = ({ className, onSaveButtonClick, onBackButtonClick
             loading ? <CircularProgress color='inherit' size={20} /> : <SettingsBackupRestoreIcon />
           }
         >
-          プラグイン一覧へ戻る
+          {t('common.config.button.return')}
         </Button>
       </div>
       <div>
@@ -88,7 +65,15 @@ const Container: FC = () => {
 
   return (
     <StyledComponent
-      {...{ onSaveButtonClick: () => onSaveButtonClick(onBackButtonClick), onBackButtonClick }}
+      {...{
+        onSaveButtonClick: () =>
+          onSaveButtonClick(
+            <Button color='inherit' size='small' variant='outlined' onClick={onBackButtonClick}>
+              プラグイン一覧に戻る
+            </Button>
+          ),
+        onBackButtonClick,
+      }}
     />
   );
 };

@@ -1,4 +1,4 @@
-import { createConfig } from '@/common/plugin';
+import { createConfig } from '@/lib/plugin';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import {
   Button,

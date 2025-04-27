@@ -1,75 +1,99 @@
-import { getNewRule } from '@/common/plugin';
-import { RULE_TYPES, RuleTypeKey } from '@/common/statics';
 import { currentAppFormFieldsAtom } from '@/config/states/kintone';
+import { RULE_TYPES, RuleTypeKey } from '@/lib/constants';
+import { getNewRule } from '@/lib/plugin';
 import styled from '@emotion/styled';
-import { kintoneAPI } from '@konomi-app/kintone-utilities';
+import { JotaiFieldSelect } from '@konomi-app/kintone-utilities-jotai';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { FormControlLabel, IconButton, MenuItem, Switch, TextField, Tooltip } from '@mui/material';
-import { produce } from 'immer';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { ChangeEventHandler, FC, FCX } from 'react';
-import { pluginConfigAtom } from '../../../states/plugin';
+import { useAtomCallback } from 'jotai/utils';
+import { FC, FCX, useCallback } from 'react';
+import { clone } from 'remeda';
+import { handleTargetFieldChangeAtom, rulesAtom, targetFieldAtom } from '../../../states/plugin';
+import { PluginFormSection, PluginFormTitle } from '@konomi-app/kintone-utilities-react';
+import ConditionDeleteButton from '../condition-delete-button';
 
-type ContainerProps = { condition: kintone.plugin.Condition; index: number };
-type Props = ContainerProps & {
-  appFields: kintoneAPI.FieldProperty[];
-  onTargetChange: ChangeEventHandler<HTMLInputElement>;
-  addRule: (rowIndex: number) => void;
-  removeRule: (rowIndex: number) => void;
-  onRuleTypeChange: (i: number, value: RuleTypeKey) => void;
-  onRuleFieldChange: (i: number, value: string) => void;
-  onRuleValueChange: (i: number, value: string) => void;
-  onRuleEditableChange: (i: number, checked: boolean) => void;
+const TargetFieldForm: FC = () => {
+  const targetField = useAtomValue(targetFieldAtom);
+  const onTargetChange = useSetAtom(handleTargetFieldChangeAtom);
+
+  return (
+    <JotaiFieldSelect
+      fieldPropertiesAtom={currentAppFormFieldsAtom}
+      fieldCode={targetField}
+      onChange={onTargetChange}
+    />
+  );
 };
 
-const Component: FCX<Props> = ({
-  className,
-  condition,
-  appFields,
-  onTargetChange,
-  addRule,
-  removeRule,
-  onRuleTypeChange,
-  onRuleFieldChange,
-  onRuleValueChange,
-  onRuleEditableChange,
-}) => (
-  <div {...{ className }}>
-    <div>
-      <h3>入力可否を制御するフィールド</h3>
-      <TextField
-        select
-        value={condition.targetField}
-        label='フィールド名'
-        onChange={onTargetChange}
-        className='input'
-      >
-        {appFields.map(({ code, label }, i) => (
-          <MenuItem key={i} value={code}>
-            {label}
-          </MenuItem>
-        ))}
-      </TextField>
-    </div>
-    <div className='rule'>
-      <h3>ルール</h3>
-      {condition.rules.map((rule, i) => (
+const RulesForm: FC = () => {
+  const rules = useAtomValue(rulesAtom);
+
+  const onRuleTypeChange = useAtomCallback(
+    useCallback((_, set, i: number, value: RuleTypeKey) => {
+      set(rulesAtom, (prev) => {
+        const newRules = clone(prev);
+        newRules[i]!.type = value;
+        return newRules;
+      });
+    }, [])
+  );
+  const onRuleFieldChange = useAtomCallback(
+    useCallback((_, set, i: number, value: string) => {
+      set(rulesAtom, (prev) => {
+        const newRules = clone(prev);
+        newRules[i]!.field = value;
+        return newRules;
+      });
+    }, [])
+  );
+  const onRuleValueChange = useAtomCallback(
+    useCallback((_, set, i: number, value: string) => {
+      set(rulesAtom, (prev) => {
+        const newRules = clone(prev);
+        newRules[i]!.value = value;
+        return newRules;
+      });
+    }, [])
+  );
+  const onRuleEditableChange = useAtomCallback(
+    useCallback((_, set, i: number, checked: boolean) => {
+      set(rulesAtom, (prev) => {
+        const newRules = clone(prev);
+        newRules[i]!.editable = checked;
+        return newRules;
+      });
+    }, [])
+  );
+  const addRule = useAtomCallback(
+    useCallback((_, set, i: number) => {
+      set(rulesAtom, (prev) => {
+        const newRules = clone(prev);
+        newRules.splice(i + 1, 0, getNewRule());
+        return newRules;
+      });
+    }, [])
+  );
+  const removeRule = useAtomCallback(
+    useCallback((_, set, i: number) => {
+      set(rulesAtom, (prev) => {
+        const newRules = clone(prev);
+        newRules.splice(i, 1);
+        return newRules;
+      });
+    }, [])
+  );
+  return (
+    <>
+      {rules.map((rule, i) => (
         <div key={i}>
           {!['always'].includes(rule.type) && (
-            <TextField
-              select
-              label='フィールド名'
-              value={rule.field}
-              onChange={(e) => onRuleFieldChange(i, e.target.value)}
-              className='input'
-            >
-              {appFields.map(({ code, label }, i) => (
-                <MenuItem key={i} value={code}>
-                  {label}
-                </MenuItem>
-              ))}
-            </TextField>
+            <JotaiFieldSelect
+              fieldPropertiesAtom={currentAppFormFieldsAtom}
+              fieldCode={rule.field}
+              onChange={(code) => onRuleFieldChange(i, code)}
+            />
           )}
 
           <TextField
@@ -103,7 +127,7 @@ const Component: FCX<Props> = ({
               <AddIcon fontSize='small' />
             </IconButton>
           </Tooltip>
-          {condition.rules.length > 1 && (
+          {rules.length > 1 && (
             <Tooltip title='この条件設定を削除する'>
               <IconButton size='small' onClick={() => removeRule(i)}>
                 <DeleteIcon fontSize='small' />
@@ -112,7 +136,23 @@ const Component: FCX<Props> = ({
           )}
         </div>
       ))}
-    </div>
+    </>
+  );
+};
+
+const Component: FCX = ({ className }) => (
+  <div {...{ className }}>
+    <PluginFormSection>
+      <PluginFormTitle>入力可否を制御するフィールド</PluginFormTitle>
+      <TargetFieldForm />
+    </PluginFormSection>
+    <PluginFormSection>
+      <PluginFormTitle>ルール</PluginFormTitle>
+      <div className='rule'>
+        <RulesForm />
+      </div>
+    </PluginFormSection>
+    <ConditionDeleteButton />
   </div>
 );
 
@@ -124,15 +164,6 @@ const StyledComponent = styled(Component)`
 
   h3 {
     font-weight: 500;
-  }
-
-  > div {
-    padding: 8px 8px 8px 16px;
-    border-left: 3px solid #0002;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
   }
 
   .rule {
@@ -148,76 +179,4 @@ const StyledComponent = styled(Component)`
   }
 `;
 
-const Container: FC<ContainerProps> = ({ condition, index }) => {
-  const appFields = useAtomValue(currentAppFormFieldsAtom);
-  const setStorage = useSetAtom(pluginConfigAtom);
-
-  const onTargetChange: ChangeEventHandler<HTMLInputElement> = (e) => {
-    setStorage((_, _storage = _!) =>
-      produce(_storage, (draft) => {
-        draft.conditions[index]!.targetField = e.target.value;
-      })
-    );
-  };
-  const onRuleTypeChange = (i: number, value: RuleTypeKey) => {
-    setStorage((_, _storage = _!) =>
-      produce(_storage, (draft) => {
-        draft.conditions[index]!.rules[i]!.type = value;
-      })
-    );
-  };
-  const onRuleFieldChange = (i: number, value: string) => {
-    setStorage((_, _storage = _!) =>
-      produce(_storage, (draft) => {
-        draft.conditions[index]!.rules[i]!.field = value;
-      })
-    );
-  };
-  const onRuleValueChange = (i: number, value: string) => {
-    setStorage((_, _storage = _!) =>
-      produce(_storage, (draft) => {
-        draft.conditions[index]!.rules[i]!.value = value;
-      })
-    );
-  };
-  const onRuleEditableChange = (i: number, checked: boolean) => {
-    setStorage((_, _storage = _!) =>
-      produce(_storage, (draft) => {
-        draft.conditions[index]!.rules[i]!.editable = checked;
-      })
-    );
-  };
-  const addRule = (rowIndex: number) => {
-    setStorage((_, _storage = _!) =>
-      produce(_storage, (draft) => {
-        draft.conditions[index]!.rules.splice(rowIndex + 1, 0, getNewRule());
-      })
-    );
-  };
-  const removeRule = (rowIndex: number) => {
-    setStorage((_, _storage = _!) =>
-      produce(_storage, (draft) => {
-        draft.conditions[index]!.rules.splice(rowIndex, 1);
-      })
-    );
-  };
-
-  return (
-    <StyledComponent
-      {...{
-        condition,
-        index,
-        appFields,
-        onTargetChange,
-        addRule,
-        removeRule,
-        onRuleTypeChange,
-        onRuleFieldChange,
-        onRuleValueChange,
-        onRuleEditableChange,
-      }}
-    />
-  );
-};
-
-export default Container;
+export default StyledComponent;

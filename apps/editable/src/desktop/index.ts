@@ -1,7 +1,6 @@
 import { controlField, getChangeEvents } from '@/common/kintone';
-import { restoreStorage } from '@/common/plugin';
 import { manager } from '@/lib/event-manager';
-import { PLUGIN_ID } from '@/lib/global';
+import { restorePluginConfig } from '@/lib/plugin';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
 
 class C {
@@ -31,7 +30,7 @@ class C {
   }
 }
 
-const pluginConfig = restoreStorage(PLUGIN_ID);
+const pluginConfig = restorePluginConfig();
 
 for (const { targetField, rules } of pluginConfig.conditions) {
   for (const rule of rules) {

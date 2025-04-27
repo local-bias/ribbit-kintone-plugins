@@ -1,16 +1,61 @@
-import { restoreStorage, storeStorage } from '@/common/plugin';
 import { PLUGIN_NAME } from '@/lib/constants';
-import { PLUGIN_ID } from '@/lib/global';
 import { t } from '@/lib/i18n';
-import { migrateConfig } from '@/lib/plugin';
-import { onFileLoad } from '@konomi-app/kintone-utilities';
-import { loadingEndAtom, loadingStartAtom } from '@repo/jotai';
+import { migrateConfig, restorePluginConfig } from '@/lib/plugin';
+import { onFileLoad, storePluginConfig } from '@konomi-app/kintone-utilities';
+import { loadingEndAtom, loadingStartAtom, usePluginAtoms } from '@repo/jotai';
 import { atom } from 'jotai';
 import { enqueueSnackbar } from 'notistack';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, ReactNode } from 'react';
 import invariant from 'tiny-invariant';
 
-export const pluginConfigAtom = atom(restoreStorage(PLUGIN_ID));
+export const pluginConfigAtom = atom(restorePluginConfig());
+
+export const {
+  pluginConditionsAtom,
+  conditionsLengthAtom,
+  selectedConditionIdAtom,
+  selectedConditionAtom,
+  getConditionPropertyAtom,
+} = usePluginAtoms(pluginConfigAtom);
+
+export const isConditionDeleteButtonShownAtom = atom((get) => {
+  const length = get(conditionsLengthAtom);
+  return length > 1;
+});
+
+export const targetFieldAtom = getConditionPropertyAtom('targetField');
+export const handleTargetFieldChangeAtom = atom(null, (_, set, newValue: string) => {
+  set(targetFieldAtom, newValue);
+});
+
+export const rulesAtom = getConditionPropertyAtom('rules');
+
+export const handlePluginConditionDeleteAtom = atom(null, (get, set) => {
+  const selectedConditionId = get(selectedConditionIdAtom);
+  set(pluginConditionsAtom, (prev) =>
+    prev.filter((condition) => condition.id !== selectedConditionId)
+  );
+  set(selectedConditionIdAtom, null);
+  enqueueSnackbar('設定を削除しました', { variant: 'success' });
+});
+
+export const handlePluginConfigUpdateAtom = atom(null, (get, set, actionComponent: ReactNode) => {
+  try {
+    set(loadingStartAtom);
+    const pluginConfig = get(pluginConfigAtom);
+    storePluginConfig(pluginConfig, {
+      callback: () => true,
+      flatProperties: ['conditions'],
+      debug: true,
+    });
+    enqueueSnackbar(t('common.config.toast.save'), {
+      variant: 'success',
+      action: actionComponent,
+    });
+  } finally {
+    set(loadingEndAtom);
+  }
+});
 
 /**
  * jsonファイルを読み込み、プラグインの設定情報をインポートします
