@@ -23,11 +23,11 @@ export default /** @type { const } */ ({
   manifest: {
     base: {
       manifest_version: 1,
-      version: '1.3.0',
+      version: '2.0.0',
       type: 'APP',
       name: {
         en: 'Field Dynamic Input Control Plugin',
-        ja: 'フィールド動的入力制御プラグイン',
+        ja: '条件付き入力可否制御プラグイン',
         zh: '插件模板',
       },
       description: {
