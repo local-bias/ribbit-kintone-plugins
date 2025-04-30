@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
-    "./*": "./src/*.tsx"
+    ".": "./src/index.ts"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",
@@ -21,8 +21,13 @@
     "typescript": "latest"
   },
   "dependencies": {
+    "@emotion/styled": "^11.14.0",
+    "@konomi-app/k2": "^1.8.2",
+    "@konomi-app/ui-react": "^2.0.0",
     "@mui/material": "^7.0.2",
+    "@repo/constants": "workspace:*",
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "react-error-boundary": "^5.0.0"
   }
 }

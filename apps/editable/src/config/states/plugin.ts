@@ -36,7 +36,7 @@ export const handlePluginConditionDeleteAtom = atom(null, (get, set) => {
     prev.filter((condition) => condition.id !== selectedConditionId)
   );
   set(selectedConditionIdAtom, null);
-  enqueueSnackbar('設定を削除しました', { variant: 'success' });
+  enqueueSnackbar(t('common.config.toast.onConditionDelete'), { variant: 'success' });
 });
 
 export const handlePluginConfigUpdateAtom = atom(null, (get, set, actionComponent: ReactNode) => {

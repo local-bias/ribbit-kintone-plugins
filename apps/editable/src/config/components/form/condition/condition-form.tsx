@@ -92,6 +92,7 @@ const RulesForm: FC = () => {
             <JotaiFieldSelect
               fieldPropertiesAtom={currentAppFormFieldsAtom}
               fieldCode={rule.field}
+              sx={{ width: '300px' }}
               onChange={(code) => onRuleFieldChange(i, code)}
             />
           )}
@@ -167,10 +168,13 @@ const StyledComponent = styled(Component)`
   }
 
   .rule {
-    > div {
+    display: grid;
+    gap: 16px;
+
+    & > div {
       display: flex;
+      gap: 8px;
       align-items: center;
-      gap: 16px;
     }
   }
 

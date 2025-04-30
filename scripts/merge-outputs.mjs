@@ -6,11 +6,28 @@ const APPS_DIR = join(process.cwd(), 'apps');
 
 const PUBLIC_DIR = join(process.cwd(), 'public');
 
+/** @type { { src: string; dst: string | ((params: { appName: string }) => string) }[] } */
 const TARGET_FILES = [
-  '.plugin/plugin.zip',
-  '.plugin/contents/desktop.js',
-  '.plugin/contents/desktop.css',
-  '.plugin/contents/config.css',
+  {
+    src: '.plugin/plugin.zip',
+    dst: ({ appName }) => `kintone-plugin-${appName}.zip`,
+  },
+  {
+    src: '.plugin/contents/desktop.js',
+    dst: `desktop.js`,
+  },
+  {
+    src: '.plugin/contents/desktop.css',
+    dst: `desktop.css`,
+  },
+  {
+    src: '.plugin/contents/config.js',
+    dst: `config.js`,
+  },
+  {
+    src: '.plugin/contents/config.css',
+    dst: `config.css`,
+  },
 ];
 
 async function ensureDir(dir) {
@@ -42,15 +59,15 @@ async function main() {
       continue;
     }
 
-    for (const relPath of TARGET_FILES) {
-      const src = join(appPath, relPath);
-      if (await fileExists(src)) {
-        const dest = join(PUBLIC_DIR, appName, relPath);
+    for (const { src, dst } of TARGET_FILES) {
+      const srcPath = join(appPath, src);
+      if (await fileExists(srcPath)) {
+        const dest = join(PUBLIC_DIR, appName, typeof dst === 'function' ? dst({ appName }) : dst);
         await ensureDir(dirname(dest));
-        await copyFile(src, dest);
-        console.log(`Copied: ${src} -> ${dest}`);
+        await copyFile(srcPath, dest);
       }
     }
+    console.log(`🚚 Plugin files have been copied: ${appName}`);
   }
 }
 

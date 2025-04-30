@@ -1,7 +1,7 @@
 // @ts-check
 const hp = 'https://konomi.app';
 const cdn = 'https://kintone-plugin.konomi.app';
-const key = 'image_converter';
+const key = 'image-converter';
 
 /** @satisfies { Plugin.Meta.Config } */
 export default /** @type { const } */ ({
@@ -20,7 +20,7 @@ export default /** @type { const } */ ({
   manifest: {
     base: {
       manifest_version: 1,
-      version: '0.1.0',
+      version: '1.0.0',
       type: 'APP',
       name: {
         en: 'kintone-plugin-template',

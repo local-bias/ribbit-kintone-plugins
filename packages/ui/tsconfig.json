@@ -3,6 +3,7 @@
   "compilerOptions": {
     "outDir": "dist"
   },
+  "files": ["./node_modules/@konomi-app/k2/types.d.ts"],
   "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }

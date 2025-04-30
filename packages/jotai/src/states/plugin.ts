@@ -1,7 +1,7 @@
 import { produce } from 'immer';
-import { atom, PrimitiveAtom } from 'jotai';
+import { atom, type PrimitiveAtom } from 'jotai';
 import { atomWithDefault } from 'jotai/utils';
-import { SetStateAction } from 'react';
+import { type SetStateAction } from 'react';
 
 export function usePluginAtoms<
   T extends { conditions: ({ id: string } & Record<string, unknown>)[] },
@@ -15,20 +15,16 @@ export function usePluginAtoms<
 
   const { enableCommonCondition = false } = options || {};
 
+  // 📦 optics-tsを使用した際にwebpackの型推論が機能しない場合があるため、一時的に代替する関数を使用
+  // const pluginConditionsAtom = focusAtom(pluginConfigAtom, (s) => s.prop('conditions'));
   const pluginConditionsAtom = atom(
     (get) => get(pluginConfigAtom).conditions as Condition[],
     (_, set, newValue: SetStateAction<Condition[]>) => {
       set(pluginConfigAtom, (current) => {
         if (typeof newValue === 'function') {
-          return {
-            ...current,
-            conditions: newValue(current.conditions),
-          };
+          return { ...current, conditions: newValue(current.conditions) };
         }
-        return {
-          ...current,
-          conditions: newValue,
-        };
+        return { ...current, conditions: newValue };
       });
     }
   );
@@ -57,6 +53,9 @@ export function usePluginAtoms<
     }
   );
 
+  // 📦 optics-tsを使用した際にwebpackの型推論が機能しない場合があるため、一時的に代替する関数を使用
+  // const getConditionPropertyAtom = <T extends keyof PluginCondition>(property: T) =>
+  //   focusAtom(selectedConditionAtom, (s) => s.prop(property)) as PrimitiveAtom<PluginCondition[T]>;
   const getConditionPropertyAtom = <F extends keyof Condition>(property: F) =>
     atom(
       (get) => {
