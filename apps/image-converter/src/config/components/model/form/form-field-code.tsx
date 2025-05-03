@@ -17,7 +17,6 @@ export default function FileFieldCodeForm() {
     <JotaiFieldSelect
       fieldCode={fieldCode}
       onChange={onChange}
-      // @ts-expect-error 型定義不足
       fieldPropertiesAtom={currentAppFileFieldsAtom}
       label='ファイルを保存する添付ファイルフィールド'
       placeholder={''}
