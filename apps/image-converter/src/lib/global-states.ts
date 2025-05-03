@@ -10,7 +10,7 @@ import {
   updateRecord,
   uploadFile,
 } from '@konomi-app/kintone-utilities';
-import { currentAppIdAtom, loadingEndAtom, loadingStartAtom } from '@repo/jotai';
+import { currentAppIdAtom, handleLoadingEndAtom, handleLoadingStartAtom } from '@repo/jotai';
 import { atom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
 import { enqueueSnackbar } from 'notistack';
@@ -37,7 +37,7 @@ export const filesAtom = atomFamily((_conditionId: string) => atom<File[]>([]));
 export const handleFileDropAtom = atomFamily((conditionId: string) =>
   atom(null, async (get, set, files: File[]) => {
     try {
-      set(loadingStartAtom);
+      set(handleLoadingStartAtom);
       if (!isProd) {
         console.groupCollapsed('handleFileDropAtom');
         console.log('🖼️ files', files);
@@ -126,7 +126,7 @@ export const handleFileDropAtom = atomFamily((conditionId: string) =>
       console.error(error);
       enqueueSnackbar(`ファイルのアップロードに失敗しました: ${error}`, { variant: 'error' });
     } finally {
-      set(loadingEndAtom);
+      set(handleLoadingEndAtom);
       if (!isProd) {
         console.groupEnd();
       }

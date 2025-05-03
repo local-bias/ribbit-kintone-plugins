@@ -4,7 +4,6 @@ import {
   importPluginConfigAtom,
   updatePluginConfig,
 } from '@/config/states/plugin';
-import { loadingAtom } from '@/config/states/ui';
 import { t } from '@/lib/i18n';
 import {
   PluginConfigExportButton,
@@ -15,6 +14,7 @@ import {
 import SaveIcon from '@mui/icons-material/Save';
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import { Button, CircularProgress } from '@mui/material';
+import { loadingAtom } from '@repo/jotai';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { useCallback } from 'react';
 
@@ -51,13 +51,13 @@ function SaveButton({ backToPluginList }: Pick<Props, 'backToPluginList'>) {
       onClick={() =>
         savePluginConfig(
           <Button color='inherit' size='small' variant='outlined' onClick={backToPluginList}>
-            {t('config.button.return')}
+            {t('common.config.button.return')}
           </Button>
         )
       }
       startIcon={loading ? <CircularProgress color='inherit' size={20} /> : <SaveIcon />}
     >
-      {t('config.button.save')}
+      {t('common.config.button.save')}
     </Button>
   );
 }
@@ -74,7 +74,7 @@ function BackToPluginListButton({ backToPluginList }: Pick<Props, 'backToPluginL
         loading ? <CircularProgress color='inherit' size={20} /> : <SettingsBackupRestoreIcon />
       }
     >
-      {t('config.button.return')}
+      {t('common.config.button.return')}
     </Button>
   );
 }

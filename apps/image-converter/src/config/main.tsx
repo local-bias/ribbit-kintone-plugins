@@ -4,5 +4,5 @@ import invariant from 'tiny-invariant';
 import App from './app';
 
 const root = document.getElementById('settings');
-invariant(root, t('error.config.root'));
+invariant(root, t('common.config.error.rootNotFound'));
 createRoot(root).render(<App />);

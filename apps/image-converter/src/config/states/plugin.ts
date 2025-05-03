@@ -3,20 +3,19 @@ import { t } from '@/lib/i18n';
 import { createConfig, migrateConfig, restorePluginConfig } from '@/lib/plugin';
 import { PluginCommonConfig, PluginConfig } from '@/schema/plugin-config';
 import { onFileLoad, storePluginConfig } from '@konomi-app/kintone-utilities';
-import { usePluginAtoms } from '@repo/jotai';
+import { handleLoadingEndAtom, handleLoadingStartAtom, usePluginAtoms } from '@repo/jotai';
+import { saveAs } from 'file-saver';
 import { produce } from 'immer';
 import { atom, SetStateAction } from 'jotai';
 import { enqueueSnackbar } from 'notistack';
 import { ChangeEvent, ReactNode } from 'react';
 import invariant from 'tiny-invariant';
-import { loadingEndAtom, loadingStartAtom } from './ui';
-import { saveAs } from 'file-saver';
 
 export const pluginConfigAtom = atom<PluginConfig>(restorePluginConfig());
 
 export const handlePluginConfigResetAtom = atom(null, (_, set) => {
   set(pluginConfigAtom, createConfig());
-  enqueueSnackbar(t('config.toast.reset'), { variant: 'success' });
+  enqueueSnackbar(t('common.config.toast.reset'), { variant: 'success' });
 });
 
 export const {
@@ -77,19 +76,19 @@ export const handlePluginConditionDeleteAtom = atom(null, (get, set) => {
 
 export const updatePluginConfig = atom(null, (get, set, actionComponent: ReactNode) => {
   try {
-    set(loadingStartAtom);
+    set(handleLoadingStartAtom);
     const pluginConfig = get(pluginConfigAtom);
     storePluginConfig(pluginConfig, {
       callback: () => true,
       flatProperties: ['conditions'],
       debug: true,
     });
-    enqueueSnackbar(t('config.toast.save'), {
+    enqueueSnackbar(t('common.config.toast.save'), {
       variant: 'success',
       action: actionComponent,
     });
   } finally {
-    set(loadingEndAtom);
+    set(handleLoadingEndAtom);
   }
 });
 
@@ -100,19 +99,19 @@ export const importPluginConfigAtom = atom(
   null,
   async (_, set, event: ChangeEvent<HTMLInputElement>) => {
     try {
-      set(loadingStartAtom);
+      set(handleLoadingStartAtom);
       const { files } = event.target;
       invariant(files?.length, 'ファイルが見つかりませんでした');
       const [file] = Array.from(files);
       const fileEvent = await onFileLoad(file!);
       const text = (fileEvent.target?.result ?? '') as string;
       set(pluginConfigAtom, migrateConfig(JSON.parse(text)));
-      enqueueSnackbar(t('config.toast.import'), { variant: 'success' });
+      enqueueSnackbar(t('common.config.toast.import'), { variant: 'success' });
     } catch (error) {
-      enqueueSnackbar(t('config.error.import'), { variant: 'error' });
+      enqueueSnackbar(t('common.config.error.import'), { variant: 'error' });
       throw error;
     } finally {
-      set(loadingEndAtom);
+      set(handleLoadingEndAtom);
     }
   }
 );
@@ -122,18 +121,18 @@ export const importPluginConfigAtom = atom(
  */
 export const exportPluginConfigAtom = atom(null, (get, set) => {
   try {
-    set(loadingStartAtom);
+    set(handleLoadingStartAtom);
     const pluginConfig = get(pluginConfigAtom);
     const blob = new Blob([JSON.stringify(pluginConfig, null)], {
       type: 'application/json',
     });
     saveAs(blob, `${PLUGIN_NAME}-config.json`);
-    enqueueSnackbar(t('config.toast.export'), { variant: 'success' });
+    enqueueSnackbar(t('common.config.toast.export'), { variant: 'success' });
   } catch (error) {
-    enqueueSnackbar(t('config.error.export'), { variant: 'error' });
+    enqueueSnackbar(t('common.config.error.export'), { variant: 'error' });
     throw error;
   } finally {
-    set(loadingEndAtom);
+    set(handleLoadingEndAtom);
   }
 });
 
