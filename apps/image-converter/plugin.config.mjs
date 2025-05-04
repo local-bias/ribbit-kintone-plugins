@@ -23,14 +23,14 @@ export default /** @type { const } */ ({
       version: '1.0.0',
       type: 'APP',
       name: {
-        en: 'kintone-plugin-template',
+        en: 'Image Converter Plugin',
         ja: '画像変換プラグイン',
-        zh: '插件模板',
+        zh: '图像转换插件',
       },
       description: {
-        en: 'kintone-plugin-template',
+        en: 'This plugin converts image files to a specified format before uploading them to the file field.',
         ja: '画像ファイルを予め指定した形式に変換した上で、ファイルフィールドにアップロードします。',
-        zh: '插件模板',
+        zh: '此插件在将图像文件上传到文件字段之前，将其转换为指定的格式。',
       },
       icon: 'icon.png',
       homepage_url: { ja: hp, en: hp },
