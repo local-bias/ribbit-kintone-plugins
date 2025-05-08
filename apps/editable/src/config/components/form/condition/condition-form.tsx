@@ -6,13 +6,60 @@ import { JotaiFieldSelect } from '@konomi-app/kintone-utilities-jotai';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { FormControlLabel, IconButton, MenuItem, Switch, TextField, Tooltip } from '@mui/material';
-import { useAtomValue, useSetAtom } from 'jotai';
-import { useAtomCallback } from 'jotai/utils';
-import { FC, FCX, useCallback } from 'react';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { FC, FCX } from 'react';
 import { clone } from 'remeda';
 import { handleTargetFieldChangeAtom, rulesAtom, targetFieldAtom } from '../../../states/plugin';
 import { PluginFormSection, PluginFormTitle } from '@konomi-app/kintone-utilities-react';
 import ConditionDeleteButton from '../condition-delete-button';
+
+const handleRuleTypeChangeAtom = atom(null, (_, set, i: number, value: RuleTypeKey) => {
+  set(rulesAtom, (prev) => {
+    const newRules = clone(prev);
+    newRules[i]!.type = value;
+    return newRules;
+  });
+});
+
+const handleRuleFieldChangeAtom = atom(null, (_, set, i: number, value: string) => {
+  set(rulesAtom, (prev) => {
+    const newRules = clone(prev);
+    newRules[i]!.field = value;
+    return newRules;
+  });
+});
+
+const handleRuleValueChangeAtom = atom(null, (_, set, i: number, value: string) => {
+  set(rulesAtom, (prev) => {
+    const newRules = clone(prev);
+    newRules[i]!.value = value;
+    return newRules;
+  });
+});
+
+const handleRuleEditableChangeAtom = atom(null, (_, set, i: number, checked: boolean) => {
+  set(rulesAtom, (prev) => {
+    const newRules = clone(prev);
+    newRules[i]!.editable = checked;
+    return newRules;
+  });
+});
+
+const addRuleAtom = atom(null, (_, set, i: number) => {
+  set(rulesAtom, (prev) => {
+    const newRules = clone(prev);
+    newRules.splice(i + 1, 0, getNewRule());
+    return newRules;
+  });
+});
+
+const removeRuleAtom = atom(null, (_, set, i: number) => {
+  set(rulesAtom, (prev) => {
+    const newRules = clone(prev);
+    newRules.splice(i, 1);
+    return newRules;
+  });
+});
 
 const TargetFieldForm: FC = () => {
   const targetField = useAtomValue(targetFieldAtom);
@@ -30,60 +77,13 @@ const TargetFieldForm: FC = () => {
 const RulesForm: FC = () => {
   const rules = useAtomValue(rulesAtom);
 
-  const onRuleTypeChange = useAtomCallback(
-    useCallback((_, set, i: number, value: RuleTypeKey) => {
-      set(rulesAtom, (prev) => {
-        const newRules = clone(prev);
-        newRules[i]!.type = value;
-        return newRules;
-      });
-    }, [])
-  );
-  const onRuleFieldChange = useAtomCallback(
-    useCallback((_, set, i: number, value: string) => {
-      set(rulesAtom, (prev) => {
-        const newRules = clone(prev);
-        newRules[i]!.field = value;
-        return newRules;
-      });
-    }, [])
-  );
-  const onRuleValueChange = useAtomCallback(
-    useCallback((_, set, i: number, value: string) => {
-      set(rulesAtom, (prev) => {
-        const newRules = clone(prev);
-        newRules[i]!.value = value;
-        return newRules;
-      });
-    }, [])
-  );
-  const onRuleEditableChange = useAtomCallback(
-    useCallback((_, set, i: number, checked: boolean) => {
-      set(rulesAtom, (prev) => {
-        const newRules = clone(prev);
-        newRules[i]!.editable = checked;
-        return newRules;
-      });
-    }, [])
-  );
-  const addRule = useAtomCallback(
-    useCallback((_, set, i: number) => {
-      set(rulesAtom, (prev) => {
-        const newRules = clone(prev);
-        newRules.splice(i + 1, 0, getNewRule());
-        return newRules;
-      });
-    }, [])
-  );
-  const removeRule = useAtomCallback(
-    useCallback((_, set, i: number) => {
-      set(rulesAtom, (prev) => {
-        const newRules = clone(prev);
-        newRules.splice(i, 1);
-        return newRules;
-      });
-    }, [])
-  );
+  const onRuleTypeChange = useSetAtom(handleRuleTypeChangeAtom);
+  const onRuleFieldChange = useSetAtom(handleRuleFieldChangeAtom);
+  const onRuleValueChange = useSetAtom(handleRuleValueChangeAtom);
+  const onRuleEditableChange = useSetAtom(handleRuleEditableChangeAtom);
+  const addRule = useSetAtom(addRuleAtom);
+  const removeRule = useSetAtom(removeRuleAtom);
+
   return (
     <>
       {rules.map((rule, i) => (

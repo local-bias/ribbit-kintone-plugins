@@ -39,7 +39,7 @@
     "@radix-ui/react-slot": "^1.1.2",
     "@repo/constants": "workspace:*",
     "@repo/jotai": "workspace:*",
-    "@repo/tailwind-config": "workspace:*",
+    "@repo/tailwindcss": "workspace:*",
     "@repo/ui": "workspace:*",
     "@repo/utils": "workspace:*",
     "class-variance-authority": "^0.7.1",

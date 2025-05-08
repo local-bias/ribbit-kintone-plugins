@@ -15,8 +15,8 @@ const Sidebar: FC = () => {
     const { condition, index } = params;
     return (
       <div>
-        <div className='text-[11px] leading-4 text-gray-400'>{`${t('common.config.sidebar.tab.label')}${index + 1}`}</div>
-        <div>{condition.targetField || '未設定'}</div>
+        <div className='text-[11px] leading-4 text-foreground/50'>{`${t('common.config.sidebar.tab.label')}${index + 1}`}</div>
+        <div className='text-foreground'>{condition.targetField || '未設定'}</div>
       </div>
     );
   }, []);

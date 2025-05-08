@@ -1,0 +1,40 @@
+@import './theme.css';
+
+/** preflight */
+@layer plugin {
+  .🐸 {
+    background-color: var(--🐸background);
+    color: var(--🐸foreground);
+
+    * {
+      border-color: var(--🐸border);
+      outline-color: var(--🐸ring);
+    }
+
+    *,
+    :after,
+    :before,
+    ::backdrop {
+      box-sizing: border-box;
+      border: 0 solid;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      font-size: inherit;
+      font-weight: inherit;
+    }
+
+    ol,
+    ul,
+    menu {
+      list-style: none;
+    }
+  }
+}
