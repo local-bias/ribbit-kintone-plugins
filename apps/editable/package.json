@@ -63,6 +63,5 @@
     "ts-loader": "^9.5.2",
     "tw-animate-css": "^1.2.8",
     "utility-types": "^3.11.0"
-  },
-  "prettier": "@konomi-app/prettier-config"
+  }
 }

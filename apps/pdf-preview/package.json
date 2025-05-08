@@ -64,7 +64,6 @@
   "devDependencies": {
     "@kintone/dts-gen": "^8.1.1",
     "@konomi-app/k2": "^1.8.1",
-    "@konomi-app/prettier-config": "^1.1.2",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@tailwindcss/cli": "^4.1.4",
