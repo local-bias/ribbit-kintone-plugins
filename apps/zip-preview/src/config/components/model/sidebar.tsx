@@ -12,11 +12,11 @@ const Sidebar: FC = () => {
   const [conditions, setConditions] = useAtom(pluginConditionsAtom);
   const [selectedConditionId, setSelectedConditionId] = useAtom(selectedConditionIdAtom);
   const label = useCallback((params: { condition: PluginCondition; index: number }) => {
-    const { condition, index } = params;
+    const { index } = params;
     return (
       <div>
         <div className='text-[11px] leading-4 text-gray-400'>{`${t('common.config.sidebar.tab.label')}${index + 1}`}</div>
-        <div>{condition.memo || t('common.config.sidebar.tab.defaultLabel')}</div>
+        <div>{t('common.config.sidebar.tab.defaultLabel')}</div>
       </div>
     );
   }, []);

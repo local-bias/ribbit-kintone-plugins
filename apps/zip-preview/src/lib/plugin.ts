@@ -26,7 +26,7 @@ export const isPluginConditionMet = (condition: unknown): boolean => {
  * @param condition - 検証する条件オブジェクト
  * @returns プラグインの設定情報が利用条件を満たしている場合は`true`、そうでない場合は`false`
  */
-export const isUsagePluginConditionMet = (condition: PluginCondition) => {
+export const isUsagePluginConditionMet = () => {
   return true; // ここに条件を追加する
 };
 
