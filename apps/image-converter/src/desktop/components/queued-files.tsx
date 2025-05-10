@@ -12,14 +12,14 @@ export default function QueuedFiles() {
   }
 
   return (
-    <div className='fixed bottom-4 right-4 z-50 w-96'>
+    <div className='rad:fixed rad:bottom-4 rad:right-4 rad:z-50 rad:w-96'>
       {Object.entries(files).map(([fieldCode, fileList]) => {
         const label = properties.find((p) => p.code === fieldCode)?.label ?? fieldCode;
         return (
           <Accordion key={fieldCode} defaultExpanded>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>{label}</AccordionSummary>
             <AccordionDetails>
-              <div className='pl-6 grid gap-2'>
+              <div className='rad:pl-6 rad:grid rad:gap-2'>
                 {fileList.map((file) => (
                   <div key={file.fileKey} className='list-item'>
                     {file.name}

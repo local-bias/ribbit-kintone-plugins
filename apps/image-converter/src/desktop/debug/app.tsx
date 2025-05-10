@@ -1,8 +1,9 @@
+import { PLUGIN_NAME } from '@/lib/constants';
 import { store } from '@/lib/store';
-import { cn } from '@repo/utils';
 import { PluginCondition } from '@/schema/plugin-config';
 import { css } from '@emotion/css';
-import { Fab } from '@mui/material';
+import { Button } from '@mui/material';
+import { cn } from '@repo/utils';
 import JsonView from '@uiw/react-json-view';
 import { Provider, useAtomValue } from 'jotai';
 import { useState, type FC } from 'react';
@@ -44,31 +45,31 @@ const DebugContainer: FC = () => {
       <div className='🐸'>
         <div
           className={cn(
-            'transition-all opacity-100 fixed right-0 top-0 z-40 bg-white/60 backdrop-blur-sm text-gray-800 p-4 overflow-auto h-screen',
+            'rad:transition-all rad:opacity-100 rad:fixed rad:right-0 rad:top-0 rad:z-40 rad:bg-white/60 rad:backdrop-blur-sm rad:text-gray-800 rad:p-4 rad:overflow-auto rad:h-screen',
             {
-              'opacity-0 pointer-events-none': !shown,
+              'rad:opacity-0 rad:pointer-events-none': !shown,
             },
             css`
               --w-rjv-background-color: transparent;
             `
           )}
         >
-          <div className='box-border p-4 overflow-auto'>
-            <div className='mb-4 text-sm text-green-800 font-bold'>
+          <div className='rad:box-border rad:p-4 rad:overflow-auto'>
+            <div className='rad:mb-4 rad:text-sm rad:text-green-800 rad:font-bold'>
               Plugin Debug Menu
-              <span className='text-xs'>(Not displayed in production)</span>
+              <span className='rad:text-xs'>(Not displayed in production)</span>
             </div>
             <DebugContent />
           </div>
         </div>
-        <Fab
+        <Button
           onClick={onButtonClick}
           color='warning'
           size='small'
-          className='fixed right-3 bottom-3 z-50'
+          className='rad:fixed! rad:right-3! rad:bottom-3! rad:z-50!'
         >
-          🐛
-        </Fab>
+          🐛 {PLUGIN_NAME}
+        </Button>
       </div>
     </Provider>
   );

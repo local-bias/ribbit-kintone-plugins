@@ -11,9 +11,9 @@ function DropzoneDescription({ conditionId }: { conditionId: string }) {
   const condition = useAtomValue(pluginConditionAtom(conditionId));
 
   return (
-    <div className='space-y-1'>
+    <div className='rad:space-y-1'>
       {condition.dropzoneDescription.split(/\r?\n/).map((line, index) => (
-        <div key={index} className='text-center'>
+        <div key={index} className='rad:text-center'>
           {line}
         </div>
       ))}
@@ -24,9 +24,9 @@ function DropzoneDescription({ conditionId }: { conditionId: string }) {
 function DropzoneIcon() {
   const loading = useAtomValue(loadingAtom);
   return loading ? (
-    <Loader className='text-4xl' />
+    <Loader className='rad:text-4xl' />
   ) : (
-    <Upload strokeWidth={1.5} className='w-9 h-9' />
+    <Upload strokeWidth={1.5} className='rad:w-9 rad:h-9' />
   );
 }
 
@@ -45,9 +45,9 @@ export default function ImageDropzone({ conditionId }: { conditionId: string }) 
       <input {...getInputProps()} />
       <div
         className={cn(
-          'border-dashed border-2 rounded-lg transition-colors cursor-pointer hover:bg-accent hover:border-primary/30 flex flex-col items-center justify-center gap-4 text-foreground/50 text-xs p-4',
+          'rad:bg-background rad:overflow-hidden rad:border-dashed rad:border-2 rad:rounded-lg rad:transition-colors rad:cursor-pointer rad:hover:bg-accent rad:hover:border-primary/30 rad:flex rad:flex-col rad:items-center rad:justify-center rad:gap-4 rad:text-foreground/50 rad:text-xs rad:p-4',
           {
-            'border-primary/70 bg-accent': isDragActive,
+            'rad:border-primary/70 rad:bg-accent': isDragActive,
           }
         )}
       >

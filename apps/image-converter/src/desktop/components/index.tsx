@@ -1,4 +1,4 @@
-import ImageDropzone from '@/components/drop-zone';
+import ImageDropzone from '@/desktop/components/drop-zone';
 import { ThemeProvider } from '@/components/theme-provider';
 import { store } from '@/lib/store';
 import { Provider } from 'jotai';
