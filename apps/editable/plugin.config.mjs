@@ -28,15 +28,24 @@ export default /** @type { const } */ ({
       name: {
         en: 'Field Dynamic Input Control Plugin',
         ja: '条件付き入力可否制御プラグイン',
-        zh: '插件模板',
+        zh: '字段动态输入控制插件',
+        'zh-TW': '欄位動態輸入控制插件',
+        es: 'Plugin de control dinámico de entrada de campo',
+        'pt-BR': 'Plugin de controle dinâmico de entrada de campo',
+        th: 'ปลั๊กอินควบคุมการป้อนข้อมูลแบบไดนามิกของฟิลด์',
       },
       description: {
         en: 'Depending on the state of a field, it controls the ability to input other fields.',
         ja: 'フィールドの状態に応じて、他のフィールドの入力可否を制御します。',
-        zh: '插件模板',
+        zh: '根据字段的状态，它控制其他字段的输入能力。',
+        'zh-TW': '根據欄位的狀態，它控制其他欄位的輸入能力。',
+        es: 'Dependiendo del estado de un campo, controla la capacidad de entrada de otros campos.',
+        'pt-BR':
+          'Dependendo do estado de um campo, ele controla a capacidade de entrada de outros campos.',
+        th: 'ขึ้นอยู่กับสถานะของฟิลด์ จะควบคุมความสามารถในการป้อนข้อมูลฟิลด์อื่น ๆ',
       },
       icon: 'icon.png',
-      homepage_url: { ja: hp, en: hp },
+      homepage_url: { ja: hp, en: hp, zh: hp, 'zh-TW': hp, es: hp, 'pt-BR': hp, th: hp },
       desktop: { js: [`${cdn}/common/desktop.js`], css: [`${cdn}/common/desktop.css`] },
       mobile: { js: [`${cdn}/common/desktop.js`], css: [`${cdn}/common/desktop.css`] },
       config: {
