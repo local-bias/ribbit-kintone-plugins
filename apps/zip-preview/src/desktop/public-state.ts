@@ -208,6 +208,19 @@ export const unzipContentAtom = atomFamily((fileKey: string) =>
       }
     }
 
+    // 全てのディレクトリの children に対して再帰的にソートを適用する
+    const sortAllDirectoryChildren = (entries: FileContent[]) => {
+      for (const entry of entries) {
+        if (entry.isDirectory && entry.children && entry.children.length > 0) {
+          entry.children.sort(sortFileContents);
+          sortAllDirectoryChildren(entry.children);
+        }
+      }
+    };
+
+    // すべての階層に対してソートを適用
+    sortAllDirectoryChildren(rootEntries);
+
     isDev && console.log('Processed file structure:', rootEntries);
     return rootEntries.sort(sortFileContents);
   })
