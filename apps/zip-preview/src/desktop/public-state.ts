@@ -55,19 +55,30 @@ export const previewFileKeyAtom = atom<string | null>(null);
 
 const fileAtom = atomFamily((fileKey: string) =>
   atom(async () => {
-    return downloadFile({ fileKey, guestSpaceId: GUEST_SPACE_ID, debug: isDev });
+    const file = await downloadFile({ fileKey, guestSpaceId: GUEST_SPACE_ID, debug: isDev });
+    isDev && console.log('📄 file', file);
+    return file;
   })
 );
 
-export const unzipContentAtom = atomFamily((fileKey: string) =>
+const zipFileAtom = atomFamily((fileKey: string) =>
   atom(async (get) => {
     const file = get(fileAtom(fileKey));
     if (!file) {
       return null;
     }
-
     const zipFile = await zip.loadAsync(file);
-    console.log({ files: zipFile.files });
+    isDev && console.log('🤐 zipFile', zipFile);
+    return zipFile;
+  })
+);
+
+export const unzipContentAtom = atomFamily((fileKey: string) =>
+  atom(async (get) => {
+    const zipFile = await get(zipFileAtom(fileKey));
+    if (!zipFile) {
+      return null;
+    }
 
     // 階層構造を作成するためのマップ
     const pathMap = new Map<string, FileContent>();
@@ -175,7 +186,7 @@ export const unzipContentAtom = atomFamily((fileKey: string) =>
       }
     }
 
-    console.log('Processed file structure:', rootEntries);
+    isDev && console.log('Processed file structure:', rootEntries);
     return rootEntries;
   })
 );
