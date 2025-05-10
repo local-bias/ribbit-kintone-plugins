@@ -27,14 +27,11 @@ export const isPluginConditionMet = (condition: unknown): boolean => {
  * @returns プラグインの設定情報が利用条件を満たしている場合は`true`、そうでない場合は`false`
  */
 export const isUsagePluginConditionMet = (condition: PluginCondition) => {
-  return !!condition.memo;
+  return true; // ここに条件を追加する
 };
 
 export const getNewCondition = (): PluginCondition => ({
   id: nanoid(),
-  memo: '',
-  fields: [''],
-  isSampleUIShown: true,
 });
 
 /**
@@ -42,10 +39,7 @@ export const getNewCondition = (): PluginCondition => ({
  */
 export const createConfig = (): PluginConfig => ({
   version: 1,
-  common: {
-    memo: '',
-    fields: [],
-  },
+  common: {},
   conditions: [getNewCondition()],
 });
 

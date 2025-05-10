@@ -6,16 +6,10 @@ export const PluginConditionV1Schema = z.object({
    * 設定の並び替えに使用されます
    */
   id: z.string(),
-  memo: z.string(),
-  fields: z.array(z.string()),
-  isSampleUIShown: z.boolean(),
 });
 export const PluginConfigV1Schema = z.object({
   version: z.literal(1),
-  common: z.object({
-    memo: z.string(),
-    fields: z.array(z.string()),
-  }),
+  common: z.object({}),
   conditions: z.array(PluginConditionV1Schema),
 });
 type PluginConfigV1 = z.infer<typeof PluginConfigV1Schema>;
