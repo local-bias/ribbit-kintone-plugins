@@ -1,30 +1,29 @@
 @import './theme.css';
 
 /** preflight */
-@layer plugin {
-  .🐸 {
-    background-color: var(--🐸background);
+@layer base {
+  :where(.🐸) {
     color: var(--🐸foreground);
   }
 
-  .🐸 :where(*) {
+  :where(.🐸) :where(*) {
     border-color: var(--🐸border);
     outline-color: var(--🐸ring);
   }
 
-  .🐸 :where(*, :after, :before, ::backdrop) {
+  :where(.🐸) :where(*, :after, :before, ::backdrop) {
     box-sizing: border-box;
     border: 0 solid;
     margin: 0;
     padding: 0;
   }
 
-  .🐸 :where(h1, h2, h3, h4, h5, h6) {
+  :where(.🐸) :where(h1, h2, h3, h4, h5, h6) {
     font-size: inherit;
     font-weight: inherit;
   }
 
-  .🐸 :where(ol, ul, menu) {
+  :where(.🐸) :where(ol, ul, menu) {
     list-style: none;
   }
 }
