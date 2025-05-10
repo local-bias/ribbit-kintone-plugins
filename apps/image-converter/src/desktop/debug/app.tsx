@@ -1,5 +1,5 @@
 import { store } from '@/lib/store';
-import { cn } from '@/lib/utils';
+import { cn } from '@repo/utils';
 import { PluginCondition } from '@/schema/plugin-config';
 import { css } from '@emotion/css';
 import { Fab } from '@mui/material';

@@ -1,6 +1,6 @@
 import { pluginConditionAtom } from '@/desktop/states';
 import { handleFileDropAtom } from '@/lib/global-states';
-import { cn } from '@/lib/utils';
+import { cn } from '@repo/utils';
 import { Loader } from '@konomi-app/ui-react';
 import { loadingAtom } from '@repo/jotai';
 import { useAtomValue, useSetAtom } from 'jotai';
