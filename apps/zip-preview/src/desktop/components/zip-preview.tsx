@@ -1,9 +1,9 @@
-import { formatFileSize } from '@/lib/files';
+import { FileContent, formatFileSize } from '@/lib/files';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { ChevronDown, ChevronRight, File, FileX2, Folder } from 'lucide-react';
 import { Suspense, useState } from 'react';
-import { FileContent, handleFileContentSelectAtom, previewFileAtom } from '../public-state';
+import { handleFileContentSelectAtom, previewFileAtom } from '../public-state';
 
 // 日付をフォーマットする関数
 function formatDate(dateString?: string): string {
@@ -106,8 +106,7 @@ function ZipPreviewComponent() {
   const contentArray = Array.isArray(content) ? content : [content];
 
   return (
-    <div className='🐸 rad:p-4 rad:overflow-auto rad:h-full rad:max-h-screen'>
-      <h3 className='rad:text-lg rad:font-bold rad:mb-4'>ZIP ファイルの内容</h3>
+    <div className='rad:p-4 rad:overflow-auto rad:h-full rad:max-h-screen'>
       {contentArray.map((fileContent, index) => (
         <FileComponent key={`${fileContent.path}-${index}`} content={fileContent} />
       ))}
