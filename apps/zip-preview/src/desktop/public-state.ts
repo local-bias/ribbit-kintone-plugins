@@ -3,7 +3,7 @@ import { isUsagePluginConditionMet, restorePluginConfig } from '@/lib/plugin';
 import { downloadFile, kintoneAPI } from '@konomi-app/kintone-utilities';
 import { appFormFieldsAtom, currentAppIdAtom } from '@repo/jotai';
 import { atom } from 'jotai';
-import { atomFamily } from 'jotai/utils';
+import { atomFamily, atomWithReset, RESET } from 'jotai/utils';
 import { entries } from 'remeda';
 import zip from 'jszip';
 import { FileContent, sortFileContents } from '@/lib/files';
@@ -43,7 +43,8 @@ export const fileFieldsWithZipAtom = atom((get) => {
     .map((field) => ({ code: field.code, type: field.type, value: field.value.filter(filter) }));
 });
 
-export const previewFileKeyAtom = atom<string | null>(null);
+export const previewZipFileKeyAtom = atomWithReset<string | null>(null);
+export const previewZipFileNameAtom = atomWithReset<string | null>(null);
 
 export const selectedFileContentKeyAtom = atom<string | null>(null);
 
@@ -52,7 +53,7 @@ export const selectedFileAtom = atom(async (get) => {
   if (!fileKey) {
     return null;
   }
-  const zipFileKey = get(previewFileKeyAtom);
+  const zipFileKey = get(previewZipFileKeyAtom);
   if (!zipFileKey) {
     return null;
   }
@@ -227,7 +228,7 @@ export const unzipContentAtom = atomFamily((fileKey: string) =>
 );
 
 export const previewFileAtom = atom(async (get) => {
-  const fileKey = get(previewFileKeyAtom);
+  const fileKey = get(previewZipFileKeyAtom);
   if (!fileKey) {
     return null;
   }
@@ -240,4 +241,6 @@ export const handleDrawerOpenAtom = atom(null, (_, set) => {
 });
 export const handleDrawerCloseAtom = atom(null, (_, set) => {
   set(showDrawerAtom, false);
+  set(previewZipFileKeyAtom, RESET);
+  set(previewZipFileNameAtom, RESET);
 });

@@ -67,7 +67,12 @@ manager.add(['app.record.index.show'], async (event) => {
         const targetFile = field.value.find((file) => file.name === anchorText);
         if (!targetFile) continue;
 
-        listItem.append(createPreviewButton(targetFile.fileKey));
+        listItem.append(
+          createPreviewButton({
+            key: targetFile.fileKey,
+            name: targetFile.name,
+          })
+        );
       }
     }
   });
@@ -92,7 +97,12 @@ manager.add(['app.record.detail.show', 'app.record.edit.show'], async (event) =>
         const targetFile = field.value.find((file) => file.name === anchorText);
         if (!targetFile) continue;
 
-        listItem.append(createPreviewButton(targetFile.fileKey));
+        listItem.append(
+          createPreviewButton({
+            key: targetFile.fileKey,
+            name: targetFile.name,
+          })
+        );
       }
     } else {
       const anchorElements = Array.from(fieldElement?.querySelectorAll('a'));
@@ -104,7 +114,12 @@ manager.add(['app.record.detail.show', 'app.record.edit.show'], async (event) =>
         const targetFile = field.value.find((file) => file.name === anchorText);
         if (!targetFile) continue;
 
-        anchorElement.append(createPreviewButton(targetFile.fileKey));
+        anchorElement.append(
+          createPreviewButton({
+            key: targetFile.fileKey,
+            name: targetFile.name,
+          })
+        );
       }
     }
   }

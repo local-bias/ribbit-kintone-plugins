@@ -1,8 +1,13 @@
 import { store } from '@repo/jotai';
-import { handleDrawerOpenAtom, previewFileKeyAtom } from './public-state';
+import {
+  handleDrawerOpenAtom,
+  previewZipFileKeyAtom,
+  previewZipFileNameAtom,
+} from './public-state';
 import { css } from '@emotion/css';
 
-export function createPreviewButton(fileKey: string) {
+export function createPreviewButton(params: { key: string; name: string }) {
+  const { key: fileKey, name: fileName } = params;
   const buttonElement = document.createElement('span');
   buttonElement.classList.add(css`
     padding: 1px 6px;
@@ -22,7 +27,8 @@ export function createPreviewButton(fileKey: string) {
   buttonElement.addEventListener('click', (e) => {
     e.stopPropagation();
     e.preventDefault();
-    store.set(previewFileKeyAtom, fileKey);
+    store.set(previewZipFileKeyAtom, fileKey);
+    store.set(previewZipFileNameAtom, fileName);
     store.set(handleDrawerOpenAtom);
   });
   return buttonElement;

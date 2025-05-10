@@ -1,9 +1,13 @@
 import { FileContent, formatFileSize } from '@/lib/files';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { ChevronDown, ChevronRight, File, FileX2, Folder } from 'lucide-react';
+import { ChevronDown, ChevronRight, File, FileX2, Folder, FolderArchive } from 'lucide-react';
 import { Suspense, useState } from 'react';
-import { handleFileContentSelectAtom, previewFileAtom } from '../public-state';
+import {
+  handleFileContentSelectAtom,
+  previewFileAtom,
+  previewZipFileNameAtom,
+} from '../public-state';
 
 // 日付をフォーマットする関数
 function formatDate(dateString?: string): string {
@@ -96,6 +100,20 @@ function ErrorPlaceholder() {
   );
 }
 
+function ZipFileName() {
+  const fileName = useAtomValue(previewZipFileNameAtom);
+  if (!fileName) {
+    return null;
+  }
+
+  return (
+    <div className='rad:text-lg rad:flex rad:items-center rad:gap-2 rad:py-2 rad:border-b rad:border-border'>
+      <FolderArchive className='rad:w-6 rad:h-6 rad:text-amber-500' />
+      <div>{fileName}</div>
+    </div>
+  );
+}
+
 function ZipPreviewComponent() {
   const content = useAtomValue(previewFileAtom);
   if (!content) {
@@ -106,18 +124,21 @@ function ZipPreviewComponent() {
   const contentArray = Array.isArray(content) ? content : [content];
 
   return (
-    <div className='rad:p-4 rad:overflow-auto rad:h-full rad:max-h-screen'>
+    <>
       {contentArray.map((fileContent, index) => (
         <FileComponent key={`${fileContent.path}-${index}`} content={fileContent} />
       ))}
-    </div>
+    </>
   );
 }
 
 export default function ZipPreview() {
   return (
-    <Suspense fallback={<Placeholder />}>
-      <ZipPreviewComponent />
-    </Suspense>
+    <div className='rad:p-4 rad:overflow-auto rad:h-full rad:max-h-screen'>
+      <ZipFileName />
+      <Suspense fallback={<Placeholder />}>
+        <ZipPreviewComponent />
+      </Suspense>
+    </div>
   );
 }
