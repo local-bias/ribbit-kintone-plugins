@@ -8,6 +8,7 @@ import { entries } from 'remeda';
 import zip from 'jszip';
 
 export type FileContent = {
+  key: string;
   name: string;
   isDirectory: boolean;
   path: string;
@@ -52,6 +53,34 @@ export const fileFieldsWithZipAtom = atom((get) => {
 });
 
 export const previewFileKeyAtom = atom<string | null>(null);
+
+export const selectedFileContentKeyAtom = atom<string | null>(null);
+
+export const selectedFileAtom = atom(async (get) => {
+  const fileKey = get(selectedFileContentKeyAtom);
+  if (!fileKey) {
+    return null;
+  }
+  const zipFileKey = get(previewFileKeyAtom);
+  if (!zipFileKey) {
+    return null;
+  }
+  const zipFile = await get(zipFileAtom(zipFileKey));
+  if (!zipFile) {
+    return null;
+  }
+  const file = zipFile.files[fileKey];
+  if (!file) {
+    return null;
+  }
+  console.log('📄 file', { fileKey, file });
+  const fileContent = await file.async('text');
+  return fileContent;
+});
+
+export const handleFileContentSelectAtom = atom(null, (_, set, key: string) => {
+  set(selectedFileContentKeyAtom, key);
+});
 
 const fileAtom = atomFamily((fileKey: string) =>
   atom(async () => {
@@ -108,6 +137,7 @@ export const unzipContentAtom = atomFamily((fileKey: string) =>
 
       // ファイルコンテンツオブジェクトの作成
       const fileContent: FileContent = {
+        key: path,
         name,
         isDirectory,
         path: normalizedPath,
@@ -153,6 +183,7 @@ export const unzipContentAtom = atomFamily((fileKey: string) =>
             if (!pathMap.has(dirPath)) {
               // 中間ディレクトリを作成
               const dirContent: FileContent = {
+                key: path,
                 name: part,
                 isDirectory: true,
                 path: dirPath,

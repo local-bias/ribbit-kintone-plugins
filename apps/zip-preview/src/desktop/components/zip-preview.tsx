@@ -1,9 +1,9 @@
 import { formatFileSize } from '@/lib/files';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
-import { useAtomValue } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { ChevronDown, ChevronRight, File, FileX2, Folder } from 'lucide-react';
 import { Suspense, useState } from 'react';
-import { FileContent, previewFileAtom } from '../public-state';
+import { FileContent, handleFileContentSelectAtom, previewFileAtom } from '../public-state';
 
 // 日付をフォーマットする関数
 function formatDate(dateString?: string): string {
@@ -14,11 +14,7 @@ function formatDate(dateString?: string): string {
 
 function FileComponent({ content, depth = 0 }: { content: FileContent; depth?: number }) {
   const [isExpanded, setIsExpanded] = useState(depth === 0);
-
-  const toggleExpand = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsExpanded(!isExpanded);
-  };
+  const onFileSelect = useSetAtom(handleFileContentSelectAtom);
 
   if (!content) {
     return null;
@@ -28,7 +24,14 @@ function FileComponent({ content, depth = 0 }: { content: FileContent; depth?: n
     <div className='rad:w-full rad:py-1'>
       <div
         className='rad:flex rad:items-center rad:gap-2 rad:p-1 rad:rounded rad:hover:bg-gray-100 rad:cursor-pointer'
-        onClick={content.isDirectory ? toggleExpand : undefined}
+        onClick={(e) => {
+          e.stopPropagation();
+          if (content.isDirectory) {
+            setIsExpanded(!isExpanded);
+          } else {
+            onFileSelect(content.key);
+          }
+        }}
       >
         {content.isDirectory ? (
           <>
