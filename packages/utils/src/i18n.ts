@@ -99,6 +99,46 @@ export const commonUi = {
     'common.config.error.import': '導入設置失敗，請檢查文件中是否有錯誤。',
     'common.config.error.export': '插件設置匯出失敗。請聯繫插件開發者。',
   },
+  'pt-BR': {
+    'common.config.sidebar.tab.common.label': 'Configuração comum',
+    'common.config.sidebar.tab.label': 'Configuração',
+    'common.config.sidebar.tab.defaultLabel': 'Não configurado',
+    'common.config.sidebar.context.onCopy': 'Configuração copiada com sucesso',
+    'common.config.sidebar.context.onPaste': 'Configuração colada com sucesso',
+    'common.config.sidebar.context.onPasteFailure': 'Formato de configuração inválido',
+    'common.config.button.save': 'Salvar configuração',
+    'common.config.button.return': 'Voltar à lista de plugins',
+    'common.config.toast.save': 'Configuração salva com sucesso',
+    'common.config.toast.onConditionDelete': 'Configuração excluída com sucesso',
+    'common.config.toast.reset': 'Configuração redefinida com sucesso',
+    'common.config.toast.import': 'Configuração importada com sucesso',
+    'common.config.toast.export': 'Configuração do plugin exportada com sucesso',
+    'common.config.error.rootNotFound':
+      "O elemento raiz não existe no HTML do plugin. Um elemento com id='settings' é necessário para renderizar as configurações do plugin.",
+    'common.config.error.import':
+      'Falha ao importar configurações, verifique se há erros no arquivo.',
+    'common.config.error.export':
+      'Falha ao exportar as configurações do plugin. Entre em contato com o desenvolvedor do plugin.',
+  },
+  th: {
+    'common.config.sidebar.tab.common.label': 'การตั้งค่าทั่วไป',
+    'common.config.sidebar.tab.label': 'การตั้งค่า',
+    'common.config.sidebar.tab.defaultLabel': 'ยังไม่ได้ตั้งค่า',
+    'common.config.sidebar.context.onCopy': 'คัดลอกการตั้งค่าเรียบร้อยแล้ว',
+    'common.config.sidebar.context.onPaste': 'วางการตั้งค่าเรียบร้อยแล้ว',
+    'common.config.sidebar.context.onPasteFailure': 'รูปแบบการตั้งค่าไม่ถูกต้อง',
+    'common.config.button.save': 'บันทึกการตั้งค่า',
+    'common.config.button.return': 'กลับไปที่รายการปลั๊กอิน',
+    'common.config.toast.save': 'บันทึกการตั้งค่าเรียบร้อยแล้ว',
+    'common.config.toast.onConditionDelete': 'ลบการตั้งค่าเรียบร้อยแล้ว',
+    'common.config.toast.reset': 'รีเซ็ตการตั้งค่าเรียบร้อยแล้ว',
+    'common.config.toast.import': 'นำเข้าการตั้งค่าเรียบร้อยแล้ว',
+    'common.config.toast.export': 'ส่งออกการตั้งค่าปลั๊กอินเรียบร้อยแล้ว',
+    'common.config.error.rootNotFound':
+      "ไม่มีองค์ประกอบรากใน HTML ของปลั๊กอิน ต้องมีองค์ประกอบที่มี id='settings' เพื่อเรนเดอร์การตั้งค่าปลั๊กอิน",
+    'common.config.error.import': 'นำเข้าการตั้งค่าล้มเหลว โปรดตรวจสอบข้อผิดพลาดในไฟล์',
+    'common.config.error.export': 'ส่งออกการตั้งค่าปลั๊กอินล้มเหลว โปรดติดต่อผู้พัฒนาปลั๊กอิน',
+  },
 } as const;
 
 /**
