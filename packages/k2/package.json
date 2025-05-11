@@ -1,0 +1,12 @@
+{
+  "name": "@repo/k2",
+  "version": "1.0.0",
+  "private": true,
+  "exports": {
+    "./*": "./src/*"
+  },
+  "devDependencies": {
+    "@konomi-app/k2": "workspace:*",
+    "@repo/typescript-config": "workspace:*"
+  }
+}
