@@ -9,7 +9,7 @@
     "build:css-config": "pnpm dlx @tailwindcss/cli -i ./src/styles/config.css -o ./.plugin/contents/config.css --minify",
     "build:js": "plugin build",
     "build": "concurrently \"pnpm:build:*\" && plugin zip",
-    "standalone": "plugin build && plugin zip --env standalone",
+    "standalone": "pnpm run build && plugin zip --env standalone",
     "dev:js": "plugin dev",
     "dev:css-desktop": "pnpm dlx @tailwindcss/cli -i ./src/styles/desktop.css -o ./.plugin/dev/desktop.css --watch",
     "dev:css-config": "pnpm dlx @tailwindcss/cli -i ./src/styles/config.css -o ./.plugin/dev/config.css --watch",
@@ -63,7 +63,7 @@
   },
   "devDependencies": {
     "@kintone/dts-gen": "^8.1.1",
-    "@konomi-app/k2": "^1.9.0",
+    "@konomi-app/k2": "workspace:*",
     "@repo/eslint-config": "workspace:*",
     "@repo/tailwindcss": "workspace:*",
     "@repo/typescript-config": "workspace:*",
