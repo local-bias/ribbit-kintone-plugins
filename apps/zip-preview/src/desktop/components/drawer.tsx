@@ -1,8 +1,10 @@
 import { PluginErrorBoundary } from '@/components/error-boundary';
 import { Drawer as MuiDrawer } from '@mui/material';
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@repo/ui';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { handleDrawerCloseAtom, showDrawerAtom } from '../public-state';
-import ZipPreview from './zip-preview';
+import { handleDrawerCloseAtom, showDrawerAtom } from '../states/drawer';
+import PaneDetails from './pane-details';
+import PaneMain from './pane-main';
 
 export default function Drawer() {
   const open = useAtomValue(showDrawerAtom);
@@ -18,16 +20,15 @@ export default function Drawer() {
       >
         <PluginErrorBoundary>
           <div className='🐸 rad:overflow-auto rad:h-full rad:max-h-screen'>
-            <ZipPreview />
-            {/* <ResizablePanelGroup direction='horizontal'>
+            <ResizablePanelGroup direction='horizontal'>
               <ResizablePanel defaultSize={75}>
-                <ZipPreview />
+                <PaneMain />
               </ResizablePanel>
-              <ResizableHandle />
+              <ResizableHandle withHandle />
               <ResizablePanel defaultSize={25} className=''>
-                <FileDetails />
+                <PaneDetails />
               </ResizablePanel>
-            </ResizablePanelGroup> */}
+            </ResizablePanelGroup>
           </div>
         </PluginErrorBoundary>
       </MuiDrawer>

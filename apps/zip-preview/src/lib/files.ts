@@ -1,9 +1,32 @@
+import zip from 'jszip';
+import { z } from 'zod';
+
 export function formatFileSize(bytes?: number): string {
   if (bytes === undefined) return '';
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   if (bytes < 1024 * 1024 * 1024) return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   return `${(bytes / (1024 * 1024 * 1024)).toFixed(1)} GB`;
+}
+
+const zipObjectSizeSchema = z.number().optional();
+
+/**
+ * Zipファイル内のオブジェクトのサイズを取得します。
+ *
+ * 💣 この関数は{@link zip.JSZipObject}の実装に依存しています。将来的に動作しなくなる可能性があります。
+ *
+ * @param file - Zipファイル内のオブジェクト
+ */
+export function getUncompressedSize(file: zip.JSZipObject) {
+  // @ts-expect-error - `_data`はメタデータであるため、型定義に含まれていない。
+  const size = file._data?.uncompressedSize;
+
+  const parsed = zipObjectSizeSchema.safeParse(size);
+  if (parsed.success) {
+    return parsed.data;
+  }
+  return undefined;
 }
 
 export type FileContent = {

@@ -1,12 +1,12 @@
+import { FileContent, getUncompressedSize, sortFileContents } from '@/lib/files';
 import { GUEST_SPACE_ID, isDev } from '@/lib/global';
 import { isUsagePluginConditionMet, restorePluginConfig } from '@/lib/plugin';
 import { downloadFile, kintoneAPI } from '@konomi-app/kintone-utilities';
 import { appFormFieldsAtom, currentAppIdAtom } from '@repo/jotai';
 import { atom } from 'jotai';
-import { atomFamily, atomWithReset, RESET } from 'jotai/utils';
-import { entries } from 'remeda';
+import { atomFamily, atomWithReset } from 'jotai/utils';
 import zip from 'jszip';
-import { FileContent, sortFileContents } from '@/lib/files';
+import { entries } from 'remeda';
 
 export const pluginConfigAtom = atom(restorePluginConfig());
 export const pluginConditionsAtom = atom((get) => get(pluginConfigAtom).conditions);
@@ -46,28 +46,89 @@ export const fileFieldsWithZipAtom = atom((get) => {
 export const previewZipFileKeyAtom = atomWithReset<string | null>(null);
 export const previewZipFileNameAtom = atomWithReset<string | null>(null);
 
-export const selectedFileContentKeyAtom = atom<string | null>(null);
+export const selectedFileContentKeyAtom = atomWithReset<string | null>(null);
 
-export const selectedFileAtom = atom(async (get) => {
+export type DetailContent =
+  | {
+      type: 'text';
+      value: string;
+    }
+  | {
+      type: 'image';
+      value: Blob;
+    }
+  | {
+      type: 'blob';
+      value: Blob;
+    };
+
+export type SelectedFileDetails = {
+  name: string;
+  size?: number;
+  content: DetailContent;
+};
+
+export const detailFileAtom = atom(async (get) => {
   const fileKey = get(selectedFileContentKeyAtom);
-  if (!fileKey) {
-    return null;
-  }
+  if (!fileKey) return null;
   const zipFileKey = get(previewZipFileKeyAtom);
-  if (!zipFileKey) {
-    return null;
-  }
+  if (!zipFileKey) return null;
   const zipFile = await get(zipFileAtom(zipFileKey));
-  if (!zipFile) {
-    return null;
-  }
+  if (!zipFile) return null;
   const file = zipFile.files[fileKey];
-  if (!file) {
-    return null;
+  isDev && console.log('📄 file', { fileKey, file });
+  return file ?? null;
+});
+
+export const detailFileBlobAtom = atom(async (get) => {
+  const file = await get(detailFileAtom);
+  if (!file) return null;
+  const blob = await file.async('blob');
+  return blob;
+});
+
+export const selectedFileDetailsAtom = atom<Promise<SelectedFileDetails | null>>(async (get) => {
+  const file = await get(detailFileAtom);
+  if (!file) return null;
+
+  if (/\.(png|jpg|jpeg|gif|webp|avif|svg|ico)$/i.test(file.name)) {
+    // 画像ファイルの場合はBlob URLを生成
+    const blob = await get(detailFileBlobAtom);
+    if (!blob) return null;
+    return {
+      name: file.name,
+      size: getUncompressedSize(file),
+      content: {
+        type: 'image',
+        value: blob,
+      },
+    };
   }
-  console.log('📄 file', { fileKey, file });
+
+  // ファイルサイズが30KB以上の場合はBlob URLを生成
+  const size = getUncompressedSize(file);
+  if (size && size > 1024 * 30) {
+    const blob = await get(detailFileBlobAtom);
+    if (!blob) return null;
+    return {
+      name: file.name,
+      size,
+      content: {
+        type: 'blob',
+        value: blob,
+      },
+    };
+  }
+
   const fileContent = await file.async('text');
-  return fileContent;
+  return {
+    name: file.name,
+    size,
+    content: {
+      type: 'text',
+      value: fileContent,
+    },
+  };
 });
 
 export const handleFileContentSelectAtom = atom(null, (_, set, key: string) => {
@@ -88,13 +149,18 @@ const zipFileAtom = atomFamily((fileKey: string) =>
     if (!file) {
       return null;
     }
-    const zipFile = await zip.loadAsync(file);
-    isDev && console.log('🤐 zipFile', zipFile);
-    return zipFile;
+    try {
+      const zipFile = await zip.loadAsync(file);
+      isDev && console.log('🤐 zipFile', zipFile);
+      return zipFile;
+    } catch (error) {
+      isDev && console.error('Error loading zip file:', error);
+      return null;
+    }
   })
 );
 
-export const unzipContentAtom = atomFamily((fileKey: string) =>
+const unzipContentAtom = atomFamily((fileKey: string) =>
   atom(async (get) => {
     const zipFile = await get(zipFileAtom(fileKey));
     if (!zipFile) {
@@ -121,8 +187,7 @@ export const unzipContentAtom = atomFamily((fileKey: string) =>
       // ファイル/ディレクトリ名
       const name = pathParts[pathParts.length - 1] || '';
       const updatedAt = file.date.toISOString();
-      // @ts-ignore
-      const size = isDirectory ? undefined : file._data?.uncompressedSize;
+      const size = getUncompressedSize(file);
 
       // このエントリのパス（ディレクトリの場合は末尾に/を付ける）
       const normalizedPath = isDirectory ? `${pathParts.join('/')}/` : path;
@@ -227,20 +292,13 @@ export const unzipContentAtom = atomFamily((fileKey: string) =>
   })
 );
 
+/**
+ * ユーザーが選択したZipファイルの内容を取得するatom
+ */
 export const previewFileAtom = atom(async (get) => {
   const fileKey = get(previewZipFileKeyAtom);
   if (!fileKey) {
     return null;
   }
   return get(unzipContentAtom(fileKey));
-});
-
-export const showDrawerAtom = atom(false);
-export const handleDrawerOpenAtom = atom(null, (_, set) => {
-  set(showDrawerAtom, true);
-});
-export const handleDrawerCloseAtom = atom(null, (_, set) => {
-  set(showDrawerAtom, false);
-  set(previewZipFileKeyAtom, RESET);
-  set(previewZipFileNameAtom, RESET);
 });

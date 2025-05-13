@@ -1,10 +1,9 @@
 'use client';
 
+import { css } from '@emotion/css';
+import { cn } from '@repo/utils';
 import { GripVertical } from 'lucide-react';
 import * as ResizablePrimitive from 'react-resizable-panels';
-
-import { cn } from '@repo/utils';
-import { css } from '@emotion/css';
 
 const ResizablePanelGroup = ({
   className,
@@ -104,4 +103,4 @@ const ResizableHandle = ({
   </ResizablePrimitive.PanelResizeHandle>
 );
 
-export { ResizablePanelGroup, ResizablePanel, ResizableHandle };
+export { ResizableHandle, ResizablePanel, ResizablePanelGroup };

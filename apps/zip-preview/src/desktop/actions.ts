@@ -1,10 +1,6 @@
-import { store } from '@repo/jotai';
-import {
-  handleDrawerOpenAtom,
-  previewZipFileKeyAtom,
-  previewZipFileNameAtom,
-} from './public-state';
 import { css } from '@emotion/css';
+import { store } from '@repo/jotai';
+import { handleDrawerOpenAtom } from './states/drawer';
 
 export function createPreviewButton(params: { key: string; name: string }) {
   const { key: fileKey, name: fileName } = params;
@@ -27,9 +23,7 @@ export function createPreviewButton(params: { key: string; name: string }) {
   buttonElement.addEventListener('click', (e) => {
     e.stopPropagation();
     e.preventDefault();
-    store.set(previewZipFileKeyAtom, fileKey);
-    store.set(previewZipFileNameAtom, fileName);
-    store.set(handleDrawerOpenAtom);
+    store.set(handleDrawerOpenAtom, { key: fileKey, name: fileName });
   });
   return buttonElement;
 }
