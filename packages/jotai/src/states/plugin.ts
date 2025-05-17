@@ -4,6 +4,9 @@ import { atom, type PrimitiveAtom } from 'jotai';
 import { atomWithDefault, RESET } from 'jotai/utils';
 import { type SetStateAction } from 'react';
 
+/**
+ * 共通設定(`common`プロパティ)を使用する場合
+ */
 export function usePluginAtoms<
   T extends {
     common: Record<string, unknown>;
@@ -27,9 +30,14 @@ export function usePluginAtoms<
     property: F
   ) => PrimitiveAtom<T['conditions'][number][F]>;
   commonConfigAtom: PrimitiveAtom<T['common']>;
+  getCommonPropertyAtom: <K extends keyof T['common']>(
+    property: K
+  ) => WritableAtom<T['common'][K], [newValue: SetStateAction<T['common'][K]>], void>;
 };
 
-// enableCommonCondition: false または未指定の場合の型
+/**
+ * 共通設定(`common`プロパティ)を使用しない場合
+ */
 export function usePluginAtoms<
   T extends { conditions: ({ id: string } & Record<string, unknown>)[] },
 >(
@@ -157,6 +165,25 @@ export function usePluginAtoms<
     }
   );
 
+  // 📦 optics-tsを使用した際にwebpackの型推論が機能しない場合があるため、一時的に代替する関数を使用
+  // export const getCommonPropertyAtom = <T extends keyof PluginCommonConfig>(property: T) =>
+  //   focusAtom(commonConfigAtom, (s) => s.prop(property)) as PrimitiveAtom<PluginCommonConfig[T]>;
+  const getCommonPropertyAtom = <T extends keyof CommonConfig>(property: T) =>
+    atom(
+      (get) => {
+        // @ts-expect-error 改善の余地あり
+        return get(commonConfigAtom)[property];
+      },
+      (_, set, newValue: SetStateAction<CommonConfig[T]>) => {
+        set(commonConfigAtom, (common) =>
+          produce(common, (draft) => {
+            // @ts-expect-error 改善の余地あり
+            draft[property] = typeof newValue === 'function' ? newValue(draft[property]) : newValue;
+          })
+        );
+      }
+    );
+
   return {
     pluginConditionsAtom,
     hasMultipleConditionsAtom,
@@ -166,5 +193,6 @@ export function usePluginAtoms<
     selectedConditionAtom,
     getConditionPropertyAtom,
     commonConfigAtom,
+    getCommonPropertyAtom,
   };
 }
