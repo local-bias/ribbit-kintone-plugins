@@ -1,12 +1,11 @@
 import { PLUGIN_NAME } from '@/lib/constants';
 import { t } from '@/lib/i18n';
 import { createConfig, migrateConfig, restorePluginConfig } from '@/lib/plugin';
-import { PluginCommonConfig, PluginConfig } from '@/schema/plugin-config';
+import { PluginConfig } from '@/schema/plugin-config';
 import { onFileLoad, storePluginConfig } from '@konomi-app/kintone-utilities';
 import { handleLoadingEndAtom, handleLoadingStartAtom, usePluginAtoms } from '@repo/jotai';
-import { saveAs } from 'file-saver';
-import { produce } from 'immer';
-import { atom, SetStateAction } from 'jotai';
+import { saveAsJson } from '@repo/utils';
+import { atom } from 'jotai';
 import { enqueueSnackbar } from 'notistack';
 import { ChangeEvent, ReactNode } from 'react';
 import invariant from 'tiny-invariant';
@@ -24,41 +23,13 @@ export const {
   selectedConditionIdAtom,
   selectedConditionAtom,
   getConditionPropertyAtom,
+  commonConfigAtom,
+  getCommonPropertyAtom,
 } = usePluginAtoms(pluginConfigAtom, {
   enableCommonCondition: true,
 });
 
-// 📦 optics-tsを使用した際にwebpackの型推論が機能しない場合があるため、一時的に代替する関数を使用
-// export const commonConfigAtom = focusAtom(pluginConfigAtom, (s) => s.prop('common'));
-export const commonConfigAtom = atom(
-  (get) => get(pluginConfigAtom).common,
-  (_, set, newValue: SetStateAction<PluginCommonConfig>) => {
-    set(pluginConfigAtom, (current) =>
-      produce(current, (draft) => {
-        draft.common = typeof newValue === 'function' ? newValue(draft.common) : newValue;
-      })
-    );
-  }
-);
-
 export const commonSettingsShownAtom = atom((get) => get(selectedConditionIdAtom) === null);
-
-// 📦 optics-tsを使用した際にwebpackの型推論が機能しない場合があるため、一時的に代替する関数を使用
-// export const getCommonPropertyAtom = <T extends keyof PluginCommonConfig>(property: T) =>
-//   focusAtom(commonConfigAtom, (s) => s.prop(property)) as PrimitiveAtom<PluginCommonConfig[T]>;
-export const getCommonPropertyAtom = <T extends keyof PluginCommonConfig>(property: T) =>
-  atom(
-    (get) => {
-      return get(commonConfigAtom)[property];
-    },
-    (_, set, newValue: SetStateAction<PluginCommonConfig[T]>) => {
-      set(commonConfigAtom, (common) =>
-        produce(common, (draft) => {
-          draft[property] = typeof newValue === 'function' ? newValue(draft[property]) : newValue;
-        })
-      );
-    }
-  );
 
 export const isConditionDeleteButtonShownAtom = atom((get) => {
   const conditions = get(pluginConditionsAtom);
@@ -123,10 +94,7 @@ export const exportPluginConfigAtom = atom(null, (get, set) => {
   try {
     set(handleLoadingStartAtom);
     const pluginConfig = get(pluginConfigAtom);
-    const blob = new Blob([JSON.stringify(pluginConfig, null)], {
-      type: 'application/json',
-    });
-    saveAs(blob, `${PLUGIN_NAME}-config.json`);
+    saveAsJson(pluginConfig, `${PLUGIN_NAME}-config.json`);
     enqueueSnackbar(t('common.config.toast.export'), { variant: 'success' });
   } catch (error) {
     enqueueSnackbar(t('common.config.error.export'), { variant: 'error' });

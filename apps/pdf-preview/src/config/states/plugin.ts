@@ -1,11 +1,11 @@
 import { PLUGIN_NAME } from '@/lib/constants';
 import { t } from '@/lib/i18n';
 import { createConfig, migrateConfig, restorePluginConfig } from '@/lib/plugin';
-import { PluginCommonConfig, PluginConfig } from '@/schema/plugin-config';
+import { PluginConfig } from '@/schema/plugin-config';
 import { onFileLoad, storePluginConfig } from '@konomi-app/kintone-utilities';
 import { handleLoadingEndAtom, handleLoadingStartAtom, usePluginAtoms } from '@repo/jotai';
-import { produce } from 'immer';
-import { atom, SetStateAction } from 'jotai';
+import { saveAsJson } from '@repo/utils';
+import { atom } from 'jotai';
 import { enqueueSnackbar } from 'notistack';
 import { ChangeEvent, ReactNode } from 'react';
 import invariant from 'tiny-invariant';
@@ -26,23 +26,10 @@ export const {
   getConditionPropertyAtom,
   commonConfigAtom,
   isConditionIdUnselectedAtom,
+  getCommonPropertyAtom,
 } = usePluginAtoms(pluginConfigAtom, {
   enableCommonCondition: true,
 });
-
-export const getCommonPropertyAtom = <T extends keyof PluginCommonConfig>(property: T) =>
-  atom(
-    (get) => {
-      return get(commonConfigAtom)[property];
-    },
-    (_, set, newValue: SetStateAction<PluginCommonConfig[T]>) => {
-      set(commonConfigAtom, (common) =>
-        produce(common, (draft) => {
-          draft[property] = typeof newValue === 'function' ? newValue(draft[property]) : newValue;
-        })
-      );
-    }
-  );
 
 export const handlePluginConditionDeleteAtom = atom(null, (get, set) => {
   const selectedConditionId = get(selectedConditionIdAtom);
@@ -102,16 +89,7 @@ export const exportPluginConfigAtom = atom(null, (get, set) => {
   try {
     set(handleLoadingStartAtom);
     const pluginConfig = get(pluginConfigAtom);
-    const blob = new Blob([JSON.stringify(pluginConfig, null)], {
-      type: 'application/json',
-    });
-    const url = (window.URL || window.webkitURL).createObjectURL(blob);
-    const link = document.createElement('a');
-    link.download = `${PLUGIN_NAME}-config.json`;
-    link.href = url;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    saveAsJson(pluginConfig, `${PLUGIN_NAME}-config.json`);
     enqueueSnackbar(t('common.config.toast.export'), { variant: 'success' });
   } catch (error) {
     enqueueSnackbar(t('common.config.error.export'), { variant: 'error' });
