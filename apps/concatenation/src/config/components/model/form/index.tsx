@@ -1,13 +1,11 @@
-import React, { FC } from 'react';
-
 import {
+  PluginFormDescription,
   PluginFormSection,
   PluginFormTitle,
-  PluginFormDescription,
 } from '@konomi-app/kintone-utilities-react';
 import DeleteButton from './condition-delete-button';
-import TargetFieldForm from './form-target-field';
 import ConcatenationItemsForm from './form-concatenation-items';
+import TargetFieldForm from './form-target-field';
 
 export default function ConditionForm() {
   return (

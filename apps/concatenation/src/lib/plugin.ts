@@ -17,7 +17,7 @@ export const CONCATENATION_ITEM_TYPES = [
   // { label: 'アプリ名', value: 'appName' },
 ] as const;
 
-export const isPluginConditionMet = (condition: unknown): boolean => {
+export const isPluginConditionMet = (): boolean => {
   return true;
 };
 

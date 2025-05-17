@@ -46,7 +46,7 @@ const Sidebar: FC = () => {
           enqueueSnackbar(t('common.config.sidebar.context.onPaste'), { variant: 'success' });
           return null;
         },
-        onPasteValidation: (condition) => isPluginConditionMet(condition),
+        onPasteValidation: () => isPluginConditionMet(),
         onPasteValidationError: () => {
           enqueueSnackbar(t('common.config.sidebar.context.onPasteFailure'), { variant: 'error' });
         },
