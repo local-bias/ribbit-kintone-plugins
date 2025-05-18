@@ -2,8 +2,9 @@ import { GUEST_SPACE_ID } from '@/lib/global';
 import styled from '@emotion/styled';
 import { getAppSettings, kintoneAPI } from '@konomi-app/kintone-utilities';
 import { getAppId } from '@lb-ribbit/kintone-xapp';
-import { CircularProgress, MenuItem, TextField } from '@mui/material';
-import React, { ChangeEventHandler, FC } from 'react';
+import { CircularProgress, Menu, MenuItem } from '@mui/material';
+import { Paintbrush } from 'lucide-react';
+import React, { FC } from 'react';
 
 type Props = { initSettings: kintoneAPI.AppSettings; className?: string };
 
@@ -36,14 +37,20 @@ const Component: FC<Props> = ({ className, initSettings }) => {
   const [theme, setTheme] = React.useState(initSettings.theme || THEMES[0][0]);
   const timer = React.useRef(setTimeout(() => {}, 0));
 
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
   React.useEffect(() => {
     return () => {
       clearTimeout(timer.current);
     };
   }, []);
 
-  const handleChange: ChangeEventHandler<HTMLInputElement> = async (event) => {
-    const selectedTheme = event.target.value as Theme;
+  const handleChange = async (selectedTheme: Theme) => {
+    setAnchorEl(null);
 
     if (loading) {
       return;
@@ -63,7 +70,7 @@ const Component: FC<Props> = ({ className, initSettings }) => {
 
     const response = await kintone.api(kintone.api.url('/k/v1/preview/app/settings', true), 'PUT', {
       app,
-      theme: event.target.value,
+      theme: selectedTheme,
     });
 
     const dstClass = getThemeClassName(selectedTheme);
@@ -102,39 +109,58 @@ const Component: FC<Props> = ({ className, initSettings }) => {
   };
 
   return (
-    <div className={className}>
-      <TextField
-        label='テーマの変更'
-        select
-        value={theme}
-        disabled={loading}
-        onChange={handleChange}
-        className='select'
+    <>
+      <div className={className} onClick={handleClick} title='テーマカラーを変更'>
+        {loading ? (
+          <CircularProgress size={24} className='button-progress' />
+        ) : (
+          <Paintbrush className='🐸theme' />
+        )}
+      </div>
+      <Menu
+        id='basic-menu'
+        anchorEl={anchorEl}
+        open={open}
+        onClose={() => setAnchorEl(null)}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button',
+        }}
       >
         {THEMES.map((theme) => (
-          <MenuItem key={theme[0]} value={theme[0]}>
+          <MenuItem key={theme[0]} value={theme[0]} onClick={() => handleChange(theme[0])}>
             {theme[2]}
           </MenuItem>
         ))}
-      </TextField>
-      {loading && <CircularProgress size={24} className='button-progress' />}
-    </div>
+      </Menu>
+    </>
   );
 };
 
 const StyledComponent = styled(Component)`
   position: relative;
 
-  .select {
-    min-width: 120px;
+  box-sizing: border-box;
+  width: 48px;
+  height: 48px;
+  border: 1px solid #e3e7e8;
+  background-color: #f7f9fa;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  cursor: pointer;
+
+  &:hover {
+    .🐸theme {
+      color: var(--🐸primary);
+    }
   }
-  .button-progress {
-    color: #4caf50;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-top: -12px;
-    margin-left: -12px;
+
+  .🐸theme {
+    color: #a8a8a8;
+    width: 30px;
+    height: 30px;
+    transition: color 0.2s ease-in-out;
   }
 `;
 
