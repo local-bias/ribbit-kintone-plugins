@@ -1,5 +1,7 @@
 export const commonUi = {
   ja: {
+    'common.config.rootIsLoading': '画面の描画を待機しています',
+    'common.config.formIsLoading': '設定情報を取得しています',
     'common.config.sidebar.tab.common.label': '共通設定',
     'common.config.sidebar.tab.label': '設定',
     'common.config.sidebar.tab.defaultLabel': '未設定',
@@ -21,6 +23,8 @@ export const commonUi = {
       'プラグインの設定情報のエクスポートに失敗しました。プラグイン開発者にお問い合わせください。',
   },
   en: {
+    'common.config.rootIsLoading': 'Waiting for the screen to render',
+    'common.config.formIsLoading': 'Loading settings information',
     'common.config.sidebar.tab.common.label': 'Common Settings',
     'common.config.sidebar.tab.label': 'Settings',
     'common.config.sidebar.tab.defaultLabel': 'Not Set',
@@ -41,6 +45,8 @@ export const commonUi = {
       "Failed to export plugin's settings. Please contact the plugin developer.",
   },
   es: {
+    'common.config.rootIsLoading': 'Esperando a que se renderice la pantalla',
+    'common.config.formIsLoading': 'Cargando información de configuración',
     'common.config.sidebar.tab.common.label': 'Configuración común',
     'common.config.sidebar.tab.label': 'Configuración',
     'common.config.sidebar.tab.defaultLabel': 'No configurado',
@@ -62,6 +68,8 @@ export const commonUi = {
       'Error al exportar la configuración del complemento. Comuníquese con el desarrollador del complemento.',
   },
   zh: {
+    'common.config.rootIsLoading': '等待屏幕渲染',
+    'common.config.formIsLoading': '正在加载设置',
     'common.config.sidebar.tab.common.label': '通用设置',
     'common.config.sidebar.tab.label': '设置',
     'common.config.sidebar.tab.defaultLabel': '未设置',
