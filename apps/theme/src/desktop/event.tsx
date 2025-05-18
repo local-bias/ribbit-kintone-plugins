@@ -1,6 +1,5 @@
 import { manager } from '@/lib/event-manager';
-import { getAppSettings } from '@konomi-app/kintone-utilities';
-import { getAppId, getHeaderSpace } from '@lb-ribbit/kintone-xapp';
+import { getAppId, getAppSettings, getHeaderSpace } from '@konomi-app/kintone-utilities';
 import { createRoot } from 'react-dom/client';
 import App from './app';
 

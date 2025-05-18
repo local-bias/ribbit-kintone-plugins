@@ -1,7 +1,6 @@
 import { GUEST_SPACE_ID } from '@/lib/global';
 import styled from '@emotion/styled';
-import { getAppSettings, kintoneAPI } from '@konomi-app/kintone-utilities';
-import { getAppId } from '@lb-ribbit/kintone-xapp';
+import { getAppId, getAppSettings, kintoneAPI } from '@konomi-app/kintone-utilities';
 import { CircularProgress, Menu, MenuItem } from '@mui/material';
 import { Paintbrush } from 'lucide-react';
 import React, { FC } from 'react';
