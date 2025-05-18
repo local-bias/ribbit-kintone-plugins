@@ -34,7 +34,7 @@ function getThemeClassName(src: Theme) {
 
 const Component: FC<Props> = ({ className, initSettings }) => {
   const [loading, setLoading] = React.useState(false);
-  const [theme, setTheme] = React.useState(initSettings.theme || THEMES[0][0]);
+  const [, setTheme] = React.useState(initSettings.theme || THEMES[0][0]);
   const timer = React.useRef(setTimeout(() => {}, 0));
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
