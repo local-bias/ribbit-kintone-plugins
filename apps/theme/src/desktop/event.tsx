@@ -20,7 +20,7 @@ manager.add(['app.record.index.show'], async (event) => {
   const rootElement = document.createElement('span');
   rootElement.id = ROOT_ID;
   rootElement.style.display = 'inline-flex';
-  rootElement.style.padding = '0 8px';
+  rootElement.style.padding = '0 4px';
   headerSpace.append(rootElement);
 
   const root = createRoot(rootElement);
