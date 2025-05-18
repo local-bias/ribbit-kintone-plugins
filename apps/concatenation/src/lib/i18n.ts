@@ -10,6 +10,8 @@ const ui = mergeDeep(commonUi, {
   es: {},
   zh: {},
   'zh-TW': {},
+  'pt-BR': {},
+  th: {},
 } as const);
 
 export const t = useTranslations({
