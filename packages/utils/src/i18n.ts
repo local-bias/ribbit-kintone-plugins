@@ -173,3 +173,5 @@ export function useTranslations<
     return translation;
   };
 }
+
+export type TranslationFunction = ReturnType<typeof useTranslations<typeof commonUi>>;
