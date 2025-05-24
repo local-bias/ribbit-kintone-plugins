@@ -1,5 +1,4 @@
 import { PluginErrorBoundary } from '@/components/error-boundary';
-import { SwimmingIcon } from '@/components/icon-swimming';
 import { ThemeProvider } from '@/components/theme-provider';
 import { LANGUAGE } from '@/lib/global';
 import { t } from '@/lib/i18n';
@@ -13,6 +12,7 @@ import {
 import { LoaderWithLabel } from '@konomi-app/ui-react';
 import { URL_BANNER, URL_PROMOTION } from '@repo/constants';
 import { store } from '@repo/jotai';
+import { SwimmingIcon } from '@repo/ui';
 import { Provider } from 'jotai';
 import { SnackbarProvider } from 'notistack';
 import config from 'plugin.config.mjs';
