@@ -5,7 +5,12 @@ import { atomWithDefault, RESET } from 'jotai/utils';
 import { type SetStateAction } from 'react';
 
 /**
- * 共通設定(`common`プロパティ)を使用する場合
+ * プラグインの状態を管理するatomのコレクションを提供します。
+ * 共通設定(`common`プロパティ)を使用する場合のオーバーロードです。
+ *
+ * @param pluginConfigAtom プラグイン設定のベースとなるatom
+ * @param options 設定オプション。`enableCommonCondition: true`を指定すると共通設定が有効になります
+ * @returns プラグイン設定を操作するためのatomのコレクション
  */
 export function usePluginAtoms<
   T extends {
@@ -16,27 +21,64 @@ export function usePluginAtoms<
   pluginConfigAtom: PrimitiveAtom<T>,
   options: { enableCommonCondition: true }
 ): {
+  /**
+   * プラグインの条件リストを管理するatom
+   */
   pluginConditionsAtom: PrimitiveAtom<T['conditions']>;
+  /**
+   * 複数の条件が存在するかどうかを示すatom
+   */
   hasMultipleConditionsAtom: PrimitiveAtom<boolean>;
+  /**
+   * 条件の数を提供するatom
+   */
   conditionsLengthAtom: PrimitiveAtom<number>;
+  /**
+   * 現在選択されている条件のIDを管理するatom
+   * nullの場合は共通設定が選択されていることを意味します
+   */
   selectedConditionIdAtom: WritableAtom<
     string | null,
     [typeof RESET | SetStateAction<string | null>],
     void
   >;
+  /**
+   * 条件が選択されていないかどうか（共通設定が選択されているか）を示すatom
+   */
   isConditionIdUnselectedAtom: PrimitiveAtom<boolean>;
+  /**
+   * 現在選択されている条件の内容を管理するatom
+   */
   selectedConditionAtom: PrimitiveAtom<T['conditions'][number]>;
+  /**
+   * 選択中の条件の特定プロパティにアクセスするためのatom生成関数
+   * @param property アクセスしたいプロパティのキー
+   * @returns 指定されたプロパティにフォーカスしたatom
+   */
   getConditionPropertyAtom: <F extends keyof T['conditions'][number]>(
     property: F
   ) => PrimitiveAtom<T['conditions'][number][F]>;
+  /**
+   * 共通設定を管理するatom
+   */
   commonConfigAtom: PrimitiveAtom<T['common']>;
+  /**
+   * 共通設定の特定プロパティにアクセスするためのatom生成関数
+   * @param property アクセスしたいプロパティのキー
+   * @returns 指定されたプロパティにフォーカスしたatom
+   */
   getCommonPropertyAtom: <K extends keyof T['common']>(
     property: K
   ) => WritableAtom<T['common'][K], [newValue: SetStateAction<T['common'][K]>], void>;
 };
 
 /**
- * 共通設定(`common`プロパティ)を使用しない場合
+ * プラグインの状態を管理するatomのコレクションを提供します。
+ * 共通設定(`common`プロパティ)を使用しない場合のオーバーロードです。
+ *
+ * @param pluginConfigAtom プラグイン設定のベースとなるatom
+ * @param options 設定オプション
+ * @returns プラグイン設定を操作するためのatomのコレクション
  */
 export function usePluginAtoms<
   T extends { conditions: ({ id: string } & Record<string, unknown>)[] },
@@ -44,21 +86,60 @@ export function usePluginAtoms<
   pluginConfigAtom: PrimitiveAtom<T>,
   options?: { enableCommonCondition?: false }
 ): {
+  /**
+   * プラグインの条件リストを管理するatom
+   */
   pluginConditionsAtom: PrimitiveAtom<T['conditions']>;
+  /**
+   * 複数の条件が存在するかどうかを示すatom
+   */
   hasMultipleConditionsAtom: PrimitiveAtom<boolean>;
+  /**
+   * 条件の数を提供するatom
+   */
   conditionsLengthAtom: PrimitiveAtom<number>;
+  /**
+   * 現在選択されている条件のIDを管理するatom
+   */
   selectedConditionIdAtom: WritableAtom<
     string | null,
     [typeof RESET | SetStateAction<string | null>],
     void
   >;
+  /**
+   * 条件が選択されていないかどうかを示すatom
+   */
   isConditionIdUnselectedAtom: PrimitiveAtom<boolean>;
+  /**
+   * 現在選択されている条件の内容を管理するatom
+   */
   selectedConditionAtom: PrimitiveAtom<T['conditions'][number]>;
+  /**
+   * 選択中の条件の特定プロパティにアクセスするためのatom生成関数
+   * @param property アクセスしたいプロパティのキー
+   * @returns 指定されたプロパティにフォーカスしたatom
+   */
   getConditionPropertyAtom: <F extends keyof T['conditions'][number]>(
     property: F
   ) => PrimitiveAtom<T['conditions'][number][F]>;
 };
 
+/**
+ * プラグインの状態を管理するatomのコレクションを提供します。
+ * 共通設定の使用有無をオプションで指定できる実装です。
+ *
+ * @param pluginConfigAtom プラグイン設定のベースとなるatom
+ * @param options 設定オプション。`enableCommonCondition`を指定すると共通設定が有効になります
+ * @returns プラグイン設定を操作するためのatomのコレクション
+ *
+ * @example
+ * // 共通設定を使用する場合
+ * const { commonConfigAtom, selectedConditionAtom } = usePluginAtoms(configAtom, { enableCommonCondition: true });
+ *
+ * @example
+ * // 共通設定を使用しない場合
+ * const { selectedConditionAtom } = usePluginAtoms(configAtom);
+ */
 export function usePluginAtoms<
   T extends {
     conditions: ({ id: string } & Record<string, unknown>)[];
