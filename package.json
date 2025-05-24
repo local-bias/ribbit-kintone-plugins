@@ -17,6 +17,7 @@
   },
   "pnpm": {
     "overrides": {
+      "@konomi-app/kintone-utilities-jotai": "^1.2.3",
       "@mui/material": "^7.1.0",
       "jotai": "^2.12.4",
       "react": "^19.1.0",
