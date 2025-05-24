@@ -1,6 +1,6 @@
 import { produce } from 'immer';
-import { WritableAtom } from 'jotai';
-import { atom, type PrimitiveAtom } from 'jotai';
+import { atom, WritableAtom, type PrimitiveAtom } from 'jotai';
+import { focusAtom } from 'jotai-optics';
 import { atomWithDefault, RESET } from 'jotai/utils';
 import { type SetStateAction } from 'react';
 
@@ -75,19 +75,8 @@ export function usePluginAtoms<
 
   const { enableCommonCondition = false } = options || {};
 
-  // 📦 optics-tsを使用した際にwebpackの型推論が機能しない場合があるため、一時的に代替する関数を使用
-  // const pluginConditionsAtom = focusAtom(pluginConfigAtom, (s) => s.prop('conditions'));
-  const pluginConditionsAtom = atom(
-    (get) => get(pluginConfigAtom).conditions as Condition[],
-    (_, set, newValue: SetStateAction<Condition[]>) => {
-      set(pluginConfigAtom, (current) => {
-        if (typeof newValue === 'function') {
-          return { ...current, conditions: newValue(current.conditions) };
-        }
-        return { ...current, conditions: newValue };
-      });
-    }
-  );
+  const pluginConditionsAtom: WritableAtom<Condition[], [SetStateAction<Condition[]>], void> =
+    focusAtom(pluginConfigAtom, (s) => s.prop('conditions'));
 
   const hasMultipleConditionsAtom = atom((get) => {
     const conditions = get(pluginConditionsAtom);
@@ -120,23 +109,8 @@ export function usePluginAtoms<
     }
   );
 
-  // 📦 optics-tsを使用した際にwebpackの型推論が機能しない場合があるため、一時的に代替する関数を使用
-  // const getConditionPropertyAtom = <T extends keyof PluginCondition>(property: T) =>
-  //   focusAtom(selectedConditionAtom, (s) => s.prop(property)) as PrimitiveAtom<PluginCondition[T]>;
   const getConditionPropertyAtom = <F extends keyof Condition>(property: F) =>
-    atom(
-      (get) => {
-        return get(selectedConditionAtom)[property];
-      },
-      (_, set, newValue: SetStateAction<Condition[F]>) => {
-        set(selectedConditionAtom, (condition) =>
-          produce(condition, (draft) => {
-            //@ts-ignore
-            draft[property] = typeof newValue === 'function' ? newValue(draft[property]) : newValue;
-          })
-        );
-      }
-    );
+    focusAtom(selectedConditionAtom, (s) => s.prop(property)) as PrimitiveAtom<Condition[F]>;
 
   if (!enableCommonCondition) {
     return {
@@ -152,37 +126,10 @@ export function usePluginAtoms<
 
   type CommonConfig = T['common'];
 
-  // 📦 optics-tsを使用した際にwebpackの型推論が機能しない場合があるため、一時的に代替する関数を使用
-  // const commonConfigAtom = focusAtom(pluginConfigAtom, (s) => s.prop('common'));
-  const commonConfigAtom = atom(
-    (get) => get(pluginConfigAtom).common as CommonConfig,
-    (_, set, newValue: SetStateAction<CommonConfig>) => {
-      set(pluginConfigAtom, (current) =>
-        produce(current, (draft) => {
-          draft.common = typeof newValue === 'function' ? newValue(draft.common) : newValue;
-        })
-      );
-    }
-  );
+  const commonConfigAtom = focusAtom(pluginConfigAtom, (s) => s.prop('common'));
 
-  // 📦 optics-tsを使用した際にwebpackの型推論が機能しない場合があるため、一時的に代替する関数を使用
-  // export const getCommonPropertyAtom = <T extends keyof PluginCommonConfig>(property: T) =>
-  //   focusAtom(commonConfigAtom, (s) => s.prop(property)) as PrimitiveAtom<PluginCommonConfig[T]>;
-  const getCommonPropertyAtom = <T extends keyof CommonConfig>(property: T) =>
-    atom(
-      (get) => {
-        // @ts-expect-error 改善の余地あり
-        return get(commonConfigAtom)[property];
-      },
-      (_, set, newValue: SetStateAction<CommonConfig[T]>) => {
-        set(commonConfigAtom, (common) =>
-          produce(common, (draft) => {
-            // @ts-expect-error 改善の余地あり
-            draft[property] = typeof newValue === 'function' ? newValue(draft[property]) : newValue;
-          })
-        );
-      }
-    );
+  const getCommonPropertyAtom = <CF extends keyof CommonConfig>(property: CF) =>
+    focusAtom(commonConfigAtom, (s) => s.prop(property)) as PrimitiveAtom<CommonConfig[CF]>;
 
   return {
     pluginConditionsAtom,
