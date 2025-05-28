@@ -6,8 +6,8 @@ import { eagerAtom } from 'jotai-eager';
 const currentAppFormFieldsAtom = atom((get) => {
   return get(
     appFormFieldsAtom({
-      appId: get(currentAppIdAtom),
-      spaceId: GUEST_SPACE_ID,
+      app: get(currentAppIdAtom),
+      guestSpaceId: GUEST_SPACE_ID,
       preview: true,
     })
   );

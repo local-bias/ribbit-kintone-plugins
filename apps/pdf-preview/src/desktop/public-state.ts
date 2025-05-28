@@ -13,7 +13,7 @@ export const validPluginConditionsAtom = atom((get) =>
 );
 
 export const currentAppFormFieldsAtom = atom((get) => {
-  return get(appFormFieldsAtom({ appId: get(currentAppIdAtom), spaceId: GUEST_SPACE_ID }));
+  return get(appFormFieldsAtom({ app: get(currentAppIdAtom), guestSpaceId: GUEST_SPACE_ID }));
 });
 
 export const targetRecordAtom = atom<kintoneAPI.RecordData | null>(null);

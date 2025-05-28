@@ -8,8 +8,8 @@ import { derive } from 'jotai-derive';
 export const currentAppFormFieldsAtom = atom((get) => {
   return get(
     appFormFieldsAtom({
-      appId: get(currentAppIdAtom),
-      spaceId: GUEST_SPACE_ID,
+      app: get(currentAppIdAtom),
+      guestSpaceId: GUEST_SPACE_ID,
       preview: true,
     })
   );
@@ -27,8 +27,8 @@ export const currentAppFileFieldsAtom = derive(
 export const currentAppFormLayoutAtom = atom((get) => {
   return get(
     appFormLayoutState({
-      appId: get(currentAppIdAtom),
-      spaceId: GUEST_SPACE_ID,
+      app: get(currentAppIdAtom),
+      guestSpaceId: GUEST_SPACE_ID,
       preview: true,
     })
   );

@@ -5,6 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
+  '@konomi-app/kintone-utilities-jotai': ^1.2.3
   '@mui/material': ^7.1.0
   jotai: ^2.12.4
   react: ^19.1.0
@@ -42,8 +43,8 @@ importers:
         specifier: ^5.13.0
         version: 5.13.0
       '@konomi-app/kintone-utilities-jotai':
-        specifier: ^1.1.1
-        version: 1.1.1(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)
+        specifier: ^1.2.3
+        version: 1.2.3(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)
       '@konomi-app/kintone-utilities-react':
         specifier: ^2.1.0
         version: 2.1.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@types/react-dom@19.1.5(@types/react@19.1.4))(@types/react@19.1.4)
@@ -103,7 +104,7 @@ importers:
         version: 6.0.0(react@19.1.0)
       remeda:
         specifier: ^2.21.6
-        version: 2.21.6
+        version: 2.22.1
       tiny-invariant:
         specifier: ^1.3.3
         version: 1.3.3
@@ -113,7 +114,7 @@ importers:
         version: 8.1.2(@types/eslint@9.6.1)(jiti@2.4.2)(typescript@5.8.3)
       '@konomi-app/k2':
         specifier: ^1.10.0
-        version: 1.10.0(jiti@2.4.2)(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3))(typescript@5.8.3)(yaml@2.8.0)
+        version: 1.10.0(jiti@2.4.2)(ts-node@10.9.2(@types/node@22.15.21)(typescript@5.8.3))(typescript@5.8.3)(yaml@2.8.0)
       '@konomi-app/prettier-config':
         specifier: ^1.1.2
         version: 1.1.2
@@ -131,7 +132,7 @@ importers:
         version: 3.6.2
       '@types/node':
         specifier: ^22.15.18
-        version: 22.15.18
+        version: 22.15.21
       '@types/react':
         specifier: ^19.1.4
         version: 19.1.4
@@ -143,6 +144,163 @@ importers:
         version: 9.1.2
       dotenv:
         specifier: 16.5.0
+        version: 16.5.0
+      tailwindcss:
+        specifier: ^4.1.7
+        version: 4.1.7
+      ts-loader:
+        specifier: ^9.5.2
+        version: 9.5.2(typescript@5.8.3)(webpack@5.99.8)
+      tw-animate-css:
+        specifier: ^1.3.0
+        version: 1.3.0
+      typescript:
+        specifier: ^5.8.3
+        version: 5.8.3
+
+  apps/date:
+    dependencies:
+      '@emotion/react':
+        specifier: ^11.14.0
+        version: 11.14.0(@types/react@19.1.4)(react@19.1.0)
+      '@emotion/styled':
+        specifier: ^11.14.0
+        version: 11.14.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)(react@19.1.0)
+      '@konomi-app/kintone-utilities':
+        specifier: ^5.13.0
+        version: 5.13.0
+      '@konomi-app/kintone-utilities-jotai':
+        specifier: ^1.2.3
+        version: 1.2.3(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)
+      '@konomi-app/kintone-utilities-react':
+        specifier: ^2.1.0
+        version: 2.1.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@types/react-dom@19.1.5(@types/react@19.1.4))(@types/react@19.1.4)
+      '@konomi-app/ui':
+        specifier: ^2.3.0
+        version: 2.3.0
+      '@konomi-app/ui-react':
+        specifier: ^2.0.0
+        version: 2.0.0(@types/react@19.1.4)
+      '@mui/icons-material':
+        specifier: ^7.1.0
+        version: 7.1.0(@mui/material@7.1.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@types/react@19.1.4)(react@19.1.0)
+      '@mui/material':
+        specifier: ^7.1.0
+        version: 7.1.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@radix-ui/react-alert-dialog':
+        specifier: ^1.1.13
+        version: 1.1.13(@types/react-dom@19.1.5(@types/react@19.1.4))(@types/react@19.1.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@radix-ui/react-dialog':
+        specifier: ^1.1.13
+        version: 1.1.13(@types/react-dom@19.1.5(@types/react@19.1.4))(@types/react@19.1.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@radix-ui/react-slot':
+        specifier: ^1.2.2
+        version: 1.2.3(@types/react@19.1.4)(react@19.1.0)
+      '@repo/constants':
+        specifier: workspace:*
+        version: link:../../packages/constants
+      '@repo/jotai':
+        specifier: workspace:*
+        version: link:../../packages/jotai
+      '@repo/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      '@repo/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
+      class-variance-authority:
+        specifier: ^0.7.1
+        version: 0.7.1
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
+      immer:
+        specifier: ^10.1.1
+        version: 10.1.1
+      jotai:
+        specifier: ^2.12.4
+        version: 2.12.4(@types/react@19.1.4)(react@19.1.0)
+      jotai-derive:
+        specifier: ^0.1.3
+        version: 0.1.3(jotai@2.12.4(@types/react@19.1.4)(react@19.1.0))
+      jotai-eager:
+        specifier: ^0.2.1
+        version: 0.2.2(jotai@2.12.4(@types/react@19.1.4)(react@19.1.0))
+      lucide-react:
+        specifier: ^0.511.0
+        version: 0.511.0(react@19.1.0)
+      luxon:
+        specifier: ^3.6.1
+        version: 3.6.1
+      nanoid:
+        specifier: ^5.1.5
+        version: 5.1.5
+      notistack:
+        specifier: ^3.0.2
+        version: 3.0.2(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      react:
+        specifier: ^19.1.0
+        version: 19.1.0
+      react-dom:
+        specifier: ^19.1.0
+        version: 19.1.0(react@19.1.0)
+      react-error-boundary:
+        specifier: ^6.0.0
+        version: 6.0.0(react@19.1.0)
+      recoil:
+        specifier: ^0.7.7
+        version: 0.7.7(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      remeda:
+        specifier: ^2.21.8
+        version: 2.22.1
+      sweetalert2:
+        specifier: ^11.21.2
+        version: 11.22.0
+      tailwind-merge:
+        specifier: ^3.3.0
+        version: 3.3.0
+      tailwindcss-animate:
+        specifier: ^1.0.7
+        version: 1.0.7(tailwindcss@4.1.7)
+      tiny-invariant:
+        specifier: ^1.3.3
+        version: 1.3.3
+      zod:
+        specifier: ^3.25.7
+        version: 3.25.28
+    devDependencies:
+      '@kintone/dts-gen':
+        specifier: ^8.1.2
+        version: 8.1.2(@types/eslint@9.6.1)(jiti@2.4.2)(typescript@5.8.3)
+      '@konomi-app/k2':
+        specifier: ^1.10.0
+        version: 1.10.0(jiti@2.4.2)(ts-node@10.9.2(@types/node@22.15.21)(typescript@5.8.3))(typescript@5.8.3)(yaml@2.8.0)
+      '@repo/eslint-config':
+        specifier: workspace:*
+        version: link:../../packages/eslint-config
+      '@repo/tailwindcss':
+        specifier: workspace:*
+        version: link:../../packages/tailwindcss
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
+      '@types/luxon':
+        specifier: ^3.6.2
+        version: 3.6.2
+      '@types/node':
+        specifier: ^22.15.19
+        version: 22.15.21
+      '@types/react':
+        specifier: ^19.1.4
+        version: 19.1.4
+      '@types/react-dom':
+        specifier: ^19.1.5
+        version: 19.1.5(@types/react@19.1.4)
+      concurrently:
+        specifier: ^9.1.2
+        version: 9.1.2
+      dotenv:
+        specifier: ^16.5.0
         version: 16.5.0
       tailwindcss:
         specifier: ^4.1.7
@@ -172,8 +330,8 @@ importers:
         specifier: ^5.13.0
         version: 5.13.0
       '@konomi-app/kintone-utilities-jotai':
-        specifier: ^1.1.0
-        version: 1.1.1(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)
+        specifier: ^1.2.3
+        version: 1.2.3(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)
       '@konomi-app/kintone-utilities-react':
         specifier: ^2.1.0
         version: 2.1.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@types/react-dom@19.1.5(@types/react@19.1.4))(@types/react@19.1.4)
@@ -233,20 +391,20 @@ importers:
         version: 5.0.0(react@19.1.0)
       remeda:
         specifier: ^2.21.3
-        version: 2.21.6
+        version: 2.22.1
       tiny-invariant:
         specifier: ^1.3.3
         version: 1.3.3
       zod:
         specifier: ^3.24.3
-        version: 3.24.4
+        version: 3.25.28
     devDependencies:
       '@kintone/dts-gen':
         specifier: 8.1.1
         version: 8.1.1(@types/eslint@9.6.1)(jiti@2.4.2)(typescript@5.8.3)
       '@konomi-app/k2':
         specifier: ^1.10.0
-        version: 1.10.0(jiti@2.4.2)(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3))(typescript@5.8.3)(yaml@2.8.0)
+        version: 1.10.0(jiti@2.4.2)(ts-node@10.9.2(@types/node@22.15.21)(typescript@5.8.3))(typescript@5.8.3)(yaml@2.8.0)
       '@repo/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
@@ -264,7 +422,7 @@ importers:
         version: 3.6.2
       '@types/node':
         specifier: ^22.15.2
-        version: 22.15.18
+        version: 22.15.21
       '@types/react':
         specifier: ^19.1.4
         version: 19.1.4
@@ -314,8 +472,8 @@ importers:
         specifier: ^5.13.0
         version: 5.13.0
       '@konomi-app/kintone-utilities-jotai':
-        specifier: ^1.1.1
-        version: 1.1.1(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)
+        specifier: ^1.2.3
+        version: 1.2.3(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)
       '@konomi-app/kintone-utilities-react':
         specifier: ^2.1.0
         version: 2.1.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@types/react-dom@19.1.5(@types/react@19.1.4))(@types/react@19.1.4)
@@ -345,7 +503,7 @@ importers:
         version: 1.2.8(@types/react-dom@19.1.5(@types/react@19.1.4))(@types/react@19.1.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-slot':
         specifier: ^1.2.0
-        version: 1.2.2(@types/react@19.1.4)(react@19.1.0)
+        version: 1.2.3(@types/react@19.1.4)(react@19.1.0)
       '@repo/constants':
         specifier: workspace:*
         version: link:../../packages/constants
@@ -408,20 +566,20 @@ importers:
         version: 5.0.0(react@19.1.0)
       remeda:
         specifier: ^2.21.3
-        version: 2.21.6
+        version: 2.22.1
       tiny-invariant:
         specifier: ^1.3.3
         version: 1.3.3
       zod:
         specifier: ^3.24.3
-        version: 3.24.4
+        version: 3.25.28
     devDependencies:
       '@kintone/dts-gen':
         specifier: ^8.1.1
         version: 8.1.2(@types/eslint@9.6.1)(jiti@2.4.2)(typescript@5.8.3)
       '@konomi-app/k2':
         specifier: ^1.10.0
-        version: 1.10.0(jiti@2.4.2)(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3))(typescript@5.8.3)(yaml@2.8.0)
+        version: 1.10.0(jiti@2.4.2)(ts-node@10.9.2(@types/node@22.15.21)(typescript@5.8.3))(typescript@5.8.3)(yaml@2.8.0)
       '@repo/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
@@ -442,7 +600,7 @@ importers:
         version: 3.6.2
       '@types/node':
         specifier: ^22.15.3
-        version: 22.15.18
+        version: 22.15.21
       '@types/react':
         specifier: ^19.1.4
         version: 19.1.4
@@ -466,7 +624,7 @@ importers:
         version: 4.1.7
       ts-loader:
         specifier: ^9.5.2
-        version: 9.5.2(typescript@5.8.3)(webpack@5.99.8(esbuild@0.25.4))
+        version: 9.5.2(typescript@5.8.3)(webpack@5.99.8)
       tw-animate-css:
         specifier: ^1.2.8
         version: 1.3.0
@@ -498,8 +656,8 @@ importers:
         specifier: ^5.12.1
         version: 5.13.0
       '@konomi-app/kintone-utilities-jotai':
-        specifier: ^1.0.2
-        version: 1.1.1(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)
+        specifier: ^1.2.3
+        version: 1.2.3(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)
       '@konomi-app/kintone-utilities-react':
         specifier: ^2.1.0
         version: 2.1.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@types/react-dom@19.1.5(@types/react@19.1.4))(@types/react@19.1.4)
@@ -529,7 +687,7 @@ importers:
         version: 1.2.8(@types/react-dom@19.1.5(@types/react@19.1.4))(@types/react@19.1.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-slot':
         specifier: ^1.1.2
-        version: 1.2.2(@types/react@19.1.4)(react@19.1.0)
+        version: 1.2.3(@types/react@19.1.4)(react@19.1.0)
       '@repo/constants':
         specifier: workspace:*
         version: link:../../packages/constants
@@ -586,7 +744,7 @@ importers:
         version: 5.0.0(react@19.1.0)
       remeda:
         specifier: ^2.21.3
-        version: 2.21.6
+        version: 2.22.1
       tailwind-merge:
         specifier: ^3.0.2
         version: 3.3.0
@@ -598,14 +756,14 @@ importers:
         version: 1.3.3
       zod:
         specifier: ^3.24.2
-        version: 3.24.4
+        version: 3.25.28
     devDependencies:
       '@kintone/dts-gen':
         specifier: ^8.1.1
         version: 8.1.2(@types/eslint@9.6.1)(jiti@2.4.2)(typescript@5.8.3)
       '@konomi-app/k2':
         specifier: ^1.10.0
-        version: 1.10.0(jiti@2.4.2)(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3))(typescript@5.8.3)(yaml@2.8.0)
+        version: 1.10.0(jiti@2.4.2)(ts-node@10.9.2(@types/node@22.15.21)(typescript@5.8.3))(typescript@5.8.3)(yaml@2.8.0)
       '@repo/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
@@ -620,7 +778,7 @@ importers:
         version: 3.6.2
       '@types/node':
         specifier: ^22.15.3
-        version: 22.15.18
+        version: 22.15.21
       '@types/react':
         specifier: ^19.1.4
         version: 19.1.4
@@ -728,20 +886,20 @@ importers:
         version: 0.7.7(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       remeda:
         specifier: ^2.21.6
-        version: 2.21.6
+        version: 2.22.1
       tiny-invariant:
         specifier: ^1.3.3
         version: 1.3.3
       zod:
         specifier: ^3.24.4
-        version: 3.24.4
+        version: 3.25.28
     devDependencies:
       '@kintone/dts-gen':
         specifier: 8.1.2
         version: 8.1.2(@types/eslint@9.6.1)(jiti@2.4.2)(typescript@5.8.3)
       '@konomi-app/k2':
         specifier: ^1.10.0
-        version: 1.10.0(jiti@2.4.2)(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3))(typescript@5.8.3)(yaml@2.8.0)
+        version: 1.10.0(jiti@2.4.2)(ts-node@10.9.2(@types/node@22.15.21)(typescript@5.8.3))(typescript@5.8.3)(yaml@2.8.0)
       '@repo/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
@@ -756,7 +914,7 @@ importers:
         version: 3.6.2
       '@types/node':
         specifier: ^22.15.18
-        version: 22.15.18
+        version: 22.15.21
       '@types/react':
         specifier: ^19.1.4
         version: 19.1.4
@@ -809,8 +967,8 @@ importers:
         specifier: ^5.12.1
         version: 5.13.0
       '@konomi-app/kintone-utilities-jotai':
-        specifier: ^1.0.2
-        version: 1.1.1(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)
+        specifier: ^1.2.3
+        version: 1.2.3(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)
       '@konomi-app/kintone-utilities-react':
         specifier: ^2.1.0
         version: 2.1.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@types/react-dom@19.1.5(@types/react@19.1.4))(@types/react@19.1.4)
@@ -840,7 +998,7 @@ importers:
         version: 1.2.8(@types/react-dom@19.1.5(@types/react@19.1.4))(@types/react@19.1.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-slot':
         specifier: ^1.1.2
-        version: 1.2.2(@types/react@19.1.4)(react@19.1.0)
+        version: 1.2.3(@types/react@19.1.4)(react@19.1.0)
       '@repo/constants':
         specifier: workspace:*
         version: link:../../packages/constants
@@ -897,20 +1055,20 @@ importers:
         version: 5.0.0(react@19.1.0)
       remeda:
         specifier: ^2.21.3
-        version: 2.21.6
+        version: 2.22.1
       tiny-invariant:
         specifier: ^1.3.3
         version: 1.3.3
       zod:
         specifier: ^3.24.2
-        version: 3.24.4
+        version: 3.25.28
     devDependencies:
       '@kintone/dts-gen':
         specifier: ^8.1.1
         version: 8.1.2(@types/eslint@9.6.1)(jiti@2.4.2)(typescript@5.8.3)
       '@konomi-app/k2':
         specifier: ^1.10.0
-        version: 1.10.0(jiti@2.4.2)(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3))(typescript@5.8.3)(yaml@2.8.0)
+        version: 1.10.0(jiti@2.4.2)(ts-node@10.9.2(@types/node@22.15.21)(typescript@5.8.3))(typescript@5.8.3)(yaml@2.8.0)
       '@repo/eslint-config':
         specifier: workspace:*
         version: link:../../packages/eslint-config
@@ -928,7 +1086,7 @@ importers:
         version: 3.6.2
       '@types/node':
         specifier: ^22.15.3
-        version: 22.15.18
+        version: 22.15.21
       '@types/react':
         specifier: ^19.1.4
         version: 19.1.4
@@ -1022,21 +1180,33 @@ importers:
       '@mui/material':
         specifier: ^7.1.0
         version: 7.1.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@repo/utils':
+        specifier: workspace:*
+        version: link:../utils
       immer:
         specifier: ^10.1.1
         version: 10.1.1
       jotai:
         specifier: ^2.12.4
         version: 2.12.4(@types/react@19.1.4)(react@19.1.0)
+      jotai-optics:
+        specifier: ^0.4.0
+        version: 0.4.0(jotai@2.12.4(@types/react@19.1.4)(react@19.1.0))(optics-ts@2.4.1)
       notistack:
         specifier: ^3.0.2
         version: 3.0.2(csstype@3.1.3)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      optics-ts:
+        specifier: ^2.4.1
+        version: 2.4.1
       react:
         specifier: ^19.1.0
         version: 19.1.0
       react-dom:
         specifier: ^19.1.0
         version: 19.1.0(react@19.1.0)
+      remeda:
+        specifier: ^2.22.3
+        version: 2.22.3
     devDependencies:
       '@repo/eslint-config':
         specifier: workspace:*
@@ -1058,7 +1228,7 @@ importers:
     devDependencies:
       '@konomi-app/k2':
         specifier: ^1.10.0
-        version: 1.10.0(jiti@2.4.2)(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3))(typescript@5.8.3)(yaml@2.8.0)
+        version: 1.10.0(jiti@2.4.2)(ts-node@10.9.2(@types/node@22.15.21)(typescript@5.8.3))(typescript@5.8.3)(yaml@2.8.0)
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -1090,7 +1260,7 @@ importers:
         version: 11.14.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)(react@19.1.0)
       '@konomi-app/k2':
         specifier: ^1.10.0
-        version: 1.10.0(jiti@2.4.2)(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3))(typescript@5.8.3)(yaml@2.8.0)
+        version: 1.10.0(jiti@2.4.2)(ts-node@10.9.2(@types/node@22.15.21)(typescript@5.8.3))(typescript@5.8.3)(yaml@2.8.0)
       '@konomi-app/ui-react':
         specifier: ^2.0.0
         version: 2.0.0(@types/react@19.1.4)
@@ -1127,10 +1297,10 @@ importers:
         version: link:../typescript-config
       '@turbo/gen':
         specifier: ^2.5.3
-        version: 2.5.3(@types/node@22.15.18)(typescript@5.8.3)
+        version: 2.5.3(@types/node@22.15.21)(typescript@5.8.3)
       '@types/node':
         specifier: ^22.15.17
-        version: 22.15.18
+        version: 22.15.21
       '@types/react':
         specifier: ^19.1.4
         version: 19.1.4
@@ -1625,8 +1795,8 @@ packages:
     resolution: {integrity: sha512-C4KPuqTPTq53nxyJjycMhD1FDE5FTrB2AOYBImQC7H1Nj6tDYMI5AB9sEcIkFR1IG8rol7o/oNRHEsr609FAOw==}
     hasBin: true
 
-  '@konomi-app/kintone-utilities-jotai@1.1.1':
-    resolution: {integrity: sha512-E3K2kjEQ8e95SzVG/4JA1bBgjnqJMGeTly6Eh+xiyIZWa4y8JphyBdn88Rn+QawSyq7HlBvPqCVTihvSj523eg==}
+  '@konomi-app/kintone-utilities-jotai@1.2.3':
+    resolution: {integrity: sha512-GhvVnl4YvxShhbhx1eYAZTzbxOc29I62oboRyG3aTlSyFspVShPafcUpjMnlzPZq30+PbmeBxCKoWqo6dUYvJA==}
 
   '@konomi-app/kintone-utilities-react@2.1.0':
     resolution: {integrity: sha512-psK8a9Inec40DOEvcsLXmE5kHTHMRnyqh4WFOHcBbM4sDK31HuccUMaBvd1wWGVtYkK2AyWC3XWt6IHzDeT+pQ==}
@@ -2123,6 +2293,15 @@ packages:
       '@types/react':
         optional: true
 
+  '@radix-ui/react-slot@1.2.3':
+    resolution: {integrity: sha512-aeNmHnBxbi2St0au6VBVC7JXFlhLlOnvIIlePNniyUNAClzmtAUEY8/pBiK3iHjufOlwA+c20/8jngo7xcrg8A==}
+    peerDependencies:
+      '@types/react': ^19.1.4
+      react: ^19.1.0
+    peerDependenciesMeta:
+      '@types/react':
+        optional: true
+
   '@radix-ui/react-use-callback-ref@1.1.1':
     resolution: {integrity: sha512-FkBMwD+qbGQeMu1cOHnuGB6x4yzPjho8ap5WtbEJ26umhgqVXbhekKUQO+hZEL1vU92a3wHwdp0HAcqAUF5iDg==}
     peerDependencies:
@@ -2450,8 +2629,8 @@ packages:
   '@types/minimist@1.2.5':
     resolution: {integrity: sha512-hov8bUuiLiyFPGyFPE1lwWhmzYbirOXQNNo40+y3zow8aFVTeyn3VWL0VFFfdNddA8S4Vf0Tc062rzyNr7Paag==}
 
-  '@types/node@22.15.18':
-    resolution: {integrity: sha512-v1DKRfUdyW+jJhZNEI1PYy29S2YRxMV5AOO/x/SjKmW0acCIOqmbj6Haf9eHAhsPmrhlHSxEhv/1WszcLWV4cg==}
+  '@types/node@22.15.21':
+    resolution: {integrity: sha512-EV/37Td6c+MgKAbkcLG6vqZ2zEYHD7bvSrzqqs2RIhbA6w3x+Dqz8MZM3sP6kGTeLrdoOgKZe+Xja7tUB2DNkQ==}
 
   '@types/normalize-package-data@2.4.4':
     resolution: {integrity: sha512-37i+OaWTh9qeK4LSHPsyRC7NahnGotNuZvjLSgcPzblpHB3rrCJxAOgI5gCdKm7coonsaX1Of0ILiTcnZjbfxA==}
@@ -4185,6 +4364,12 @@ packages:
 
   jotai-derive@0.1.3:
     resolution: {integrity: sha512-0jRoDpQ0prXxGRxh1rOqaM8Lkku+LohCRVES1cKtlWq7d80HviIDtCdWnP2QmQtUtyRtRW5JbYB4V7tODvnLFg==}
+    deprecated: This package has been moved to https://www.npmjs.com/package/jotai-eager
+    peerDependencies:
+      jotai: ^2.12.4
+
+  jotai-eager@0.2.2:
+    resolution: {integrity: sha512-yx0GlrC0bK/dzQ1A1lBJSwKLSNhFnFVEIZb7lnchSxW7UNLe8sgYNzJzxGaQ/Ec/XKy7KwVkYXO9qZz2EaWkOw==}
     peerDependencies:
       jotai: ^2.12.4
 
@@ -5278,8 +5463,11 @@ packages:
     resolution: {integrity: sha512-G08Dxvm4iDN3MLM0EsP62EDV9IuhXPR6blNz6Utcp7zyV3tr4HVNINt6MpaRWbxoOHT3Q7YN2P+jaHX8vUbgog==}
     engines: {node: '>= 0.10'}
 
-  remeda@2.21.6:
-    resolution: {integrity: sha512-W8G06/lTo6RzCBuMnjzsAi5UwN21+/Ff29HvpnBecvERP5qGw2dOdiXsgzv4jWT2n02mF+HMsmeoOjm5VRK3lw==}
+  remeda@2.22.1:
+    resolution: {integrity: sha512-7bcggqt1D7sEmkpzuGowcsAfkO5Ae03+HFt6zA+AfJ/r5+wVJMq8DEHBAitbKWsdyeUX7qqjfi/jnH9HmdU3uA==}
+
+  remeda@2.22.3:
+    resolution: {integrity: sha512-Ka6965m9Zu9OLsysWxVf3jdJKmp6+PKzDv7HWHinEevf0JOJ9y02YpjiC/sKxRpCqGhVyvm1U+0YIj+E6DMgKw==}
 
   require-directory@2.1.1:
     resolution: {integrity: sha512-fGxEI7+wsG9xrvdjsrlmL22OMTTiHRwAMroiEeMgq8gzoLC/PQr7RsRDSTLUg/bZAZtF+TVIkHc6/4RIKrui+Q==}
@@ -5644,6 +5832,9 @@ packages:
 
   swap-case@1.1.2:
     resolution: {integrity: sha512-BAmWG6/bx8syfc6qXPprof3Mn5vQgf5dwdUNJhsNqU9WdPt5P+ES/wQ5bxfijy8zwZgZZHslC3iAsxsuQMCzJQ==}
+
+  sweetalert2@11.22.0:
+    resolution: {integrity: sha512-pSMuRGDULhh+wrFkO22O0YsIXxs8yFE0O+WVYXcqc/sTa1oRnf0JlR+vfQIRY1QM1UeFfnCjyw6DYnG75/oxiQ==}
 
   synckit@0.11.4:
     resolution: {integrity: sha512-Q/XQKRaJiLiFIBNN+mndW7S/RHxvwzuZS6ZwmRzUBqJBv/5QIKCEwkBC8GBf8EQJKYnaFs0wOZbKTXBPj8L9oQ==}
@@ -6111,6 +6302,9 @@ packages:
 
   zod@3.24.4:
     resolution: {integrity: sha512-OdqJE9UDRPwWsrHjLN2F8bPxvwJBK22EHLWtanu0LSYr5YqzsaaW3RMgmjwr8Rypg5k+meEJdSPXJZXE/yqOMg==}
+
+  zod@3.25.28:
+    resolution: {integrity: sha512-/nt/67WYKnr5by3YS7LroZJbtcCBurDKKPBPWWzaxvVCGuG/NOsiKkrjoOhI8mJ+SQUXEbUzeB3S+6XDUEEj7Q==}
 
 snapshots:
 
@@ -6609,7 +6803,7 @@ snapshots:
     transitivePeerDependencies:
       - debug
 
-  '@konomi-app/k2@1.10.0(jiti@2.4.2)(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3))(typescript@5.8.3)(yaml@2.8.0)':
+  '@konomi-app/k2@1.10.0(jiti@2.4.2)(ts-node@10.9.2(@types/node@22.15.21)(typescript@5.8.3))(typescript@5.8.3)(yaml@2.8.0)':
     dependencies:
       '@eslint/js': 9.27.0
       '@kintone/plugin-packer': 8.2.1
@@ -6636,11 +6830,11 @@ snapshots:
       html-minifier: 4.0.0
       mini-css-extract-plugin: 2.9.2(webpack@5.99.8(esbuild@0.25.4))
       postcss: 8.5.3
-      remeda: 2.21.6
+      remeda: 2.22.1
       sass: 1.89.0
       sass-loader: 16.0.5(sass@1.89.0)(webpack@5.99.8(esbuild@0.25.4))
       style-loader: 4.0.0(webpack@5.99.8(esbuild@0.25.4))
-      tailwindcss: 3.4.17(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3))
+      tailwindcss: 3.4.17(ts-node@10.9.2(@types/node@22.15.21)(typescript@5.8.3))
       terser-webpack-plugin: 5.3.14(esbuild@0.25.4)(webpack@5.99.8(esbuild@0.25.4))
       tiny-invariant: 1.3.3
       ts-loader: 9.5.2(typescript@5.8.3)(webpack@5.99.8(esbuild@0.25.4))
@@ -6665,7 +6859,7 @@ snapshots:
       - webpack-cli
       - yaml
 
-  '@konomi-app/kintone-utilities-jotai@1.1.1(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)':
+  '@konomi-app/kintone-utilities-jotai@1.2.3(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)':
     dependencies:
       '@dnd-kit/core': 6.3.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@dnd-kit/modifiers': 9.0.0(@dnd-kit/core@6.3.1(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)
@@ -6673,7 +6867,7 @@ snapshots:
       '@konomi-app/kintone-utilities': 5.13.0
       '@mui/icons-material': 7.1.0(@mui/material@7.1.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(@types/react@19.1.4)(react@19.1.0)
       '@mui/material': 7.1.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@emotion/styled@11.14.0(@emotion/react@11.14.0(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)(react@19.1.0))(@types/react@19.1.4)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      '@radix-ui/react-slot': 1.2.2(@types/react@19.1.4)(react@19.1.0)
+      '@radix-ui/react-slot': 1.2.3(@types/react@19.1.4)(react@19.1.0)
       jotai: 2.12.4(@types/react@19.1.4)(react@19.1.0)
       react: 19.1.0
       react-dom: 19.1.0(react@19.1.0)
@@ -7190,6 +7384,13 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.1.4
 
+  '@radix-ui/react-slot@1.2.3(@types/react@19.1.4)(react@19.1.0)':
+    dependencies:
+      '@radix-ui/react-compose-refs': 1.1.2(@types/react@19.1.4)(react@19.1.0)
+      react: 19.1.0
+    optionalDependencies:
+      '@types/react': 19.1.4
+
   '@radix-ui/react-use-callback-ref@1.1.1(@types/react@19.1.4)(react@19.1.0)':
     dependencies:
       react: 19.1.0
@@ -7398,7 +7599,7 @@ snapshots:
 
   '@tsconfig/node16@1.0.4': {}
 
-  '@turbo/gen@2.5.3(@types/node@22.15.18)(typescript@5.8.3)':
+  '@turbo/gen@2.5.3(@types/node@22.15.21)(typescript@5.8.3)':
     dependencies:
       '@turbo/workspaces': 2.5.3
       commander: 10.0.1
@@ -7408,7 +7609,7 @@ snapshots:
       node-plop: 0.26.3
       picocolors: 1.0.1
       proxy-agent: 6.5.0
-      ts-node: 10.9.2(@types/node@22.15.18)(typescript@5.8.3)
+      ts-node: 10.9.2(@types/node@22.15.21)(typescript@5.8.3)
       update-check: 1.5.4
       validate-npm-package-name: 5.0.1
     transitivePeerDependencies:
@@ -7454,7 +7655,7 @@ snapshots:
   '@types/glob@7.2.0':
     dependencies:
       '@types/minimatch': 5.1.2
-      '@types/node': 22.15.18
+      '@types/node': 22.15.21
 
   '@types/inquirer@6.5.0':
     dependencies:
@@ -7471,7 +7672,7 @@ snapshots:
 
   '@types/minimist@1.2.5': {}
 
-  '@types/node@22.15.18':
+  '@types/node@22.15.21':
     dependencies:
       undici-types: 6.21.0
 
@@ -7495,7 +7696,7 @@ snapshots:
 
   '@types/through@0.0.33':
     dependencies:
-      '@types/node': 22.15.18
+      '@types/node': 22.15.21
 
   '@types/tinycolor2@1.4.6': {}
 
@@ -9042,7 +9243,7 @@ snapshots:
     dependencies:
       basic-ftp: 5.0.5
       data-uri-to-buffer: 6.0.2
-      debug: 4.4.0
+      debug: 4.4.1
     transitivePeerDependencies:
       - supports-color
 
@@ -9455,7 +9656,7 @@ snapshots:
 
   jest-worker@27.5.1:
     dependencies:
-      '@types/node': 22.15.18
+      '@types/node': 22.15.21
       merge-stream: 2.0.0
       supports-color: 8.1.1
 
@@ -9464,6 +9665,10 @@ snapshots:
   jiti@2.4.2: {}
 
   jotai-derive@0.1.3(jotai@2.12.4(@types/react@19.1.4)(react@19.1.0)):
+    dependencies:
+      jotai: 2.12.4(@types/react@19.1.4)(react@19.1.0)
+
+  jotai-eager@0.2.2(jotai@2.12.4(@types/react@19.1.4)(react@19.1.0)):
     dependencies:
       jotai: 2.12.4(@types/react@19.1.4)(react@19.1.0)
 
@@ -10115,13 +10320,13 @@ snapshots:
       camelcase-css: 2.0.1
       postcss: 8.5.3
 
-  postcss-load-config@4.0.2(postcss@8.5.3)(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3)):
+  postcss-load-config@4.0.2(postcss@8.5.3)(ts-node@10.9.2(@types/node@22.15.21)(typescript@5.8.3)):
     dependencies:
       lilconfig: 3.1.3
       yaml: 2.8.0
     optionalDependencies:
       postcss: 8.5.3
-      ts-node: 10.9.2(@types/node@22.15.18)(typescript@5.8.3)
+      ts-node: 10.9.2(@types/node@22.15.21)(typescript@5.8.3)
 
   postcss-load-config@6.0.1(jiti@2.4.2)(postcss@8.5.3)(yaml@2.8.0):
     dependencies:
@@ -10514,7 +10719,11 @@ snapshots:
 
   relateurl@0.2.7: {}
 
-  remeda@2.21.6:
+  remeda@2.22.1:
+    dependencies:
+      type-fest: 4.41.0
+
+  remeda@2.22.3:
     dependencies:
       type-fest: 4.41.0
 
@@ -10927,6 +11136,8 @@ snapshots:
       lower-case: 1.1.4
       upper-case: 1.1.3
 
+  sweetalert2@11.22.0: {}
+
   synckit@0.11.4:
     dependencies:
       '@pkgr/core': 0.2.4
@@ -10938,7 +11149,7 @@ snapshots:
     dependencies:
       tailwindcss: 4.1.7
 
-  tailwindcss@3.4.17(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3)):
+  tailwindcss@3.4.17(ts-node@10.9.2(@types/node@22.15.21)(typescript@5.8.3)):
     dependencies:
       '@alloc/quick-lru': 5.2.0
       arg: 5.0.2
@@ -10957,7 +11168,7 @@ snapshots:
       postcss: 8.5.3
       postcss-import: 15.1.0(postcss@8.5.3)
       postcss-js: 4.0.1(postcss@8.5.3)
-      postcss-load-config: 4.0.2(postcss@8.5.3)(ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3))
+      postcss-load-config: 4.0.2(postcss@8.5.3)(ts-node@10.9.2(@types/node@22.15.21)(typescript@5.8.3))
       postcss-nested: 6.2.0(postcss@8.5.3)
       postcss-selector-parser: 6.1.2
       resolve: 1.22.10
@@ -11090,14 +11301,14 @@ snapshots:
       typescript: 5.8.3
       webpack: 5.99.8
 
-  ts-node@10.9.2(@types/node@22.15.18)(typescript@5.8.3):
+  ts-node@10.9.2(@types/node@22.15.21)(typescript@5.8.3):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.11
       '@tsconfig/node12': 1.0.11
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
-      '@types/node': 22.15.18
+      '@types/node': 22.15.21
       acorn: 8.14.1
       acorn-walk: 8.3.4
       arg: 4.1.3
@@ -11530,3 +11741,5 @@ snapshots:
       readable-stream: 4.7.0
 
   zod@3.24.4: {}
+
+  zod@3.25.28: {}

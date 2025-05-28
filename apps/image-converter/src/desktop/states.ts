@@ -21,7 +21,7 @@ export const pluginConditionAtom = atomFamily((conditionId: string) =>
 );
 
 export const currentAppFormFieldsAtom = atom((get) => {
-  return get(appFormFieldsAtom({ appId: get(currentAppIdAtom), spaceId: GUEST_SPACE_ID }));
+  return get(appFormFieldsAtom({ app: get(currentAppIdAtom), guestSpaceId: GUEST_SPACE_ID }));
 });
 
 export const currentAppFileFieldsAtom = derive(

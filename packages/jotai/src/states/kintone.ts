@@ -1,6 +1,7 @@
 import { getAppId, getFormFields, getFormLayout, kintoneAPI } from '@konomi-app/kintone-utilities';
 import { atom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
+import { isDeepEqual } from 'remeda';
 
 export const currentAppIdAtom = atom(() => {
   const app = getAppId();
@@ -11,29 +12,28 @@ export const currentAppIdAtom = atom(() => {
 });
 
 export const appFormFieldsAtom = atomFamily(
-  (params: { appId: string | number; spaceId?: string | number; preview?: boolean }) =>
+  (params: Parameters<typeof getFormFields>[0]) =>
     atom<Promise<kintoneAPI.FieldProperty[]>>(async () => {
-      const { properties } = await getFormFields({
-        app: params.appId,
-        preview: params.preview,
-        guestSpaceId: params.spaceId,
-      });
-
+      const { properties } = await getFormFields(params);
       const values = Object.values(properties);
       return values.sort((a, b) => a.label.localeCompare(b.label, 'ja'));
     }),
-  (a, b) => a.appId == b.appId && a.spaceId == b.spaceId && !!a.preview === !!b.preview
+  (a, b) =>
+    isDeepEqual(
+      { ...a, preview: !!a.preview, debug: !!a.debug },
+      { ...b, preview: !!b.preview, debug: !!b.debug }
+    )
 );
 
 export const appFormLayoutState = atomFamily(
-  (params: { appId: string | number; spaceId?: string | number; preview: boolean }) =>
+  (params: Parameters<typeof getFormLayout>[0]) =>
     atom<Promise<kintoneAPI.Layout>>(async () => {
-      const { layout } = await getFormLayout({
-        app: params.appId,
-        preview: params.preview,
-        guestSpaceId: params.spaceId,
-      });
+      const { layout } = await getFormLayout(params);
       return layout;
     }),
-  (a, b) => a.appId == b.appId && a.preview == b.preview && a.spaceId == b.spaceId
+  (a, b) =>
+    isDeepEqual(
+      { ...a, preview: !!a.preview, debug: !!a.debug },
+      { ...b, preview: !!b.preview, debug: !!b.debug }
+    )
 );
