@@ -1,13 +1,18 @@
-import { getAppId, getFormFields, getFormLayout, kintoneAPI } from '@konomi-app/kintone-utilities';
+import {
+  getAppId,
+  getFormFields,
+  getFormLayout,
+  getViews,
+  kintoneAPI,
+} from '@konomi-app/kintone-utilities';
 import { atom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
 import { isDeepEqual } from 'remeda';
+import invariant from 'tiny-invariant';
 
 export const currentAppIdAtom = atom(() => {
   const app = getAppId();
-  if (!app) {
-    throw new Error('App ID not found');
-  }
+  invariant(app, 'App ID not found');
   return app;
 });
 
@@ -30,6 +35,19 @@ export const appFormLayoutState = atomFamily(
     atom<Promise<kintoneAPI.Layout>>(async () => {
       const { layout } = await getFormLayout(params);
       return layout;
+    }),
+  (a, b) =>
+    isDeepEqual(
+      { ...a, preview: !!a.preview, debug: !!a.debug },
+      { ...b, preview: !!b.preview, debug: !!b.debug }
+    )
+);
+
+export const appViewsAtom = atomFamily(
+  (params: Parameters<typeof getViews>[0]) =>
+    atom<Promise<Record<string, kintoneAPI.view.Response>>>(async () => {
+      const { views } = await getViews(params);
+      return views;
     }),
   (a, b) =>
     isDeepEqual(
