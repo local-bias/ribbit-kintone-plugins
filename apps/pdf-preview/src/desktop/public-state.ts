@@ -1,7 +1,7 @@
-import { GUEST_SPACE_ID, isDev } from '@/lib/global';
+import { GUEST_SPACE_ID, isDev, LANGUAGE } from '@/lib/global';
 import { isUsagePluginConditionMet, restorePluginConfig } from '@/lib/plugin';
 import { downloadFile, kintoneAPI } from '@konomi-app/kintone-utilities';
-import { appFormFieldsAtom, currentAppIdAtom } from '@repo/jotai';
+import { appFormFieldsAtom, appViewsAtom, currentAppIdAtom } from '@repo/jotai';
 import { atom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
 import { entries } from 'remeda';
@@ -64,4 +64,21 @@ export const handleDrawerOpenAtom = atom(null, (_, set) => {
 });
 export const handleDrawerCloseAtom = atom(null, (_, set) => {
   set(showDrawerAtom, false);
+});
+
+// 一覧で動作する際に必要となるアプリ情報
+export const currentAppViewsAtom = atom((get) => {
+  const appId = get(currentAppIdAtom);
+  return get(appViewsAtom({ app: appId, lang: LANGUAGE as 'ja', preview: false }));
+});
+
+export const currentViewIdAtom = atom<string | null>(null);
+
+export const currentViewAtom = atom(async (get) => {
+  const viewId = get(currentViewIdAtom);
+  if (!viewId) {
+    return null;
+  }
+  const views = await get(currentAppViewsAtom);
+  return views.find((view) => view.id === viewId) ?? null;
 });
