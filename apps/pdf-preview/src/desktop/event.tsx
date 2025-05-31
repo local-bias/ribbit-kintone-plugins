@@ -10,7 +10,7 @@ import {
 import { ComponentManager } from '@konomi-app/kintone-utilities-react';
 import { currentAppIdAtom, store } from '@repo/jotai';
 import config from 'plugin.config.mjs';
-import { entries } from 'remeda';
+import { clone, entries } from 'remeda';
 import { createPreviewButton } from './actions';
 import App from './components';
 import { fileFieldsWithPDFAtom, targetRecordAtom } from './public-state';
@@ -56,7 +56,8 @@ manager.add(['app.record.index.show'], async (event) => {
       .filter((field) => field.value.some(filter))
       .map((field) => ({ code: field.code, type: field.type, value: field.value.filter(filter) }));
 
-    for (const field of pdfFields) {
+    for (const _field of pdfFields) {
+      const field = clone(_field);
       const listItems = Array.from(row.querySelectorAll('li'));
 
       for (const listItem of listItems) {
@@ -64,10 +65,11 @@ manager.add(['app.record.index.show'], async (event) => {
         const anchorText = anchorElement?.textContent;
         if (!anchorText) continue;
 
-        const targetFile = field.value.find((file) => file.name === anchorText);
-        if (!targetFile) continue;
+        const targetFileIndex = field.value.findIndex((file) => file.name === anchorText);
+        if (targetFileIndex === -1) continue;
 
-        listItem.append(createPreviewButton(targetFile.fileKey));
+        listItem.append(createPreviewButton(field.value[targetFileIndex]!.fileKey));
+        field.value = field.value.toSpliced(targetFileIndex, 1);
       }
     }
   });
@@ -78,7 +80,8 @@ manager.add(['app.record.index.show'], async (event) => {
 manager.add(['app.record.detail.show', 'app.record.edit.show'], async (event) => {
   store.set(targetRecordAtom, event.record);
 
-  for (const field of store.get(fileFieldsWithPDFAtom)) {
+  for (const _field of store.get(fileFieldsWithPDFAtom)) {
+    const field = clone(_field);
     const fieldElement = getFieldElement(field.code);
     if (!fieldElement) continue;
     if (!isMobile()) {
@@ -89,10 +92,11 @@ manager.add(['app.record.detail.show', 'app.record.edit.show'], async (event) =>
         const anchorText = anchorElement?.textContent;
         if (!anchorText) continue;
 
-        const targetFile = field.value.find((file) => file.name === anchorText);
-        if (!targetFile) continue;
+        const targetFileIndex = field.value.findIndex((file) => file.name === anchorText);
+        if (targetFileIndex === -1) continue;
 
-        listItem.append(createPreviewButton(targetFile.fileKey));
+        listItem.append(createPreviewButton(field.value[targetFileIndex]!.fileKey));
+        field.value = field.value.toSpliced(targetFileIndex, 1);
       }
     } else {
       const anchorElements = Array.from(fieldElement?.querySelectorAll('a'));
@@ -101,10 +105,11 @@ manager.add(['app.record.detail.show', 'app.record.edit.show'], async (event) =>
         const anchorText = anchorElement.textContent;
         if (!anchorText) continue;
 
-        const targetFile = field.value.find((file) => file.name === anchorText);
-        if (!targetFile) continue;
+        const targetFileIndex = field.value.findIndex((file) => file.name === anchorText);
+        if (targetFileIndex === -1) continue;
 
-        anchorElement.append(createPreviewButton(targetFile.fileKey));
+        anchorElement.append(createPreviewButton(field.value[targetFileIndex]!.fileKey));
+        field.value = field.value.toSpliced(targetFileIndex, 1);
       }
     }
   }
