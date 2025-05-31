@@ -45,9 +45,9 @@ export const appFormLayoutState = atomFamily(
 
 export const appViewsAtom = atomFamily(
   (params: Parameters<typeof getViews>[0]) =>
-    atom<Promise<Record<string, kintoneAPI.view.Response>>>(async () => {
+    atom<Promise<kintoneAPI.view.Response[]>>(async () => {
       const { views } = await getViews(params);
-      return views;
+      return Object.values(views);
     }),
   (a, b) =>
     isDeepEqual(
