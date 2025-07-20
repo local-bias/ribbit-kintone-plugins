@@ -16,6 +16,12 @@ pnpm install
 pnpm dev
 ```
 
+### 特定のプラグインを開発する場合
+
+```bash
+pnpx turbo dev --filter=tooltip
+```
+
 ## 📦 ビルド
 
 ```bash
