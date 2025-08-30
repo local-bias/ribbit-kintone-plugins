@@ -114,3 +114,78 @@ src/
 - `schema/`: zod スキーマを定義するディレクトリです。
   - `plugin-config.ts`: プラグイン設定のスキーマを定義します。設定画面でここで定義されたスキーマを使用して、設定のバリデーションを行います。
 - `styles/`: Tailwind CSS の設定やカスタムスタイルを格納します。
+
+#### /schema/plugin-config.ts の役割
+
+kintoneでは、各プラグインに対して、設定情報を保存するためのストレージが提供されています。このストレージに保存される設定情報の型を定義するのが `/schema/plugin-config.ts` です。
+
+プラグイン設定情報の後方互換性を保つために、設定情報の型は以下のように定義されます：
+
+```typescript
+import { z } from 'zod';
+
+export const PluginConfigV1Schema = z.object({
+  version: z.literal(1), // バージョン番号
+  settingA: z.string().default('defaultA'), // 設定A
+  settingB: z.number().default(10), // 設定B
+});
+
+export const PluginConfigV2Schema = z.object({
+  version: z.literal(2), // バージョン番号
+  settingA: z.string().default('defaultA'), // 設定A
+  settingB: z.number().default(10), // 設定B
+  settingC: z.boolean().default(false), // 新しい設定C
+});
+
+export const AnyPluginConfigSchema = z.discriminatedUnion('version', [
+  pluginConfigV1Schema,
+  pluginConfigV2Schema,
+]);
+export type AnyPluginConfig = z.infer<typeof AnyPluginConfigSchema>;
+
+export const PluginConfigSchema = PluginConfigV2Schema; // 現在のバージョンを使用
+export type PluginConfig = z.infer<typeof PluginConfigSchema>;
+```
+
+このように、`PluginConfigSchema` は現在のバージョンのスキーマを指し、将来のバージョンが追加された場合でも、後方互換性を保ちながら新しい設定項目を追加できます。
+
+プラグインに新しい機能を追加する場合は、`PluginConfigSchema` を更新し、新しいバージョンのスキーマを定義します。これにより、古いバージョンの設定情報も引き続きサポートされます。
+
+#### 設定情報のマイグレーション
+
+プラグインの設定情報は、プラグインをインストールした各kintoneアプリに保存されているため、保存されている設定情報のバージョンを確認し、必要に応じてマイグレーションを行う必要があります。
+
+このマイグレーション処理は、`src/lib/plugin.ts` 内の`migrateConfig`関数で行います。この関数は、現在の設定情報のバージョンを確認し、必要に応じて新しいバージョンのスキーマに変換します。
+
+`migrateConfig`の型は以下のようになります：
+
+```typescript
+export type MigrateConfig = (config: AnyPluginConfig) => PluginConfig;
+```
+
+プラグインに新しい機能を追加した際は、`src/schema/plugin-config.ts` と同様に、`src/lib/plugin.ts` の `migrateConfig` 関数も更新する必要があります。これにより、古いバージョンの設定情報を新しいバージョンに変換し、プラグインの動作を保証します。
+
+## プラグインの開発フロー
+
+1. **プロジェクトのクローン**
+   - リポジトリをクローンします。
+   - `pnpm create k2@latest [new-plugin-name] --template plugin-turbo` を実行して、プロジェクトの初期設定を行います。
+2. **依存関係のインストール**
+   - `pnpm install` を実行して、必要な依存関係をインストールします。
+3. **プラグインの開発**
+   - `src/schema/plugin-config.ts` で設定情報のスキーマを定義します。
+   - `src/config/` と `src/desktop/` ディレクトリに必要なコンポーネントやフックを実装します。
+4. **ビルド**
+   - `pnpm build` を実行して、プラグインをビルドします。
+   - ビルド成果物は `build/` ディレクトリに出力されます。
+
+## kintone API の使用
+
+kintoneのデータ操作は、ユーティリティ関数を通じて行います。これらの関数は、`@konomi-app/kintone-utilities` パッケージに含まれています。以下の関数を使用して、kintoneのデータを操作します：
+
+- `getAllRecords`: 指定したクエリに一致するすべてのレコードを取得します。
+- `addAllRecords`: 複数のレコードを一括で追加します。
+- `updateAllRecords`: 複数のレコードを一括で更新します
+- `deleteAllRecords`: 指定したクエリに一致するすべてのレコードを削除します。
+- `bulkRequest`: 複数のリクエストを一括で送信します。
+- `getFormFields`: 指定したアプリのフィールド情報を取得します。
