@@ -50,10 +50,7 @@ const TooltipContent = React.forwardRef<
         );
         color: var(--🐸popover-foreground);
       `,
-      'shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
-      withPrefix(
-        'z-50 overflow-hidden rounded-sm bg-popover px-3 py-1.5 text-sm text-popover-foreground shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2'
-      ),
+      'shadow-md animate-in fade-in-0 zoom-in-95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=closed]:zoom-out-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 rad:text-sm rad:shadow-md rad:animate-in rad:fade-in-0 rad:zoom-in-95 rad:data-[state=closed]:animate-out rad:data-[state=closed]:fade-out-0 rad:data-[state=closed]:zoom-out-95 rad:data-[side=bottom]:slide-in-from-top-2 rad:data-[side=left]:slide-in-from-right-2 rad:data-[side=right]:slide-in-from-left-2 rad:data-[side=top]:slide-in-from-bottom-2',
       className
     )}
     {...props}
