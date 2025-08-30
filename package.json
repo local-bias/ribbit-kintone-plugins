@@ -11,21 +11,21 @@
   },
   "devDependencies": {
     "@konomi-app/prettier-config": "^1.1.2",
-    "prettier": "^3.5.3",
+    "prettier": "^3.6.2",
     "tailwindcss": "^4.1.11",
-    "turbo": "^2.5.3",
-    "typescript": "5.8.2"
+    "turbo": "^2.5.5",
+    "typescript": "5.8.3"
   },
   "pnpm": {
     "overrides": {
-      "@konomi-app/kintone-utilities-jotai": "^1.2.3",
-      "@mui/material": "^7.1.0",
-      "jotai": "^2.12.4",
+      "@konomi-app/kintone-utilities-jotai": "^1.3.0",
+      "@mui/material": "^7.2.0",
+      "jotai": "^2.12.5",
       "react": "^19.1.0",
       "react-dom": "^19.1.0",
-      "@konomi-app/k2": "^1.10.0",
-      "@types/react": "^19.1.4",
-      "@types/react-dom": "^19.1.5"
+      "@konomi-app/k2": "^1.11.1",
+      "@types/react": "^19.1.8",
+      "@types/react-dom": "^19.1.6"
     }
   },
   "packageManager": "pnpm@10.11.0",
