@@ -12,14 +12,34 @@ type Props = { iconType: IconType; iconColor: string };
 const Component: FC<Props> = ({ iconType, iconColor }) => {
   switch (iconType) {
     case 'warning':
-      return <ExclamationCircleIcon className='w-6 h-6 transition-all' fill={iconColor} />;
+      return (
+        <ExclamationCircleIcon
+          className='w-6 h-6 transition-all rad:w-6 rad:h-6 rad:transition-all'
+          fill={iconColor}
+        />
+      );
     case 'error':
-      return <ExclamationTriangleIcon className='w-6 h-6 transition-all' fill={iconColor} />;
+      return (
+        <ExclamationTriangleIcon
+          className='w-6 h-6 transition-all rad:w-6 rad:h-6 rad:transition-all'
+          fill={iconColor}
+        />
+      );
     case 'success':
-      return <CheckCircleIcon className='w-6 h-6 transition-all' fill={iconColor} />;
+      return (
+        <CheckCircleIcon
+          className='w-6 h-6 transition-all rad:w-6 rad:h-6 rad:transition-all'
+          fill={iconColor}
+        />
+      );
     case 'info':
     default:
-      return <InformationCircleIcon className='w-6 h-6 transition-all' fill={iconColor} />;
+      return (
+        <InformationCircleIcon
+          className='w-6 h-6 transition-all rad:w-6 rad:h-6 rad:transition-all'
+          fill={iconColor}
+        />
+      );
   }
 };
 
