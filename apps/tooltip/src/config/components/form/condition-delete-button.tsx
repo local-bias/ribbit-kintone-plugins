@@ -3,7 +3,7 @@ import { produce } from 'immer';
 import { useAtomValue } from 'jotai';
 import { RESET, useAtomCallback } from 'jotai/utils';
 import { useSnackbar } from 'notistack';
-import React, { FC, memo, useCallback } from 'react';
+import { FC, memo, useCallback } from 'react';
 import {
   conditionsLengthAtom,
   pluginConfigAtom,
