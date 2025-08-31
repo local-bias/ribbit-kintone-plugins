@@ -22,7 +22,7 @@ export const pluginConditionsAtom = atom(
 
 export const selectedConditionIdAtom = atomWithDefault<string>((get) => {
   const config = get(pluginConfigAtom);
-  return config.conditions[0].id;
+  return config.conditions[0]!.id;
 });
 
 export const selectedConditionAtom = atom(
@@ -41,7 +41,7 @@ export const selectedConditionAtom = atom(
     set(pluginConfigAtom, (current) =>
       produce(current, (draft) => {
         draft.conditions[index] =
-          typeof newValue === 'function' ? newValue(draft.conditions[index]) : newValue;
+          typeof newValue === 'function' ? newValue(draft.conditions[index]!) : newValue;
       })
     );
   }
