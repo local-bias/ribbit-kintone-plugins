@@ -1,6 +1,5 @@
 import { AnyPluginConfig, PluginCondition, PluginConfig } from '@/schema/plugin-config';
 import { restoreStorage } from '@konomi-app/kintone-utilities';
-import { produce } from 'immer';
 import { nanoid } from 'nanoid';
 import { PLUGIN_ID } from './global';
 
@@ -77,18 +76,4 @@ export const migrateConfig = (anyConfig: AnyPluginConfig): PluginConfig => {
 export const restorePluginConfig = (): PluginConfig => {
   const config = restoreStorage<AnyPluginConfig>(PLUGIN_ID) ?? createConfig();
   return migrateConfig(config);
-};
-
-export const getUpdatedStorage = <T extends keyof PluginCondition>(
-  storage: PluginConfig,
-  props: {
-    conditionIndex: number;
-    key: T;
-    value: PluginCondition[T];
-  }
-) => {
-  const { conditionIndex, key, value } = props;
-  return produce(storage, (draft) => {
-    draft.conditions[conditionIndex][key] = value;
-  });
 };
