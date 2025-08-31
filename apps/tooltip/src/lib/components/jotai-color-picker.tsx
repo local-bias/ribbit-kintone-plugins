@@ -2,14 +2,14 @@ import styled from '@emotion/styled';
 import { TextField, TextFieldProps } from '@mui/material';
 import { PrimitiveAtom, useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
-import React, { ChangeEventHandler, FC, FCX, Suspense, useCallback } from 'react';
+import { ChangeEventHandler, FC, Suspense, useCallback } from 'react';
 
 type Props = {
   atom: PrimitiveAtom<string>;
   width?: number;
 } & Omit<TextFieldProps, 'value' | 'onChange'>;
 
-const Component: FCX<Props> = ({ className, atom, ...textFieldProps }) => {
+const Component: FC<Props & { className?: string }> = ({ className, atom, ...textFieldProps }) => {
   const query = useAtomValue(atom);
 
   const onChange: ChangeEventHandler<HTMLInputElement> = useAtomCallback(
@@ -27,7 +27,12 @@ const Component: FCX<Props> = ({ className, atom, ...textFieldProps }) => {
 };
 Component.displayName = 'JotaiColorPickerComponent';
 
-const PlaceHolder: FCX<Props> = ({ className, label, placeholder, width }) => (
+const PlaceHolder: FC<Props & { className?: string }> = ({
+  className,
+  label,
+  placeholder,
+  width,
+}) => (
   <div className={className}>
     <TextField label={label} placeholder={placeholder} value='' sx={{ width }} disabled />
     <TextField label={label} placeholder={placeholder} value='' sx={{ width }} disabled />
