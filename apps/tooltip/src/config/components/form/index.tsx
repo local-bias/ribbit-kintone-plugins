@@ -5,7 +5,7 @@ import {
   PluginFormSection,
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { conditionLabelAtom, getConditionPropertyAtom } from '../../states/plugin';
 import DeleteButton from './condition-delete-button';
 import EmojiForm from './form-emoji';

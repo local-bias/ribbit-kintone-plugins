@@ -66,7 +66,7 @@ const Sidebar: FC = () => {
         onPasteFailure: () => {
           enqueueSnackbar('設定情報の形式が正しくありません', { variant: 'error' });
         },
-        onPasteValidation: (condition) => {
+        onPasteValidation: () => {
           try {
             // validateCondition(condition);
           } catch (error) {

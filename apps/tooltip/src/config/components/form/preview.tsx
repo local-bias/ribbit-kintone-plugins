@@ -3,7 +3,7 @@ import { selectedConditionAtom } from '@/config/states/plugin';
 import { TooltipIcon } from '@/lib/components/tooltip-icon';
 import DOMPurify from 'dompurify';
 import { useAtomValue } from 'jotai';
-import React, { type FC } from 'react';
+import { type FC } from 'react';
 
 const Emoji: FC = () => {
   const condition = useAtomValue(selectedConditionAtom);

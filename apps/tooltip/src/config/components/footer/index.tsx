@@ -6,7 +6,7 @@ import { Button, CircularProgress } from '@mui/material';
 import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
 import { useSnackbar } from 'notistack';
-import React, { FC, useCallback } from 'react';
+import { FC, useCallback } from 'react';
 import { loadingAtom, pluginConfigAtom } from '../../states/plugin';
 import ExportButton from './export-button';
 import ImportButton from './import-button';

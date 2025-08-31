@@ -17,7 +17,7 @@ const Component: FC = () => {
           return;
         }
         const [file] = Array.from(files);
-        const fileEvent = await onFileLoad(file);
+        const fileEvent = await onFileLoad(file!);
         const text = (fileEvent.target?.result ?? '') as string;
         set(pluginConfigAtom, migrateConfig(JSON.parse(text)));
         enqueueSnackbar('設定情報をインポートしました', { variant: 'success' });
