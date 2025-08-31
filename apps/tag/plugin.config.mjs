@@ -1,0 +1,70 @@
+// @ts-check
+const hp = 'https://konomi.app';
+const cdn = 'https://kintone-plugin.konomi.app';
+const key = 'tag';
+
+/** @satisfies { Plugin.Meta.Config } */
+export default /** @type { const } */ ({
+  id: `ribbit-kintone-plugin-${key}`,
+  pluginReleasePageUrl: `https://ribbit.konomi.app/kintone-plugin/`,
+  server: {
+    port: 5821,
+  },
+  lint: {
+    build: false,
+  },
+  tailwind: {
+    css: 'src/styles/global.css',
+    config: {
+      desktop: 'tailwind.config.desktop.mjs',
+      config: 'tailwind.config.config.mjs',
+    },
+  },
+  manifest: {
+    base: {
+      manifest_version: 1,
+      version: '1.7.0',
+      type: 'APP',
+      name: {
+        en: 'Tagging Plugin',
+        ja: 'タグ付けプラグイン',
+        zh: '标签插件',
+        'zh-TW': '標籤插件',
+        es: 'Plugin de Etiquetas',
+        'pt-BR': 'Plugin de Marcação',
+        th: 'ปลั๊กอินแท็ก',
+      },
+      description: {
+        en: 'Add a field that allows multiple registrations of arbitrary strings as tags. By using this plugin, it is possible to standardize the delimiter for tags.',
+        ja: '任意の文字列をタグとして複数登録することのできるフィールドを追加します。このプラグインを使用することで、タグの区切りを統一化することが可能です。',
+        zh: '添加一个字段，允许将任意字符串作为标签进行多次注册。通过使用此插件，可以统一标签的分隔符。',
+        'zh-TW':
+          '添加一個字段，允許將任意字符串作為標籤進行多次註冊。通過使用此插件，可以統一標籤的分隔符。',
+        es: 'Agregar un campo que permita múltiples registros de cadenas arbitrarias como etiquetas. Al usar este complemento, es posible estandarizar el delimitador de las etiquetas。',
+        'pt-BR':
+          'Adicionar um campo que permite múltiplas inscrições de strings arbitrárias como tags. Ao usar este plugin, é possível padronizar o delimitador para tags。',
+        th: 'เพิ่มฟิลด์ที่อนุญาตให้ลงทะเบียนสตริงตามอำเภอใจหลายรายการเป็นแท็ก โดยการใช้ปลั๊กอินนี้สามารถทำให้ตัวแบ่งแท็กเป็นมาตรฐานเดียวกันได้',
+      },
+      icon: 'icon.png',
+      homepage_url: { ja: hp, en: hp },
+      desktop: { js: [`${cdn}/common/desktop.js`], css: [`${cdn}/common/desktop.css`] },
+      mobile: { js: [`${cdn}/common/desktop.js`], css: [`${cdn}/common/desktop.css`] },
+      config: {
+        html: 'config.html',
+        js: [`${cdn}/common/config.js`],
+        css: [`${cdn}/common/config.css`],
+        required_params: [],
+      },
+    },
+    prod: {
+      desktop: { js: [`${cdn}/${key}/desktop.js`], css: [`${cdn}/${key}/desktop.css`] },
+      mobile: { js: [`${cdn}/${key}/desktop.js`], css: [`${cdn}/${key}/desktop.css`] },
+      config: { js: [`${cdn}/${key}/config.js`], css: [`${cdn}/${key}/config.css`] },
+    },
+    standalone: {
+      desktop: { js: ['desktop.js'], css: ['desktop.css'] },
+      mobile: { js: ['desktop.js'], css: ['desktop.css'] },
+      config: { js: ['config.js'], css: ['config.css'] },
+    },
+  },
+});
