@@ -12,9 +12,9 @@
   "devDependencies": {
     "@konomi-app/prettier-config": "^1.1.2",
     "prettier": "^3.6.2",
-    "tailwindcss": "^4.1.11",
-    "turbo": "^2.5.5",
-    "typescript": "5.8.3"
+    "tailwindcss": "^4.1.12",
+    "turbo": "^2.5.6",
+    "typescript": "5.9.2"
   },
   "pnpm": {
     "overrides": {
