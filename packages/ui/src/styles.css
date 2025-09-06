@@ -1,0 +1,12 @@
+@layer theme, base, components, utilities;
+
+/* UIライブラリ専用のプレフィックス: rui ( ribbit ui ) */
+@import 'tailwindcss/theme.css' layer(theme) prefix(rui);
+
+/* base, components, utilitiesはプレフィックスなし */
+@import 'tailwindcss/utilities.css' layer(utilities);
+
+@import 'tw-animate-css';
+
+/** 共通テーマ */
+@import '@repo/tailwindcss/theme.css';
