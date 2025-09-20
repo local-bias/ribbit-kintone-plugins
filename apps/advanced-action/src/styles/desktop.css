@@ -1,0 +1,22 @@
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme) prefix(ribbit);
+@import 'tailwindcss/utilities.css' layer(utilities);
+@import 'tw-animate-css';
+
+@import '@repo/tailwindcss/desktop.css';
+
+@import '@repo/ui/styles.css';
+
+@layer base {
+  .MuiAutocomplete-popper[role='presentation'] {
+    ::-webkit-scrollbar {
+      @apply ribbit:w-1 ribbit:h-1 ribbit:md:w-2 ribbit:md:h-2;
+    }
+    ::-webkit-scrollbar-thumb {
+      @apply ribbit:rounded-full ribbit:bg-foreground/30;
+    }
+    ::-webkit-scrollbar-track {
+      @apply ribbit:bg-transparent;
+    }
+  }
+}
