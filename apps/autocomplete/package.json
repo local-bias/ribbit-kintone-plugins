@@ -7,7 +7,7 @@
     "init": "plugin init && plugin genkey",
     "build": "plugin build && plugin zip",
     "standalone": "plugin build && plugin zip --env standalone",
-    "dev": "plugin dev"
+    "dev": "plugin dev --cert-dir C:/workspaces/apps/cert"
   },
   "browser": {
     "path": false
