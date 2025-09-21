@@ -9,7 +9,7 @@ import { KintoneInput } from '../../../components/ui/kintone-input';
 import styled from '@emotion/styled';
 
 const Input: FC<{
-  inputRef: React.RefObject<HTMLInputElement>;
+  inputRef: React.RefObject<HTMLInputElement | null>;
   onFocus: FocusEventHandler<HTMLInputElement>;
   onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
 }> = ({ inputRef, onFocus, onKeyDown }) => {
@@ -36,7 +36,7 @@ const Input: FC<{
 
 const Options: FC<{
   className?: string;
-  optionsRef: React.RefObject<HTMLDivElement>;
+  optionsRef: React.RefObject<HTMLDivElement | null>;
   open: boolean;
   handleSelectOption: (selectedOption: Plugin.AutocompleteOption) => void;
 }> = ({ className, optionsRef, open, handleSelectOption }) => {
