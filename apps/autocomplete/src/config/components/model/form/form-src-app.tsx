@@ -1,31 +1,63 @@
-import React, { FC } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
-import { RecoilAppSelect } from '@konomi-app/kintone-utilities-react';
-import { allAppsState } from '../../../states/kintone';
-import { getConditionPropertyState } from '../../../states/plugin';
+import { Autocomplete, Box, Skeleton, TextField } from '@mui/material';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { Suspense } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
+import { kintoneAppsAtom } from '../../../states/kintone';
+import { handleSrcAppChangeAtom, srcAppIdAtom } from '../../../states/plugin';
 import { t } from '@/lib/i18n';
 
-const state = getConditionPropertyState('srcAppId');
-
-const Component: FC = () => {
-  const appId = useRecoilValue(state);
-
-  const onChange = useRecoilCallback(
-    ({ set }) =>
-      (code: string) => {
-        set(state, code);
-      },
-    []
-  );
+function SrcAppFormComponent() {
+  const allApps = useAtomValue(kintoneAppsAtom);
+  const srcAppId = useAtomValue(srcAppIdAtom);
+  const onAppChange = useSetAtom(handleSrcAppChangeAtom);
 
   return (
-    <RecoilAppSelect
-      appsState={allAppsState}
-      onChange={onChange}
-      appId={appId}
-      label={t('config.condition.srcAppId.label')}
+    <Autocomplete
+      value={allApps.find((app) => app.appId === srcAppId) ?? null}
+      sx={{ width: '350px' }}
+      options={allApps}
+      isOptionEqualToValue={(option, v) => option.appId === v.appId}
+      getOptionLabel={(app) => `${app.name}(id: ${app.appId})`}
+      onChange={(_, app) => onAppChange(app?.appId ?? '')}
+      renderOption={(props, app) => {
+        const { key, ...optionProps } = props;
+        return (
+          <Box key={key} component='li' {...optionProps}>
+            <div className='grid'>
+              <div className='text-xs text-gray-400'>
+                id: {app.code}
+                {app.appId}
+              </div>
+              {app.name}
+            </div>
+          </Box>
+        );
+      }}
+      renderInput={(params) => (
+        <TextField {...params} label={t('config.condition.srcAppId.label')} variant='outlined' color='primary' />
+      )}
     />
   );
-};
+}
 
-export default Component;
+function SrcAppForm() {
+  return (
+    <ErrorBoundary
+      FallbackComponent={({ error }) => (
+        <TextField
+          error
+          label={t('config.condition.srcAppId.label')}
+          variant='outlined'
+          color='primary'
+          helperText={`アプリ情報の取得に失敗しました: ${error.message}`}
+        />
+      )}
+    >
+      <Suspense fallback={<Skeleton variant='rounded' width={350} height={56} />}>
+        <SrcAppFormComponent />
+      </Suspense>
+    </ErrorBoundary>
+  );
+}
+
+export default SrcAppForm;
