@@ -2,12 +2,21 @@ import {
   getFieldValueAsString,
   getYuruChara,
   kintoneAPI,
-  restoreStorage,
+  restorePluginConfig as primitiveRestorePluginConfig,
 } from '@konomi-app/kintone-utilities';
 import { produce } from 'immer';
 import { PLUGIN_ID } from './global';
 import { z } from 'zod';
 import { nanoid } from 'nanoid';
+
+export function isPluginConditionMet(condition: unknown): condition is PluginCondition {
+  try {
+    LatestPluginConfigSchema.parse(condition);
+    return true;
+  } catch {
+    return false;
+  }
+}
 
 /**
  * プラグインの設定情報のスキーマ定義(バージョン1)
@@ -47,18 +56,11 @@ const PluginConfigV2Schema = z.object({
 });
 type PluginConfigV2 = z.infer<typeof PluginConfigV2Schema>;
 
+export const LatestPluginConfigSchema = PluginConfigV2Schema;
+
 type AnyPluginConfig = PluginConfigV1 | PluginConfigV2;
 export type PluginConfig = PluginConfigV2;
 export type PluginCondition = PluginConfig['conditions'][number];
-
-export const validateCondition = (condition: unknown) => {
-  try {
-    PluginConditionV2Schema.parse(condition);
-    return true;
-  } catch {
-    return false;
-  }
-};
 
 export const getNewCondition = (): PluginCondition => ({
   id: nanoid(),
@@ -108,7 +110,7 @@ export const migrateConfig = (anyConfig: AnyPluginConfig): PluginConfig => {
  * プラグインの設定情報を復元します
  */
 export const restorePluginConfig = (): PluginConfig => {
-  const config = restoreStorage<AnyPluginConfig>(PLUGIN_ID) ?? createConfig();
+  const config = primitiveRestorePluginConfig<AnyPluginConfig>(PLUGIN_ID) ?? createConfig();
   return migrateConfig(config);
 };
 
