@@ -1,23 +1,42 @@
-import React, { FC } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
-import { RecoilFieldSelect } from '@konomi-app/kintone-utilities-react';
+import { JotaiFieldSelect } from '@konomi-app/kintone-utilities-jotai';
+import { Skeleton, TextField } from '@mui/material';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { Suspense } from 'react';
+import { ErrorBoundary } from 'react-error-boundary';
 import { srcAppFieldsState } from '../../../states/kintone';
-import { getConditionPropertyState } from '../../../states/plugin';
+import { handleSrcFieldChangeAtom, srcFieldCodeAtom } from '../../../states/plugin';
 
-const state = getConditionPropertyState('srcFieldCode');
+function SrcFieldFormComponent() {
+  const fieldCode = useAtomValue(srcFieldCodeAtom);
+  const onFieldChange = useSetAtom(handleSrcFieldChangeAtom);
 
-const Component: FC = () => {
-  const fieldCode = useRecoilValue(state);
-
-  const onChange = useRecoilCallback(
-    ({ set }) =>
-      (code: string) => {
-        set(state, code);
-      },
-    []
+  return (
+    <JotaiFieldSelect
+      fieldPropertiesAtom={srcAppFieldsState}
+      fieldCode={fieldCode}
+      onChange={onFieldChange}
+    />
   );
+}
 
-  return <RecoilFieldSelect state={srcAppFieldsState} onChange={onChange} fieldCode={fieldCode} />;
-};
+function SrcFieldForm() {
+  return (
+    <ErrorBoundary
+      FallbackComponent={({ error }) => (
+        <TextField
+          error
+          label='対象フィールド'
+          variant='outlined'
+          color='primary'
+          helperText={`フィールド情報の取得に失敗しました: ${error.message}`}
+        />
+      )}
+    >
+      <Suspense fallback={<Skeleton variant='rounded' width={350} height={56} />}>
+        <SrcFieldFormComponent />
+      </Suspense>
+    </ErrorBoundary>
+  );
+}
 
-export default Component;
+export default SrcFieldForm;

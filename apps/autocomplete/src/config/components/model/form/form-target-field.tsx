@@ -1,23 +1,24 @@
-import React, { FC } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
-import { RecoilFieldSelect } from '@konomi-app/kintone-utilities-react';
-import { appFieldsState } from '../../../states/kintone';
-import { getConditionPropertyState } from '../../../states/plugin';
+import { JotaiFieldSelect } from '@konomi-app/kintone-utilities-jotai';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { appFieldsAtom } from '../../../states/kintone';
+import { getConditionPropertyAtom } from '../../../states/plugin';
 
-const state = getConditionPropertyState('targetFieldCode');
+const state = getConditionPropertyAtom('targetFieldCode');
 
-const Component: FC = () => {
-  const fieldCode = useRecoilValue(state);
 
-  const onChange = useRecoilCallback(
-    ({ set }) =>
-      (code: string) => {
-        set(state, code);
-      },
-    []
+const handleFieldCodeChangeAtom = atom(null, (_, set, value: string) => {
+  set(state, value);
+});
+
+export default function TargetFieldSelect() {
+  const fieldCode = useAtomValue(state);
+  const onChange = useSetAtom(handleFieldCodeChangeAtom);
+
+  return (
+    <JotaiFieldSelect
+      fieldCode={fieldCode}
+      onChange={onChange}
+      fieldPropertiesAtom={appFieldsAtom}
+    />
   );
-
-  return <RecoilFieldSelect state={appFieldsState} onChange={onChange} fieldCode={fieldCode} />;
-};
-
-export default Component;
+}
