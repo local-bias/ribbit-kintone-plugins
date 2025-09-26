@@ -1,4 +1,4 @@
-import { Popover, PopoverContent, PopoverTrigger } from '@repo/ui';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { PluginCondition } from '@/schema/plugin-config';
 import { isMobile } from '@konomi-app/kintone-utilities';
