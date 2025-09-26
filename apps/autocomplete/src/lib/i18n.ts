@@ -1,8 +1,8 @@
-import { createTheme } from '@mui/material';
+import { commonUi, useTranslations } from '@repo/utils';
+import { mergeDeep } from 'remeda';
 import { LANGUAGE } from './global';
-import { enUS, esES, jaJP, zhCN } from '@mui/material/locale';
 
-export const ui = {
+const ui = mergeDeep(commonUi, {
   ja: {
     'config.condition.targetFieldCode.title': '対象フィールド',
     'config.condition.targetFieldCode.description':
@@ -95,7 +95,7 @@ export const ui = {
     'desktop.dialogtrigger.content': '单击以查看事件详细信息',
     'desktop.dialog.title': '插件设置',
   },
-  "zh-TW": {
+  'zh-TW': {
     'config.condition.targetFieldCode.title': '目標欄位',
     'config.condition.targetFieldCode.description': '請選擇要啟用自動完成的欄位',
     'config.condition.targetFieldCode.label': '目標欄位',
@@ -158,7 +158,7 @@ export const ui = {
     'desktop.dialogtrigger.content': 'Haz clic para ver los detalles del evento',
     'desktop.dialog.title': 'Configuración del plugin',
   },
-  "pt-BR": {
+  'pt-BR': {
     'config.condition.targetFieldCode.title': 'Campo de destino',
     'config.condition.targetFieldCode.description':
       'Selecione o campo para habilitar o preenchimento automático',
@@ -184,7 +184,8 @@ export const ui = {
     'config.toast.export': 'Configurações do plugin exportadas',
     'config.error.root':
       'O elemento raiz não existe no HTML do plugin. Para renderizar as configurações do plugin, é necessário um elemento com id="settings".',
-    'config.error.import': 'Falha ao importar as configurações. Verifique se o arquivo está correto.',
+    'config.error.import':
+      'Falha ao importar as configurações. Verifique se o arquivo está correto.',
     'config.error.export':
       'Falha ao exportar as configurações do plugin. Entre em contato com o desenvolvedor do plugin.',
     'desktop.dialogtrigger.title': 'Plugin habilitado',
@@ -193,8 +194,7 @@ export const ui = {
   },
   th: {
     'config.condition.targetFieldCode.title': 'ฟิลด์เป้าหมาย',
-    'config.condition.targetFieldCode.description':
-      'โปรดเลือกฟิลด์ที่ต้องการเปิดใช้งานการเติมข้อความอัตโนมัติ',
+    'config.condition.targetFieldCode.description': 'โปรดเลือกฟิลด์ที่ต้องการเปิดใช้งานการเติมข้อความอัตโนมัติ',
     'config.condition.targetFieldCode.label': 'ฟิลด์เป้าหมาย',
     'config.condition.srcAppId.title': 'แอปที่อ้างอิง',
     'config.condition.srcAppId.description':
@@ -222,27 +222,17 @@ export const ui = {
     'desktop.dialogtrigger.title': 'ปลั๊กอินถูกเปิดใช้งาน',
     'desktop.dialogtrigger.content': 'คลิกเพื่อดูรายละเอียดของเหตุการณ์',
     'desktop.dialog.title': 'การตั้งค่าปลั๊กอิน',
-  }
+  },
+} as const);
 
-} as const;
+export const t = useTranslations({
+  ui,
+  lang: LANGUAGE as keyof typeof ui,
+  defaultLang: 'ja',
+});
 
-export type Language = keyof typeof ui;
-
-export const defaultLang = 'ja' satisfies Language;
-
-/**
- * 指定された言語に対応する翻訳関数を返します。
- * @param lang - 言語のキー
- * @returns 指定された言語に対応する翻訳関数
- */
-export function useTranslations(lang: keyof typeof ui) {
-  return function t(key: keyof (typeof ui)[typeof defaultLang]): string {
-    //@ts-ignore
-    return ui[lang][key] ?? ui[defaultLang][key];
-  };
-}
-
-export const t = useTranslations(LANGUAGE as Language);
+import { createTheme } from '@mui/material';
+import { enUS, esES, jaJP, zhCN } from '@mui/material/locale';
 
 export const getMUITheme = () => {
   return createTheme(
