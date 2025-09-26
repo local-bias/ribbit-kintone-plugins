@@ -1,20 +1,41 @@
-import { PluginCondition, PluginConfig, restorePluginConfig } from '@/lib/plugin';
+import {
+  createConfig,
+  migrateConfig,
+  PluginCondition,
+  PluginConfig,
+  restorePluginConfig,
+} from '@/lib/plugin';
 import { produce } from 'immer';
-import { atom, DefaultValue, RecoilState, selector, selectorFamily } from 'recoil';
+import { atom } from 'jotai';
+import { atom as recoilAtom, DefaultValue, RecoilState, selector, selectorFamily } from 'recoil';
+import { handleLoadingEndAtom, handleLoadingStartAtom, usePluginAtoms } from '@repo/jotai';
+import { kintoneAppsAtom } from './kintone';
+import { saveAsJson } from '@repo/utils';
+import invariant from 'tiny-invariant';
+import { ChangeEvent, ReactNode } from 'react';
+import { onFileLoad, storePluginConfig } from '@konomi-app/kintone-utilities';
+import { enqueueSnackbar } from 'notistack';
+import { t } from '@/lib/i18n';
+import { PLUGIN_NAME } from '@/lib/static';
 
 const PREFIX = 'plugin';
 
-export const storageState = atom<PluginConfig>({
-  key: `${PREFIX}storageState`,
-  default: restorePluginConfig(),
-});
+export const pluginConfigAtom = atom<PluginConfig>(restorePluginConfig());
 
-export const loadingState = atom<boolean>({
+export const {
+  pluginConditionsAtom,
+  conditionsLengthAtom,
+  selectedConditionIdAtom,
+  selectedConditionAtom,
+  getConditionPropertyAtom,
+} = usePluginAtoms(pluginConfigAtom);
+
+export const loadingState = recoilAtom<boolean>({
   key: `${PREFIX}loadingState`,
   default: false,
 });
 
-export const tabIndexState = atom<number>({
+export const tabIndexState = recoilAtom<number>({
   key: `${PREFIX}tabIndexState`,
   default: 0,
 });
@@ -22,14 +43,14 @@ export const tabIndexState = atom<number>({
 export const conditionsState = selector<PluginCondition[]>({
   key: `${PREFIX}conditionsState`,
   get: ({ get }) => {
-    const storage = get(storageState);
+    const storage = get(pluginConfigAtom);
     return storage.conditions;
   },
   set: ({ set }, newValue) => {
     if (newValue instanceof DefaultValue) {
       return;
     }
-    set(storageState, (current) =>
+    set(pluginConfigAtom, (current) =>
       produce(current, (draft) => {
         draft.conditions = newValue;
       })
@@ -37,7 +58,7 @@ export const conditionsState = selector<PluginCondition[]>({
   },
 });
 
-export const selectedConditionIdState = atom<string | null>({
+export const selectedConditionIdState = recoilAtom<string | null>({
   key: `${PREFIX}selectedConditionIdState`,
   default: selector<string | null>({
     key: `${PREFIX}selectedConditionIdStateDefault`,
@@ -47,49 +68,97 @@ export const selectedConditionIdState = atom<string | null>({
   }),
 });
 
-export const selectedConditionState = selector<PluginCondition>({
-  key: `${PREFIX}selectedConditionState`,
-  get: ({ get }) => {
-    const conditions = get(conditionsState);
-    const selectedId = get(selectedConditionIdState);
-    return conditions.find((condition) => condition.id === selectedId) ?? conditions[0];
-  },
-  set: ({ get, set }, newValue) => {
-    if (newValue instanceof DefaultValue) {
-      return;
+export const srcFieldCodeAtom = getConditionPropertyAtom('srcFieldCode');
+
+export const handleSrcFieldChangeAtom = atom(null, (_, set, value: string) => {
+  set(selectedConditionAtom, (prev) =>
+    produce(prev, (draft) => {
+      draft.srcFieldCode = value;
+    })
+  );
+});
+
+export const srcAppIdAtom = getConditionPropertyAtom('srcAppId');
+
+export const handleSrcAppChangeAtom = atom(null, async (get, set, value: string) => {
+  set(srcAppIdAtom, value);
+
+  const allApps = await get(kintoneAppsAtom);
+  const srcApp = allApps.find((app) => app.appId === value);
+  if (!srcApp) {
+    return;
+  }
+
+  // get(kintoneSpacesAtom).then((spaces) => {
+  //   const srcSpace = spaces.find((space) => space.id === srcApp.spaceId);
+  //   if (!srcSpace) {
+  //     return;
+  //   }
+  //   set(srcSpaceIdAtom, srcSpace.id ?? null);
+  //   set(isSrcAppGuestSpaceAtom, srcSpace.isGuest);
+  // });
+});
+
+export const updatePluginConfig = atom(null, (get, set, actionComponent: ReactNode) => {
+  try {
+    set(handleLoadingStartAtom);
+    const pluginConfig = get(pluginConfigAtom);
+    storePluginConfig(pluginConfig, {
+      callback: () => true,
+      flatProperties: ['conditions'],
+      debug: true,
+    });
+    enqueueSnackbar(t('common.config.toast.save'), {
+      variant: 'success',
+      action: actionComponent,
+    });
+  } finally {
+    set(handleLoadingEndAtom);
+  }
+});
+
+/**
+ * jsonファイルを読み込み、プラグインの設定情報をインポートします
+ */
+export const importPluginConfigAtom = atom(
+  null,
+  async (_, set, event: ChangeEvent<HTMLInputElement>) => {
+    try {
+      set(handleLoadingStartAtom);
+      const { files } = event.target;
+      invariant(files?.length, 'ファイルが見つかりませんでした');
+      const [file] = Array.from(files);
+      const fileEvent = await onFileLoad(file!);
+      const text = (fileEvent.target?.result ?? '') as string;
+      set(pluginConfigAtom, migrateConfig(JSON.parse(text)));
+      enqueueSnackbar(t('common.config.toast.import'), { variant: 'success' });
+    } catch (error) {
+      enqueueSnackbar(t('common.config.error.import'), { variant: 'error' });
+      throw error;
+    } finally {
+      set(handleLoadingEndAtom);
     }
-    const conditions = get(conditionsState);
-    const index = conditions.findIndex((condition) => condition.id === newValue.id);
-    set(conditionsState, conditions.toSpliced(index, 1, newValue));
-  },
+  }
+);
+
+/**
+ * プラグインの設定情報をjsonファイルとしてエクスポートします
+ */
+export const exportPluginConfigAtom = atom(null, (get, set) => {
+  try {
+    set(handleLoadingStartAtom);
+    const pluginConfig = get(pluginConfigAtom);
+    saveAsJson(pluginConfig, `${PLUGIN_NAME}-config.json`);
+    enqueueSnackbar(t('common.config.toast.export'), { variant: 'success' });
+  } catch (error) {
+    enqueueSnackbar(t('common.config.error.export'), { variant: 'error' });
+    throw error;
+  } finally {
+    set(handleLoadingEndAtom);
+  }
 });
 
-const conditionPropertyState = selectorFamily<
-  PluginCondition[keyof PluginCondition],
-  keyof PluginCondition
->({
-  key: `${PREFIX}conditionPropertyState`,
-  get:
-    (key) =>
-    ({ get }) => {
-      const selectedCondition = get(selectedConditionState);
-      return selectedCondition[key];
-    },
-  set:
-    (key) =>
-    ({ get, set }, newValue) => {
-      if (newValue instanceof DefaultValue) {
-        process.env.NODE_ENV === 'development' && console.warn('newValue is DefaultValue');
-        return;
-      }
-      set(selectedConditionState, (current) =>
-        produce(current, (draft) => {
-          // @ts-ignore
-          draft[key] = newValue;
-        })
-      );
-    },
+export const handlePluginConfigResetAtom = atom(null, (_, set) => {
+  set(pluginConfigAtom, createConfig());
+  enqueueSnackbar(t('common.config.toast.reset'), { variant: 'success' });
 });
-
-export const getConditionPropertyState = <T extends keyof PluginCondition>(property: T) =>
-  conditionPropertyState(property) as unknown as RecoilState<PluginCondition[T]>;
