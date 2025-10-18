@@ -1,0 +1,61 @@
+// @ts-check
+const hp = 'https://konomi.app';
+const cdn = 'https://kintone-plugin.konomi.app';
+const key = 'template';
+
+/** @satisfies { Plugin.Meta.Config } */
+export default /** @type { const } */ ({
+  id: `ribbit-kintone-plugin-${key}`,
+  pluginReleasePageUrl: `https://ribbit.konomi.app/kintone-plugin/`,
+  server: {
+    port: 65535,
+  },
+  lint: {
+    build: true,
+  },
+  manifest: {
+    base: {
+      manifest_version: 1,
+      version: '0.1.0',
+      type: 'APP',
+      name: {
+        en: 'kintone-plugin-template',
+        ja: '他画面表示プラグイン',
+        zh: '插件模板',
+        'zh-TW': '插件模板',
+        es: 'Plantilla de complemento',
+        'pt-BR': 'Modelo de complemento',
+        th: 'แม่แบบปลั๊กอิน',
+      },
+      description: {
+        en: 'kintone-plugin-template',
+        ja: '特定のアクションをトリガーに、他のアプリやウェブページを表示するプラグインです。',
+        zh: '插件模板',
+        'zh-TW': '插件模板',
+        es: 'Plantilla de complemento',
+        'pt-BR': 'Modelo de complemento',
+        th: 'แม่แบบปลั๊กอิน',
+      },
+      icon: 'icon.png',
+      homepage_url: { ja: hp, en: hp },
+      desktop: { js: [`${cdn}/common/desktop.js`], css: [`${cdn}/common/desktop.css`] },
+      mobile: { js: [`${cdn}/common/desktop.js`], css: [`${cdn}/common/desktop.css`] },
+      config: {
+        html: 'config.html',
+        js: [`${cdn}/common/config.js`],
+        css: [`${cdn}/common/config.css`],
+        required_params: [],
+      },
+    },
+    prod: {
+      desktop: { js: [`${cdn}/${key}/desktop.js`], css: [`${cdn}/${key}/desktop.css`] },
+      mobile: { js: [`${cdn}/${key}/desktop.js`], css: [`${cdn}/${key}/desktop.css`] },
+      config: { js: [`${cdn}/${key}/config.js`], css: [`${cdn}/${key}/config.css`] },
+    },
+    standalone: {
+      desktop: { js: ['desktop.js'], css: ['desktop.css'] },
+      mobile: { js: ['desktop.js'], css: ['desktop.css'] },
+      config: { js: ['config.js'], css: ['config.css'] },
+    },
+  },
+});
