@@ -7,6 +7,7 @@ export * from './components/ui/dialog';
 export * from './components/ui/popover';
 export * from './components/ui/scroll-area';
 export * from './components/ui/shadcn-io/kanban';
+export * from './components/ui/tooltip';
 export * from './error-boundary';
 export * from './icons';
 export * from './resizable';
