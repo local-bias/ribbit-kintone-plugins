@@ -5,6 +5,7 @@
 @import 'tw-animate-css';
 
 @import '@repo/tailwindcss/config.css';
+@import '@repo/ui/styles.css';
 
 @layer base {
   .MuiAutocomplete-popper[role='presentation'] {
