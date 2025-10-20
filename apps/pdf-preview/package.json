@@ -9,7 +9,7 @@
     "build:css-config": "pnpm dlx @tailwindcss/cli -i ./src/styles/config.css -o ./.plugin/contents/config.css --minify",
     "build:js": "plugin build",
     "build": "concurrently \"pnpm:build:*\" && plugin zip",
-    "standalone": "plugin build && plugin zip --env standalone",
+    "standalone": "concurrently \"pnpm:build:*\" && plugin zip --env standalone",
     "dev:js": "plugin dev --cert-dir C:/workspaces/apps/cert",
     "dev:css-desktop": "pnpm dlx @tailwindcss/cli -i ./src/styles/desktop.css -o ./.plugin/dev/desktop.css --watch",
     "dev:css-config": "pnpm dlx @tailwindcss/cli -i ./src/styles/config.css -o ./.plugin/dev/config.css --watch",
