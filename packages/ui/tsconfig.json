@@ -1,7 +1,10 @@
 {
   "extends": "@repo/typescript-config/react-library.json",
   "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "bundler",
     "baseUrl": ".",
+    "lib": ["es2023", "DOM", "DOM.Iterable"],
     "paths": {
       "@/*": ["./src/*"]
     },
