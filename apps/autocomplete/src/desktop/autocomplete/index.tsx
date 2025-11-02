@@ -1,8 +1,7 @@
-import { restorePluginConfig } from '@/lib/plugin';
 import { manager } from '@/lib/event-manager';
-import { createRoot } from 'react-dom/client';
-import React from 'react';
+import { restorePluginConfig } from '@/lib/plugin';
 import { getMetaFieldId_UNSTABLE } from '@konomi-app/kintone-utilities';
+import { createRoot } from 'react-dom/client';
 import App from './app';
 
 manager.add(['app.record.create.show', 'app.record.edit.show'], async (event) => {
