@@ -16,7 +16,7 @@
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",
     "@konomi-app/kintone-utilities": "^5.11.0",
-    "@konomi-app/kintone-utilities-jotai": "^1.3.0",
+    "@konomi-app/kintone-utilities-jotai": "^1.4.0",
     "@konomi-app/kintone-utilities-react": "^1.22.5",
     "@konomi-app/ui": "^2.3.0",
     "@konomi-app/ui-react": "^1.1.1",
