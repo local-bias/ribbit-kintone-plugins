@@ -4,23 +4,15 @@ import { focusAtom } from 'jotai-optics';
 import { atomWithDefault, RESET } from 'jotai/utils';
 import { type SetStateAction } from 'react';
 
-/**
- * プラグインの状態を管理するatomのコレクションを提供します。
- * 共通設定(`common`プロパティ)を使用する場合のオーバーロードです。
- *
- * @param pluginConfigAtom プラグイン設定のベースとなるatom
- * @param options 設定オプション。`enableCommonCondition: true`を指定すると共通設定が有効になります
- * @returns プラグイン設定を操作するためのatomのコレクション
- */
-export function usePluginAtoms<
-  T extends {
-    common: Record<string, unknown>;
-    conditions: ({ id: string } & Record<string, unknown>)[];
-  },
->(
-  pluginConfigAtom: PrimitiveAtom<T>,
-  options: { enableCommonCondition: true }
-): {
+// プラグインの基本設定インターフェース
+type PluginConfigBase = {
+  conditions: ({ id: string } & Record<string, unknown>)[];
+};
+type CommonPluginConfigBase = PluginConfigBase & {
+  common: Record<string, unknown>;
+};
+
+type PluginConfigReturnTypeBase<T extends PluginConfigBase> = {
   /**
    * プラグインの条件リストを管理するatom
    */
@@ -35,7 +27,7 @@ export function usePluginAtoms<
   conditionsLengthAtom: PrimitiveAtom<number>;
   /**
    * 現在選択されている条件のIDを管理するatom
-   * nullの場合は共通設定が選択されていることを意味します
+   * `enableCommonCondition`が`true`の場合は、nullが共通設定を意味します
    */
   selectedConditionIdAtom: WritableAtom<
     string | null,
@@ -43,7 +35,8 @@ export function usePluginAtoms<
     void
   >;
   /**
-   * 条件が選択されていないかどうか（共通設定が選択されているか）を示すatom
+   * 条件が選択されていないかどうかを示すatom
+   * `enableCommonCondition`が`true`の場合は、共通設定が選択されているかを意味します
    */
   isConditionIdUnselectedAtom: PrimitiveAtom<boolean>;
   /**
@@ -58,6 +51,9 @@ export function usePluginAtoms<
   getConditionPropertyAtom: <F extends keyof T['conditions'][number]>(
     property: F
   ) => PrimitiveAtom<T['conditions'][number][F]>;
+};
+
+type CommonPluginConfigReturnType<T extends CommonPluginConfigBase> = {
   /**
    * 共通設定を管理するatom
    */
@@ -73,56 +69,30 @@ export function usePluginAtoms<
 };
 
 /**
- * プラグインの状態を管理するatomのコレクションを提供します。
+ * プラグイン設定情報のオブジェクトを受け取り、
+ * 共通するプロパティとユーティリティatomを返却します
+ *
+ * 共通設定(`common`プロパティ)を使用する場合のオーバーロードです。
+ *
+ * @see {@link usePluginAtoms} 共通情報
+ */
+export function usePluginAtoms<T extends CommonPluginConfigBase>(
+  pluginConfigAtom: PrimitiveAtom<T>,
+  options: { enableCommonCondition: true }
+): CommonPluginConfigReturnType<T> & PluginConfigReturnTypeBase<T>;
+
+/**
+ * プラグイン設定情報のオブジェクトを受け取り、
+ * 共通するプロパティとユーティリティatomを返却します
+ *
  * 共通設定(`common`プロパティ)を使用しない場合のオーバーロードです。
  *
- * @param pluginConfigAtom プラグイン設定のベースとなるatom
- * @param options 設定オプション
- * @returns プラグイン設定を操作するためのatomのコレクション
+ * @see {@link usePluginAtoms} 共通情報
  */
-export function usePluginAtoms<
-  T extends { conditions: ({ id: string } & Record<string, unknown>)[] },
->(
+export function usePluginAtoms<T extends PluginConfigBase>(
   pluginConfigAtom: PrimitiveAtom<T>,
   options?: { enableCommonCondition?: false }
-): {
-  /**
-   * プラグインの条件リストを管理するatom
-   */
-  pluginConditionsAtom: PrimitiveAtom<T['conditions']>;
-  /**
-   * 複数の条件が存在するかどうかを示すatom
-   */
-  hasMultipleConditionsAtom: PrimitiveAtom<boolean>;
-  /**
-   * 条件の数を提供するatom
-   */
-  conditionsLengthAtom: PrimitiveAtom<number>;
-  /**
-   * 現在選択されている条件のIDを管理するatom
-   */
-  selectedConditionIdAtom: WritableAtom<
-    string | null,
-    [typeof RESET | SetStateAction<string | null>],
-    void
-  >;
-  /**
-   * 条件が選択されていないかどうかを示すatom
-   */
-  isConditionIdUnselectedAtom: PrimitiveAtom<boolean>;
-  /**
-   * 現在選択されている条件の内容を管理するatom
-   */
-  selectedConditionAtom: PrimitiveAtom<T['conditions'][number]>;
-  /**
-   * 選択中の条件の特定プロパティにアクセスするためのatom生成関数
-   * @param property アクセスしたいプロパティのキー
-   * @returns 指定されたプロパティにフォーカスしたatom
-   */
-  getConditionPropertyAtom: <F extends keyof T['conditions'][number]>(
-    property: F
-  ) => PrimitiveAtom<T['conditions'][number][F]>;
-};
+): PluginConfigReturnTypeBase<T>;
 
 /**
  * プラグインの状態を管理するatomのコレクションを提供します。
@@ -141,17 +111,13 @@ export function usePluginAtoms<
  * const { selectedConditionAtom } = usePluginAtoms(configAtom);
  */
 export function usePluginAtoms<
-  T extends {
-    conditions: ({ id: string } & Record<string, unknown>)[];
-  } & Partial<{
-    common: Record<string, unknown>;
-  }>,
+  T extends PluginConfigBase & Partial<{ common: Record<string, unknown> }>,
 >(
   pluginConfigAtom: PrimitiveAtom<T>,
   options?: {
     enableCommonCondition?: boolean;
   }
-) {
+): any {
   type Condition = T['conditions'][number];
 
   const { enableCommonCondition = false } = options || {};
