@@ -1,24 +1,15 @@
-import {
-  createConfig,
-  migrateConfig,
-  PluginCondition,
-  PluginConfig,
-  restorePluginConfig,
-} from '@/lib/plugin';
+import { t } from '@/lib/i18n';
+import { createConfig, migrateConfig, PluginConfig, restorePluginConfig } from '@/lib/plugin';
+import { PLUGIN_NAME } from '@/lib/static';
+import { onFileLoad, storePluginConfig } from '@konomi-app/kintone-utilities';
+import { handleLoadingEndAtom, handleLoadingStartAtom, usePluginAtoms } from '@repo/jotai';
+import { saveAsJson } from '@repo/utils';
 import { produce } from 'immer';
 import { atom } from 'jotai';
-import { atom as recoilAtom, DefaultValue, RecoilState, selector, selectorFamily } from 'recoil';
-import { handleLoadingEndAtom, handleLoadingStartAtom, usePluginAtoms } from '@repo/jotai';
-import { kintoneAppsAtom } from './kintone';
-import { saveAsJson } from '@repo/utils';
-import invariant from 'tiny-invariant';
-import { ChangeEvent, ReactNode } from 'react';
-import { onFileLoad, storePluginConfig } from '@konomi-app/kintone-utilities';
 import { enqueueSnackbar } from 'notistack';
-import { t } from '@/lib/i18n';
-import { PLUGIN_NAME } from '@/lib/static';
-
-const PREFIX = 'plugin';
+import { ChangeEvent, ReactNode } from 'react';
+import invariant from 'tiny-invariant';
+import { kintoneAppsAtom } from './kintone';
 
 export const pluginConfigAtom = atom<PluginConfig>(restorePluginConfig());
 
@@ -29,44 +20,6 @@ export const {
   selectedConditionAtom,
   getConditionPropertyAtom,
 } = usePluginAtoms(pluginConfigAtom);
-
-export const loadingState = recoilAtom<boolean>({
-  key: `${PREFIX}loadingState`,
-  default: false,
-});
-
-export const tabIndexState = recoilAtom<number>({
-  key: `${PREFIX}tabIndexState`,
-  default: 0,
-});
-
-export const conditionsState = selector<PluginCondition[]>({
-  key: `${PREFIX}conditionsState`,
-  get: ({ get }) => {
-    const storage = get(pluginConfigAtom);
-    return storage.conditions;
-  },
-  set: ({ set }, newValue) => {
-    if (newValue instanceof DefaultValue) {
-      return;
-    }
-    set(pluginConfigAtom, (current) =>
-      produce(current, (draft) => {
-        draft.conditions = newValue;
-      })
-    );
-  },
-});
-
-export const selectedConditionIdState = recoilAtom<string | null>({
-  key: `${PREFIX}selectedConditionIdState`,
-  default: selector<string | null>({
-    key: `${PREFIX}selectedConditionIdStateDefault`,
-    get: ({ get }) => {
-      return get(conditionsState)[0]?.id ?? null;
-    },
-  }),
-});
 
 export const srcFieldCodeAtom = getConditionPropertyAtom('srcFieldCode');
 

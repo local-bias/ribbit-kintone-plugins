@@ -1,17 +1,16 @@
 import { getConditionPropertyAtom } from '@/config/states/plugin';
 import { t } from '@/lib/i18n';
+import { JotaiNumber } from '@konomi-app/kintone-utilities-jotai';
 import {
   PluginFormDescription,
   PluginFormSection,
   PluginFormTitle,
-  RecoilNumber,
 } from '@konomi-app/kintone-utilities-react';
 import { FC } from 'react';
 import DeleteButton from './condition-delete-button';
 import SrcAppIdForm from './form-src-app';
 import SrcFieldCodeForm from './form-src-field';
 import FieldsForm from './form-target-field';
-import { JotaiText } from '@konomi-app/kintone-utilities-jotai';
 
 const Component: FC = () => (
   <div className='p-4'>
@@ -39,7 +38,7 @@ const Component: FC = () => (
     <PluginFormSection>
       <PluginFormTitle>{t('config.condition.limit.title')}</PluginFormTitle>
       <PluginFormDescription last>{t('config.condition.limit.description')}</PluginFormDescription>
-      <JotaiText atom={getConditionPropertyAtom('limit')} />
+      <JotaiNumber atom={getConditionPropertyAtom('limit')} />
     </PluginFormSection>
     <DeleteButton />
   </div>
