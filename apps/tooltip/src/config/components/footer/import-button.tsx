@@ -3,10 +3,10 @@ import { onFileLoad } from '@konomi-app/kintone-utilities';
 import { PluginConfigImportButton } from '@konomi-app/kintone-utilities-react';
 import { useAtomCallback } from 'jotai/utils';
 import { useSnackbar } from 'notistack';
-import { ChangeEventHandler, FC, memo, useCallback } from 'react';
+import { ChangeEventHandler, useCallback } from 'react';
 import { pluginConfigAtom } from '../../states/plugin';
 
-const Component: FC = () => {
+export default function ImportButton() {
   const { enqueueSnackbar } = useSnackbar();
 
   const onChange: ChangeEventHandler<HTMLInputElement> = useAtomCallback(
@@ -32,6 +32,4 @@ const Component: FC = () => {
   );
 
   return <PluginConfigImportButton onImportButtonClick={onChange} loading={false} />;
-};
-
-export default memo(Component);
+}

@@ -3,7 +3,7 @@ import styled from '@emotion/styled';
 import { getAppId, getAppSettings, kintoneAPI } from '@konomi-app/kintone-utilities';
 import { CircularProgress, Menu, MenuItem } from '@mui/material';
 import { Paintbrush } from 'lucide-react';
-import React, { FC } from 'react';
+import React from 'react';
 
 type Props = { initSettings: kintoneAPI.AppSettings; className?: string };
 
@@ -31,7 +31,7 @@ function getThemeClassName(src: Theme) {
   return '';
 }
 
-const Component: FC<Props> = ({ className, initSettings }) => {
+function ThemeChanger({ className, initSettings }: Props) {
   const [loading, setLoading] = React.useState(false);
   const [, setTheme] = React.useState(initSettings.theme || THEMES[0][0]);
   const timer = React.useRef(setTimeout(() => {}, 0));
@@ -133,9 +133,9 @@ const Component: FC<Props> = ({ className, initSettings }) => {
       </Menu>
     </>
   );
-};
+}
 
-const StyledComponent = styled(Component)`
+const StyledThemeChanger = styled(ThemeChanger)`
   position: relative;
 
   box-sizing: border-box;
@@ -163,4 +163,4 @@ const StyledComponent = styled(Component)`
   }
 `;
 
-export default StyledComponent;
+export default StyledThemeChanger;

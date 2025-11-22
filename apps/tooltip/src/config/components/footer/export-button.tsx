@@ -2,10 +2,10 @@ import { PLUGIN_NAME } from '@/lib/static';
 import { PluginConfigExportButton } from '@konomi-app/kintone-utilities-react';
 import { useAtomCallback } from 'jotai/utils';
 import { useSnackbar } from 'notistack';
-import { FC, memo, useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { pluginConfigAtom } from '../../states/plugin';
 
-const Component: FC = () => {
+export default function ExportButton() {
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState<boolean>(false);
 
@@ -38,6 +38,4 @@ const Component: FC = () => {
   );
 
   return <PluginConfigExportButton loading={loading} onExportButtonClick={onClick} />;
-};
-
-export default memo(Component);
+}
