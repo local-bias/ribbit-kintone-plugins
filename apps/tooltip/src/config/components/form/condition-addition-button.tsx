@@ -3,25 +3,27 @@ import AddIcon from '@mui/icons-material/Add';
 import { Button } from '@mui/material';
 import { produce } from 'immer';
 import { useAtomCallback } from 'jotai/utils';
-import { FC, useCallback } from 'react';
+import { useCallback } from 'react';
 import { pluginConfigAtom } from '../../states/plugin';
 
 type Props = Readonly<{ addCondition: () => void }>;
 
-const Component: FC<Props> = ({ addCondition }) => (
-  <Button
-    variant='outlined'
-    color='primary'
-    size='small'
-    startIcon={<AddIcon />}
-    onClick={addCondition}
-    style={{ marginTop: '16px' }}
-  >
-    新しい設定
-  </Button>
-);
+function AdditionButton({ addCondition }: Props) {
+  return (
+    <Button
+      variant='outlined'
+      color='primary'
+      size='small'
+      startIcon={<AddIcon />}
+      onClick={addCondition}
+      style={{ marginTop: '16px' }}
+    >
+      新しい設定
+    </Button>
+  );
+}
 
-const Container: FC = () => {
+export default function ConditionAdditionButton() {
   const addCondition = useAtomCallback(
     useCallback((_, set) => {
       set(pluginConfigAtom, (_, _storage = _!) =>
@@ -32,7 +34,5 @@ const Container: FC = () => {
     }, [])
   );
 
-  return <Component {...{ addCondition }} />;
-};
-
-export default Container;
+  return <AdditionButton {...{ addCondition }} />;
+}

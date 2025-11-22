@@ -2,14 +2,18 @@ import styled from '@emotion/styled';
 import { TextField, TextFieldProps } from '@mui/material';
 import { PrimitiveAtom, useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
-import { ChangeEventHandler, FC, Suspense, useCallback } from 'react';
+import { ChangeEventHandler, ComponentType, Suspense, useCallback } from 'react';
 
 type Props = {
   atom: PrimitiveAtom<string>;
   width?: number;
 } & Omit<TextFieldProps, 'value' | 'onChange'>;
 
-const Component: FC<Props & { className?: string }> = ({ className, atom, ...textFieldProps }) => {
+function ColorPickerContent({
+  className,
+  atom,
+  ...textFieldProps
+}: Props & { className?: string }) {
   const query = useAtomValue(atom);
 
   const onChange: ChangeEventHandler<HTMLInputElement> = useAtomCallback(
@@ -24,31 +28,31 @@ const Component: FC<Props & { className?: string }> = ({ className, atom, ...tex
       <TextField {...textFieldProps} type='color' value={query} onChange={onChange} />
     </div>
   );
-};
-Component.displayName = 'JotaiColorPickerComponent';
+}
 
-const PlaceHolder: FC<Props & { className?: string }> = ({
+function ColorPickerPlaceholder({
   className,
   label,
   placeholder,
   width,
-}) => (
-  <div className={className}>
-    <TextField label={label} placeholder={placeholder} value='' sx={{ width }} disabled />
-    <TextField label={label} placeholder={placeholder} value='' sx={{ width }} disabled />
-  </div>
-);
-PlaceHolder.displayName = 'JotaiColorPickerPlaceHolder';
+}: Props & { className?: string }) {
+  return (
+    <div className={className}>
+      <TextField label={label} placeholder={placeholder} value='' sx={{ width }} disabled />
+      <TextField label={label} placeholder={placeholder} value='' sx={{ width }} disabled />
+    </div>
+  );
+}
 
-const Styled = (component: FC<any>) => styled(component)`
+const Styled = (component: ComponentType<any>) => styled(component)`
   display: flex;
   gap: 8px;
 `;
 
-const StyledPlaceHolder = Styled(PlaceHolder);
-const StyledComponent = Styled(Component);
+const StyledPlaceHolder = Styled(ColorPickerPlaceholder);
+const StyledComponent = Styled(ColorPickerContent);
 
-const Container: FC<Props> = (props) => {
+export function JotaiColorPicker(props: Props) {
   const completed: Props = { ...props, sx: { width: 120, ...props.sx } };
 
   return (
@@ -56,7 +60,4 @@ const Container: FC<Props> = (props) => {
       <StyledComponent {...completed} />
     </Suspense>
   );
-};
-Container.displayName = 'JotaiColorPickerContainer';
-
-export const JotaiColorPicker = Container;
+}

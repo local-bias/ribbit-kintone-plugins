@@ -3,11 +3,11 @@ import { PluginCondition } from '@/schema/plugin-config';
 import { Checkbox, FormControlLabel, FormGroup } from '@mui/material';
 import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
-import { FC, useCallback } from 'react';
+import { useCallback } from 'react';
 
 type OptionValue = PluginCondition['targetEvents'][number];
 
-const OPTIONS: { value: OptionValue; label: string }[] = [
+const OPTIONS: { value: OptionValue; label: string; }[] = [
   {
     value: 'create',
     label: 'レコード追加画面',
@@ -28,7 +28,7 @@ const OPTIONS: { value: OptionValue; label: string }[] = [
 
 const state = getConditionPropertyAtom('targetEvents');
 
-const Component: FC = () => {
+export default function TargetEventsForm() {
   const value = useAtomValue(state);
 
   const onChange = useAtomCallback(
@@ -60,6 +60,4 @@ const Component: FC = () => {
       </FormGroup>
     </div>
   );
-};
-
-export default Component;
+}

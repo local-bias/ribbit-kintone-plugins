@@ -3,25 +3,25 @@ import { selectedConditionAtom } from '@/config/states/plugin';
 import { TooltipIcon } from '@/lib/components/tooltip-icon';
 import DOMPurify from 'dompurify';
 import { useAtomValue } from 'jotai';
-import { type FC } from 'react';
 
-const Emoji: FC = () => {
+
+function PreviewEmoji() {
   const condition = useAtomValue(selectedConditionAtom);
   if (condition.type !== 'emoji') {
     return null;
   }
   return <span className='text-lg cursor-default'>{condition.emoji}</span>;
-};
+}
 
-const Icon: FC = () => {
+function PreviewIcon() {
   const condition = useAtomValue(selectedConditionAtom);
   if (condition.type !== 'icon') {
     return null;
   }
   return <TooltipIcon iconType={condition.iconType} iconColor={condition.iconColor} />;
-};
+}
 
-const Component: FC = () => {
+export default function Preview() {
   const condition = useAtomValue(selectedConditionAtom);
 
   return (
@@ -29,8 +29,8 @@ const Component: FC = () => {
       <TooltipProvider>
         <Tooltip delayDuration={0}>
           <TooltipTrigger className='grid place-items-center'>
-            <Icon />
-            <Emoji />
+            <PreviewIcon />
+            <PreviewEmoji />
           </TooltipTrigger>
           <TooltipContent
             style={{
@@ -44,6 +44,4 @@ const Component: FC = () => {
       </TooltipProvider>
     </div>
   );
-};
-
-export default Component;
+}

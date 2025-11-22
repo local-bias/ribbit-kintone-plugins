@@ -5,7 +5,6 @@ import {
   PluginFormSection,
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
-import { FC } from 'react';
 import { conditionLabelAtom, getConditionPropertyAtom } from '../../states/plugin';
 import DeleteButton from './condition-delete-button';
 import EmojiForm from './form-emoji';
@@ -16,7 +15,7 @@ import TargetEventsForm from './form-target-events';
 import TypeForm from './form-type';
 import Preview from './preview';
 
-const Component: FC = () => {
+export default function ConfigForm() {
   return (
     <div className='p-4'>
       <PluginFormSection>
@@ -99,6 +98,4 @@ const Component: FC = () => {
       <DeleteButton />
     </div>
   );
-};
-
-export default Component;
+}

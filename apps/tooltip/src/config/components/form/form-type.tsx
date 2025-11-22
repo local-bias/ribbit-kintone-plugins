@@ -3,9 +3,9 @@ import { ConditionType } from '@/schema/plugin-config';
 import { MenuItem, TextField } from '@mui/material';
 import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
-import { FC, useCallback } from 'react';
+import { useCallback } from 'react';
 
-const Component: FC = () => {
+export default function TypeForm() {
   const type = useAtomValue(conditionTypeAtom);
 
   const onChange = useAtomCallback(
@@ -29,6 +29,4 @@ const Component: FC = () => {
       </TextField>
     </div>
   );
-};
-
-export default Component;
+}

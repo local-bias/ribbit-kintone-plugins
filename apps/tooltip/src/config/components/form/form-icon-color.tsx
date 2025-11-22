@@ -7,7 +7,7 @@ import {
 } from '@konomi-app/kintone-utilities-react';
 import { useAtomValue } from 'jotai';
 
-const Container = () => {
+export default function IconColorForm() {
   const type = useAtomValue(conditionTypeAtom);
   if (type !== 'icon') {
     return null;
@@ -26,6 +26,4 @@ const Container = () => {
       />
     </PluginFormSection>
   );
-};
-
-export default Container;
+}

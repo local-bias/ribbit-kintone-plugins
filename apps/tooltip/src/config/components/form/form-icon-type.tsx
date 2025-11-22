@@ -17,9 +17,8 @@ import {
 } from '@konomi-app/kintone-utilities-react';
 import { MenuItem, TextField } from '@mui/material';
 import { useAtom, useAtomValue } from 'jotai';
-import { FC } from 'react';
 
-const Component: FC = () => {
+function IconTypeSelect() {
   const [type, setType] = useAtom(conditionIconTypeAtom);
   const color = useAtomValue(conditionIconColorAtom);
 
@@ -65,9 +64,9 @@ const Component: FC = () => {
       </TextField>
     </div>
   );
-};
+}
 
-const Container = () => {
+export default function IconTypeForm() {
   const type = useAtomValue(conditionTypeAtom);
   if (type !== 'icon') {
     return null;
@@ -76,9 +75,7 @@ const Container = () => {
     <PluginFormSection>
       <PluginFormTitle>アイコンの種類</PluginFormTitle>
       <PluginFormDescription last>アイコンの種類を指定してください。</PluginFormDescription>
-      <Component />
+      <IconTypeSelect />
     </PluginFormSection>
   );
-};
-
-export default Container;
+}

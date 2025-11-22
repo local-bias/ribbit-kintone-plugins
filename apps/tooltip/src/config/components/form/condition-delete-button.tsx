@@ -3,14 +3,14 @@ import { produce } from 'immer';
 import { useAtomValue } from 'jotai';
 import { RESET, useAtomCallback } from 'jotai/utils';
 import { useSnackbar } from 'notistack';
-import { FC, memo, useCallback } from 'react';
+import { useCallback } from 'react';
 import {
   conditionsLengthAtom,
   pluginConfigAtom,
   selectedConditionIdAtom,
 } from '../../states/plugin';
 
-const Container: FC = () => {
+function ConditionDeleteButton() {
   const { enqueueSnackbar } = useSnackbar();
   const conditionsLength = useAtomValue(conditionsLengthAtom);
 
@@ -33,6 +33,6 @@ const Container: FC = () => {
   }
 
   return <PluginConditionDeleteButton {...{ onClick }} />;
-};
+}
 
-export default memo(Container);
+export default ConditionDeleteButton;

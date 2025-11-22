@@ -5,11 +5,10 @@ import {
   ExclamationTriangleIcon,
   InformationCircleIcon,
 } from '@heroicons/react/24/solid';
-import { FC } from 'react';
 
-type Props = { iconType: IconType; iconColor: string };
+type Props = { iconType: IconType; iconColor: string; };
 
-const Component: FC<Props> = ({ iconType, iconColor }) => {
+export function TooltipIcon({ iconType, iconColor }: Props) {
   switch (iconType) {
     case 'warning':
       return (
@@ -41,6 +40,4 @@ const Component: FC<Props> = ({ iconType, iconColor }) => {
         />
       );
   }
-};
-
-export const TooltipIcon = Component;
+}

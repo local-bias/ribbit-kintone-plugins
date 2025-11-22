@@ -9,9 +9,9 @@ import {
 } from '@konomi-app/kintone-utilities-react';
 import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
-import { FC, useCallback } from 'react';
+import { useCallback } from 'react';
 
-const Component: FC = () => {
+function EmojiPicker() {
   const emoji = useAtomValue(conditionEmojiAtom);
 
   const onChange = useAtomCallback(
@@ -30,14 +30,14 @@ const Component: FC = () => {
       </div>
       <Picker
         data={data}
-        onEmojiSelect={({ native }: { native: string }) => onChange(native)}
+        onEmojiSelect={({ native }: { native: string; }) => onChange(native)}
         i18n={i18n}
       />
     </div>
   );
-};
+}
 
-const Container = () => {
+export default function EmojiForm() {
   const type = useAtomValue(conditionTypeAtom);
   if (type !== 'emoji') {
     return null;
@@ -49,9 +49,7 @@ const Container = () => {
       <PluginFormDescription last>
         表示される絵文字は、利用しているブラウザによって異なる場合や、絵文字がサポートされていない場合があります。
       </PluginFormDescription>
-      <Component />
+      <EmojiPicker />
     </PluginFormSection>
   );
-};
-
-export default Container;
+}

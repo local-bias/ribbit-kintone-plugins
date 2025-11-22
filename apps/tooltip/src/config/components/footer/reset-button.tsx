@@ -2,10 +2,10 @@ import { createConfig } from '@/lib/plugin';
 import { PluginConfigResetButton } from '@konomi-app/kintone-utilities-react';
 import { useAtomCallback } from 'jotai/utils';
 import { useSnackbar } from 'notistack';
-import { FC, memo, useCallback } from 'react';
+import { useCallback } from 'react';
 import { pluginConfigAtom } from '../../states/plugin';
 
-const Component: FC = () => {
+export default function ResetButton() {
   const { enqueueSnackbar } = useSnackbar();
 
   const reset = useAtomCallback(
@@ -16,6 +16,4 @@ const Component: FC = () => {
   );
 
   return <PluginConfigResetButton reset={reset} />;
-};
-
-export default memo(Component);
+}

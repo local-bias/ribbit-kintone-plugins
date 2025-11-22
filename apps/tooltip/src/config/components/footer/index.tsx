@@ -6,7 +6,7 @@ import { Button, CircularProgress } from '@mui/material';
 import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
 import { useSnackbar } from 'notistack';
-import { FC, useCallback } from 'react';
+import { useCallback } from 'react';
 import { loadingAtom, pluginConfigAtom } from '../../states/plugin';
 import ExportButton from './export-button';
 import ImportButton from './import-button';
@@ -17,7 +17,7 @@ type Props = {
   onBackButtonClick: () => void;
 };
 
-const Component: FC<Props> = ({ onSaveButtonClick, onBackButtonClick }) => {
+function FooterContent({ onSaveButtonClick, onBackButtonClick }: Props) {
   const loading = useAtomValue(loadingAtom);
 
   return (
@@ -53,7 +53,7 @@ const Component: FC<Props> = ({ onSaveButtonClick, onBackButtonClick }) => {
   );
 };
 
-const Container: FC = () => {
+export default function Footer() {
   const { enqueueSnackbar } = useSnackbar();
 
   const onBackButtonClick = useCallback(() => history.back(), []);
@@ -79,7 +79,5 @@ const Container: FC = () => {
     }, [])
   );
 
-  return <Component {...{ onSaveButtonClick, onBackButtonClick }} />;
-};
-
-export default Container;
+  return <FooterContent {...{ onSaveButtonClick, onBackButtonClick }} />;
+}
