@@ -35,7 +35,7 @@ import {
   downloadFile,
   getRecordComments,
   addRecordComment,
-} from '@kintone-utilities/core';
+} from '@konomi-app/kintone-utilities';
 ```
 
 ### 共通パラメータ
