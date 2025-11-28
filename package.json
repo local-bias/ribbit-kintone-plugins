@@ -10,24 +10,24 @@
     "check-types": "turbo run check-types"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.2.4",
+    "@biomejs/biome": "^2.3.7",
     "@konomi-app/prettier-config": "^1.1.2",
     "prettier": "^3.6.2",
-    "tailwindcss": "^4.1.12",
-    "turbo": "^2.5.6",
-    "typescript": "5.9.2"
+    "tailwindcss": "^4.1.17",
+    "turbo": "^2.6.1",
+    "typescript": "5.9.3"
   },
   "pnpm": {
     "overrides": {
       "@konomi-app/kintone-utilities-jotai": "^1.4.0",
       "@mui/material": "^7.2.0",
-      "jotai": "^2.15.0",
+      "jotai": "^2.15.1",
       "@konomi-app/k2": "^1.12.2",
       "@types/react": "^19.2.0",
       "@types/react-dom": "^19.2.0"
     }
   },
-  "packageManager": "pnpm@10.18.1",
+  "packageManager": "pnpm@10.23.0",
   "engines": {
     "node": ">=18"
   },
