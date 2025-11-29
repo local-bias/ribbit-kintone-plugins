@@ -309,30 +309,6 @@ const validConditions = pluginConfig.conditions.filter(
   (condition) => condition.fieldCode && condition.rules.length > 0
 );
 
-// レコード作成・編集画面表示時のイベント
-manager.add(['app.record.create.show', 'app.record.edit.show'], (event) => {
-  const eventType: TargetEvent = event.type.includes('create') ? 'create' : 'edit';
-
-  for (const condition of validConditions) {
-    // 対象イベントかどうかをチェック
-    if (!condition.targetEvents.includes(eventType)) {
-      continue;
-    }
-
-    const { fieldCode, showErrorOnChange } = condition;
-
-    if (showErrorOnChange) {
-      // フィールド変更時にエラーを表示する設定の場合、初期表示時にもチェック
-      const result = validateCondition(condition, event.record as RecordData);
-      if (!result.isValid) {
-        setFieldError(event.record as RecordData, fieldCode, result.errorMessage);
-      }
-    }
-  }
-
-  return event;
-});
-
 // フィールド変更時のイベント
 for (const condition of validConditions) {
   const { fieldCode, showErrorOnChange, targetEvents } = condition;
