@@ -126,7 +126,15 @@ Jotaiによる設定画面の状態管理。`@repo/jotai`の`usePluginAtoms`を�
 public/[plugin-name]/  # 配布用（scripts/merge-outputs.mjsで生成）
 ```
 
-## TailwindCSS v4 スタイル構造
+## スタイリング方針
+
+**⚠️ TailwindCSSは新規開発では使用しないこと**
+
+kintoneの既存スタイルとの競合が発生しやすいため、TailwindCSSの使用は極力避ける。Reactコンポーネントのスタイリングには`@emotion/styled`を使用すること。
+
+### レガシー: TailwindCSS v4 スタイル構造（参考）
+
+既存コードで使用されている場合の参考情報:
 
 設定画面（config.css）:
 

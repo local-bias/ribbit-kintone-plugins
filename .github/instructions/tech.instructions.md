@@ -51,9 +51,36 @@ TurboRepoモノレポ構成のkintoneプラグイン開発プロジェクト。
 
 ### スタイリング
 
-- TailwindCSS v4.1.x
-- Emotion（CSS-in-JS）
+- Emotion（CSS-in-JS）- **推奨**
+- TailwindCSS v4.1.x（レガシー、新規使用非推奨）
 - class-variance-authority / clsx
+
+#### Reactコンポーネントのスタイリング方針
+
+Reactコンポーネントのスタイリングは基本的に`@emotion/styled`を使用する。
+
+**⚠️ TailwindCSSは使用しないこと**: kintoneの既存スタイルとの競合が発生しやすいため、TailwindCSSの使用は極力避ける。既存コードでTailwindCSSを使用している箇所があっても、新規開発では`@emotion/styled`を使用すること。
+
+```typescript
+import styled from '@emotion/styled';
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px;
+`;
+
+const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
+  padding: 8px 16px;
+  border-radius: 4px;
+  background-color: ${({ variant }) => (variant === 'primary' ? '#1976d2' : '#f5f5f5')};
+  color: ${({ variant }) => (variant === 'primary' ? '#fff' : '#333')};
+`;
+```
+
+- 動的なスタイルにはpropsを活用
+- MUIコンポーネントのカスタマイズにも`styled`を使用可能
 
 ### kintone関連
 
