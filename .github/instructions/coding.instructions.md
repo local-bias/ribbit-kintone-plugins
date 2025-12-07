@@ -36,7 +36,10 @@ applyTo: '**'
 - `any`禁止（`unknown`や具体的な型を使用）
 - `{}`型禁止（`object`、`unknown`、`Record<string, T>`を使用）
 - 型アサーション/非 null アサーション原則禁止
-- 型定義には interface を優先
+- 優先度
+  1. Zodスキーマから推論される型エイリアス (最も推奨)
+  2. interface (推奨)
+  3. typeエイリアス (非推奨。typeでないと定義できない場合のみ)
 - 配列は`T[]`形式を推奨
 
 ## 構文
