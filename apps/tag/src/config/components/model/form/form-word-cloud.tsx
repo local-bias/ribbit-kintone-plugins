@@ -1,22 +1,19 @@
-import React, { FC, memo, Suspense } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
+import { customizeViewsAtom } from '@/config/states/kintone';
+import { getConditionPropertyAtom } from '@/config/states/plugin';
 import { Autocomplete, Skeleton, TextField } from '@mui/material';
-import { customizeViewsState } from '@/config/states/kintone';
-import { getConditionPropertyState } from '@/config/states/plugin';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { FC, memo, Suspense } from 'react';
 
-const state = getConditionPropertyState('wordCloudViewId');
+const state = getConditionPropertyAtom('wordCloudViewId');
 
 const Component: FC = () => {
-  const views = useRecoilValue(customizeViewsState);
-  const viewId = useRecoilValue(state);
+  const views = useAtomValue(customizeViewsAtom);
+  const viewId = useAtomValue(state);
+  const setViewId = useSetAtom(state);
 
-  const onViewIdChange = useRecoilCallback(
-    ({ set }) =>
-      (value: string) => {
-        set(state, value);
-      },
-    []
-  );
+  const onViewIdChange = (value: string) => {
+    setViewId(value);
+  };
 
   return (
     <div>

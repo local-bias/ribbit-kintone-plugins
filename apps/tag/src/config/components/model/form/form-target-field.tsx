@@ -1,22 +1,19 @@
 import { Autocomplete, Skeleton, TextField } from '@mui/material';
-import React, { FC, memo, Suspense } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
-import { textFieldsState } from '../../../states/kintone';
-import { getConditionPropertyState } from '../../../states/plugin';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { FC, memo, Suspense } from 'react';
+import { textFieldsAtom } from '../../../states/kintone';
+import { getConditionPropertyAtom } from '../../../states/plugin';
 
-const state = getConditionPropertyState('targetField');
+const state = getConditionPropertyAtom('targetField');
 
 const Component: FC = () => {
-  const targetField = useRecoilValue(state);
-  const fields = useRecoilValue(textFieldsState);
+  const targetField = useAtomValue(state);
+  const setTargetField = useSetAtom(state);
+  const fields = useAtomValue(textFieldsAtom);
 
-  const onFieldChange = useRecoilCallback(
-    ({ set }) =>
-      (value: string) => {
-        set(state, value);
-      },
-    []
-  );
+  const onFieldChange = (value: string) => {
+    setTargetField(value);
+  };
 
   return (
     <div>

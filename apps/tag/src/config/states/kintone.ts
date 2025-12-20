@@ -1,78 +1,61 @@
 import { getFormFields, kintoneAPI, getAppId, getViews } from '@konomi-app/kintone-utilities';
-import { selector } from 'recoil';
+import { atom } from 'jotai';
 import { GUEST_SPACE_ID, LANGUAGE } from '@/lib/global';
 
-const PREFIX = 'kintone';
+export const appFieldsAtom = atom<Promise<kintoneAPI.FieldProperty[]>>(async () => {
+  const app = getAppId()!;
+  const { properties } = await getFormFields({
+    app,
+    preview: true,
+    guestSpaceId: GUEST_SPACE_ID,
+    debug: process.env.NODE_ENV === 'development',
+  });
 
-export const appFieldsState = selector<kintoneAPI.FieldProperty[]>({
-  key: `${PREFIX}appFieldsState`,
-  get: async () => {
-    const app = getAppId()!;
-    const { properties } = await getFormFields({
-      app,
-      preview: true,
-      guestSpaceId: GUEST_SPACE_ID,
-      debug: process.env.NODE_ENV === 'development',
-    });
+  const values = Object.values(properties);
 
-    const values = Object.values(properties);
-
-    return values.sort((a, b) => a.label.localeCompare(b.label, 'ja'));
-  },
+  return values.sort((a, b) => a.label.localeCompare(b.label, 'ja'));
 });
 
-export const flatFieldsState = selector<kintoneAPI.FieldProperty[]>({
-  key: `${PREFIX}flatFieldsState`,
-  get: async ({ get }) => {
-    const fields = get(appFieldsState);
-    return fields.flatMap((field) => {
-      if (field.type === 'SUBTABLE') {
-        return Object.values(field.fields);
-      }
-      return field;
-    });
-  },
+export const flatFieldsAtom = atom<Promise<kintoneAPI.FieldProperty[]>>(async (get) => {
+  const fields = await get(appFieldsAtom);
+  return fields.flatMap((field) => {
+    if (field.type === 'SUBTABLE') {
+      return Object.values(field.fields);
+    }
+    return field;
+  });
 });
 
-export const textFieldsState = selector<kintoneAPI.FieldProperty[]>({
-  key: `${PREFIX}textFieldsState`,
-  get: async ({ get }) => {
-    const allFields = get(appFieldsState);
+export const textFieldsAtom = atom<Promise<kintoneAPI.FieldProperty[]>>(async (get) => {
+  const allFields = await get(appFieldsAtom);
 
-    return allFields.filter(
-      (field) => field.type === 'SINGLE_LINE_TEXT' || field.type === 'MULTI_LINE_TEXT'
-    );
-  },
+  return allFields.filter(
+    (field) => field.type === 'SINGLE_LINE_TEXT' || field.type === 'MULTI_LINE_TEXT'
+  );
 });
 
-export const allViewsState = selector<Record<string, kintoneAPI.view.Response>>({
-  key: `${PREFIX}allViewsState`,
-  get: async () => {
-    const { views: allViews } = await getViews({
-      app: getAppId()!,
-      guestSpaceId: GUEST_SPACE_ID,
-      preview: true,
-      debug: process.env.NODE_ENV === 'development',
-      lang: LANGUAGE as kintoneAPI.rest.Lang,
-    });
+export const allViewsAtom = atom<Promise<Record<string, kintoneAPI.view.Response>>>(async () => {
+  const { views: allViews } = await getViews({
+    app: getAppId()!,
+    guestSpaceId: GUEST_SPACE_ID,
+    preview: true,
+    debug: process.env.NODE_ENV === 'development',
+    lang: LANGUAGE as kintoneAPI.rest.Lang,
+  });
 
-    const all = {
-      '(すべて)': {
-        id: '20',
-        type: 'LIST',
-        name: '(すべて)',
-      },
-    } as any as Record<string, kintoneAPI.view.Response>;
+  const all = {
+    '(すべて)': {
+      id: '20',
+      type: 'LIST',
+      name: '(すべて)',
+    },
+  } as any as Record<string, kintoneAPI.view.Response>;
 
-    return { ...allViews, ...all };
-  },
+  return { ...allViews, ...all };
 });
 
-export const customizeViewsState = selector<kintoneAPI.view.Response[]>({
-  key: `${PREFIX}customizedViewsState`,
-  get: async ({ get }) => {
-    const allViews = get(allViewsState);
+export const customizeViewsAtom = atom<Promise<kintoneAPI.view.Response[]>>(async (get) => {
+  const allViews = await get(allViewsAtom);
 
-    return Object.values(allViews).filter((view) => view.type === 'CUSTOM');
-  },
+  return Object.values(allViews).filter((view) => view.type === 'CUSTOM');
 });

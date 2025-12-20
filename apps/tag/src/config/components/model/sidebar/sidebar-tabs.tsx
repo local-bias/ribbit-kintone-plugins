@@ -1,20 +1,29 @@
-import { Tab } from '@mui/material';
-import React, { FC } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
 import { PluginConditionTabs } from '@konomi-app/kintone-utilities-react';
-import { conditionsState, tabIndexState } from '../../../states/plugin';
+import { Tab } from '@mui/material';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { FC, useEffect } from 'react';
+import { pluginConditionsAtom, selectedConditionIdAtom, tabIndexAtom } from '../../../states/plugin';
 
 const Component: FC = () => {
-  const tabIndex = useRecoilValue(tabIndexState);
-  const conditions = useRecoilValue(conditionsState);
+  const tabIndex = useAtomValue(tabIndexAtom);
+  const setTabIndex = useSetAtom(tabIndexAtom);
+  const selectedConditionId = useAtomValue(selectedConditionIdAtom);
+  const setSelectedConditionId = useSetAtom(selectedConditionIdAtom);
+  const conditions = useAtomValue(pluginConditionsAtom);
 
-  const onTabChange = useRecoilCallback(
-    ({ set }) =>
-      (_: any, index: number) => {
-        set(tabIndexState, index);
-      },
-    []
-  );
+  useEffect(() => {
+    if (conditions.length > 0 && !selectedConditionId) {
+      const condition = conditions[tabIndex] || conditions[0];
+      if (condition) {
+        setSelectedConditionId(condition.id);
+      }
+    }
+  }, [conditions, selectedConditionId, tabIndex, setSelectedConditionId]);
+
+  const onTabChange = (_: any, index: number) => {
+    setTabIndex(index);
+    setSelectedConditionId(conditions[index]?.id ?? null);
+  };
 
   return (
     <PluginConditionTabs tabIndex={tabIndex} onChange={onTabChange}>

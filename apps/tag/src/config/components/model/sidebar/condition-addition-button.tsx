@@ -1,23 +1,21 @@
-import React, { FC, memo } from 'react';
-import { useRecoilCallback } from 'recoil';
 import { produce } from 'immer';
+import { useSetAtom } from 'jotai';
+import { FC, memo } from 'react';
 
-import { PluginConditionAppendButton } from '@konomi-app/kintone-utilities-react';
 import { getNewCondition } from '@/lib/plugin';
-import { storageState } from '../../../states/plugin';
+import { PluginConditionAppendButton } from '@konomi-app/kintone-utilities-react';
+import { pluginConfigAtom } from '../../../states/plugin';
 
 const Container: FC = () => {
-  const addCondition = useRecoilCallback(
-    ({ set }) =>
-      () => {
-        set(storageState, (_storage) =>
-          produce(_storage, (draft) => {
-            draft.conditions.push(getNewCondition());
-          })
-        );
-      },
-    []
-  );
+  const setPluginConfig = useSetAtom(pluginConfigAtom);
+
+  const addCondition = () => {
+    setPluginConfig((current) =>
+      produce(current, (draft) => {
+        draft.conditions.push(getNewCondition());
+      })
+    );
+  };
 
   return <PluginConditionAppendButton onClick={addCondition} />;
 };

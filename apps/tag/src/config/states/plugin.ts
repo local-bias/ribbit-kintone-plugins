@@ -1,56 +1,79 @@
-import { RecoilState, atom, selector, selectorFamily } from 'recoil';
-import { getUpdatedStorage, restorePluginConfig } from '@/lib/plugin';
+import { t } from '@/lib/i18n';
+import { createConfig, restorePluginConfig } from '@/lib/plugin';
+import { PluginConfig } from '@/schema/plugin-config';
+import { handleLoadingEndAtom, handleLoadingStartAtom, usePluginAtoms } from '@repo/jotai';
+import { atom } from 'jotai';
+import { enqueueSnackbar } from 'notistack';
 
-const PREFIX = 'plugin';
+export const pluginConfigAtom = atom<PluginConfig>(restorePluginConfig());
 
-export const storageState = atom<Plugin.Config>({
-  key: `${PREFIX}storageState`,
-  default: restorePluginConfig(),
+export const {
+  pluginConditionsAtom,
+  hasMultipleConditionsAtom,
+  conditionsLengthAtom,
+  selectedConditionIdAtom,
+  selectedConditionAtom,
+  getConditionPropertyAtom,
+} = usePluginAtoms(pluginConfigAtom, {
+  enableCommonCondition: false,
 });
 
-export const loadingState = atom<boolean>({
-  key: `${PREFIX}loadingState`,
-  default: false,
+export const tabIndexAtom = atom<number>(0);
+
+export const handlePluginConfigResetAtom = atom(null, (_, set) => {
+  set(pluginConfigAtom, createConfig());
+  enqueueSnackbar(t('config.toast.reset'), { variant: 'success' });
 });
 
-export const tabIndexState = atom<number>({
-  key: `${PREFIX}tabIndexState`,
-  default: 0,
-});
+export const importPluginConfigAtom = atom(
+  null,
+  async (_, set, event: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      set(handleLoadingStartAtom);
+      const { files } = event.target;
+      if (!files?.length) {
+        return;
+      }
+      const file = files[0];
+      if (!file) {
+        return;
+      }
+      // @ts-ignore
+      const fileEvent = await new Promise<ProgressEvent<FileReader>>((resolve) => {
+        const reader = new FileReader();
+        reader.onload = resolve;
+        reader.readAsText(file);
+      });
+      const text = (fileEvent.target?.result ?? '') as string;
+      set(pluginConfigAtom, JSON.parse(text));
+      enqueueSnackbar(t('config.toast.import'), { variant: 'success' });
+    } catch (error) {
+      enqueueSnackbar(t('config.error.import'), { variant: 'error' });
+      throw error;
+    } finally {
+      set(handleLoadingEndAtom);
+    }
+  }
+);
 
-export const conditionsState = selector<Plugin.Condition[]>({
-  key: `${PREFIX}conditionsState`,
-  get: ({ get }) => {
-    const storage = get(storageState);
-    return storage?.conditions ?? [];
-  },
+export const exportPluginConfigAtom = atom(null, (get, set) => {
+  try {
+    set(handleLoadingStartAtom);
+    const pluginConfig = get(pluginConfigAtom);
+    const blob = new Blob([JSON.stringify(pluginConfig, null, 2)], {
+      type: 'application/json',
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'plugin-config.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    enqueueSnackbar(t('config.toast.export'), { variant: 'success' });
+  } catch (error) {
+    enqueueSnackbar(t('config.error.export'), { variant: 'error' });
+    throw error;
+  } finally {
+    set(handleLoadingEndAtom);
+  }
 });
-
-const conditionPropertyState = selectorFamily<
-  Plugin.Condition[keyof Plugin.Condition],
-  keyof Plugin.Condition
->({
-  key: `${PREFIX}conditionPropertyState`,
-  get:
-    (key) =>
-    ({ get }) => {
-      const conditionIndex = get(tabIndexState);
-      const storage = get(storageState);
-      return storage.conditions[conditionIndex][key];
-    },
-  set:
-    (key) =>
-    ({ get, set }, newValue) => {
-      const conditionIndex = get(tabIndexState);
-      set(storageState, (current) =>
-        getUpdatedStorage(current, {
-          conditionIndex,
-          key,
-          value: newValue as Plugin.Condition[keyof Plugin.Condition],
-        })
-      );
-    },
-});
-
-export const getConditionPropertyState = <T extends keyof Plugin.Condition>(property: T) =>
-  conditionPropertyState(property) as unknown as RecoilState<Plugin.Condition[T]>;

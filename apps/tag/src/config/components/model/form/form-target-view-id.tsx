@@ -1,22 +1,19 @@
-import React, { ChangeEventHandler, FC, memo, Suspense } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
+import { allViewsAtom } from '@/config/states/kintone';
+import { getConditionPropertyAtom } from '@/config/states/plugin';
 import { MenuItem, Skeleton, TextField } from '@mui/material';
-import { allViewsState } from '@/config/states/kintone';
-import { getConditionPropertyState } from '@/config/states/plugin';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { ChangeEventHandler, FC, memo, Suspense } from 'react';
 
-const state = getConditionPropertyState('targetViewId');
+const state = getConditionPropertyAtom('targetViewId');
 
 const Component: FC = () => {
-  const views = useRecoilValue(allViewsState);
-  const viewId = useRecoilValue(state);
+  const views = useAtomValue(allViewsAtom);
+  const viewId = useAtomValue(state);
+  const setViewId = useSetAtom(state);
 
-  const onChange: ChangeEventHandler<HTMLInputElement> = useRecoilCallback(
-    ({ set }) =>
-      (e) => {
-        set(state, e.target.value);
-      },
-    []
-  );
+  const onChange: ChangeEventHandler<HTMLInputElement> = (e) => {
+    setViewId(e.target.value);
+  };
 
   return (
     <div>

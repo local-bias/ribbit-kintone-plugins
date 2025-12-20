@@ -1,15 +1,15 @@
-import React, { FC } from 'react';
+import { FC } from 'react';
 
 import {
+  PluginFormDescription,
   PluginFormSection,
   PluginFormTitle,
-  PluginFormDescription,
 } from '@konomi-app/kintone-utilities-react';
 import DeleteButton from './condition-delete-button';
-import TargetFieldForm from './form-target-field';
 import ConfigFieldForm from './form-config-field';
-import TargetViewIdForm from './form-target-view-id';
 import HideConfigFieldForm from './form-config-shown';
+import TargetFieldForm from './form-target-field';
+import TargetViewIdForm from './form-target-view-id';
 import WordCloudForm from './form-word-cloud';
 
 const Component: FC = () => (

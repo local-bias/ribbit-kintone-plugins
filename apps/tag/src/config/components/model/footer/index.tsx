@@ -2,20 +2,22 @@ import { getAppId, getViews, storeStorage, updateViews } from '@konomi-app/kinto
 import SaveIcon from '@mui/icons-material/Save';
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import { Button, CircularProgress } from '@mui/material';
+import { useAtomValue } from 'jotai';
+import { useAtomCallback } from 'jotai/utils';
 import { useSnackbar } from 'notistack';
-import React, { FC, useCallback } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
+import { FC, useCallback } from 'react';
 
 import { PluginFooter } from '@konomi-app/kintone-utilities-react';
-import { loadingState, storageState } from '../../../states/plugin';
+import { pluginConfigAtom } from '../../../states/plugin';
 
+import { GUEST_SPACE_ID } from '@/lib/global';
+import { t } from '@/lib/i18n';
+import { WORD_CLOUD_ROOT_ID } from '@/lib/static';
+import { produce } from 'immer';
 import ExportButton from './export-button';
 import ImportButton from './import-button';
 import ResetButton from './reset-button';
-import { t } from '@/lib/i18n';
-import { produce } from 'immer';
-import { GUEST_SPACE_ID } from '@/lib/global';
-import { WORD_CLOUD_ROOT_ID } from '@/lib/static';
+import { handleLoadingEndAtom, handleLoadingStartAtom, loadingAtom } from '@repo/jotai';
 
 type Props = {
   onSaveButtonClick: () => void;
@@ -23,7 +25,7 @@ type Props = {
 };
 
 const Component: FC<Props> = ({ onSaveButtonClick, onBackButtonClick }) => {
-  const loading = useRecoilValue(loadingState);
+  const loading = useAtomValue(loadingAtom);
 
   return (
     <PluginFooter className='py-2'>
@@ -63,12 +65,12 @@ const Container: FC = () => {
 
   const onBackButtonClick = useCallback(() => history.back(), []);
 
-  const onSaveButtonClick = useRecoilCallback(
-    ({ set, snapshot }) =>
-      async () => {
-        set(loadingState, true);
+  const onSaveButtonClick = useAtomCallback(
+    useCallback(
+      async (get, set) => {
+        set(handleLoadingStartAtom);
         try {
-          const storage = await snapshot.getPromise(storageState);
+          const storage = get(pluginConfigAtom);
 
           const app = getAppId();
           if (!app) {
@@ -129,10 +131,11 @@ const Container: FC = () => {
             });
           }
         } finally {
-          set(loadingState, false);
+          set(handleLoadingEndAtom);
         }
       },
-    []
+      [enqueueSnackbar, onBackButtonClick]
+    )
   );
 
   return <Component {...{ onSaveButtonClick, onBackButtonClick }} />;

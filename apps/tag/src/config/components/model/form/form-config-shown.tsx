@@ -1,25 +1,22 @@
 import { FormControlLabel, Skeleton, Switch } from '@mui/material';
-import React, { FC, memo, Suspense } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
-import { getConditionPropertyState } from '../../../states/plugin';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { FC, memo, Suspense } from 'react';
+import { getConditionPropertyAtom } from '../../../states/plugin';
 
-const state = getConditionPropertyState('hideConfigField');
+const state = getConditionPropertyAtom('hideConfigField');
 
 const Component: FC = () => {
-  const hideConfigField = useRecoilValue(state);
+  const hideConfigField = useAtomValue(state);
+  const setHideConfigField = useSetAtom(state);
 
-  const onChange = useRecoilCallback(
-    ({ set }) =>
-      (value: boolean) => {
-        set(state, value);
-      },
-    []
-  );
+  const onChange = (value: boolean) => {
+    setHideConfigField(value);
+  };
 
   return (
     <div>
       <FormControlLabel
-        control={<Switch color='primary' checked={hideConfigField} />}
+        control={<Switch color='primary' checked={!!hideConfigField} />}
         onChange={(_, checked) => onChange(checked)}
         label='タグの設定情報フィールドを非表示にする'
       />

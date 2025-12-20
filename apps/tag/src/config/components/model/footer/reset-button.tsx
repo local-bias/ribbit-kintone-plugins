@@ -1,23 +1,10 @@
-import React, { FC, memo } from 'react';
-import { useRecoilCallback } from 'recoil';
-import { useSnackbar } from 'notistack';
-import { storageState } from '../../../states/plugin';
-import { createConfig } from '@/lib/plugin';
+import { FC, memo } from 'react';
+import { useSetAtom } from 'jotai';
 import { PluginConfigResetButton } from '@konomi-app/kintone-utilities-react';
-import { t } from '@/lib/i18n';
+import { handlePluginConfigResetAtom } from '../../../states/plugin';
 
 const Component: FC = () => {
-  const { enqueueSnackbar } = useSnackbar();
-
-  const reset = useRecoilCallback(
-    ({ set }) =>
-      () => {
-        set(storageState, createConfig());
-        enqueueSnackbar(t('config.toast.reset'), { variant: 'success' });
-      },
-    []
-  );
-
+  const reset = useSetAtom(handlePluginConfigResetAtom);
   return <PluginConfigResetButton reset={reset} />;
 };
 

@@ -1,33 +1,34 @@
-import React, { FC, memo } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
-import { textFieldsState } from '../../../states/kintone';
-import { getConditionPropertyState } from '../../../states/plugin';
-import { RecoilFieldSelect } from '@konomi-app/kintone-utilities-react';
+import { JotaiFieldSelect } from '@konomi-app/kintone-utilities-jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { FC, Suspense } from 'react';
+import { textFieldsAtom } from '../../../states/kintone';
+import { getConditionPropertyAtom } from '../../../states/plugin';
 
-const state = getConditionPropertyState('configField');
+const state = getConditionPropertyAtom('configField');
 
 const Component: FC = () => {
-  const targetField = useRecoilValue(state);
-  const fields = useRecoilValue(textFieldsState);
+  const targetField = useAtomValue(state);
+  const setTargetField = useSetAtom(state);
 
-  const onFieldChange = useRecoilCallback(
-    ({ set }) =>
-      (value: string) => {
-        set(state, value);
-      },
-    []
-  );
+  const onFieldChange = (value: string) => {
+    setTargetField(value);
+  };
 
   return (
     <div>
-      <RecoilFieldSelect
-        label='フィールド名(フィールドコード)'
-        state={textFieldsState}
-        fieldCode={fields.find((field) => field.code === targetField)?.code ?? ''}
-        onChange={(code) => onFieldChange(code)}
+      <JotaiFieldSelect
+        fieldPropertiesAtom={textFieldsAtom}
+        fieldCode={targetField}
+        onChange={onFieldChange}
       />
     </div>
   );
 };
 
-export default memo(Component);
+export default function FieldConfigForm() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <Component />
+    </Suspense>
+  );
+}
