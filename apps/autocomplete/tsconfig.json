@@ -1,20 +1,7 @@
 {
+  "extends": "@repo/typescript-config/kintone.json",
   "compilerOptions": {
     "baseUrl": ".",
-    "sourceMap": true,
-    "target": "ESNext",
-    "module": "ESNext",
-    "lib": ["esnext", "dom"],
-    "outDir": "dist",
-    "allowJs": true,
-    "esModuleInterop": true,
-    "moduleResolution": "bundler",
-    "allowSyntheticDefaultImports": true,
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
-    "resolveJsonModule": true,
-    "jsx": "react-jsx",
-    "strict": true,
     "typeRoots": ["src/types", "node_modules/@types"],
     "paths": { "@/*": ["./src/*"] }
   },
@@ -24,5 +11,5 @@
     "./node_modules/@konomi-app/kintone-utilities/cybozu.d.ts"
   ],
   "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", ".plugin"]
 }
