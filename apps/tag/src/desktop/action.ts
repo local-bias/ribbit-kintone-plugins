@@ -19,7 +19,7 @@ export const decodeTagData = (target: string): Plugin.TagData => {
 
   return produce(tagData, (draft) => {
     for (let index in draft.tags) {
-      draft.tags[index].value = decodeURIComponent(draft.tags[index].value);
+      draft.tags[index]!.value = decodeURIComponent(draft.tags[index]!.value);
     }
   });
 };

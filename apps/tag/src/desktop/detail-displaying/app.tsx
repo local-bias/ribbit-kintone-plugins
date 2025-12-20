@@ -1,5 +1,5 @@
 import { Chip } from '@mui/material';
-import React, { FC } from 'react';
+import { FC } from 'react';
 
 type Props = {
   fieldId: string | null;
@@ -13,9 +13,8 @@ const Component: FC<Props> = ({ fieldId, initialValue, viewId }) => (
       {initialValue.tags.map((tag, i) => (
         <a
           key={`${i}_${tag.value}`}
-          href={`${location.pathname.replace('show', '')}${
-            viewId ? `?view=${viewId}&` : '?'
-          }q=f${fieldId} like "${tag.value}"`}
+          href={`${location.pathname.replace('show', '')}${viewId ? `?view=${viewId}&` : '?'
+            }q=f${fieldId} like "${tag.value}"`}
         >
           <Chip color='primary' variant='outlined' label={tag.value} />
         </a>

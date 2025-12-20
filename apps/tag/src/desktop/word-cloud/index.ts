@@ -1,12 +1,12 @@
+import { manager } from '@/lib/event-manager';
+import { GUEST_SPACE_ID } from '@/lib/global';
 import { restorePluginConfig } from '@/lib/plugin';
 import { WORD_CLOUD_ROOT_ID } from '@/lib/static';
-import { Root, Container, Label, color, percent } from '@amcharts/amcharts5';
-import { WordCloud } from '@amcharts/amcharts5/wc';
+import { Container, Root, color, percent } from '@amcharts/amcharts5';
 import Animated from '@amcharts/amcharts5/themes/Animated';
+import { WordCloud } from '@amcharts/amcharts5/wc';
 import { css } from '@emotion/css';
-import { getAppId, getAllRecords } from '@konomi-app/kintone-utilities';
-import { GUEST_SPACE_ID } from '@/lib/global';
-import { manager } from '@/lib/event-manager';
+import { getAllRecords, getAppId } from '@konomi-app/kintone-utilities';
 
 manager.add(['app.record.index.show'], async (event) => {
   const config = restorePluginConfig();
@@ -32,7 +32,7 @@ manager.add(['app.record.index.show'], async (event) => {
 
   const weights: Record<string, number> = {};
   for (const record of records) {
-    const value = record[found.targetField].value as string;
+    const value = record[found.targetField]?.value as string;
     const tags = value.split(',').map((tag) => tag.trim());
     for (const tag of tags) {
       if (!weights[tag]) {
@@ -60,14 +60,14 @@ manager.add(['app.record.index.show'], async (event) => {
     })
   );
 
-  const title = container.children.push(
-    Label.new(root, {
-      text: '登録済みのタグ一覧',
-      fontSize: 20,
-      x: percent(50),
-      centerX: percent(50),
-    })
-  );
+  // const title = container.children.push(
+  //   Label.new(root, {
+  //     text: '登録済みのタグ一覧',
+  //     fontSize: 20,
+  //     x: percent(50),
+  //     centerX: percent(50),
+  //   })
+  // );
 
   const series = container.children.push(
     WordCloud.new(root, {

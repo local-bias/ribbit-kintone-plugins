@@ -11,7 +11,7 @@ manager.add(
     );
 
     for (const condition of validConditions) {
-      const config = event.record[condition.configField].value as string;
+      const config = event.record[condition.configField]?.value as string | undefined;
       if (!config) {
         continue;
       }
@@ -21,7 +21,9 @@ manager.add(
         continue;
       }
 
-      event.record[condition.targetField].value = tagData.tags.map(({ value }) => value).join(', ');
+      if (event.record[condition.targetField]) {
+        event.record[condition.targetField]!.value = tagData.tags.map(({ value }) => value).join(', ');
+      }
     }
 
     return event;

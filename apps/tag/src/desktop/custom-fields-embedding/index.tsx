@@ -1,11 +1,10 @@
-import React from 'react';
+import { manager } from '@/lib/event-manager';
 import { restorePluginConfig } from '@/lib/plugin';
 import { css } from '@emotion/css';
-import App from './app';
-import { getInitialTagData } from '../action';
+import { getMetaFieldId_UNSTABLE, isMobile } from '@konomi-app/kintone-utilities';
 import { createRoot } from 'react-dom/client';
-import { isMobile, getMetaFieldId_UNSTABLE } from '@konomi-app/kintone-utilities';
-import { manager } from '@/lib/event-manager';
+import { getInitialTagData } from '../action';
+import App from './app';
 
 manager.add(['app.record.create.show', 'app.record.edit.show'], (event) => {
   const config = restorePluginConfig();
@@ -54,7 +53,7 @@ manager.add(['app.record.create.show', 'app.record.edit.show'], (event) => {
     wrapper.innerHTML = '';
     wrapper.append(div);
 
-    const storedData = event.record[condition.configField].value as string;
+    const storedData = event.record[condition.configField]?.value as string | undefined;
 
     const initialValue = storedData ? JSON.parse(storedData) : getInitialTagData();
 

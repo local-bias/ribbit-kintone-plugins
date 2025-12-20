@@ -1,23 +1,19 @@
 import { Chip } from '@mui/material';
 import { produce } from 'immer';
-import React, { FC } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
-import { tagDataState } from '../states/plugin';
+import { FC } from 'react';
+import { useAtom } from 'jotai';
+import { tagDataAtom } from '../states/plugin';
 
 const Component: FC = () => {
-  const tagData = useRecoilValue(tagDataState);
+  const [tagData, setTagData] = useAtom(tagDataAtom);
 
-  const onDeleteTag = useRecoilCallback(
-    ({ set }) =>
-      async (index: number) => {
-        set(tagDataState, (current) =>
-          produce(current, (draft) => {
-            draft.tags.splice(index, 1);
-          })
-        );
-      },
-    []
-  );
+  const onDeleteTag = (index: number) => {
+    setTagData((current) =>
+      produce(current, (draft) => {
+        draft.tags.splice(index, 1);
+      })
+    );
+  };
 
   return (
     <div className='🐸'>

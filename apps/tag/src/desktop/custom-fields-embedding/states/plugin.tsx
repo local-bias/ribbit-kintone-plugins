@@ -1,12 +1,6 @@
 import { getInitialTagData } from '@/desktop/action';
-import { atom } from 'recoil';
+import { atom } from 'jotai';
 
-export const pluginConditionState = atom<Plugin.Condition | null>({
-  key: 'pluginConditionState',
-  default: null,
-});
+export const pluginConditionAtom = atom<Plugin.Condition | null>(null);
 
-export const tagDataState = atom<Plugin.TagData>({
-  key: 'tagDataState',
-  default: getInitialTagData(),
-});
+export const tagDataAtom = atom<Plugin.TagData>(getInitialTagData());

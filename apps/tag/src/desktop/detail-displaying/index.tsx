@@ -1,7 +1,6 @@
 import { manager } from '@/lib/event-manager';
 import { restorePluginConfig } from '@/lib/plugin';
 import { getMetaFieldId_UNSTABLE } from '@konomi-app/kintone-utilities';
-import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { getInitialTagData } from '../action';
 import App from './app';
@@ -27,7 +26,12 @@ manager.add(['app.record.detail.show'], async (event) => {
     //@ts-expect-error
     wrapper.classList.remove(...wrapper.classList);
 
-    const storedData = event.record[condition.configField].value as string;
+    const configField = event.record[condition.configField];
+    if (!configField) {
+      continue;
+    }
+
+    const storedData = configField.value as string;
 
     const initialValue = storedData ? JSON.parse(storedData) : getInitialTagData();
 

@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
-import React, { ComponentProps, forwardRef, ReactNode } from 'react';
+import { ComponentProps, forwardRef, ReactNode } from 'react';
 
-type Props = ComponentProps<'input'> & { label?: string; icon?: ReactNode };
+type Props = ComponentProps<'input'> & { label?: string; icon?: ReactNode; };
 
 const Component = forwardRef<HTMLInputElement, Props>((props, ref) => {
   const { label, icon, className, ...inputProps } = props;
