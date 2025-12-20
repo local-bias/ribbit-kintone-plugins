@@ -4,7 +4,6 @@ import { PLUGIN_NAME } from '@/lib/static';
 import { onFileLoad, storePluginConfig } from '@konomi-app/kintone-utilities';
 import { handleLoadingEndAtom, handleLoadingStartAtom, usePluginAtoms } from '@repo/jotai';
 import { saveAsJson } from '@repo/utils';
-import { produce } from 'immer';
 import { atom } from 'jotai';
 import { enqueueSnackbar } from 'notistack';
 import { ChangeEvent, ReactNode } from 'react';
@@ -22,14 +21,6 @@ export const {
 } = usePluginAtoms(pluginConfigAtom);
 
 export const srcFieldCodeAtom = getConditionPropertyAtom('srcFieldCode');
-
-export const handleSrcFieldChangeAtom = atom(null, (_, set, value: string) => {
-  set(selectedConditionAtom, (prev) =>
-    produce(prev, (draft) => {
-      draft.srcFieldCode = value;
-    })
-  );
-});
 
 export const srcAppIdAtom = getConditionPropertyAtom('srcAppId');
 

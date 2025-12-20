@@ -1,20 +1,19 @@
 import { JotaiFieldSelect } from '@konomi-app/kintone-utilities-jotai';
 import { Skeleton, TextField } from '@mui/material';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtom } from 'jotai';
 import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { srcAppFieldsState } from '../../../states/kintone';
-import { handleSrcFieldChangeAtom, srcFieldCodeAtom } from '../../../states/plugin';
+import { srcFieldCodeAtom } from '../../../states/plugin';
 
 function SrcFieldFormComponent() {
-  const fieldCode = useAtomValue(srcFieldCodeAtom);
-  const onFieldChange = useSetAtom(handleSrcFieldChangeAtom);
+  const [fieldCode, onChange] = useAtom(srcFieldCodeAtom);
 
   return (
     <JotaiFieldSelect
       fieldPropertiesAtom={srcAppFieldsState}
       fieldCode={fieldCode}
-      onChange={onFieldChange}
+      onChange={onChange}
     />
   );
 }
