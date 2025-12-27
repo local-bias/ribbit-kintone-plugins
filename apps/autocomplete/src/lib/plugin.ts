@@ -124,7 +124,7 @@ export const getUpdatedStorage = <T extends keyof PluginCondition>(
 ) => {
   const { conditionIndex, key, value } = props;
   return produce(storage, (draft) => {
-    draft.conditions[conditionIndex][key] = value;
+    draft.conditions[conditionIndex]![key] = value;
   });
 };
 
@@ -148,7 +148,7 @@ export const getAutocompleteValues = (params: {
   srcFieldCode: string;
 }) => {
   const { records, srcFieldCode } = params;
-  return [...new Set(records.map((record) => getFieldValueAsString(record[srcFieldCode])))].filter(
+  return [...new Set(records.map((record) => getFieldValueAsString(record[srcFieldCode]!)))].filter(
     (v) => v
   );
 };
