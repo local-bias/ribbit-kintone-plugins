@@ -1,9 +1,10 @@
 import React, { ChangeEventHandler, FC, FocusEventHandler, useRef, useState } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtomCallback } from 'jotai/utils';
 import {
-  filteredOptionsState,
-  inputValueState,
-  optionCursorState,
+  filteredOptionsAtom,
+  inputValueAtom,
+  optionCursorAtom,
 } from '@/desktop/autocomplete/states';
 import { KintoneInput } from '../../../components/ui/kintone-input';
 import styled from '@emotion/styled';
@@ -13,15 +14,12 @@ const Input: FC<{
   onFocus: FocusEventHandler<HTMLInputElement>;
   onKeyDown: (event: React.KeyboardEvent<HTMLInputElement>) => void;
 }> = ({ inputRef, onFocus, onKeyDown }) => {
-  const value = useRecoilValue(inputValueState);
+  const value = useAtomValue(inputValueAtom);
+  const setInputValue = useSetAtom(inputValueAtom);
 
-  const onValueChange: ChangeEventHandler<HTMLInputElement> = useRecoilCallback(
-    ({ set }) =>
-      (event) => {
-        set(inputValueState, event.target.value);
-      },
-    []
-  );
+  const onValueChange: ChangeEventHandler<HTMLInputElement> = (event) => {
+    setInputValue(event.target.value);
+  };
 
   return (
     <KintoneInput
@@ -40,8 +38,8 @@ const Options: FC<{
   open: boolean;
   handleSelectOption: (selectedOption: Plugin.AutocompleteOption) => void;
 }> = ({ className, optionsRef, open, handleSelectOption }) => {
-  const options = useRecoilValue(filteredOptionsState);
-  const optionCursor = useRecoilValue(optionCursorState);
+  const options = useAtomValue(filteredOptionsAtom);
+  const optionCursor = useAtomValue(optionCursorAtom);
 
   if (!open) {
     return null;
@@ -121,62 +119,54 @@ export function Autocomplete() {
   const inputRef = useRef<HTMLInputElement>(null);
   const optionsRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
+  const setOptionCursor = useSetAtom(optionCursorAtom);
+  const setInputValue = useSetAtom(inputValueAtom);
 
   const onFocus = () => setOpen(true);
-  const onBlur: FocusEventHandler<HTMLInputElement> = useRecoilCallback(
-    ({ reset, set }) =>
-      (event) => {
-        setTimeout(() => {
-          setOpen(false);
-          reset(optionCursorState);
-        }, 0);
-      },
-    []
-  );
+  const onBlur: FocusEventHandler<HTMLInputElement> = () => {
+    setTimeout(() => {
+      setOpen(false);
+      setOptionCursor(-1); // Reset to default value
+    }, 0);
+  };
 
-  const handleSelectOption = useRecoilCallback(
-    ({ set }) =>
-      (selectedOption: Plugin.AutocompleteOption) => {
-        set(inputValueState, selectedOption.label);
-        setTimeout(() => {
-          inputRef?.current?.blur();
-        }, 0);
-      },
-    []
-  );
+  const handleSelectOption = (selectedOption: Plugin.AutocompleteOption) => {
+    setInputValue(selectedOption.label);
+    setTimeout(() => {
+      inputRef?.current?.blur();
+    }, 0);
+  };
 
-  const onKeyDown = useRecoilCallback(
-    ({ set, snapshot }) =>
-      async (event: React.KeyboardEvent<HTMLInputElement>) => {
-        const options = await snapshot.getPromise(filteredOptionsState);
-        if (
-          (event.key !== 'ArrowDown' && event.key !== 'ArrowUp' && event.key !== 'Enter') ||
-          options.length === 0
-        ) {
-          return;
+  const onKeyDown = useAtomCallback(
+    (get, set, event: React.KeyboardEvent<HTMLInputElement>) => {
+      const options = get(filteredOptionsAtom);
+      if (
+        (event.key !== 'ArrowDown' && event.key !== 'ArrowUp' && event.key !== 'Enter') ||
+        options.length === 0
+      ) {
+        return;
+      }
+      event.preventDefault();
+      let optionCursor = get(optionCursorAtom);
+      if (event.key === 'ArrowDown') {
+        optionCursor = Math.min(optionCursor + 1, options.length - 1);
+      } else if (event.key === 'ArrowUp') {
+        optionCursor = Math.max(optionCursor - 1, -1);
+      } else if (event.key === 'Enter') {
+        const selectedOption = options[optionCursor];
+        if (selectedOption) {
+          handleSelectOption(selectedOption);
         }
-        event.preventDefault();
-        let optionCursor = await snapshot.getPromise(optionCursorState);
-        if (event.key === 'ArrowDown') {
-          optionCursor = Math.min(optionCursor + 1, options.length - 1);
-        } else if (event.key === 'ArrowUp') {
-          optionCursor = Math.max(optionCursor - 1, -1);
-        } else if (event.key === 'Enter') {
-          const selectedOption = options[optionCursor];
-          if (selectedOption) {
-            handleSelectOption(selectedOption);
-          }
-          return;
-        }
-        set(optionCursorState, optionCursor);
-        if (optionCursor === -1) {
-          return;
-        }
-        optionsRef.current?.scrollTo({
-          top: (optionsRef.current?.children[optionCursor] as HTMLElement)?.offsetTop,
-        });
-      },
-    []
+        return;
+      }
+      set(optionCursorAtom, optionCursor);
+      if (optionCursor === -1) {
+        return;
+      }
+      optionsRef.current?.scrollTo({
+        top: (optionsRef.current?.children[optionCursor] as HTMLElement)?.offsetTop,
+      });
+    }
   );
 
   return (

@@ -2,10 +2,10 @@ import { Autocomplete } from '@/desktop/autocomplete/components/autocomplete';
 import { PluginErrorBoundary } from '@/lib/components/error-boundary';
 import { ThemeProvider } from '@/lib/components/theme-provider';
 import { PluginCondition } from '@/lib/plugin';
-import { FC } from 'react';
-import { RecoilRoot } from 'recoil';
+import { createStore, Provider } from 'jotai';
+import { FC, useMemo } from 'react';
 import { useOptionsInitializer } from './hooks/use-options-initializer';
-import { inputValueState, pluginConditionState } from './states';
+import { inputValueAtom, inputValueSyncEffect, pluginConditionAtom } from './states';
 
 type ContainerProps = {
   condition: PluginCondition;
@@ -17,21 +17,28 @@ const Component: FC = () => {
   return <Autocomplete />;
 };
 
-const Container: FC<ContainerProps> = ({ condition, initValue }) => (
-  <RecoilRoot
-    initializeState={({ set }) => {
-      set(inputValueState, initValue);
-      set(pluginConditionState, condition);
-    }}
-  >
-    <ThemeProvider>
-      <PluginErrorBoundary>
-        <div className='🐸'>
-          <Component />
-        </div>
-      </PluginErrorBoundary>
-    </ThemeProvider>
-  </RecoilRoot>
-);
+const Container: FC<ContainerProps> = ({ condition, initValue }) => {
+  const store = useMemo(() => {
+    const s = createStore();
+    s.set(inputValueAtom, initValue);
+    s.set(pluginConditionAtom, condition);
+    // Subscribe to the effect for syncing input value to kintone record
+    s.sub(inputValueSyncEffect, () => { });
+    return s;
+  }, []);
+
+  return (
+    <Provider store={store}>
+      <ThemeProvider>
+        <PluginErrorBoundary>
+          <div className='🐸'>
+            <Component />
+          </div>
+        </PluginErrorBoundary>
+      </ThemeProvider>
+    </Provider>
+  );
+};
 
 export default Container;
+

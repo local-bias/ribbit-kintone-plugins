@@ -1,5 +1,5 @@
-import { useRecoilState, useRecoilValue } from 'recoil';
-import { autoCompleteOptionsState, cachedOptionsState, pluginConditionState } from '../states';
+import { useAtom, useAtomValue } from 'jotai';
+import { autoCompleteOptionsAtom, cachedOptionsAtom, pluginConditionAtom } from '../states';
 import { useEffect } from 'react';
 import { getAllRecordsWithId } from '@konomi-app/kintone-utilities';
 import { LOCAL_STORAGE_KEY } from '@/lib/static';
@@ -7,9 +7,9 @@ import { GUEST_SPACE_ID } from '@/lib/global';
 import { getAutocompleteOptions, getAutocompleteValues } from '@/lib/plugin';
 
 export const useOptionsInitializer = () => {
-  const condition = useRecoilValue(pluginConditionState);
-  const [options, setOptions] = useRecoilState(autoCompleteOptionsState);
-  const cachedOptions = useRecoilValue(cachedOptionsState);
+  const condition = useAtomValue(pluginConditionAtom);
+  const [options, setOptions] = useAtom(autoCompleteOptionsAtom);
+  const cachedOptions = useAtomValue(cachedOptionsAtom);
 
   useEffect(() => {
     if (!condition) {
