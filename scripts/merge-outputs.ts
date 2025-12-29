@@ -1,4 +1,3 @@
-// @ts-check
 import { readdir, stat, access, mkdir, copyFile } from 'fs/promises';
 import { join, dirname } from 'path';
 
@@ -6,7 +5,6 @@ const APPS_DIR = join(process.cwd(), 'apps');
 
 const PUBLIC_DIR = join(process.cwd(), 'public');
 
-/** @type { { src: string; dst: string | ((params: { appName: string }) => string) }[] } */
 const TARGET_FILES = [
   {
     src: '.plugin/plugin.zip',
@@ -28,15 +26,19 @@ const TARGET_FILES = [
     src: '.plugin/contents/config.css',
     dst: `config.css`,
   },
-];
+  {
+    src: '.plugin/version',
+    dst: `version`,
+  },
+] as const satisfies { src: string; dst: string | ((params: { appName: string }) => string) }[];
 
-async function ensureDir(dir) {
+async function ensureDir(dir: string) {
   try {
     await mkdir(dir, { recursive: true });
   } catch (e) {}
 }
 
-async function fileExists(path) {
+async function fileExists(path: string): Promise<boolean> {
   try {
     await access(path);
     return true;
