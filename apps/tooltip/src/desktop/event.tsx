@@ -1,4 +1,5 @@
 import { manager } from '@/lib/event-manager';
+import { isProd } from '@/lib/global';
 import { restorePluginConfig } from '@/lib/plugin';
 import { PLUGIN_NAME } from '@/lib/static';
 import { css } from '@emotion/css';
@@ -25,7 +26,7 @@ manager.add(
 
     const metaFields = getMetaFields_UNSTABLE();
 
-    process.env.NODE_ENV === 'development' && console.log({ metaFields });
+    !isProd && console.log({ metaFields });
 
     if (!metaFields) {
       event.error = `kintoneのアップデートにより、${PLUGIN_NAME}は動作しなくなりました。詳細はホームページをご確認ください`;
@@ -40,7 +41,7 @@ manager.add(
 
       const metaField = metaFields.find((field) => field && field.var === fieldCode);
       if (!metaField) {
-        process.env.NODE_ENV === 'development' &&
+        !isProd &&
           console.error(
             `[${PLUGIN_NAME}] 設定したフィールドが見つからなかったため、処理を中断しました`
           );
@@ -61,7 +62,7 @@ manager.add(
         document.querySelector(`${commonSelector} > div`) ||
         document.querySelector(`${commonSelector}`);
       if (!target) {
-        process.env.NODE_ENV === 'development' &&
+        !isProd &&
           console.error(
             `[${PLUGIN_NAME}] 設定したフィールドが見つからなかったため、処理を中断しました`
           );
