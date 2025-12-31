@@ -15,7 +15,7 @@ import { store } from '@repo/jotai';
 import { SwimmingIcon } from '@repo/ui';
 import { Provider } from 'jotai';
 import { SnackbarProvider } from 'notistack';
-import config from 'plugin.config.mjs';
+import config from '@/../plugin.config.mjs';
 import { Suspense } from 'react';
 import Footer from './components/model/footer';
 

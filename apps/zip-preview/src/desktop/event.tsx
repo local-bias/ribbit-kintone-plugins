@@ -9,7 +9,7 @@ import {
 } from '@konomi-app/kintone-utilities';
 import { ComponentManager } from '@konomi-app/kintone-utilities-react';
 import { currentAppIdAtom, store } from '@repo/jotai';
-import config from 'plugin.config.mjs';
+import config from '@/../plugin.config.mjs';
 import { entries } from 'remeda';
 import { createPreviewButton } from './actions';
 import App from './components';
