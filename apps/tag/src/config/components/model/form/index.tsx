@@ -8,6 +8,7 @@ import {
 import DeleteButton from './condition-delete-button';
 import ConfigFieldForm from './form-config-field';
 import HideConfigFieldForm from './form-config-shown';
+import EnableSuggestionForm from './form-enable-suggestion';
 import TargetFieldForm from './form-target-field';
 import TargetViewIdForm from './form-target-view-id';
 import WordCloudForm from './form-word-cloud';
@@ -40,6 +41,16 @@ const Component: FC = () => (
         タグの設定情報をレコード編集画面、詳細画面で表示するか選択してください。
       </PluginFormDescription>
       <HideConfigFieldForm />
+    </PluginFormSection>
+    <PluginFormSection>
+      <PluginFormTitle>タグサジェスト機能</PluginFormTitle>
+      <PluginFormDescription>
+        タグ入力時に、既存のタグをサジェストする機能を有効にするか選択してください。
+      </PluginFormDescription>
+      <PluginFormDescription last>
+        有効にすると、同じアプリ内で使用済みのタグが入力候補として表示されます。
+      </PluginFormDescription>
+      <EnableSuggestionForm />
     </PluginFormSection>
     <PluginFormSection>
       <PluginFormTitle>タグクリック時に表示する一覧</PluginFormTitle>
