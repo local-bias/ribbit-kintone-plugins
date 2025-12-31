@@ -1,3 +1,5 @@
+@source not "../../.plugin";
+
 @layer theme, base, components, utilities;
 @import 'tailwindcss/theme.css' layer(theme) prefix(rad);
 @import 'tailwindcss/utilities.css' layer(utilities);
