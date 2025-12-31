@@ -2,7 +2,7 @@ import { URL_INQUIRY } from '@/lib/static';
 import styled from '@emotion/styled';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
 import { Alert, AlertTitle, Button } from '@mui/material';
-import config from 'plugin.config.mjs';
+import config from '@/../plugin.config.mjs';
 import React, { useState } from 'react';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 
@@ -10,7 +10,7 @@ function ErrorFallback({
   className,
   error,
   resetErrorBoundary,
-}: FallbackProps & { className?: string; }) {
+}: FallbackProps & { className?: string }) {
   const [loading, setLoading] = useState(false);
 
   const onRetry = () => {
@@ -97,7 +97,7 @@ function ErrorFallback({
       </Alert>
     </div>
   );
-};
+}
 
 const StyledErrorFallback = styled(ErrorFallback)`
   margin: 8px;
@@ -137,6 +137,6 @@ const StyledErrorFallback = styled(ErrorFallback)`
   }
 `;
 
-export function PluginErrorBoundary({ children }: { children: React.ReactNode; }) {
+export function PluginErrorBoundary({ children }: { children: React.ReactNode }) {
   return <ErrorBoundary FallbackComponent={StyledErrorFallback}>{children}</ErrorBoundary>;
 }

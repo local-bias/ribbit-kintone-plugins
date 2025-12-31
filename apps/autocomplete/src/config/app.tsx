@@ -12,7 +12,7 @@ import { LoaderWithLabel } from '@konomi-app/ui-react';
 import { store } from '@repo/jotai';
 import { Provider } from 'jotai';
 import { SnackbarProvider } from 'notistack';
-import config from 'plugin.config.mjs';
+import config from '@/../plugin.config.mjs';
 import { FC, Suspense } from 'react';
 import Footer from './components/footer';
 import Form from './components/model/form';
@@ -50,7 +50,12 @@ const Container: FC = () => (
           </PluginConfigProvider>
         </PluginErrorBoundary>
       </ThemeProvider>
-      <iframe title='promotion' loading='lazy' src={URL_PROMOTION} className='border-0 w-full h-16' />
+      <iframe
+        title='promotion'
+        loading='lazy'
+        src={URL_PROMOTION}
+        className='border-0 w-full h-16'
+      />
     </Suspense>
   </Provider>
 );

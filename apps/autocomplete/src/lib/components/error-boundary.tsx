@@ -4,7 +4,7 @@ import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import { URL_INQUIRY } from '@/lib/static';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
 import styled from '@emotion/styled';
-import config from 'plugin.config.mjs';
+import config from '@/../plugin.config.mjs';
 
 const Component: FC<FallbackProps & { className?: string }> = ({
   className,

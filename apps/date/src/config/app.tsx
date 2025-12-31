@@ -10,7 +10,7 @@ import {
 } from '@konomi-app/kintone-utilities-react';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
 import { SnackbarProvider } from 'notistack';
-import config from 'plugin.config.mjs';
+import config from '@/../plugin.config.mjs';
 import { FC, Suspense } from 'react';
 import { RecoilRoot } from 'recoil';
 import Footer from './components/model/footer';
