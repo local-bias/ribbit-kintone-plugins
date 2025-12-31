@@ -1,5 +1,5 @@
+import styled from '@emotion/styled';
 import { Chip } from '@mui/material';
-import { FC } from 'react';
 
 type Props = {
   fieldId: string | null;
@@ -7,20 +7,31 @@ type Props = {
   initialValue: Plugin.TagData;
 };
 
-const Component: FC<Props> = ({ fieldId, initialValue, viewId }) => (
-  <div className='🐸'>
-    <div className='flex mt-2 flex-wrap gap-2 [&>a>div]:cursor-pointer'>
-      {initialValue.tags.map((tag, i) => (
-        <a
-          key={`${i}_${tag.value}`}
-          href={`${location.pathname.replace('show', '')}${viewId ? `?view=${viewId}&` : '?'
-            }q=f${fieldId} like "${tag.value}"`}
-        >
-          <Chip color='primary' variant='outlined' label={tag.value} />
-        </a>
-      ))}
-    </div>
-  </div>
-);
+const TagContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
 
-export default Component;
+  & > a > div {
+    cursor: pointer;
+  }
+`;
+
+export default function Tags({ fieldId, initialValue, viewId }: Props) {
+  return (
+    <TagContainer>
+      {initialValue.tags.map((tag, i) => {
+        const key = `${i}_${tag.value}`;
+        const path = location.pathname.replace('show', '');
+        const href = `${path}${viewId ? `?view=${viewId}&` : '?'}q=f${fieldId} like "${tag.value}"`;
+
+        return (
+          <a key={key} href={href}>
+            <Chip color='primary' variant='outlined' label={tag.value} />
+          </a>
+        );
+      })}
+    </TagContainer>
+  );
+}
