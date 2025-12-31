@@ -54,18 +54,51 @@ export const PluginConfigV2Schema = z.object({
   version: z.literal(2),
   conditions: z.array(PluginConditionV2Schema),
 });
-type PluginConfigV2 = z.infer<typeof PluginConfigV2Schema>;
+
+/**
+ * プラグイン設定の各条件（1つの設定に対する設定）- V3
+ * V2からの変更点: enableSuggestionプロパティを追加
+ */
+export const PluginConditionV3Schema = z.object({
+  /**
+   * プラグイン設定を一意に識別するためのID
+   * 設定の並び替えに使用されます
+   */
+  id: z.string(),
+  /** 対象ビューID */
+  targetViewId: z.string(),
+  /** 対象フィールドコード */
+  targetField: z.string(),
+  /** 設定フィールドコード */
+  configField: z.string(),
+  /** 設定フィールドを非表示にするか */
+  hideConfigField: z.boolean(),
+  /** ワードクラウドビューID */
+  wordCloudViewId: z.string(),
+  /** タグサジェスト機能を有効にするか */
+  enableSuggestion: z.boolean(),
+});
+
+/**
+ * プラグイン設定V3
+ */
+export const PluginConfigV3Schema = z.object({
+  version: z.literal(3),
+  conditions: z.array(PluginConditionV3Schema),
+});
+type PluginConfigV3 = z.infer<typeof PluginConfigV3Schema>;
 
 /** 🔌 過去全てのバージョンを含むプラグインの設定情報 */
 export const AnyPluginConfigSchema = z.discriminatedUnion('version', [
   PluginConfigV1Schema,
   PluginConfigV2Schema,
+  PluginConfigV3Schema,
 ]);
 
-export const LatestPluginConditionSchema = PluginConditionV2Schema;
+export const LatestPluginConditionSchema = PluginConditionV3Schema;
 
 /** 🔌 プラグインがアプリ単位で保存する設定情報 */
-export type PluginConfig = PluginConfigV2;
+export type PluginConfig = PluginConfigV3;
 
 /** 🔌 プラグインの詳細設定 */
 export type PluginCondition = PluginConfig['conditions'][number];
@@ -83,13 +116,14 @@ export const getNewCondition = (): PluginCondition => ({
   targetViewId: '',
   hideConfigField: true,
   wordCloudViewId: '',
+  enableSuggestion: true,
 });
 
 /**
  * プラグインの設定情報のひな形を返却します
  */
 export const createConfig = (): PluginConfig => ({
-  version: 2,
+  version: 3,
   conditions: [getNewCondition()],
 });
 
@@ -115,7 +149,19 @@ export const migrateConfig = (anyConfig: AnyPluginConfig): PluginConfig => {
         })),
       });
     }
-    case 2:
+    case 2: {
+      // V2 → V3: conditionsにenableSuggestionを追加
+      const { conditions, ...rest } = anyConfig;
+      return migrateConfig({
+        ...rest,
+        version: 3,
+        conditions: conditions.map((condition) => ({
+          ...condition,
+          enableSuggestion: true,
+        })),
+      });
+    }
+    case 3:
     default: {
       return anyConfig;
     }

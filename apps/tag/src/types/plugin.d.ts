@@ -1,30 +1,23 @@
-declare namespace Plugin {
-  /** 🔌 プラグインがアプリ単位で保存する設定情報 */
-  type Config = ConfigV1;
+import type { PluginConfig, PluginCondition, AnyPluginConfig } from '@/schema/plugin-config';
 
-  /** 🔌 プラグインの詳細設定 */
-  type Condition = Config['conditions'][number];
+declare global {
+  namespace Plugin {
+    /** 🔌 プラグインがアプリ単位で保存する設定情報 */
+    type Config = PluginConfig;
 
-  /** 🔌 過去全てのバージョンを含むプラグインの設定情報 */
-  type AnyConfig = ConfigV1; // | ConfigV2 | ...;
+    /** 🔌 プラグインの詳細設定 */
+    type Condition = PluginCondition;
 
-  type ConfigV1 = {
-    version: 1;
-    conditions: {
-      targetViewId: string;
-      targetField: string;
-      configField: string;
-      hideConfigField: boolean;
-      wordCloudViewId: string;
-    }[];
-  };
+    /** 🔌 過去全てのバージョンを含むプラグインの設定情報 */
+    type AnyConfig = AnyPluginConfig;
 
-  type TagData = TagDataV1;
+    type TagData = TagDataV1;
 
-  type AnyTagData = TagDataV1; // | TagDataV2 | ...;
+    type AnyTagData = TagDataV1; // | TagDataV2 | ...;
 
-  type TagDataV1 = {
-    version: 1;
-    tags: { value: string }[];
-  };
+    type TagDataV1 = {
+      version: 1;
+      tags: { value: string }[];
+    };
+  }
 }

@@ -13,17 +13,10 @@ export default /** @type { const } */ ({
   lint: {
     build: false,
   },
-  tailwind: {
-    css: 'src/styles/global.css',
-    config: {
-      desktop: 'tailwind.config.desktop.mjs',
-      config: 'tailwind.config.config.mjs',
-    },
-  },
   manifest: {
     base: {
       manifest_version: 1,
-      version: '1.7.0',
+      version: '2.1.0',
       type: 'APP',
       name: {
         en: 'Tagging Plugin',
