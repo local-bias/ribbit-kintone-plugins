@@ -11,3 +11,4 @@ export * from './components/ui/shadcn-io/kanban';
 export * from './components/ui/tooltip';
 export * from './error-boundary';
 export * from './icons';
+export * from './components/ui/badge';
