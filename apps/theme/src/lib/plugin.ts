@@ -44,6 +44,8 @@ export const migrateConfig = (anyConfig: AnyPluginConfig): PluginConfig => {
     case 1: {
       return migrateConfig({
         ...anyConfig,
+        version: 2,
+        common: {},
         conditions: anyConfig.conditions.map((condition) => ({
           id: nanoid(),
           common: {},
