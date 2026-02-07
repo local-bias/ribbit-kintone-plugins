@@ -243,9 +243,70 @@ function validateRule(rule: ValidationRule, value: kintoneAPI.Field | undefined)
       };
     }
     case 'katakana': {
-      // カタカナのみチェック
+      // カタカナのみチェック（全角）
       const katakanaPattern = /^[\u30A0-\u30FF\u30FC]*$/;
       const isValid = strValue.length === 0 || katakanaPattern.test(strValue);
+      return {
+        isValid,
+        errorMessage: isValid ? '' : rule.errorMessage,
+      };
+    }
+    case 'halfwidthKatakana': {
+      // 半角カタカナのみチェック
+      // 半角カタカナは U+FF65-U+FF9F の範囲
+      const halfwidthKatakanaPattern = /^[\uFF65-\uFF9F]*$/;
+      const isValid = strValue.length === 0 || halfwidthKatakanaPattern.test(strValue);
+      return {
+        isValid,
+        errorMessage: isValid ? '' : rule.errorMessage,
+      };
+    }
+    case 'fullwidth': {
+      // 全角文字のみチェック
+      // 全角文字は半角ASCII (U+0020-U+007E) と半角カナ (U+FF65-U+FF9F) 以外
+      const halfwidthPattern = /[\u0020-\u007E\uFF65-\uFF9F]/;
+      const isValid = strValue.length === 0 || !halfwidthPattern.test(strValue);
+      return {
+        isValid,
+        errorMessage: isValid ? '' : rule.errorMessage,
+      };
+    }
+    case 'halfwidth': {
+      // 半角文字のみチェック
+      // 半角ASCII (U+0020-U+007E) と半角カナ (U+FF65-U+FF9F)
+      const halfwidthPattern = /^[\u0020-\u007E\uFF65-\uFF9F]*$/;
+      const isValid = strValue.length === 0 || halfwidthPattern.test(strValue);
+      return {
+        isValid,
+        errorMessage: isValid ? '' : rule.errorMessage,
+      };
+    }
+    case 'fullwidthAlphanumeric': {
+      // 全角英数字のみチェック
+      // 全角英数字は U+FF10-U+FF19（数字）, U+FF21-U+FF3A（大文字）, U+FF41-U+FF5A（小文字）
+      const fullwidthAlphanumericPattern = /^[\uFF10-\uFF19\uFF21-\uFF3A\uFF41-\uFF5A]*$/;
+      const isValid = strValue.length === 0 || fullwidthAlphanumericPattern.test(strValue);
+      return {
+        isValid,
+        errorMessage: isValid ? '' : rule.errorMessage,
+      };
+    }
+    case 'corporateNumber': {
+      // 法人番号チェック（13桁の数字）
+      // 日本の法人番号は13桁の数字で、最初の1桁はチェックディジット
+      const corporateNumberPattern = /^[0-9]{13}$/;
+      const isValid = strValue.length === 0 || corporateNumberPattern.test(strValue);
+      return {
+        isValid,
+        errorMessage: isValid ? '' : rule.errorMessage,
+      };
+    }
+    case 'bankAccount': {
+      // 銀行口座番号形式チェック
+      // 日本の銀行口座番号は通常7桁、ゆうちょ銀行は8桁
+      // ハイフンなしの数字のみ、7〜8桁を許容
+      const bankAccountPattern = /^[0-9]{7,8}$/;
+      const isValid = strValue.length === 0 || bankAccountPattern.test(strValue);
       return {
         isValid,
         errorMessage: isValid ? '' : rule.errorMessage,

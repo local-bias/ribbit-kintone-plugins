@@ -20,7 +20,13 @@ export const ValidationTypeSchema = z.enum([
   'numeric', // 数字のみ
   'alpha', // 英字のみ
   'hiragana', // ひらがなのみ
-  'katakana', // カタカナのみ
+  'katakana', // カタカナのみ（全角）
+  'halfwidthKatakana', // 半角カタカナのみ
+  'fullwidth', // 全角文字のみ
+  'halfwidth', // 半角文字のみ
+  'fullwidthAlphanumeric', // 全角英数字のみ
+  'corporateNumber', // 法人番号（13桁）
+  'bankAccount', // 銀行口座番号形式
   'contains', // 特定の文字列を含む
   'notContains', // 特定の文字列を含まない
   'startsWith', // 特定の文字列で始まる
