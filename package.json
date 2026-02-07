@@ -24,7 +24,7 @@
       "@konomi-app/kintone-utilities-jotai": "^1.4.0",
       "@mui/material": "^7.2.0",
       "jotai": "^2.15.1",
-      "@konomi-app/k2": "^3.0.8",
+      "@konomi-app/k2": "^3.4.1",
       "@types/react": "^19.2.0",
       "@types/react-dom": "^19.2.0"
     }
