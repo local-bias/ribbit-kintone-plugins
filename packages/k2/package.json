@@ -6,7 +6,7 @@
     "./*": "./src/*"
   },
   "devDependencies": {
-    "@konomi-app/k2": "^3.0.8",
+    "@konomi-app/k2": "^3.4.1",
     "@repo/typescript-config": "workspace:*"
   }
 }
