@@ -10,6 +10,7 @@
     "check-types": "tsc --noEmit"
   },
   "devDependencies": {
+    "@repo/constants": "workspace:*",
     "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@types/file-saver": "^2.0.7",
@@ -23,5 +24,8 @@
     "clsx": "^2.0.0",
     "file-saver": "^2.0.0",
     "tailwind-merge": "^2.0.0 || ^3.0.0"
+  },
+  "dependencies": {
+    "@konomi-app/ketch": "^0.4.0"
   }
 }

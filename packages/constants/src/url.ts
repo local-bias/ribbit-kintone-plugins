@@ -12,3 +12,8 @@ export const URL_PROMOTION = 'https://promotion.konomi.app/kintone-plugin';
  * プラグインの右側に埋め込むバナーのURL
  */
 export const URL_BANNER = 'https://promotion.konomi.app/kintone-plugin/sidebar';
+
+/**
+ *
+ */
+export const URL_PLUGIN_CDN = 'https://kintone-plugin.konomi.app';
