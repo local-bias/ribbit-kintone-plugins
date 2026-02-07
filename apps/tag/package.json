@@ -55,7 +55,7 @@
     "zod": "^4.2.1"
   },
   "devDependencies": {
-    "@konomi-app/k2": "^3.0.8",
+    "@konomi-app/k2": "^3.4.1",
     "@repo/eslint-config": "workspace:*",
     "@repo/tailwindcss": "workspace:*",
     "@repo/typescript-config": "workspace:*",
