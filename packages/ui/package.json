@@ -27,7 +27,7 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@emotion/css": "^11.13.5",
     "@emotion/styled": "^11.14.1",
-    "@konomi-app/k2": "^3.0.8",
+    "@konomi-app/k2": "^3.4.1",
     "@konomi-app/ui-react": "^3.0.1",
     "@mui/material": "^7.3.6",
     "@radix-ui/react-accordion": "^1.2.12",
