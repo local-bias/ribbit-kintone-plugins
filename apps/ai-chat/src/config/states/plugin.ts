@@ -1,0 +1,227 @@
+import { GUEST_SPACE_ID, isDev } from '@/lib/global';
+import { t } from '@/lib/i18n';
+import { createConfig, migrateConfig, restorePluginConfig } from '@/lib/plugin';
+import {
+  OPENAI_ENDPOINT_ROOT,
+  OPENROUTER_ENDPOINT_ROOT,
+  PLUGIN_NAME,
+  VIEW_ROOT_ID,
+} from '@/lib/static';
+import { handleLoadingEndAtom, handleLoadingStartAtom } from '@/lib/w-ui';
+import { PluginCommonConfig, PluginConfig } from '@/schema/plugin-config';
+import {
+  getViews,
+  onFileLoad,
+  setPluginProxyConfig,
+  storePluginConfig,
+  updateViews,
+} from '@konomi-app/kintone-utilities';
+import { produce } from 'immer';
+import { atom } from 'jotai';
+import { atomWithDefault } from 'jotai/utils';
+import { enqueueSnackbar } from 'notistack';
+import { ChangeEvent, ReactNode, SetStateAction } from 'react';
+import invariant from 'tiny-invariant';
+import { currentAppIdAtom } from './kintone';
+import { usePluginAtoms } from './w-plugin';
+
+const { config: initialConfig, error: configError } = restorePluginConfig();
+
+export const pluginConfigAtom = atom<PluginConfig>(initialConfig);
+export const pluginConfigErrorAtom = atom<Error | null>(configError ?? null);
+
+export const handlePluginConfigResetAtom = atom(null, (_, set) => {
+  set(pluginConfigAtom, createConfig());
+  enqueueSnackbar(t('common.config.toast.reset'), { variant: 'success' });
+});
+
+export const {
+  pluginConditionsAtom,
+  selectedConditionAtom,
+  hasMultipleConditionsAtom,
+  selectedConditionIdAtom,
+  commonConfigAtom,
+  getConditionPropertyAtom,
+  isConditionIdUnselectedAtom,
+} = usePluginAtoms(pluginConfigAtom, {
+  enableCommonCondition: true,
+});
+
+export const openrouterApiKeyAtom = atomWithDefault<string>(() => {
+  const proxyConfig = kintone.plugin.app.getProxyConfig(OPENROUTER_ENDPOINT_ROOT, 'POST');
+  return proxyConfig?.headers.Authorization.replace('Bearer ', '') ?? '';
+});
+
+export const openaiApiKeyAtom = atomWithDefault<string>(() => {
+  const proxyConfig = kintone.plugin.app.getProxyConfig(OPENAI_ENDPOINT_ROOT, 'POST');
+  return proxyConfig?.headers.Authorization.replace('Bearer ', '') ?? '';
+});
+
+const getCommonPropertyAtom = <T extends keyof PluginCommonConfig>(property: T) =>
+  atom(
+    (get) => {
+      return get(commonConfigAtom)[property];
+    },
+    (_, set, newValue: SetStateAction<PluginCommonConfig[T]>) => {
+      set(commonConfigAtom, (common) =>
+        produce(common, (draft) => {
+          draft[property] = typeof newValue === 'function' ? newValue(draft[property]) : newValue;
+        })
+      );
+    }
+  );
+
+export const providerTypeAtom = getCommonPropertyAtom('providerType');
+export const viewIdAtom = getCommonPropertyAtom('viewId');
+export const outputAppIdAtom = getCommonPropertyAtom('outputAppId');
+export const outputAppSpaceIdAtom = getCommonPropertyAtom('outputAppSpaceId');
+export const outputKeyFieldCodeAtom = getCommonPropertyAtom('outputKeyFieldCode');
+export const outputContentFieldCodeAtom = getCommonPropertyAtom('outputContentFieldCode');
+export const logAppIdAtom = getCommonPropertyAtom('logAppId');
+export const logAppSpaceIdAtom = getCommonPropertyAtom('logAppSpaceId');
+export const logKeyFieldCodeAtom = getCommonPropertyAtom('logKeyFieldCode');
+export const logContentFieldCodeAtom = getCommonPropertyAtom('logContentFieldCode');
+export const logAppVersionAtom = getCommonPropertyAtom('logAppVersion');
+export const logAppV2SessionIdFieldCodeAtom = getCommonPropertyAtom('logAppV2SessionIdFieldCode');
+export const logAppV2AssistantIdFieldCodeAtom = getCommonPropertyAtom(
+  'logAppV2AssistantIdFieldCode'
+);
+export const logAppV2RoleFieldCodeAtom = getCommonPropertyAtom('logAppV2RoleFieldCode');
+export const logAppV2ContentFieldCodeAtom = getCommonPropertyAtom('logAppV2ContentFieldCode');
+export const enablesAnimationAtom = getCommonPropertyAtom('enablesAnimation');
+export const enablesEnterAtom = getCommonPropertyAtom('enablesEnter');
+export const enablesShiftEnterAtom = getCommonPropertyAtom('enablesShiftEnter');
+
+export const aiModelAtom = getConditionPropertyAtom('aiModel');
+export const assistantNameAtom = getConditionPropertyAtom('name');
+export const assistantDescriptionAtom = getConditionPropertyAtom('description');
+export const aiIconAtom = getConditionPropertyAtom('aiIcon');
+export const assistantExamplesAtom = getConditionPropertyAtom('examples');
+export const maxTokensAtom = getConditionPropertyAtom('maxTokens');
+export const temperatureAtom = getConditionPropertyAtom('temperature');
+export const systemPromptAtom = getConditionPropertyAtom('systemPrompt');
+export const promptIdAtom = getConditionPropertyAtom('promptId');
+export const allowImageUploadAtom = getConditionPropertyAtom('allowImageUpload');
+export const allowWebSearchAtom = getConditionPropertyAtom('allowWebSearch');
+export const allowImageGenerationAtom = getConditionPropertyAtom('allowImageGeneration');
+export const reasoningEffortAtom = getConditionPropertyAtom('reasoningEffort');
+export const verbosityAtom = getConditionPropertyAtom('verbosity');
+export const conditionEnableFactCheckAtom = getConditionPropertyAtom('enableFactCheck');
+export const conditionEnableFactCheckLogAtom = getConditionPropertyAtom('enableFactCheckLog');
+export const conditionAllowHtmlOutputAtom = getConditionPropertyAtom('allowHtmlOutput');
+export const conditionAllowQuickRepliesAtom = getConditionPropertyAtom('allowQuickReplies');
+
+export const handlePluginConditionDeleteAtom = atom(null, (get, set) => {
+  const selectedConditionId = get(selectedConditionIdAtom);
+  set(pluginConditionsAtom, (prev) =>
+    prev.filter((condition) => condition.id !== selectedConditionId)
+  );
+  set(selectedConditionIdAtom, null);
+  enqueueSnackbar(t('common.config.toast.onConditionDelete'), { variant: 'success' });
+});
+
+export const updatePluginConfig = atom(null, async (get, set, actionComponent: ReactNode) => {
+  try {
+    set(handleLoadingStartAtom);
+    const pluginConfig = get(pluginConfigAtom);
+    const app = get(currentAppIdAtom);
+    const { views } = await getViews({
+      app,
+      preview: true,
+      guestSpaceId: GUEST_SPACE_ID,
+      debug: isDev,
+    });
+
+    const newViews = produce(views, (draft) => {
+      const viewId = pluginConfig.common.viewId;
+      for (const view of Object.values(draft)) {
+        if (view.id === viewId && view.type === 'CUSTOM') {
+          view.html = `<div id='${VIEW_ROOT_ID}'></div>`;
+          view.pager = false;
+        }
+      }
+    });
+
+    await updateViews({
+      app,
+      views: newViews,
+      guestSpaceId: GUEST_SPACE_ID,
+      debug: process.env.NODE_ENV === 'development',
+    });
+    await storePluginConfig(pluginConfig, {
+      flatProperties: ['conditions'],
+      debug: true,
+    });
+
+    const proxyConfig = [
+      { endpoint: OPENAI_ENDPOINT_ROOT, apiKey: get(openaiApiKeyAtom) },
+      { endpoint: OPENROUTER_ENDPOINT_ROOT, apiKey: get(openrouterApiKeyAtom) },
+    ];
+
+    for (const { endpoint, apiKey } of proxyConfig) {
+      await setPluginProxyConfig(
+        endpoint,
+        'POST',
+        { 'Content-Type': 'application/json', Authorization: `Bearer ${apiKey}` },
+        {}
+      );
+    }
+
+    enqueueSnackbar('設定を更新しました', {
+      variant: 'success',
+      action: actionComponent,
+    });
+  } finally {
+    set(handleLoadingEndAtom);
+  }
+});
+
+/**
+ * jsonファイルを読み込み、プラグインの設定情報をインポートします
+ */
+export const importPluginConfigAtom = atom(
+  null,
+  async (_, set, event: ChangeEvent<HTMLInputElement>) => {
+    try {
+      set(handleLoadingStartAtom);
+      const { files } = event.target;
+      invariant(files?.length, 'ファイルが見つかりませんでした');
+      const [file] = Array.from(files);
+      const fileEvent = await onFileLoad(file!);
+      const text = (fileEvent.target?.result ?? '') as string;
+      set(pluginConfigAtom, migrateConfig(JSON.parse(text)));
+      enqueueSnackbar(t('common.config.toast.import'), { variant: 'success' });
+    } catch (error) {
+      enqueueSnackbar(t('common.config.error.import'), { variant: 'error' });
+      throw error;
+    } finally {
+      set(handleLoadingEndAtom);
+    }
+  }
+);
+
+/**
+ * プラグインの設定情報をjsonファイルとしてエクスポートします
+ */
+export const exportPluginConfigAtom = atom(null, (get, set) => {
+  try {
+    set(handleLoadingStartAtom);
+    const pluginConfig = get(pluginConfigAtom);
+    const blob = new Blob([JSON.stringify(pluginConfig, null)], {
+      type: 'application/json',
+    });
+    const url = (window.URL || window.webkitURL).createObjectURL(blob);
+    const link = document.createElement('a');
+    link.download = `${PLUGIN_NAME}-config.json`;
+    link.href = url;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    enqueueSnackbar(t('common.config.toast.export'), { variant: 'success' });
+  } catch (error) {
+    enqueueSnackbar(t('common.config.error.export'), { variant: 'error' });
+    throw error;
+  } finally {
+    set(handleLoadingEndAtom);
+  }
+});
