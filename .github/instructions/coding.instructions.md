@@ -1,5 +1,5 @@
 ---
-applyTo: '**'
+applyTo: 'none'
 ---
 
 # コーディング規約
