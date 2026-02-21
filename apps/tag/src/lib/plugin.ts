@@ -1,14 +1,13 @@
-import { restoreStorage } from '@konomi-app/kintone-utilities';
-import { produce } from 'immer';
-import { PLUGIN_ID } from './global';
 import {
   createConfig,
   getNewCondition,
   migrateConfig,
-  type AnyPluginConfig,
-  type PluginConfig,
   type PluginCondition,
+  type PluginConfig,
 } from '@/schema/plugin-config';
+import { restorePluginConfig as primitiveRestore } from '@konomi-app/kintone-utilities';
+import { produce } from 'immer';
+import { PLUGIN_ID } from './global';
 
 export { createConfig, getNewCondition, migrateConfig };
 
@@ -16,7 +15,7 @@ export { createConfig, getNewCondition, migrateConfig };
  * プラグインの設定情報を復元します
  */
 export const restorePluginConfig = (): PluginConfig => {
-  const config = restoreStorage<AnyPluginConfig>(PLUGIN_ID) ?? createConfig();
+  const config = primitiveRestore(PLUGIN_ID) ?? createConfig();
   return migrateConfig(config);
 };
 

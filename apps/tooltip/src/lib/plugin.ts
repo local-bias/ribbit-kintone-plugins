@@ -1,5 +1,5 @@
 import { AnyPluginConfig, PluginCondition, PluginConfig } from '@/schema/plugin-config';
-import { restoreStorage } from '@konomi-app/kintone-utilities';
+import { restorePluginConfig as primitiveRestore } from '@konomi-app/kintone-utilities';
 import { nanoid } from 'nanoid';
 import { PLUGIN_ID } from './global';
 
@@ -74,6 +74,6 @@ export const migrateConfig = (anyConfig: AnyPluginConfig): PluginConfig => {
  * プラグインの設定情報を復元します
  */
 export const restorePluginConfig = (): PluginConfig => {
-  const config = restoreStorage<AnyPluginConfig>(PLUGIN_ID) ?? createConfig();
+  const config = primitiveRestore(PLUGIN_ID) ?? createConfig();
   return migrateConfig(config);
 };

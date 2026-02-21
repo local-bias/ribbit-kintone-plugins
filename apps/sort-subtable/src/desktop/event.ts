@@ -1,18 +1,13 @@
 import { listener } from '@/lib/listener';
-import {
-  getMetaSubtable_UNSTABLE,
-  sortField,
-  kintoneAPI,
-  restoreStorage,
-} from '@konomi-app/kintone-utilities';
+import { restorePluginConfig } from '@/lib/plugin';
 import { css } from '@emotion/css';
+import { getMetaSubtable_UNSTABLE, kintoneAPI, sortField } from '@konomi-app/kintone-utilities';
 import { getCurrentRecord, setCurrentRecord } from '@lb-ribbit/kintone-xapp';
-import { PLUGIN_ID } from '@/lib/global';
 
 const CLASSNAME_TH = 'ribbit-sort-subtable-th';
 
 listener.add(['app.record.create.show', 'app.record.edit.show'], async (event) => {
-  const config = restoreStorage<kintone.plugin.Storage>(PLUGIN_ID);
+  const config = restorePluginConfig();
   const ignoreFields = config?.ignoreFields ?? [];
 
   const metaSubtable = getMetaSubtable_UNSTABLE();
