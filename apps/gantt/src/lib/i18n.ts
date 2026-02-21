@@ -1,0 +1,156 @@
+import { commonUi, useTranslations } from '@repo/utils';
+import { mergeDeep } from 'remeda';
+import { LANGUAGE } from './global';
+
+const ui = mergeDeep(commonUi, {
+  ja: {
+    'config.condition.memo.label': '条件メモ',
+    'config.condition.viewId.label': '対象ビュー',
+    'config.condition.viewId.placeholder': 'カスタムビューを選択してください',
+    'config.condition.titleFieldCode.label': 'タスク名フィールド',
+    'config.condition.startDateFieldCode.label': '開始日フィールド',
+    'config.condition.endDateFieldCode.label': '終了日フィールド',
+    'config.condition.assigneeFieldCode.label': '担当者フィールド',
+    'config.condition.categoryFieldCode.label': 'カテゴリフィールド',
+    'config.condition.progressFieldCode.label': '進捗率フィールド',
+    'config.condition.colorFieldCode.label': '色/ラベルフィールド',
+    'config.condition.categorySortFieldCode.label': 'カテゴリソート順フィールド',
+    'config.condition.defaultScale.label': 'デフォルトスケール',
+    'config.condition.fieldPlaceholder': 'フィールドを選択してください',
+    'config.form.section.basic': '表示する一覧の選択',
+    'config.form.section.fields': 'タスク情報の設定（必須）',
+    'config.form.section.optional': '追加の表示項目（任意）',
+    'config.form.section.display': '初期表示の設定',
+    'config.form.description.viewId':
+      'ガントチャートを表示するカスタムビューを選択してください。事前にアプリの設定画面で、表示形式が「カスタマイズ」のビュー（一覧）を作成しておく必要があります。',
+    'config.form.description.fields':
+      'ガントチャートに表示するために必要なフィールドを設定します。アプリ内のどのフィールドをタスク名・開始日・終了日として使うかを、それぞれ選択してください。',
+    'config.form.description.optional':
+      '以下の項目は任意です。設定すると、より便利にガントチャートを活用できます。',
+    'config.form.description.defaultScale':
+      'ガントチャートを開いたときの初期表示を「日」「週」「月」のいずれかから選択できます。表示後に画面上で切り替えることも可能です。',
+    'config.form.description.titleFieldCode':
+      'タスク名として表示するフィールドを選択してください。',
+    'config.form.description.startDateFieldCode':
+      'タスクの開始日を表すフィールドを選択してください。',
+    'config.form.description.endDateFieldCode':
+      'タスクの終了日を表すフィールドを選択してください。',
+    'config.form.description.assigneeFieldCode': 'タスクの担当者フィールドを選択してください。',
+    'config.form.description.categoryFieldCode': 'タスクのカテゴリフィールドを選択してください。',
+    'config.form.description.progressFieldCode':
+      '進捗率を表す数値フィールドを選択してください（0〜100）。',
+    'config.form.description.colorFieldCode':
+      'タスクバーの色分けに使用するフィールドを選択してください。',
+    'config.form.description.categorySortFieldCode':
+      'カテゴリのソート順を制御する数値フィールドを選択してください。',
+    'desktop.scale.day': '日',
+    'desktop.scale.week': '週',
+    'desktop.scale.month': '月',
+    'desktop.toolbar.today': '今日',
+    'desktop.groupBy.category': 'カテゴリ',
+    'desktop.groupBy.assignee': '担当者',
+    'desktop.noRecords': '表示するレコードがありません',
+    'desktop.loading': 'レコードを読み込んでいます...',
+    'desktop.noGroup': '未分類',
+    'desktop.noAssignee': '未割当',
+    'desktop.contextMenu.openRecord': 'レコードを表示',
+    'desktop.contextMenu.editRecord': 'レコードを編集',
+    'desktop.contextMenu.duplicateRecord': 'レコードを複製',
+    'desktop.contextMenu.deleteRecord': 'レコードを削除',
+    'desktop.contextMenu.deleteConfirm':
+      'タスク「{0}」を削除しますか？\nこの操作は取り消せません。',
+    'desktop.contextMenu.updateProgress': '進捗率を更新',
+    'desktop.contextMenu.progress.label': '進捗率 (0〜100)',
+    'desktop.toast.deleteSuccess': 'タスクを削除しました',
+    'desktop.toast.deleteError': 'タスクの削除に失敗しました',
+    'desktop.toast.duplicateSuccess': 'タスクを複製しました',
+    'desktop.toast.duplicateError': 'タスクの複製に失敗しました',
+    'desktop.toast.progressUpdateSuccess': '進捗率を{0}%に更新しました',
+    'desktop.toast.progressUpdateError': '進捗率の更新に失敗しました',
+    'desktop.toast.resizeValidationError': '開始日は終了日より前にする必要があります',
+  },
+  en: {
+    'config.condition.memo.label': 'Memo',
+    'config.condition.viewId.label': 'Target View',
+    'config.condition.viewId.placeholder': 'Select a custom view',
+    'config.condition.titleFieldCode.label': 'Task Name Field',
+    'config.condition.startDateFieldCode.label': 'Start Date Field',
+    'config.condition.endDateFieldCode.label': 'End Date Field',
+    'config.condition.assigneeFieldCode.label': 'Assignee Field',
+    'config.condition.categoryFieldCode.label': 'Category Field',
+    'config.condition.progressFieldCode.label': 'Progress Field',
+    'config.condition.colorFieldCode.label': 'Color/Label Field',
+    'config.condition.categorySortFieldCode.label': 'Category Sort Order Field',
+    'config.condition.defaultScale.label': 'Default Scale',
+    'config.condition.fieldPlaceholder': 'Select a field',
+    'config.form.section.basic': 'View Selection',
+    'config.form.section.fields': 'Task Information (Required)',
+    'config.form.section.optional': 'Additional Display Items (Optional)',
+    'config.form.section.display': 'Initial Display Settings',
+    'config.form.description.viewId':
+      'Select the custom view where the Gantt chart will be displayed. You need to create a view with the "Customize" display format in the app settings beforehand.',
+    'config.form.description.fields':
+      'Set the required fields for displaying the Gantt chart. Choose which fields in your app correspond to the task name, start date, and end date.',
+    'config.form.description.optional':
+      'The following items are optional. By setting them, you can group tasks by assignee or category, display progress bars, and color-code task bars for a richer Gantt chart experience.',
+    'config.form.description.defaultScale':
+      'Choose the initial display scale when the Gantt chart opens: Day, Week, or Month. You can also switch between scales on the chart itself.',
+    'config.form.description.titleFieldCode': 'Select the field to display as task name.',
+    'config.form.description.startDateFieldCode': 'Select the field representing the start date.',
+    'config.form.description.endDateFieldCode': 'Select the field representing the end date.',
+    'config.form.description.assigneeFieldCode': 'Select the assignee field for tasks.',
+    'config.form.description.categoryFieldCode': 'Select the category field for grouping.',
+    'config.form.description.progressFieldCode': 'Select the number field for progress (0-100).',
+    'config.form.description.colorFieldCode': 'Select the field for color-coding task bars.',
+    'config.form.description.categorySortFieldCode':
+      'Select a number field to control category sort order.',
+    'desktop.scale.day': 'Day',
+    'desktop.scale.week': 'Week',
+    'desktop.scale.month': 'Month',
+    'desktop.toolbar.today': 'Today',
+    'desktop.groupBy.category': 'Category',
+    'desktop.groupBy.assignee': 'Assignee',
+    'desktop.noRecords': 'No records to display',
+    'desktop.loading': 'Loading records...',
+    'desktop.noGroup': 'Uncategorized',
+    'desktop.noAssignee': 'Unassigned',
+    'desktop.contextMenu.openRecord': 'Open Record',
+    'desktop.contextMenu.editRecord': 'Edit Record',
+    'desktop.contextMenu.duplicateRecord': 'Duplicate Record',
+    'desktop.contextMenu.deleteRecord': 'Delete Record',
+    'desktop.contextMenu.deleteConfirm': 'Delete task "{0}"?\nThis action cannot be undone.',
+    'desktop.contextMenu.updateProgress': 'Update Progress',
+    'desktop.contextMenu.progress.label': 'Progress (0-100)',
+    'desktop.toast.deleteSuccess': 'Task deleted',
+    'desktop.toast.deleteError': 'Failed to delete task',
+    'desktop.toast.duplicateSuccess': 'Task duplicated',
+    'desktop.toast.duplicateError': 'Failed to duplicate task',
+    'desktop.toast.progressUpdateSuccess': 'Progress updated to {0}%',
+    'desktop.toast.progressUpdateError': 'Failed to update progress',
+    'desktop.toast.resizeValidationError': 'Start date must be before end date',
+  },
+  es: {
+    'desktop.scale.day': 'Día',
+    'desktop.scale.week': 'Semana',
+    'desktop.scale.month': 'Mes',
+    'desktop.toolbar.today': 'Hoy',
+  },
+  zh: {
+    'desktop.scale.day': '日',
+    'desktop.scale.week': '周',
+    'desktop.scale.month': '月',
+    'desktop.toolbar.today': '今天',
+  },
+  'zh-TW': {
+    'desktop.scale.day': '日',
+    'desktop.scale.week': '週',
+    'desktop.scale.month': '月',
+    'desktop.toolbar.today': '今天',
+  },
+} as const);
+
+export const t = useTranslations({
+  ui,
+  lang: LANGUAGE as keyof typeof ui,
+  defaultLang: 'ja',
+});
