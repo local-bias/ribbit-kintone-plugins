@@ -7,7 +7,7 @@
     "init": "plugin init && plugin genkey",
     "build": "plugin build && plugin zip",
     "standalone": "plugin build && plugin zip --env standalone",
-    "dev": "plugin dev --cert-dir C:/workspaces/apps/cert"
+    "dev": "plugin dev --cert-dir /home/dev/config/cert"
   },
   "browser": {
     "path": false
@@ -15,9 +15,9 @@
   "dependencies": {
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
-    "@konomi-app/kintone-utilities": "^5.17.0",
+    "@konomi-app/kintone-utilities": "^6.1.0",
     "@konomi-app/kintone-utilities-jotai": "^2.0.1",
-    "@konomi-app/kintone-utilities-react": "^3.0.0",
+    "@konomi-app/kintone-utilities-react": "^3.0.2",
     "@konomi-app/ui": "^3.0.0",
     "@konomi-app/ui-react": "^3.0.1",
     "@mui/icons-material": "7.3.6",

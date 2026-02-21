@@ -1,5 +1,5 @@
 {
-  "name": "plugin",
+  "name": "ai-chat",
   "version": "1.0.0",
   "author": "ribbit",
   "license": "MIT",
@@ -10,7 +10,7 @@
     "build:js": "plugin build",
     "build": "concurrently \"pnpm:build:*\" && plugin zip --ppk ./.plugin/oss.ppk",
     "standalone": "concurrently \"pnpm:build:*\" && plugin zip --env standalone --ppk ./.plugin/oss.ppk",
-    "dev:js": "plugin dev --ppk C:/workspaces/apps/kintone-plugin/dev.ppk --cert-dir C:/workspaces/apps/cert",
+    "dev:js": "plugin dev --ppk /home/dev/config/kintone-plugin-dev.ppk --cert-dir /home/dev/config/cert",
     "dev:css-desktop": "pnpm dlx @tailwindcss/cli -i ./src/styles/desktop.css -o ./.plugin/dev/desktop.css --watch",
     "dev:css-config": "pnpm dlx @tailwindcss/cli -i ./src/styles/config.css -o ./.plugin/dev/config.css --watch",
     "dev": "concurrently \"pnpm:dev:*\""
@@ -29,9 +29,9 @@
     "@emotion/styled": "^11.14.1",
     "@heroicons/react": "^2.2.0",
     "@konomi-app/ketch": "^0.4.0",
-    "@konomi-app/kintone-utilities": "^6.0.1",
+    "@konomi-app/kintone-utilities": "^6.1.0",
     "@konomi-app/kintone-utilities-jotai": "^2.0.1",
-    "@konomi-app/kintone-utilities-react": "^3.0.0",
+    "@konomi-app/kintone-utilities-react": "^3.0.2",
     "@konomi-app/ui": "^3.0.0",
     "@konomi-app/ui-react": "^3.0.1",
     "@mui/icons-material": "^7.3.7",
