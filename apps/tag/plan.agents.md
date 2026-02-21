@@ -348,7 +348,7 @@ deployモード:
 ## 開発環境
 
 - ポート: 5821
-- 証明書ディレクトリ: `C:/workspaces/apps/cert`
+- 証明書ディレクトリ: `/home/dev/config/cert`
 - ホットリロード: `plugin dev` コマンド
 - ビルド: `plugin build && plugin zip`
 
