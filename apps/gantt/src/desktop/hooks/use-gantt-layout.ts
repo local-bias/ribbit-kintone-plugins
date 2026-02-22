@@ -1,4 +1,4 @@
-import { PluginCondition, GanttScale } from '@/schema/plugin-config';
+import { PluginCondition, GanttScale, CategorySetting } from '@/schema/plugin-config';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { useMemo } from 'react';
 
@@ -12,10 +12,10 @@ export const COLUMN_WIDTH: Record<GanttScale, number> = {
 /** 行高さ */
 export const GROUP_HEADER_HEIGHT = 36;
 export const TASK_ROW_HEIGHT = 32;
-export const SIDEBAR_WIDTH = 200;
+export const SIDEBAR_WIDTH = 240;
 export const HEADER_HEIGHT = 50;
 
-/** カラーパレット（最大12色） */
+/** カラーパレット（フォールバック用、最大12色） */
 export const COLOR_PALETTE = [
   '#4285F4',
   '#EA4335',
@@ -39,12 +39,19 @@ export interface GanttTask {
   assignees: string[];
   /** 担当者のコード（API更新用） */
   assigneeCodes: string[];
-  category: string;
+  /** 各カテゴリ階層の値（condition.categories の順序に対応） */
+  categoryValues: string[];
   progress: number;
+  /** 色マッピングに使用する値（色設定が定義されたカテゴリの値） */
   colorValue: string;
   /** カテゴリソート順の値（NaNの場合は未設定） */
   categorySortValue: number;
   record: kintoneAPI.RecordData;
+}
+
+export interface CategoryPathEntry {
+  fieldCode: string;
+  value: string;
 }
 
 export interface GanttGroup {
@@ -53,6 +60,12 @@ export interface GanttGroup {
   label: string;
   /** API更新用のコード（担当者の場合はユーザーコード） */
   code: string;
+  /** 階層の深さ（0 = トップレベル） */
+  depth: number;
+  /** 親グループかどうか（子がある場合 true） */
+  isParent: boolean;
+  /** カテゴリパス（D&D 時にどのフィールドを更新するか判定用） */
+  categoryPath: CategoryPathEntry[];
   tasks: GanttTask[];
   collapsed: boolean;
 }
@@ -181,6 +194,281 @@ function getColorForValue(value: string, colorMap: Map<string, string>): string 
   return color;
 }
 
+/** フィールドからカテゴリ値を取得（USER_SELECT の場合は最初のユーザー名） */
+function getCategoryValue(record: kintoneAPI.RecordData, fieldCode: string): string {
+  if (!fieldCode) {
+    return '';
+  }
+  const field = record[fieldCode];
+  if (!field) {
+    return '';
+  }
+  const value = field.value;
+  // USER_SELECT フィールド
+  if (Array.isArray(value)) {
+    if (value.length === 0) {
+      return '';
+    }
+    const first = value[0];
+    if (typeof first === 'object' && first !== null && 'name' in first) {
+      return String((first as { name?: string }).name || '');
+    }
+    return '';
+  }
+  return String(value ?? '');
+}
+
+/** USER_SELECT フィールドから全ユーザー名の配列を取得 */
+function getCategoryUserNames(record: kintoneAPI.RecordData, fieldCode: string): string[] {
+  if (!fieldCode) {
+    return [];
+  }
+  const field = record[fieldCode];
+  if (!field || !Array.isArray(field.value)) {
+    return [];
+  }
+  return (field.value as { name?: string; code?: string }[]).map((u) =>
+    String(u.name || u.code || '')
+  );
+}
+
+/** フィールドが USER_SELECT かどうかを判定 */
+function isUserSelectField(record: kintoneAPI.RecordData, fieldCode: string): boolean {
+  if (!fieldCode) {
+    return false;
+  }
+  const field = record[fieldCode];
+  if (!field) {
+    return false;
+  }
+  return Array.isArray(field.value);
+}
+
+/** カテゴリ色設定から色マップを構築 */
+function buildCategoryColorMap(categories: CategorySetting[]): Map<string, string> {
+  const colorMap = new Map<string, string>();
+  for (const cat of categories) {
+    for (const entry of cat.colors) {
+      if (entry.value && entry.color) {
+        colorMap.set(entry.value, entry.color);
+      }
+    }
+  }
+  return colorMap;
+}
+
+/** 色設定を持つカテゴリのインデックスを取得（-1 = なし） */
+function findColorCategoryIndex(categories: CategorySetting[]): number {
+  return categories.findIndex((c) => c.colors.length > 0);
+}
+
+// ─── 階層グループ化ヘルパー ──────────────────────────
+
+interface TaskCategoryAssignment {
+  task: GanttTask;
+  /** 各カテゴリ階層での値（ユーザーフィールドの場合は展開済み） */
+  path: string[];
+}
+
+/**
+ * タスクをカテゴリ階層の各レベルで展開する。
+ * USER_SELECT フィールドの場合、ユーザーごとに行を複製する。
+ */
+function expandTaskCategories(
+  task: GanttTask,
+  record: kintoneAPI.RecordData,
+  categories: CategorySetting[]
+): TaskCategoryAssignment[] {
+  if (categories.length === 0) {
+    return [{ task, path: [] }];
+  }
+
+  // 各レベルで取りうる値を配列として取得
+  const allLevelValues: string[][] = categories.map((cat) => {
+    if (isUserSelectField(record, cat.fieldCode)) {
+      const names = getCategoryUserNames(record, cat.fieldCode);
+      return names.length > 0 ? names : [''];
+    }
+    return [getCategoryValue(record, cat.fieldCode) || ''];
+  });
+
+  // 直積（カルテシアン積）を求めてすべての組み合わせを生成
+  function cartesianProduct(arrays: string[][]): string[][] {
+    if (arrays.length === 0) {
+      return [[]];
+    }
+    const [first, ...rest] = arrays;
+    const restProduct = cartesianProduct(rest);
+    const result: string[][] = [];
+    for (const val of first!) {
+      for (const rp of restProduct) {
+        result.push([val, ...rp]);
+      }
+    }
+    return result;
+  }
+
+  const paths = cartesianProduct(allLevelValues);
+  return paths.map((path) => ({ task, path }));
+}
+
+/**
+ * 階層的にグループを構築してフラットなリストとして返す。
+ * 各グループには depth と isParent が設定される。
+ */
+function buildHierarchicalGroups(
+  assignments: TaskCategoryAssignment[],
+  categories: CategorySetting[],
+  condition: PluginCondition
+): GanttGroup[] {
+  if (categories.length === 0) {
+    // カテゴリ未設定 → 1グループにまとめる
+    const tasks = assignments.map((a) => a.task);
+    return [
+      {
+        key: '__all__',
+        label: '全タスク',
+        code: '',
+        depth: 0,
+        isParent: false,
+        categoryPath: [],
+        tasks: tasks.sort((a, b) => a.startDate.getTime() - b.startDate.getTime()),
+        collapsed: false,
+      },
+    ];
+  }
+
+  if (categories.length === 1) {
+    // 単一カテゴリ → フラットグループ（従来どおり）
+    const groupMap = new Map<string, GanttTask[]>();
+    for (const { task, path } of assignments) {
+      const key = path[0] ?? '';
+      const existing = groupMap.get(key) ?? [];
+      existing.push(task);
+      groupMap.set(key, existing);
+    }
+
+    return sortGroupEntries(
+      Array.from(groupMap.entries()).map(([key, tasks]) => ({
+        key,
+        label: key || '未分類',
+        code: key,
+        depth: 0,
+        isParent: false,
+        categoryPath: [{ fieldCode: categories[0]!.fieldCode, value: key }],
+        tasks: tasks.sort((a, b) => a.startDate.getTime() - b.startDate.getTime()),
+        collapsed: false,
+      })),
+      condition
+    );
+  }
+
+  // 複数カテゴリ → 階層グループ
+  // まず再帰的にツリー構造を構築し、フラット化する
+  interface TreeNode {
+    key: string;
+    label: string;
+    code: string;
+    depth: number;
+    fieldCode: string;
+    value: string;
+    children: Map<string, TreeNode>;
+    tasks: GanttTask[];
+    categoryPath: CategoryPathEntry[];
+  }
+
+  // ルートノード（表示されない仮想ノード）
+  const root: TreeNode = {
+    key: '__root__',
+    label: '',
+    code: '',
+    depth: -1,
+    fieldCode: '',
+    value: '',
+    children: new Map(),
+    tasks: [],
+    categoryPath: [],
+  };
+
+  for (const { task, path } of assignments) {
+    let current = root;
+    const categoryPath: CategoryPathEntry[] = [];
+
+    for (let depth = 0; depth < path.length; depth++) {
+      const value = path[depth] ?? '';
+      const fieldCode = categories[depth]?.fieldCode ?? '';
+      categoryPath.push({ fieldCode, value });
+      const nodeKey = categoryPath.map((e) => e.value).join('|');
+
+      if (!current.children.has(nodeKey)) {
+        current.children.set(nodeKey, {
+          key: nodeKey,
+          label: value || '未分類',
+          code: value,
+          depth,
+          fieldCode,
+          value,
+          children: new Map(),
+          tasks: [],
+          categoryPath: [...categoryPath],
+        });
+      }
+      current = current.children.get(nodeKey)!;
+    }
+
+    // リーフノードにタスクを追加
+    current.tasks.push(task);
+  }
+
+  // ツリーをフラット化
+  function flatten(node: TreeNode): GanttGroup[] {
+    const result: GanttGroup[] = [];
+
+    const sortedChildren = sortGroupEntries(
+      Array.from(node.children.values()).map((child) => ({
+        key: child.key,
+        label: child.label,
+        code: child.code,
+        depth: child.depth,
+        isParent: child.children.size > 0,
+        categoryPath: child.categoryPath,
+        tasks: child.tasks.sort((a, b) => a.startDate.getTime() - b.startDate.getTime()),
+        collapsed: false,
+      })),
+      condition
+    );
+
+    for (const group of sortedChildren) {
+      result.push(group);
+      // 対応するツリーノードの子もフラット化
+      const treeChild = node.children.get(group.key);
+      if (treeChild && treeChild.children.size > 0) {
+        result.push(...flatten(treeChild));
+      }
+    }
+
+    return result;
+  }
+
+  return flatten(root);
+}
+
+/** グループをソートする（categorySortFieldCode or 名前順） */
+function sortGroupEntries(groups: GanttGroup[], condition: PluginCondition): GanttGroup[] {
+  return groups.sort((a, b) => {
+    if (condition.categorySortFieldCode) {
+      const aValues = a.tasks.map((t) => t.categorySortValue).filter((v) => !isNaN(v));
+      const bValues = b.tasks.map((t) => t.categorySortValue).filter((v) => !isNaN(v));
+      const aMin = aValues.length > 0 ? Math.min(...aValues) : Infinity;
+      const bMin = bValues.length > 0 ? Math.min(...bValues) : Infinity;
+      if (aMin !== bMin) {
+        return aMin - bMin;
+      }
+    }
+    return a.label.localeCompare(b.label, 'ja');
+  });
+}
+
 export function useGanttLayout(params: {
   records: kintoneAPI.RecordData[];
   condition: PluginCondition | null;
@@ -206,7 +494,11 @@ export function useGanttLayout(params: {
       };
     }
 
-    const colorMap = new Map<string, string>();
+    // カテゴリ色設定からマップを構築
+    const configuredColorMap = buildCategoryColorMap(condition.categories);
+    const colorCategoryIndex = findColorCategoryIndex(condition.categories);
+    // 未指定値のフォールバック用
+    const dynamicColorMap = new Map<string, string>(configuredColorMap);
 
     // レコード → タスク変換
     const tasks: GanttTask[] = [];
@@ -230,19 +522,24 @@ export function useGanttLayout(params: {
         : '';
       const progressNum = progressStr ? Number(progressStr) : 0;
 
-      const colorValue = condition.colorFieldCode
-        ? getFieldValue(record, condition.colorFieldCode)
-        : '';
+      // 各カテゴリの値
+      const categoryValues = condition.categories.map((cat) =>
+        getCategoryValue(record, cat.fieldCode)
+      );
+
+      // 色マッピング用の値を取得
+      let colorValue = '';
+      if (colorCategoryIndex >= 0) {
+        colorValue = categoryValues[colorCategoryIndex] ?? '';
+        if (colorValue) {
+          getColorForValue(colorValue, dynamicColorMap);
+        }
+      }
 
       const categorySortStr = condition.categorySortFieldCode
         ? getFieldValue(record, condition.categorySortFieldCode)
         : '';
       const categorySortValue = categorySortStr ? Number(categorySortStr) : NaN;
-
-      // 色マッピング構築
-      if (colorValue) {
-        getColorForValue(colorValue, colorMap);
-      }
 
       tasks.push({
         id: String(record.$id?.value ?? ''),
@@ -255,9 +552,7 @@ export function useGanttLayout(params: {
         assigneeCodes: condition.assigneeFieldCode
           ? getUserCodes(record, condition.assigneeFieldCode)
           : [],
-        category: condition.categoryFieldCode
-          ? getFieldValue(record, condition.categoryFieldCode)
-          : '',
+        categoryValues,
         progress: isNaN(progressNum) ? 0 : Math.min(100, Math.max(0, progressNum)),
         colorValue,
         categorySortValue,
@@ -374,9 +669,12 @@ export function useGanttLayout(params: {
     const todayX = dateToX(today);
 
     // グループ化
-    const groupMap = new Map<string, { tasks: GanttTask[]; code: string }>();
-    for (const task of tasks) {
-      if (groupBy === 'assignee') {
+    let groups: GanttGroup[];
+
+    if (groupBy === 'assignee') {
+      // 担当者グループ化（フラット）
+      const groupMap = new Map<string, { tasks: GanttTask[]; code: string }>();
+      for (const task of tasks) {
         if (task.assignees.length > 0) {
           for (let i = 0; i < task.assignees.length; i++) {
             const name = task.assignees[i] ?? '';
@@ -390,35 +688,29 @@ export function useGanttLayout(params: {
           existing.tasks.push(task);
           groupMap.set('', existing);
         }
-      } else {
-        const key = task.category || '';
-        const existing = groupMap.get(key) ?? { tasks: [], code: key };
-        existing.tasks.push(task);
-        groupMap.set(key, existing);
       }
-    }
 
-    const groups: GanttGroup[] = Array.from(groupMap.entries())
-      .sort(([a, aData], [b, bData]) => {
-        // categorySortFieldCodeが設定されている場合、グループ内のタスクのソート値の最小値でソート
-        if (condition.categorySortFieldCode && groupBy === 'category') {
-          const aValues = aData.tasks.map((t) => t.categorySortValue).filter((v) => !isNaN(v));
-          const bValues = bData.tasks.map((t) => t.categorySortValue).filter((v) => !isNaN(v));
-          const aMin = aValues.length > 0 ? Math.min(...aValues) : Infinity;
-          const bMin = bValues.length > 0 ? Math.min(...bValues) : Infinity;
-          if (aMin !== bMin) {
-            return aMin - bMin;
-          }
-        }
-        return a.localeCompare(b, 'ja');
-      })
-      .map(([key, { tasks: groupTasks, code }]) => ({
-        key,
-        label: key || (groupBy === 'assignee' ? '未割当' : '未分類'),
-        code,
-        tasks: groupTasks.sort((a, b) => a.startDate.getTime() - b.startDate.getTime()),
-        collapsed: false,
-      }));
+      groups = Array.from(groupMap.entries())
+        .sort(([a], [b]) => a.localeCompare(b, 'ja'))
+        .map(([key, { tasks: groupTasks, code }]) => ({
+          key,
+          label: key || '未割当',
+          code,
+          depth: 0,
+          isParent: false,
+          categoryPath: [],
+          tasks: groupTasks.sort((a, b) => a.startDate.getTime() - b.startDate.getTime()),
+          collapsed: false,
+        }));
+    } else {
+      // カテゴリ階層グループ化
+      const assignments: TaskCategoryAssignment[] = [];
+      for (const task of tasks) {
+        const expanded = expandTaskCategories(task, task.record, condition.categories);
+        assignments.push(...expanded);
+      }
+      groups = buildHierarchicalGroups(assignments, condition.categories, condition);
+    }
 
     return {
       tasks,
@@ -430,7 +722,7 @@ export function useGanttLayout(params: {
       rangeEnd,
       dateToX,
       todayX,
-      colorMap,
+      colorMap: dynamicColorMap,
     };
   }, [records, condition, scale, viewDate, groupBy]);
 }
