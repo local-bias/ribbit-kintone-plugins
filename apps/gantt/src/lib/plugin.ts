@@ -11,9 +11,35 @@ import {
 
 export { createConfig, getNewCondition, migrateConfig };
 
-export const restorePluginConfig = (): PluginConfig => {
-  const config = primitiveRestore<AnyPluginConfig>(PLUGIN_ID) ?? createConfig();
-  return migrateConfig(config);
+/**
+ * プラグイン設定を復元します
+ * エラーが発生した場合は、エラー情報と共にデフォルト設定を返却します
+ * @returns {config: PluginConfig, error?: Error} プラグイン設定とエラー情報
+ */
+export const restorePluginConfig = (): { config: PluginConfig; error?: Error } => {
+  try {
+    const savedConfig = primitiveRestore<AnyPluginConfig>(PLUGIN_ID);
+
+    if (!savedConfig) {
+      console.warn('⚠️ 保存された設定が見つかりません。デフォルト設定を使用します。');
+      return { config: createConfig() };
+    }
+
+    const migratedConfig = migrateConfig(savedConfig);
+    return { config: migratedConfig };
+  } catch (error) {
+    console.error('❌ プラグイン設定の復元中にエラーが発生しました', error);
+    const configError =
+      error instanceof Error
+        ? error
+        : new Error(`プラグイン設定の復元に失敗しました: ${String(error)}`);
+
+    // エラーが発生してもデフォルト設定を返すことでアプリケーションは起動する
+    return {
+      config: createConfig(),
+      error: configError,
+    };
+  }
 };
 
 /**
@@ -37,3 +63,8 @@ export const isUsagePluginConditionMet = (condition: PluginCondition): boolean =
 
 /** ガントチャートのカスタムビューに埋め込むルート要素ID */
 export const VIEW_ROOT_ID = 'ribbit-gantt-root';
+
+/** 条件からカテゴリのフィールドコード一覧を取得 */
+export function getCategoryFieldCodes(condition: PluginCondition): string[] {
+  return condition.categories.map((c) => c.fieldCode).filter(Boolean);
+}

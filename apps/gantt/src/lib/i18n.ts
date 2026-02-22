@@ -4,6 +4,9 @@ import { LANGUAGE } from './global';
 
 const ui = mergeDeep(commonUi, {
   ja: {
+    'common.auth.serverError': 'サーバーエラーが発生しました。管理者へお問い合わせください。',
+    'common.auth.licenseExpired': 'ライセンスの有効期限が切れています。',
+    'common.auth.licenseInvalid': 'ライセンスが無効です',
     'config.condition.memo.label': '条件メモ',
     'config.condition.viewId.label': '対象ビュー',
     'config.condition.viewId.placeholder': 'カスタムビューを選択してください',
@@ -11,10 +14,23 @@ const ui = mergeDeep(commonUi, {
     'config.condition.startDateFieldCode.label': '開始日フィールド',
     'config.condition.endDateFieldCode.label': '終了日フィールド',
     'config.condition.assigneeFieldCode.label': '担当者フィールド',
-    'config.condition.categoryFieldCode.label': 'カテゴリフィールド',
     'config.condition.progressFieldCode.label': '進捗率フィールド',
-    'config.condition.colorFieldCode.label': '色/ラベルフィールド',
     'config.condition.categorySortFieldCode.label': 'カテゴリソート順フィールド',
+    'config.form.section.categories': 'カテゴリ階層の設定',
+    'config.form.description.categories':
+      'ガントチャート左サイドバーのグループ化に使用するカテゴリを設定します。複数追加すると親カテゴリ→子カテゴリの階層表示になります。色設定を追加すると、そのカテゴリの値に応じてガントバーの色が変わります。色を手動で設定しなくても、色分けを有効にするだけで値に応じて自動で色分けされます。',
+    'config.categories.addCategory': '＋ カテゴリを追加',
+    'config.categories.fieldCode': 'フィールド',
+    'config.categories.fieldPlaceholder': 'フィールドを選択',
+    'config.categories.colorSettings': '色設定',
+    'config.categories.addColor': '＋ 色を追加',
+    'config.categories.colorValue': '値',
+    'config.categories.colorPicker': '色',
+    'config.categories.removeCategory': 'このカテゴリを削除',
+    'config.categories.removeColor': 'この色設定を削除',
+    'config.categories.level': 'レベル{0}',
+    'config.categories.enableColor': '色分けを有効にする',
+    'config.categories.plusOnly': '複数階層はガントチャートプラグイン プラスでのみ利用可能です',
     'config.condition.defaultScale.label': 'デフォルトスケール',
     'config.condition.fieldPlaceholder': 'フィールドを選択してください',
     'config.form.section.basic': '表示する一覧の選択',
@@ -36,11 +52,10 @@ const ui = mergeDeep(commonUi, {
     'config.form.description.endDateFieldCode':
       'タスクの終了日を表すフィールドを選択してください。',
     'config.form.description.assigneeFieldCode': 'タスクの担当者フィールドを選択してください。',
-    'config.form.description.categoryFieldCode': 'タスクのカテゴリフィールドを選択してください。',
+
     'config.form.description.progressFieldCode':
       '進捗率を表す数値フィールドを選択してください（0〜100）。',
-    'config.form.description.colorFieldCode':
-      'タスクバーの色分けに使用するフィールドを選択してください。',
+
     'config.form.description.categorySortFieldCode':
       'カテゴリのソート順を制御する数値フィールドを選択してください。',
     'desktop.scale.day': '日',
@@ -70,6 +85,9 @@ const ui = mergeDeep(commonUi, {
     'desktop.toast.resizeValidationError': '開始日は終了日より前にする必要があります',
   },
   en: {
+    'common.auth.serverError': 'A server error occurred. Please contact the administrator.',
+    'common.auth.licenseExpired': 'The license has expired.',
+    'common.auth.licenseInvalid': 'The license is invalid.',
     'config.condition.memo.label': 'Memo',
     'config.condition.viewId.label': 'Target View',
     'config.condition.viewId.placeholder': 'Select a custom view',
@@ -77,10 +95,24 @@ const ui = mergeDeep(commonUi, {
     'config.condition.startDateFieldCode.label': 'Start Date Field',
     'config.condition.endDateFieldCode.label': 'End Date Field',
     'config.condition.assigneeFieldCode.label': 'Assignee Field',
-    'config.condition.categoryFieldCode.label': 'Category Field',
     'config.condition.progressFieldCode.label': 'Progress Field',
-    'config.condition.colorFieldCode.label': 'Color/Label Field',
     'config.condition.categorySortFieldCode.label': 'Category Sort Order Field',
+    'config.form.section.categories': 'Category Hierarchy',
+    'config.form.description.categories':
+      'Configure categories for grouping in the Gantt chart sidebar. Adding multiple categories creates a parent-child hierarchy. Adding color settings to a category will color-code Gantt bars based on its values.',
+    'config.categories.addCategory': '+ Add Category',
+    'config.categories.fieldCode': 'Field',
+    'config.categories.fieldPlaceholder': 'Select a field',
+    'config.categories.colorSettings': 'Color Settings',
+    'config.categories.addColor': '+ Add Color',
+    'config.categories.colorValue': 'Value',
+    'config.categories.colorPicker': 'Color',
+    'config.categories.removeCategory': 'Remove this category',
+    'config.categories.removeColor': 'Remove this color',
+    'config.categories.level': 'Level {0}',
+    'config.categories.enableColor': 'Enable Color Coding',
+    'config.categories.plusOnly':
+      'Multiple hierarchy levels are only available in Gantt Chart Plugin Plus',
     'config.condition.defaultScale.label': 'Default Scale',
     'config.condition.fieldPlaceholder': 'Select a field',
     'config.form.section.basic': 'View Selection',
@@ -99,9 +131,9 @@ const ui = mergeDeep(commonUi, {
     'config.form.description.startDateFieldCode': 'Select the field representing the start date.',
     'config.form.description.endDateFieldCode': 'Select the field representing the end date.',
     'config.form.description.assigneeFieldCode': 'Select the assignee field for tasks.',
-    'config.form.description.categoryFieldCode': 'Select the category field for grouping.',
+
     'config.form.description.progressFieldCode': 'Select the number field for progress (0-100).',
-    'config.form.description.colorFieldCode': 'Select the field for color-coding task bars.',
+
     'config.form.description.categorySortFieldCode':
       'Select a number field to control category sort order.',
     'desktop.scale.day': 'Day',
