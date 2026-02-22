@@ -14,6 +14,7 @@ import {
 } from '../record-operations';
 import { GUEST_SPACE_ID } from '@/lib/global';
 import { t } from '@/lib/i18n';
+import { getCategoryFieldCodes } from '@/lib/plugin';
 
 const StyledContent = styled(ContextMenu.Content)`
   min-width: 180px;
@@ -197,9 +198,8 @@ export const TaskContextMenu: FC<TaskContextMenuProps> = ({ task, children }) =>
         condition.startDateFieldCode,
         condition.endDateFieldCode,
         condition.assigneeFieldCode,
-        condition.categoryFieldCode,
+        ...getCategoryFieldCodes(condition),
         condition.progressFieldCode,
-        condition.colorFieldCode,
         condition.categorySortFieldCode,
       ].filter(Boolean);
 
@@ -233,9 +233,8 @@ export const TaskContextMenu: FC<TaskContextMenuProps> = ({ task, children }) =>
         condition.startDateFieldCode,
         condition.endDateFieldCode,
         condition.assigneeFieldCode,
-        condition.categoryFieldCode,
+        ...getCategoryFieldCodes(condition),
         condition.progressFieldCode,
-        condition.colorFieldCode,
         condition.categorySortFieldCode,
       ].filter(Boolean);
 
@@ -281,9 +280,8 @@ export const TaskContextMenu: FC<TaskContextMenuProps> = ({ task, children }) =>
           condition.startDateFieldCode,
           condition.endDateFieldCode,
           condition.assigneeFieldCode,
-          condition.categoryFieldCode,
+          ...getCategoryFieldCodes(condition),
           condition.progressFieldCode,
-          condition.colorFieldCode,
           condition.categorySortFieldCode,
         ].filter(Boolean);
 
