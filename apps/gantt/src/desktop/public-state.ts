@@ -1,9 +1,24 @@
 import { isUsagePluginConditionMet, restorePluginConfig } from '@/lib/plugin';
-import { GanttScale, PluginCondition } from '@/schema/plugin-config';
+import { GanttScale, PluginCondition, PluginConfig } from '@/schema/plugin-config';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { atom } from 'jotai';
 
-export const pluginConfigAtom = atom(restorePluginConfig());
+const { config: initialConfig, error: configError } = restorePluginConfig();
+
+export const pluginConfigAtom = atom<PluginConfig>({
+  ...initialConfig,
+  conditions: initialConfig.conditions.map((condition) => ({
+    ...condition,
+    categories: condition.categories.slice(0, 1),
+  })),
+});
+
+/**
+ * プラグイン設定の読み込み時に発生したエラーを保持するatom
+ * エラーがない場合はnull
+ */
+export const configErrorAtom = atom<Error | null>(configError ?? null);
+
 export const pluginConditionsAtom = atom((get) => get(pluginConfigAtom).conditions);
 export const validPluginConditionsAtom = atom((get) =>
   get(pluginConditionsAtom).filter(isUsagePluginConditionMet)
