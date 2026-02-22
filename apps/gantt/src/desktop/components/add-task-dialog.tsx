@@ -13,6 +13,7 @@ import { toast } from 'sonner';
 import { addTaskDialogOpenAtom, currentConditionAtom, ganttAppIdAtom } from '../public-state';
 import { createNewTask, refreshRecords } from '../record-operations';
 import { GUEST_SPACE_ID } from '@/lib/global';
+import { getCategoryFieldCodes } from '@/lib/plugin';
 
 const FormField = styled.div`
   margin-bottom: 16px;
@@ -83,9 +84,8 @@ export const AddTaskDialog: FC = () => {
         condition.startDateFieldCode,
         condition.endDateFieldCode,
         condition.assigneeFieldCode,
-        condition.categoryFieldCode,
+        ...getCategoryFieldCodes(condition),
         condition.progressFieldCode,
-        condition.colorFieldCode,
       ].filter(Boolean);
 
       await refreshRecords({

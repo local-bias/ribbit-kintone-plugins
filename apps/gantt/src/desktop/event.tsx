@@ -1,5 +1,6 @@
 import { manager } from '@/lib/event-manager';
-import { restorePluginConfig, VIEW_ROOT_ID } from '@/lib/plugin';
+import { GUEST_SPACE_ID } from '@/lib/global';
+import { getCategoryFieldCodes, VIEW_ROOT_ID } from '@/lib/plugin';
 import { getAllRecords, getQueryCondition } from '@konomi-app/kintone-utilities';
 import { store } from '@repo/jotai';
 import { createRoot, Root } from 'react-dom/client';
@@ -10,17 +11,15 @@ import {
   ganttLoadingAtom,
   ganttRecordsAtom,
   ganttScaleAtom,
+  pluginConditionsAtom,
 } from './public-state';
-import { GUEST_SPACE_ID } from '@/lib/global';
 
 let cachedRoot: Root | null = null;
 
 manager.add(['app.record.index.show'], async (event) => {
-  const config = restorePluginConfig();
+  const conditions = store.get(pluginConditionsAtom);
 
-  const targetCondition = config.conditions.find(
-    (condition) => Number(condition.viewId) === event.viewId
-  );
+  const targetCondition = conditions.find((condition) => Number(condition.viewId) === event.viewId);
 
   if (!targetCondition) {
     return event;
@@ -55,9 +54,8 @@ manager.add(['app.record.index.show'], async (event) => {
       targetCondition.startDateFieldCode,
       targetCondition.endDateFieldCode,
       targetCondition.assigneeFieldCode,
-      targetCondition.categoryFieldCode,
+      ...getCategoryFieldCodes(targetCondition),
       targetCondition.progressFieldCode,
-      targetCondition.colorFieldCode,
       targetCondition.categorySortFieldCode,
     ].filter(Boolean);
 

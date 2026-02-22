@@ -220,7 +220,9 @@ export const GanttBar: FC<GanttBarProps> = ({ task, left, width, colorMap }) => 
         {formatDate(task.startDate)} 〜 {formatDate(task.endDate)}
       </div>
       {task.assignees.length > 0 && <div>担当: {task.assignees.join(', ')}</div>}
-      {task.category && <div>カテゴリ: {task.category}</div>}
+      {task.categoryValues.filter(Boolean).length > 0 && (
+        <div>カテゴリ: {task.categoryValues.filter(Boolean).join(' > ')}</div>
+      )}
       {task.progress > 0 && <div>進捗: {task.progress}%</div>}
     </div>
   );

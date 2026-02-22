@@ -41,6 +41,7 @@ import {
   getRecordsSnapshot,
   restoreRecordsSnapshot,
 } from '../record-operations';
+import { getCategoryFieldCodes } from '@/lib/plugin';
 import { GanttBody } from './gantt-body';
 import { GanttHeader } from './gantt-header';
 import { GanttSidebar } from './gantt-sidebar';
@@ -240,9 +241,8 @@ export const GanttChart: FC = () => {
             condition.startDateFieldCode,
             condition.endDateFieldCode,
             condition.assigneeFieldCode,
-            condition.categoryFieldCode,
+            ...getCategoryFieldCodes(condition),
             condition.progressFieldCode,
-            condition.colorFieldCode,
           ].filter(Boolean);
 
           if (currentDragType === 'RESIZE_START') {
@@ -328,7 +328,7 @@ export const GanttChart: FC = () => {
 
         // 元のグループを特定
         const sourceGroupKey =
-          groupBy === 'assignee' ? (task.assignees[0] ?? '') : (task.category ?? '');
+          groupBy === 'assignee' ? (task.assignees[0] ?? '') : task.categoryValues.join('|') || '';
 
         const groupChanged =
           targetGroup !== null && targetGroup !== undefined && targetGroup.key !== sourceGroupKey;
@@ -350,8 +350,10 @@ export const GanttChart: FC = () => {
           opt[condition.endDateFieldCode] = { value: formatDate(e) };
         }
         if (groupChanged && targetGroup) {
-          if (groupBy === 'category' && condition.categoryFieldCode) {
-            opt[condition.categoryFieldCode] = { value: targetGroup.code };
+          if (groupBy === 'category' && targetGroup.categoryPath.length > 0) {
+            for (const entry of targetGroup.categoryPath) {
+              opt[entry.fieldCode] = { value: entry.value };
+            }
           } else if (groupBy === 'assignee' && condition.assigneeFieldCode) {
             opt[condition.assigneeFieldCode] = {
               value: targetGroup.code ? [{ code: targetGroup.code }] : [],
@@ -385,16 +387,18 @@ export const GanttChart: FC = () => {
 
           // グループ変更
           if (groupChanged && targetGroup) {
-            if (groupBy === 'category' && condition.categoryFieldCode) {
-              updates.push(
-                updateTaskCategory({
-                  appId,
-                  taskId: task.id,
-                  categoryFieldCode: condition.categoryFieldCode,
-                  newCategory: targetGroup.code,
-                  guestSpaceId: GUEST_SPACE_ID,
-                })
-              );
+            if (groupBy === 'category' && targetGroup.categoryPath.length > 0) {
+              for (const entry of targetGroup.categoryPath) {
+                updates.push(
+                  updateTaskCategory({
+                    appId,
+                    taskId: task.id,
+                    categoryFieldCode: entry.fieldCode,
+                    newCategory: entry.value,
+                    guestSpaceId: GUEST_SPACE_ID,
+                  })
+                );
+              }
             } else if (groupBy === 'assignee' && condition.assigneeFieldCode) {
               updates.push(
                 updateTaskAssignee({
@@ -415,9 +419,8 @@ export const GanttChart: FC = () => {
             condition.startDateFieldCode,
             condition.endDateFieldCode,
             condition.assigneeFieldCode,
-            condition.categoryFieldCode,
+            ...getCategoryFieldCodes(condition),
             condition.progressFieldCode,
-            condition.colorFieldCode,
           ].filter(Boolean);
 
           await refreshRecords({

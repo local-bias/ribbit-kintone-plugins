@@ -51,14 +51,15 @@ export const userFieldsAtom: Atom<Promise<kintoneAPI.FieldProperty[]>> = atom(as
   return fields.filter((field) => field.type === 'USER_SELECT');
 });
 
-/** カテゴリフィールド（ドロップダウン・ラジオ・テキスト） */
-export const categoryFieldsAtom: Atom<Promise<kintoneAPI.FieldProperty[]>> = atom(async (get) => {
+/** カテゴリフィールド（ドロップダウン・ラジオ・テキスト・ユーザー選択 — 階層グループ化用） */
+export const groupableFieldsAtom: Atom<Promise<kintoneAPI.FieldProperty[]>> = atom(async (get) => {
   const fields = await get(currentAppFieldsAtom);
   return fields.filter(
     (field) =>
       field.type === 'DROP_DOWN' ||
       field.type === 'RADIO_BUTTON' ||
-      field.type === 'SINGLE_LINE_TEXT'
+      field.type === 'SINGLE_LINE_TEXT' ||
+      field.type === 'USER_SELECT'
   );
 });
 
@@ -66,12 +67,6 @@ export const categoryFieldsAtom: Atom<Promise<kintoneAPI.FieldProperty[]>> = ato
 export const numberFieldsAtom: Atom<Promise<kintoneAPI.FieldProperty[]>> = atom(async (get) => {
   const fields = await get(currentAppFieldsAtom);
   return fields.filter((field) => field.type === 'NUMBER');
-});
-
-/** 色分けフィールド（ドロップダウン・ラジオ） */
-export const colorFieldsAtom: Atom<Promise<kintoneAPI.FieldProperty[]>> = atom(async (get) => {
-  const fields = await get(currentAppFieldsAtom);
-  return fields.filter((field) => field.type === 'DROP_DOWN' || field.type === 'RADIO_BUTTON');
 });
 
 /** カテゴリソート順フィールド（数値） */

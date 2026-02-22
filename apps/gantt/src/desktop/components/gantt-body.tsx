@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { FC, Fragment } from 'react';
+import { FC, Fragment, useCallback } from 'react';
 import { useDroppable } from '@dnd-kit/core';
 import { useAtomValue } from 'jotai';
 import {
@@ -19,11 +19,11 @@ const GroupSection = styled.div`
   position: relative;
 `;
 
-const GroupHeaderRow = styled.div`
+const GroupHeaderRow = styled.div<{ isParent: boolean }>`
   height: ${GROUP_HEADER_HEIGHT}px;
   display: flex;
   align-items: center;
-  background-color: #f5f5f5;
+  background-color: ${({ isParent }) => (isParent ? '#eee' : '#f5f5f5')};
   border-bottom: 1px solid #e0e0e0;
   position: relative;
 `;
@@ -98,12 +98,15 @@ const DroppableGroupSection: FC<{
   const { setNodeRef, isOver } = useDroppable({
     id: `timeline-group-${group.key}`,
     data: { type: 'GROUP', group },
+    disabled: group.isParent,
   });
 
   return (
     <GroupSection
       ref={setNodeRef}
-      style={isOver ? { backgroundColor: 'rgba(66, 133, 244, 0.04)' } : undefined}
+      style={
+        isOver && !group.isParent ? { backgroundColor: 'rgba(66, 133, 244, 0.04)' } : undefined
+      }
     >
       {children}
     </GroupSection>
@@ -119,6 +122,25 @@ export const GanttBody: FC<GanttBodyProps> = ({
   colorMap,
 }) => {
   const collapsedGroups = useAtomValue(collapsedGroupsAtom);
+
+  // 折りたたまれた親の子グループを非表示にする
+  const isGroupVisible = useCallback(
+    (group: GanttGroup, index: number): boolean => {
+      for (let i = index - 1; i >= 0; i--) {
+        const ancestor = groups[i]!;
+        if (ancestor.depth < group.depth) {
+          if (collapsedGroups.has(ancestor.key)) {
+            return false;
+          }
+          if (ancestor.depth === 0) {
+            break;
+          }
+        }
+      }
+      return true;
+    },
+    [groups, collapsedGroups]
+  );
 
   return (
     <BodyContainer>
@@ -143,11 +165,14 @@ export const GanttBody: FC<GanttBodyProps> = ({
       </div>
 
       {/* グループとタスク */}
-      {groups.map((group) => {
+      {groups.map((group, index) => {
+        if (!isGroupVisible(group, index)) {
+          return null;
+        }
         const isCollapsed = collapsedGroups.has(group.key);
         return (
           <DroppableGroupSection key={group.key} group={group}>
-            <GroupHeaderRow>
+            <GroupHeaderRow isParent={group.isParent}>
               <div
                 style={{
                   position: 'absolute',
@@ -158,10 +183,11 @@ export const GanttBody: FC<GanttBodyProps> = ({
                   zIndex: 2,
                 }}
               >
-                {group.label}（{group.tasks.length}）
+                {group.label}
               </div>
             </GroupHeaderRow>
             {!isCollapsed &&
+              !group.isParent &&
               group.tasks.map((task) => {
                 const barLeft = dateToX(task.startDate);
                 const barRight = dateToX(task.endDate);

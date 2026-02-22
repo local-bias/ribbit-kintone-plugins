@@ -1,4 +1,4 @@
-import { getCommonPropertyAtom } from '@/config/states/plugin';
+import { getConditionPropertyAtom } from '@/config/states/plugin';
 import { JotaiText } from '@konomi-app/kintone-utilities-jotai';
 import {
   PluginFormDescription,
@@ -14,7 +14,11 @@ const Component: FC = () => (
       <PluginFormDescription last>
         すべての条件に共通するメモを入力してください。
       </PluginFormDescription>
-      <JotaiText atom={getCommonPropertyAtom('memo')} label='共通メモ' placeholder='メモを入力' />
+      <JotaiText
+        atom={getConditionPropertyAtom('memo')}
+        label='共通メモ'
+        placeholder='メモを入力'
+      />
     </PluginFormSection>
   </div>
 );
