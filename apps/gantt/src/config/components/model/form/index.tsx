@@ -5,6 +5,7 @@ import {
   groupableFieldsAtom,
   numberFieldsAtom,
   titleFieldsAtom,
+  tooltipSelectableFieldsAtom,
   userFieldsAtom,
 } from '@/config/states/kintone';
 import { getConditionPropertyAtom } from '@/config/states/plugin';
@@ -32,6 +33,7 @@ const categoriesAtom = getConditionPropertyAtom('categories');
 const progressFieldCodeAtom = getConditionPropertyAtom('progressFieldCode');
 const categorySortFieldCodeAtom = getConditionPropertyAtom('categorySortFieldCode');
 const defaultScaleAtom = getConditionPropertyAtom('defaultScale');
+const tooltipFieldCodesAtom = getConditionPropertyAtom('tooltipFieldCodes');
 
 const handleTitleFieldCodeChangeAtom = atom(null, (_, set, value: string) => {
   set(titleFieldCodeAtom, value);
@@ -465,6 +467,162 @@ const DefaultScaleSelect: FC = () => {
   );
 };
 
+// ─── ツールチップ追加表示フィールドエディタ ──────────
+
+const TooltipFieldRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const RemoveIconButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: #999;
+  border-radius: 4px;
+  flex-shrink: 0;
+  transition:
+    background 0.15s,
+    color 0.15s;
+
+  &:hover {
+    background-color: #fbe9e7;
+    color: #d32f2f;
+  }
+`;
+
+const AddTooltipFieldButton = styled.button<{ disabled?: boolean }>`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px dashed #bdbdbd;
+  background: transparent;
+  border-radius: 6px;
+  color: ${({ disabled }) => (disabled ? '#bbb' : '#555')};
+  font-size: 13px;
+  cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+  margin-top: 4px;
+  opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
+
+  &:hover {
+    border-color: ${({ disabled }) => (disabled ? '#bdbdbd' : '#1976d2')};
+    color: ${({ disabled }) => (disabled ? '#bbb' : '#1976d2')};
+    background-color: ${({ disabled }) => (disabled ? 'transparent' : '#e3f0fd')};
+  }
+`;
+
+interface TooltipFieldSelectRowProps {
+  index: number;
+  fieldCode: string;
+  onUpdate: (index: number, value: string) => void;
+  onRemove: (index: number) => void;
+}
+
+const TooltipFieldSelectRow: FC<TooltipFieldSelectRowProps> = ({
+  index,
+  fieldCode,
+  onUpdate,
+  onRemove,
+}) => {
+  const onChange = useCallback((value: string) => onUpdate(index, value), [index, onUpdate]);
+  const handleRemove = useCallback(() => onRemove(index), [index, onRemove]);
+
+  return (
+    <TooltipFieldRow>
+      <Suspense fallback={<Skeleton variant='rounded' width={400} height={56} />}>
+        <JotaiFieldSelect
+          fieldPropertiesAtom={tooltipSelectableFieldsAtom}
+          fieldCode={fieldCode}
+          onChange={onChange}
+          label={`${t('config.condition.tooltipFieldCodes.label')} ${index + 1}`}
+          placeholder={t('config.condition.fieldPlaceholder')}
+        />
+      </Suspense>
+      <Tooltip title={t('config.condition.tooltipFieldCodes.remove')} placement='top' arrow>
+        <RemoveIconButton onClick={handleRemove} type='button' aria-label='remove'>
+          <svg width='16' height='16' viewBox='0 0 24 24' fill='currentColor'>
+            <path d='M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z' />
+          </svg>
+        </RemoveIconButton>
+      </Tooltip>
+    </TooltipFieldRow>
+  );
+};
+
+const TooltipFieldsEditor: FC = () => {
+  const [tooltipFieldCodes, setTooltipFieldCodes] = useAtom(tooltipFieldCodesAtom);
+
+  const handleUpdate = useCallback(
+    (index: number, value: string) => {
+      setTooltipFieldCodes(
+        produce(tooltipFieldCodes as string[], (draft) => {
+          draft[index] = value;
+        })
+      );
+    },
+    [tooltipFieldCodes, setTooltipFieldCodes]
+  );
+
+  const handleRemove = useCallback(
+    (index: number) => {
+      setTooltipFieldCodes(
+        produce(tooltipFieldCodes as string[], (draft) => {
+          draft.splice(index, 1);
+        })
+      );
+    },
+    [tooltipFieldCodes, setTooltipFieldCodes]
+  );
+
+  const addDisabled = (tooltipFieldCodes as string[]).length >= 1;
+
+  const handleAdd = useCallback(() => {
+    if (addDisabled) {
+      return;
+    }
+    setTooltipFieldCodes(
+      produce(tooltipFieldCodes as string[], (draft) => {
+        draft.push('');
+      })
+    );
+  }, [tooltipFieldCodes, setTooltipFieldCodes, addDisabled]);
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+      {(tooltipFieldCodes as string[]).map((fieldCode, index) => (
+        <TooltipFieldSelectRow
+          key={index}
+          index={index}
+          fieldCode={fieldCode}
+          onUpdate={handleUpdate}
+          onRemove={handleRemove}
+        />
+      ))}
+      <Tooltip
+        title={addDisabled ? t('config.condition.tooltipFieldCodes.plusOnly') : ''}
+        placement='top'
+        arrow
+      >
+        <span style={{ width: '100%' }}>
+          <AddTooltipFieldButton onClick={handleAdd} disabled={addDisabled} type='button'>
+            {t('config.condition.tooltipFieldCodes.add')}
+          </AddTooltipFieldButton>
+        </span>
+      </Tooltip>
+    </div>
+  );
+};
+
 const FieldSelectFallback: FC = () => <Skeleton variant='rounded' width={400} height={56} />;
 
 const FormContent: FC = () => {
@@ -520,6 +678,13 @@ const FormContent: FC = () => {
           {t('config.form.description.defaultScale')}
         </PluginFormDescription>
         <DefaultScaleSelect />
+      </PluginFormSection>
+      <PluginFormSection>
+        <PluginFormTitle>{t('config.form.section.tooltipFields')}</PluginFormTitle>
+        <PluginFormDescription last>
+          {t('config.form.description.tooltipFields')}
+        </PluginFormDescription>
+        <TooltipFieldsEditor />
       </PluginFormSection>
       <DeleteButton />
     </div>
