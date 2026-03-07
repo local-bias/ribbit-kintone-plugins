@@ -1,16 +1,16 @@
 import { JotaiColorPicker } from '@/lib/components/jotai-color-picker';
-import { JotaiText } from '@konomi-app/kintone-utilities-jotai';
 import {
   PluginFormDescription,
   PluginFormSection,
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
-import { conditionLabelAtom, getConditionPropertyAtom } from '../../states/plugin';
+import { getConditionPropertyAtom } from '../../states/plugin';
 import DeleteButton from './condition-delete-button';
 import EmojiForm from './form-emoji';
 import FieldCodeForm from './form-fieldcode';
 import IconColorForm from './form-icon-color';
 import IconTypeForm from './form-icon-type';
+import { HintEditor } from './hint-editor';
 import TargetEventsForm from './form-target-events';
 import TypeForm from './form-type';
 import Preview from './preview';
@@ -31,16 +31,9 @@ export default function ConfigForm() {
           フィールドに表示されたアイコンにカーソルを合わせると表示されるヒントの内容を入力してください。
         </PluginFormDescription>
         <PluginFormDescription last>
-          HTMLによる記述が可能です。例えば、リンクや画像を埋め込むことができます。
+          ツールバーから文字装飾やリンク、画像を追加できます。
         </PluginFormDescription>
-        <JotaiText
-          atom={conditionLabelAtom}
-          label='表示するヒント'
-          multiline
-          rows={6}
-          fullWidth
-          sx={{ width: '100%' }}
-        />
+        <HintEditor />
       </PluginFormSection>
       <PluginFormSection>
         <PluginFormTitle>対象画面</PluginFormTitle>

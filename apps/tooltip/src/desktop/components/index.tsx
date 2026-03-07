@@ -7,9 +7,9 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@repo/ui';
+import { TooltipHtmlContent } from '@/lib/components/tooltip-html-content';
 import { PluginCondition } from '@/schema/plugin-config';
 import { isMobile } from '@konomi-app/kintone-utilities';
-import DOMPurify from 'dompurify';
 import { type FC } from 'react';
 import TooltipEmojiContainer from './emoji';
 import TooltipIconContainer from './icon';
@@ -36,7 +36,7 @@ const MobileTooltipContainer: FC<Props> = ({ condition }) => {
             color: condition.foregroundColor,
           }}
         >
-          <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(condition.label) }} />
+          <TooltipHtmlContent html={condition.label} />
         </PopoverContent>
       </Popover>
     </span>
@@ -63,7 +63,7 @@ const DesktopTooltipContainer: FC<Props> = ({ condition }) => {
               }
             `}
           >
-            <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(condition.label) }} />
+            <TooltipHtmlContent html={condition.label} />
           </TooltipContent>
         </Tooltip>
       </span>
