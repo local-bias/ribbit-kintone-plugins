@@ -43,7 +43,6 @@ export const ui = {
     'common.error.unknownError': '不明なエラー',
     'common.error.errorStack': 'エラースタック',
     'common.error.errorDetails': 'エラー詳細',
-
     'common.config.resetButton.tooltip': 'プラグインの設定をリセット',
     'common.config.resetDialog.title': '設定のリセット',
     'common.config.resetDialog.message':
@@ -51,6 +50,8 @@ export const ui = {
     'common.config.resetDialog.execute': '実行',
     'common.config.resetDialog.cancel': 'キャンセル',
     'common.config.resetSuccess': '設定をリセットしました',
+
+    'common.config.plusOnly': 'この機能は一覧高速検索プラグイン プラスでのみご利用いただけます',
 
     'common.userType.user': 'ユーザー',
     'common.userType.group': 'グループ',
@@ -145,7 +146,7 @@ export const ui = {
     'config.app.form.csvExport.title': 'CSVエクスポートの設定',
     'config.app.form.csvExport.description':
       'この設定を有効にした場合、一覧にCSVエクスポートボタンが表示されます。エクスポートされる一覧は、検索フォームに入力された値によって絞り込まれます。kintone標準のCSVエクスポート機能と互換性がない点に注意してください。',
-    'config.app.form.isCsvDownloadButtonHidden.label': 'CSVエクスポート機能を無効にする',
+    'config.app.form.isCsvExportEnabled.label': 'CSVエクスポート機能を有効にする',
     'config.app.form.editFeatures.title': '編集機能の設定',
     'config.app.form.isEditable.description':
       '一部のフィールドを除き、一覧からレコードの各フィールドを編集できるようになります。編集できるのは、レコードに対して編集権限を持つユーザーのみです。',
@@ -441,7 +442,7 @@ export const ui = {
     'config.app.form.csvExport.title': 'CSV export settings',
     'config.app.form.csvExport.description':
       'If this setting is enabled, a CSV export button will be displayed in the list. The exported list will be filtered by the values entered in the search form. Note that it is not compatible with the standard kintone CSV export function.',
-    'config.app.form.isCsvDownloadButtonHidden.label': 'Disable CSV export function',
+    'config.app.form.isCsvExportEnabled.label': 'Enable CSV export function',
     'config.app.form.editFeatures.title': 'Edit feature settings',
     'config.app.form.isEditable.description':
       'With the exception of some fields, you can edit each field of the record from the list. Only users with edit permissions for the record can edit it.',
@@ -604,6 +605,18 @@ export const ui = {
     'common.auth.serverError': 'A server error occurred. Please contact the administrator.',
     'common.auth.licenseExpired': 'The license has expired.',
     'common.auth.licenseInvalid': 'The license is invalid',
+    'common.config.plusOnly': 'This feature is available only in the Smart View Plus plugin',
+    'config.app.form.view-fields.minigraph.title': 'Minigraph',
+    'config.app.form.view-fields.minigraph.description':
+      'Display the subtable as a simple graph instead of a table.',
+    'config.app.form.view-fields.minigraph.label': 'Display minigraph',
+    'config.app.form.view-fields.minigraph.graphType.label': 'Graph Type',
+    'config.app.form.view-fields.minigraph.valueField.label': 'Field to use as value',
+    'config.app.form.view-fields.minigraph.labelField.label': 'Field to use as label',
+    'config.app.form.view-fields.minigraph.graphType.bar': 'Bar chart',
+    'config.app.form.view-fields.minigraph.graphType.stackedBar': 'Stacked bar chart (horizontal)',
+    'config.app.form.view-fields.minigraph.graphType.pie': 'Pie chart',
+    'config.app.form.isViewFieldsControlEnabled.title': 'Control over display fields on screen',
   },
   es: {
     'common.close': 'Cerrar',
@@ -745,7 +758,7 @@ export const ui = {
     'config.app.form.csvExport.title': 'Configuración de exportación CSV',
     'config.app.form.csvExport.description':
       'Si habilita esta configuración, se mostrará un botón de exportación CSV en la vista. La vista exportada se filtrará según los valores ingresados en el formulario de búsqueda. Tenga en cuenta que no es compatible con la función de exportación CSV estándar de kintone.',
-    'config.app.form.isCsvDownloadButtonHidden.label': 'Deshabilitar la función de exportación CSV',
+    'config.app.form.isCsvExportEnabled.label': 'Habilitar la función de exportación CSV',
     'config.app.form.editFeatures.title': 'Configuración de funciones de edición',
     'config.app.form.isEditable.description':
       'Excepto algunos campos, podrá editar cada campo del registro desde la vista. Solo los usuarios con permisos de edición sobre el registro podrán editar.',
@@ -888,6 +901,46 @@ export const ui = {
       'Ocurrió un error del servidor. Póngase en contacto con el administrador.',
     'common.auth.licenseExpired': 'La licencia ha expirado.',
     'common.auth.licenseInvalid': 'La licencia es inválida',
+    'common.config.plusOnly': 'Esta función solo está disponible en el complemento Smart View Plus',
+    'config.app.form.view-fields.minigraph.title': 'Minigráfico',
+    'config.app.form.view-fields.minigraph.description':
+      'Muestra la subtabla como un gráfico simple en lugar de una tabla.',
+    'config.app.form.view-fields.minigraph.label': 'Mostrar minigráfico',
+    'config.app.form.view-fields.minigraph.graphType.label': 'Tipo de gráfico',
+    'config.app.form.view-fields.minigraph.valueField.label': 'Campo a usar como valor',
+    'config.app.form.view-fields.minigraph.labelField.label': 'Campo a usar como etiqueta',
+    'config.app.form.view-fields.minigraph.graphType.bar': 'Gráfico de barras',
+    'config.app.form.view-fields.minigraph.graphType.stackedBar':
+      'Gráfico de barras apiladas (horizontal)',
+    'config.app.form.view-fields.minigraph.graphType.pie': 'Gráfico circular',
+    'config.app.form.bulkUpdate.title': 'Configuración de actualización masiva',
+    'config.app.form.isBulkUpdateEnabled.description':
+      'Podrá actualizar de forma masiva registros filtrados. Solo los usuarios con permisos de edición sobre los registros podrán actualizarlos.',
+    'config.app.form.isBulkUpdateEnabled.label': 'Habilitar la función de actualización masiva',
+    'config.app.form.isBulkUpdaterControlEnabled.title': 'Restricciones de actualización masiva',
+    'config.app.form.isBulkUpdaterControlEnabled.description':
+      'Además de la configuración de permisos estándar de la aplicación, puede establecer permisos de actualización masiva únicos para el complemento. Si esta configuración está habilitada, solo los usuarios especificados podrán usar la función.',
+    'config.app.form.isBulkUpdaterControlEnabled.label':
+      'Restringir usuarios que pueden actualizar masivamente',
+    'config.app.form.bulkUpdaters.title': 'Usuarios que pueden actualizar masivamente',
+    'config.app.form.bulkUpdaters.description':
+      'Establezca los usuarios que pueden actualizar masivamente. Solo los usuarios, grupos y organizaciones especificados pueden usar la función de actualización masiva.',
+    'config.app.form.isViewFieldsControlEnabled.title':
+      'Control sobre los campos de visualización en pantalla',
+    'config.error.migration.title': 'Error de carga de configuración',
+    'config.error.migration.description':
+      'Ocurrió un error al cargar la configuración del complemento guardada. Es posible que la configuración esté dañada o que haya fallado la migración desde una versión anterior.',
+    'config.error.migration.errorDetails': 'Detalles del error',
+    'config.error.migration.recoverySteps': 'Para resolver este problema, siga estos pasos:',
+    'config.error.migration.step1':
+      'Haga clic en el botón "Restablecer configuración" para restaurar la configuración inicial',
+    'config.error.migration.step2': 'Vuelva a configurar los ajustes necesarios',
+    'config.error.migration.step3': 'Haga clic en el botón "Guardar" para guardar la configuración',
+    'config.error.migration.resetButton': 'Restablecer configuración',
+    'config.error.migration.resetSuccess':
+      'La configuración se ha restablecido. Vuelva a configurar y guarde.',
+    'config.error.migration.resetFailed':
+      'Error al restablecer la configuración. Vuelva a cargar la página e inténtelo de nuevo.',
   },
   /** 中国語（簡体字） */
   zh: {
@@ -1015,7 +1068,7 @@ export const ui = {
     'config.app.form.csvExport.title': 'CSV导出设置',
     'config.app.form.csvExport.description':
       '如果启用此设置，列表中将显示CSV导出按钮。导出的列表将根据搜索表单中输入的值进行筛选。请注意，与kintone标准的CSV导出功能不兼容。',
-    'config.app.form.isCsvDownloadButtonHidden.label': '禁用CSV导出功能',
+    'config.app.form.isCsvExportEnabled.label': '启用CSV导出功能',
     'config.app.form.editFeatures.title': '编辑功能设置',
     'config.app.form.isEditable.description':
       '除部分字段外，可以从列表中编辑记录的各个字段。只有对记录具有编辑权限的用户才能进行编辑。',
@@ -1149,6 +1202,30 @@ export const ui = {
     'common.auth.serverError': '发生服务器错误。请联系管理员。',
     'common.auth.licenseExpired': '许可证已过期。',
     'common.auth.licenseInvalid': '许可证无效',
+    'common.config.plusOnly': '此功能仅在 Smart View Plus 插件中可用',
+    'config.app.form.view-fields.minigraph.title': '迷你图',
+    'config.app.form.view-fields.minigraph.description': '将子表显示为简单的图表而不是表格。',
+    'config.app.form.view-fields.minigraph.label': '显示迷你图',
+    'config.app.form.view-fields.minigraph.graphType.label': '图表类型',
+    'config.app.form.view-fields.minigraph.valueField.label': '用作值的字段',
+    'config.app.form.view-fields.minigraph.labelField.label': '用作标签的字段',
+    'config.app.form.view-fields.minigraph.graphType.bar': '柱状图',
+    'config.app.form.view-fields.minigraph.graphType.stackedBar': '堆叠柱状图（水平）',
+    'config.app.form.view-fields.minigraph.graphType.pie': '饼图',
+    'config.app.form.bulkUpdate.title': '批量更新设置',
+    'config.app.form.isBulkUpdateEnabled.description':
+      '您可以对过滤后的记录进行批量更新。只有对记录具有编辑权限的用户才能对其进行更新。',
+    'config.app.form.isBulkUpdateEnabled.label': '启用批量更新功能',
+    'config.app.form.isBulkUpdaterControlEnabled.title': '批量更新功能限制',
+    'config.app.form.isBulkUpdaterControlEnabled.description':
+      '除了应用标准权限设置外，您还可以设置插件独有的批量更新权限。如果启用此设置，指定用户以外的用户将无法使用该功能。',
+    'config.app.form.isBulkUpdaterControlEnabled.label': '限制可以批量更新的用户',
+    'config.app.form.bulkUpdaters.title': '可以批量更新的用户',
+    'config.app.form.bulkUpdaters.description':
+      '设置可以批量更新的用户。只有指定的用户、群组和组织才能使用插件的批量更新功能。',
+    'config.app.form.extractedInputs.type.multiSelect': '多选',
+    'config.app.form.isViewFieldsControlEnabled.title': '在屏幕上控制显示字段',
+    'config.error.appViewsRetrievalFailedError': '获取应用视图信息失败',
   },
   /** 中国語（繁体字） */
   'zh-TW': {
@@ -1275,7 +1352,7 @@ export const ui = {
     'config.app.form.csvExport.title': 'CSV導出設置',
     'config.app.form.csvExport.description':
       '如果啟用此設置，列表中將顯示CSV導出按鈕。導出的列表將根據搜索表單中輸入的值進行篩選。請注意，與kintone標準的CSV導出功能不兼容。',
-    'config.app.form.isCsvDownloadButtonHidden.label': '禁用CSV導出功能',
+    'config.app.form.isCsvExportEnabled.label': '啟用CSV導出功能',
     'config.app.form.editFeatures.title': '編輯功能設置',
     'config.app.form.isEditable.description':
       '除部分字段外，可以從列表中編輯記錄的各個字段。只有對記錄具有編輯權限的用戶才能進行編輯。',
@@ -1404,6 +1481,36 @@ export const ui = {
     'common.auth.serverError': '發生伺服器錯誤。請聯繫管理員。',
     'common.auth.licenseExpired': '授權已過期。',
     'common.auth.licenseInvalid': '授權無效',
+    'common.config.plusOnly': '此功能僅在 Smart View Plus 插件中可用',
+    'config.app.form.view-id.error.title': '無法獲取列表。請檢查 kintone 的設定。',
+    'config.app.form.view-fields.minigraph.title': '迷你圖',
+    'config.app.form.view-fields.minigraph.description': '將子表顯示為簡單的圖表而不是表格。',
+    'config.app.form.view-fields.minigraph.label': '顯示迷你圖',
+    'config.app.form.view-fields.minigraph.graphType.label': '圖表類型',
+    'config.app.form.view-fields.minigraph.valueField.label': '用作值的字段',
+    'config.app.form.view-fields.minigraph.labelField.label': '用作標籤的字段',
+    'config.app.form.view-fields.minigraph.graphType.bar': '柱狀圖',
+    'config.app.form.view-fields.minigraph.graphType.stackedBar': '堆疊柱狀圖（水平）',
+    'config.app.form.view-fields.minigraph.graphType.pie': '餅圖',
+    'config.app.form.bulkUpdate.title': '批量更新設置',
+    'config.app.form.isBulkUpdateEnabled.description':
+      '您可以對過濾後的記錄進行批量更新。只有對記錄具有編輯權限的用戶才能對其進行更新。',
+    'config.app.form.isBulkUpdateEnabled.label': '啟用批量更新功能',
+    'config.app.form.isBulkUpdaterControlEnabled.title': '批量更新功能限制',
+    'config.app.form.isBulkUpdaterControlEnabled.description':
+      '除了應用標準權限設置外，您還可以設置插件獨有的批量更新權限。如果啟用此設置，指定用戶以外的用戶將無法使用該功能。',
+    'config.app.form.isBulkUpdaterControlEnabled.label': '限制可以批量更新的用戶',
+    'config.app.form.bulkUpdaters.title': '可以批量更新的用戶',
+    'config.app.form.bulkUpdaters.description':
+      '設置可以批量更新的用戶。只有指定的用戶、群組和組織才能使用插件的批量更新功能。',
+    'config.app.form.extractedInputs.type.multiSelect': '多選',
+    'config.app.form.isViewFieldsControlEnabled.title': '在螢幕上控制顯示字段',
+    'config.error.appViewsRetrievalFailedError': '獲取應用視圖信息失敗',
+    'desktop.app.editor.lookup.success': '已從參考源獲取數據',
+    'desktop.app.toast.partialRecordUpdated': '記錄已更新，但 {0} 條記錄無法更新（{1}）',
+    'desktop.app.toast.recordUpdateFailedWithMessage': '記錄更新失敗（{0}）',
+    'desktop.app.toast.recordDeleted': '記錄已刪除',
+    'desktop.app.toast.recordDeleteFailed': '刪除記錄失敗',
   },
   'pt-BR': {
     'common.close': 'Fechar',
@@ -1541,7 +1648,7 @@ export const ui = {
     'config.app.form.csvExport.title': 'Configurações de exportação CSV',
     'config.app.form.csvExport.description':
       'Se esta configuração estiver habilitada, um botão de exportação CSV será exibido na lista. A lista exportada será filtrada pelos valores inseridos no formulário de pesquisa. Note que não é compatível com a função de exportação CSV padrão do kintone.',
-    'config.app.form.isCsvDownloadButtonHidden.label': 'Desabilitar função de exportação CSV',
+    'config.app.form.isCsvExportEnabled.label': 'Habilitar função de exportação CSV',
     'config.app.form.editFeatures.title': 'Configurações de recursos de edição',
     'config.app.form.isEditable.description':
       'Exceto alguns campos, você pode editar cada campo do registro da lista. Apenas usuários com permissões de edição para o registro podem editar.',
@@ -1679,6 +1786,49 @@ export const ui = {
     'common.auth.serverError': 'Ocorreu um erro do servidor. Entre em contato com o administrador.',
     'common.auth.licenseExpired': 'A licença expirou.',
     'common.auth.licenseInvalid': 'A licença é inválida',
+    'common.config.plusOnly': 'Este recurso está disponível apenas no plugin Smart View Plus',
+    'common.tooltip.add': 'Adicionar',
+    'common.tooltip.delete': 'Excluir',
+    'config.app.form.view-fields.minigraph.title': 'Minigráfico',
+    'config.app.form.view-fields.minigraph.description':
+      'Exiba a subtabela como um gráfico simples em vez de uma tabela.',
+    'config.app.form.view-fields.minigraph.label': 'Exibir minigráfico',
+    'config.app.form.view-fields.minigraph.graphType.label': 'Tipo de gráfico',
+    'config.app.form.view-fields.minigraph.valueField.label': 'Campo a usar como valor',
+    'config.app.form.view-fields.minigraph.labelField.label': 'Campo a usar como rótulo',
+    'config.app.form.view-fields.minigraph.graphType.bar': 'Gráfico de barras',
+    'config.app.form.view-fields.minigraph.graphType.stackedBar':
+      'Gráfico de barras empilhadas (horizontal)',
+    'config.app.form.view-fields.minigraph.graphType.pie': 'Gráfico de pizza',
+    'config.app.form.bulkUpdate.title': 'Configurações de atualização em massa',
+    'config.app.form.isBulkUpdateEnabled.description':
+      'Você pode atualizar em massa registros filtrados. Apenas usuários com permissões de edição para os registros podem atualizá-los.',
+    'config.app.form.isBulkUpdateEnabled.label': 'Habilitar recurso de atualização em massa',
+    'config.app.form.isBulkUpdaterControlEnabled.title': 'Restrições de atualização em massa',
+    'config.app.form.isBulkUpdaterControlEnabled.description':
+      'Além das configurações de permissão padrão do aplicativo, você pode definir permissões de atualização em massa exclusivas do plugin. Se esta configuração for habilitada, apenas os usuários especificados poderão usá-la.',
+    'config.app.form.isBulkUpdaterControlEnabled.label':
+      'Restringir usuários que podem atualizar em massa',
+    'config.app.form.bulkUpdaters.title': 'Usuários que podem atualizar em massa',
+    'config.app.form.bulkUpdaters.description':
+      'Defina os usuários que podem atualizar em massa. Apenas os usuários, grupos e organizações especificados podem usar o recurso de atualização em massa.',
+    'config.app.form.extractedInputs.type.multiSelect': 'Seleção múltipla',
+    'config.app.form.isViewFieldsControlEnabled.title':
+      'Controle sobre os campos de exibição na tela',
+    'config.error.migration.title': 'Erro ao carregar a configuração',
+    'config.error.migration.description':
+      'Ocorreu um erro ao carregar a configuração do plugin salva. As configurações podem estar corrompidas ou a migração de uma versão mais antiga pode ter falhado.',
+    'config.error.migration.errorDetails': 'Detalhes do Erro',
+    'config.error.migration.recoverySteps': 'Para resolver este problema, siga estas etapas:',
+    'config.error.migration.step1':
+      'Clique no botão "Redefinir Configurações" para restaurar o estado inicial',
+    'config.error.migration.step2': 'Reconfigure as configurações necessárias',
+    'config.error.migration.step3': 'Clique no botão "Salvar" para salvar as configurações',
+    'config.error.migration.resetButton': 'Redefinir Configurações',
+    'config.error.migration.resetSuccess':
+      'As configurações foram redefinidas. Reconfigure e salve.',
+    'config.error.migration.resetFailed':
+      'Falha ao redefinir configurações. Recarregue a página e tente novamente.',
   },
   th: {
     'common.close': 'ปิด',
@@ -1806,7 +1956,7 @@ export const ui = {
     'config.app.form.csvExport.title': 'การตั้งค่าการส่งออก CSV',
     'config.app.form.csvExport.description':
       'หากเปิดใช้งานการตั้งค่านี้ ปุ่มส่งออก CSV จะแสดงในรายการ รายการที่ส่งออกจะถูกกรองตามค่าที่ป้อนในแบบฟอร์มการค้นหา โปรดทราบว่าไม่เข้ากันกับฟังก์ชันการส่งออก CSV มาตรฐานของ kintone',
-    'config.app.form.isCsvDownloadButtonHidden.label': 'ปิดใช้งานฟังก์ชันการส่งออก CSV',
+    'config.app.form.isCsvExportEnabled.label': 'เปิดใช้งานฟังก์ชันการส่งออก CSV',
     'config.app.form.editFeatures.title': 'การตั้งค่าฟีเจอร์การแก้ไข',
     'config.app.form.isEditable.description':
       'ยกเว้นฟิลด์บางประเภท คุณสามารถแก้ไขแต่ละฟิลด์ของเรคคอร์ดจากรายการได้ เฉพาะผู้ใช้ที่มีสิทธิ์แก้ไขเรคคอร์ดเท่านั้นที่สามารถแก้ไขได้',
@@ -1935,6 +2085,48 @@ export const ui = {
     'common.auth.serverError': 'เกิดข้อผิดพลาดของเซิร์ฟเวอร์ โปรดติดต่อผู้ดูแลระบบ',
     'common.auth.licenseExpired': 'ใบอนุญาตหมดอายุแล้ว',
     'common.auth.licenseInvalid': 'ใบอนุญาตไม่ถูกต้อง',
+    'common.config.plusOnly': 'ฟีเจอร์นี้ใช้ได้เฉพาะในปลั๊กอิน Smart View Plus เท่านั้น',
+    'common.tooltip.add': 'เพิ่ม',
+    'common.tooltip.delete': 'ลบ',
+    'config.app.form.view-fields.maxHeight.title': 'ขีดจำกัดความสูงของเซลล์',
+    'config.app.form.view-fields.maxHeight.description':
+      'ตั้งค่าความสูงสูงสุดของเซลล์ หากตั้งค่าไว้ ความสูงของเซลล์จะคงที่แม้จะมีข้อมูลหลายบรรทัดและจะมีแถบเลื่อนแนวตั้ง หากเว้นว่างไว้ ความสูงจะขยายอัตโนมัติ',
+    'config.app.form.view-fields.maxHeight.label': 'ความสูงสูงสุด (พิกเซล)',
+    'config.app.form.view-fields.minigraph.title': 'กราฟขนาดเล็ก',
+    'config.app.form.view-fields.minigraph.description':
+      'แสดงตารางย่อยเป็นกราฟอย่างง่ายแทนที่จะเป็นตาราง',
+    'config.app.form.view-fields.minigraph.label': 'แสดงกราฟขนาดเล็ก',
+    'config.app.form.view-fields.minigraph.graphType.label': 'ประเภทกราฟ',
+    'config.app.form.view-fields.minigraph.valueField.label': 'ฟิลด์ที่จะใช้เป็นค่า',
+    'config.app.form.view-fields.minigraph.labelField.label': 'ฟิลด์ที่จะใช้เป็นป้ายกำกับ',
+    'config.app.form.view-fields.minigraph.graphType.bar': 'กราฟแท่ง',
+    'config.app.form.view-fields.minigraph.graphType.stackedBar': 'กราฟแท่งซ้อน (แนวนอน)',
+    'config.app.form.view-fields.minigraph.graphType.pie': 'กราฟวงกลม',
+    'config.app.form.bulkUpdate.title': 'การตั้งค่าการอัปเดตเป็นกลุ่ม',
+    'config.app.form.isBulkUpdateEnabled.description':
+      'คุณสามารถอัปเดตเรคคอร์ดที่กรองแล้วเป็นกลุ่มได้ เฉพาะผู้ใช้ที่มีสิทธิ์แก้ไขเรคคอร์ดเท่านั้นที่สามารถทำการอัปเดตได้',
+    'config.app.form.isBulkUpdateEnabled.label': 'เปิดใช้งานคุณสมบัติการอัปเดตเป็นกลุ่ม',
+    'config.app.form.isBulkUpdaterControlEnabled.title': 'ข้อจำกัดคุณสมบัติการอัปเดตเป็นกลุ่ม',
+    'config.app.form.isBulkUpdaterControlEnabled.description':
+      'นอกจากการตั้งค่าสิทธิ์มาตรฐานของแอปแล้ว คุณสามารถกำหนดสิทธิ์การอัปเดตเป็นกลุ่มเฉพาะสำหรับปลั๊กอินได้ หากเปิดใช้งาน เฉพาะผู้ใช้ที่กำหนดเท่านั้นที่สามารถใช้งานได้',
+    'config.app.form.isBulkUpdaterControlEnabled.label': 'จำกัดผู้ใช้ที่สามารถอัปเดตเป็นกลุ่ม',
+    'config.app.form.bulkUpdaters.title': 'ผู้ใช้ที่สามารถอัปเดตเป็นกลุ่มได้',
+    'config.app.form.bulkUpdaters.description':
+      'กำหนดผู้ใช้ที่สามารถอัปเดตเป็นกลุ่มได้ เฉพาะผู้ใช้ กลุ่ม และองค์กรที่ระบุเท่านั้นที่สามารถใช้คุณสมบัตินี้ได้',
+    'config.app.form.extractedInputs.type.multiSelect': 'เลือกหลายรายการ',
+    'config.app.form.isViewFieldsControlEnabled.title': 'การควบคุมฟิลด์แสดงผลบนหน้าจอ',
+    'config.error.migration.title': 'ข้อผิดพลาดในการโหลดการกำหนดค่า',
+    'config.error.migration.description':
+      'เกิดข้อผิดพลาดในการโหลดการตั้งค่าปลั๊กอินที่บันทึกไว้ การตั้งค่าอาจเสียหายหรือการย้ายจากเวอร์ชันก่อนหน้าอาจล้มเหลว',
+    'config.error.migration.errorDetails': 'รายละเอียดข้อผิดพลาด',
+    'config.error.migration.recoverySteps': 'เพื่อแก้ไขปัญหานี้ โปรดทำตามขั้นตอนต่อไปนี้:',
+    'config.error.migration.step1': 'คลิกปุ่ม "รีเซ็ตการตั้งค่า" เพื่อคืนค่าเป็นค่าเริ่มต้น',
+    'config.error.migration.step2': 'กำหนดค่าที่จำเป็นใหม่',
+    'config.error.migration.step3': 'คลิกปุ่ม "บันทึก" เพื่อบันทึกการตั้งค่า',
+    'config.error.migration.resetButton': 'รีเซ็ตการตั้งค่า',
+    'config.error.migration.resetSuccess': 'รีเซ็ตการตั้งค่าแล้ว โปรดกำหนดค่าใหม่และบันทึก',
+    'config.error.migration.resetFailed':
+      'ไม่สามารถรีเซ็ตการตั้งค่าได้ โปรดโหลดหน้าซ้ำแล้วลองอีกครั้ง',
   },
 } as const;
 
