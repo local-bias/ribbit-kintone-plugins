@@ -2,43 +2,56 @@
 
 ## kintone
 
-`apps/`以下の各プラグインはkintoneの特定のページにおいて、`script`タグを通じて読み込まれる。
-このため、プラグインのコードはkintoneの仕様に準拠して実装する必要がある。
-
 ### グローバル変数
 
 kintone特有のグローバル変数として`kintone`があるが、基本的にはこれを使用せず、`@/lib/global.ts`で定義されている定数もしくは`@konomi-app/kintone-utilities`のユーティリティ関数を使用する。
 
-### ketch (`@konomi-app/ketch`)
+### APIリクエスト
 
-多くのAPIではcorsポリシーによりブラウザから直接kintoneにアクセスできないため、サーバーサイドでAPIリクエストをプロキシする`@konomi-app/ketch`を使用する。これにより、APIキーやドメインなどの機密情報をクライアントに公開せずに済む。
-`fetch`と同様のインターフェースで使用でき、レスポンスは`Response`オブジェクトとして返される。
-`kintone.proxy`や`kintone.plugin.app.proxy`の使用は避け、すべてのAPIリクエストは`@konomi-app/ketch`を通じて行うことを推奨。
-**kintone REST APIを呼び出す際は、`@konomi-app/ketch`ではなく`@konomi-app/kintone-utilities`の`getAllRecords`や`updateRecords`などのユーティリティ関数を使用することが望ましい**。
+プラグインはすべてクライアントサイドで動作するため、APIリクエストはすべてブラウザから行われる。
+しかし、多くのAPIではcorsポリシーによりブラウザから直接エンドポイントにアクセスできないため、以下の方法でAPIリクエストを行う必要がある。
 
-```typescript
-import { createKetch } from '@konomi-app/ketch';
+- kintone REST APIを呼び出す際は、`@konomi-app/kintone-utilities`の[`getAllRecords`や`updateRecords`などのユーティリティ関数](./docs/utilities-rest-api.md)を使用する。
+- kintone以外のAPIを呼び出す際は、[`@konomi-app/ketch`](./docs/ketch.md)を使用する。
 
-const ketch = createKetch({ pluginId: 'target-plugin-id' });
+### フィールド形式
 
-const response = await ketch('https://example.com/api/sample', {
-  method: 'POST',
-  body: JSON.stringify({
-    app: 123,
-    records: [
-      {
-        fieldCode: { value: 'example' },
+保存したレコード情報は以下のような形式で取得される。
+
+```json
+{
+  "records": [
+    {
+      "フィールドコード1": {
+        "type": "フィールドタイプ",
+        "value": "フィールドの値"
       },
-    ],
-  }),
-});
+      "フィールドコード2": {
+        "type": "フィールドタイプ",
+        "value": "フィールドの値"
+      }
+    }
+  ]
+}
 ```
 
-### kintone REST API
+フィールドタイプによって`value`の値の形式が異なるため、フィールドタイプに応じた処理が必要。
+各フィールドタイプの`value`の形式は[公式ドキュメント](https://cybozu.dev/ja/kintone/docs/overview/field-types/)を参照。
 
-kintone REST APIを呼び出す際は、`@konomi-app/kintone-utilities`の`getAllRecords`や`updateRecords`などのユーティリティ関数を使用することが望ましい。
-通常のアプリとゲストスペースのアプリでAPIエンドポイントが異なる。
-参照先のアプリが現在プラグインが実行されているアプリの場合、`guestSpaceId`は`GUEST_SPACE_ID`を使用する。
+取得した値を保持する必要がなく、画面上に表示するだけの場合は、`@konomi-app/kintone-utilities`の`getFieldValueAsString`を使用することで、フィールドタイプに関係なく値を文字列として取得できる。
+
+また、`DROPDOWN`, `RADIO_BUTTON`, `CHECK_BOX`などの選択肢フィールドの場合、[アプリのフィールドを取得するAPI](https://cybozu.dev/ja/kintone/docs/rest-api/apps/form/get-form-fields/)で選択肢の値と表示名の対応を取得し、表示名を取得する必要がある。APIは[`@konomi-app/kintone-utilities`の`getFormFields`](./docs/utilities-rest-api.md)を使用して呼び出すことができる。
+
+### kintoneプラグイン
+
+kintoneにはChromeの拡張機能のように、kintoneの機能を拡張するための「kintoneプラグイン」という仕組みが存在する。
+kintoneプラグインは、kintoneの特定のページにおいて、`script`タグを通じて読み込まれる。読み込まれるページは大きく2種類あり、1つはプラグイン独自の設定を行うための「設定画面」、もう1つはkintoneの標準機能を拡張するための「操作画面」がある。
+プロジェクトでは`apps/{app-name}/config`以下に設定画面のコードを、`apps/{app-name}/desktop`以下に操作画面のコードを配置する。
+
+#### ストレージ
+
+kintoneにはアプリ毎にプラグイン単位にデータを保存できるストレージが存在する。このストレージは設定画面と操作画面の両方からアクセスでき、操作画面からは読み取り専用でアクセスできる。
+このストレージを使用し、設定画面で行った設定を操作画面に反映させることができる。ストレージへのアクセスは、`@konomi-app/kintone-utilities`の`storePluginConfig`と`restorePluginConfig`を使用して行うことができる。
 
 ## React
 
