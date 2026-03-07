@@ -14,7 +14,7 @@ import { LoaderWithLabel } from '@konomi-app/ui-react';
 import { Provider } from 'jotai';
 import { SnackbarProvider } from 'notistack';
 import { FC, Suspense } from 'react';
-import config from '../../plugin.config.mjs';
+import config from '@/../plugin.config.mjs';
 import Footer from './components/model/footer';
 import Form from './components/model/form';
 import Sidebar from './components/sidebar';
@@ -43,7 +43,10 @@ const Container: FC = () => (
         <PluginErrorBoundary>
           <PluginConfigProvider config={config}>
             <Notification />
-            <SnackbarProvider maxSnack={1}>
+            <SnackbarProvider
+              maxSnack={1}
+              anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            >
               <Suspense fallback={<LoaderWithLabel label={t('config.app.config.loading')} />}>
                 <PluginLayout>
                   <Component />
