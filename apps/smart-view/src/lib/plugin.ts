@@ -23,7 +23,7 @@ export const validatePluginCondition = (condition: unknown): boolean => {
  * プラグインの設定情報のひな形を返却します
  */
 export const createConfig = (): PluginConfig => ({
-  version: 14,
+  version: 15,
   conditions: [getNewCondition()],
 });
 
@@ -180,7 +180,19 @@ export const migrateConfig = (config: AnyPluginConfig): PluginConfig => {
           })),
         });
       }
-      case 14:
+      case 14: {
+        return migrateConfig({
+          version: 15,
+          conditions: config.conditions.map((condition) => {
+            const { isCsvDownloadButtonHidden, ...rest } = condition as any;
+            return {
+              ...rest,
+              isCsvExportEnabled: !isCsvDownloadButtonHidden,
+            };
+          }),
+        });
+      }
+      case 15:
       default:
         return config;
     }
@@ -251,7 +263,7 @@ export const getNewCondition = (): PluginCondition => ({
   viewFields: [getNewViewField()],
   extractedInputs: [{ type: 'text', fieldCode: '' }],
   joinConditions: [getNewJoinCondition()],
-  isCsvDownloadButtonHidden: false,
+  isCsvExportEnabled: true,
   isEditable: true,
   isEditorControlEnabled: false,
   editors: [{ type: 'user', code: '' }],

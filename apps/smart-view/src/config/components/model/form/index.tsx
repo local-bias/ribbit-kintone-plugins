@@ -118,7 +118,7 @@ const Component: FC = () => {
         <PluginFormDescription last>
           {t('config.app.form.isSortable.description')}
         </PluginFormDescription>
-        <Tooltip title='この機能は一覧高速検索プラグイン プラスでのみご利用いただけます'>
+        <Tooltip title={t('common.config.plusOnly')}>
           <div>
             <JotaiSwitch
               disabled={true}
@@ -133,17 +133,21 @@ const Component: FC = () => {
         <PluginFormDescription last>
           {t('config.app.form.csvExport.description')}
         </PluginFormDescription>
-        <JotaiSwitch
-          atom={getConditionPropertyAtom('isCsvDownloadButtonHidden')}
-          label={t('config.app.form.isCsvDownloadButtonHidden.label')}
-        />
+        <Tooltip title={t('common.config.plusOnly')}>
+          <div>
+            <JotaiSwitch
+              atom={getConditionPropertyAtom('isCsvExportEnabled')}
+              label={t('config.app.form.isCsvExportEnabled.label')}
+            />
+          </div>
+        </Tooltip>
       </PluginFormSection>
       <PluginFormSection>
         <PluginFormTitle>{t('config.app.form.editFeatures.title')}</PluginFormTitle>
         <PluginFormDescription last>
           {t('config.app.form.isEditable.description')}
         </PluginFormDescription>
-        <Tooltip title='この機能は一覧高速検索プラグイン プラスでのみご利用いただけます'>
+        <Tooltip title={t('common.config.plusOnly')}>
           <div>
             <JotaiSwitch
               disabled={true}
@@ -158,7 +162,7 @@ const Component: FC = () => {
         <PluginFormDescription last>
           {t('config.app.form.isDeletable.description')}
         </PluginFormDescription>
-        <Tooltip title='この機能は一覧高速検索プラグイン プラスでのみご利用いただけます'>
+        <Tooltip title={t('common.config.plusOnly')}>
           <div>
             <JotaiSwitch
               atom={getConditionPropertyAtom('isDeletable')}
@@ -173,7 +177,7 @@ const Component: FC = () => {
         <PluginFormDescription last>
           {t('config.app.form.isBulkUpdateEnabled.description')}
         </PluginFormDescription>
-        <Tooltip title='この機能は一覧高速検索プラグイン プラスでのみご利用いただけます'>
+        <Tooltip title={t('common.config.plusOnly')}>
           <div>
             <JotaiSwitch
               atom={getConditionPropertyAtom('isBulkUpdateEnabled')}
