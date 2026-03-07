@@ -9,6 +9,7 @@ import {
 } from '@repo/ui';
 import { TooltipHtmlContent } from '@/lib/components/tooltip-html-content';
 import { PluginCondition } from '@/schema/plugin-config';
+import styled from '@emotion/styled';
 import { isMobile } from '@konomi-app/kintone-utilities';
 import { type FC } from 'react';
 import TooltipEmojiContainer from './emoji';
@@ -19,17 +20,40 @@ type Props = {
   condition: PluginCondition;
 };
 
-const commonCss =
-  'rad:absolute rad:left-0 rad:p-0 rad:top-1/2 rad:-translate-y-1/2 rad:grid rad:place-items-center rad:border-0 rad:bg-transparent rad:shadow-none rad:cursor-pointer';
+const TriggerContainer = styled.span`
+  position: relative;
+`;
+
+const triggerStyles = `
+  position: absolute;
+  left: 0;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  cursor: pointer;
+  transform: translateY(-50%);
+`;
+
+const StyledPopoverTrigger = styled(PopoverTrigger)`
+  ${triggerStyles}
+`;
+
+const StyledTooltipTrigger = styled(TooltipTrigger)`
+  ${triggerStyles}
+`;
 
 const MobileTooltipContainer: FC<Props> = ({ condition }) => {
   return (
-    <span className='rad:relative'>
+    <TriggerContainer>
       <Popover>
-        <PopoverTrigger className={commonCss}>
+        <StyledPopoverTrigger>
           <TooltipIconContainer condition={condition} />
           <TooltipEmojiContainer condition={condition} />
-        </PopoverTrigger>
+        </StyledPopoverTrigger>
         <PopoverContent
           style={{
             backgroundColor: condition.backgroundColor,
@@ -39,19 +63,19 @@ const MobileTooltipContainer: FC<Props> = ({ condition }) => {
           <TooltipHtmlContent html={condition.label} />
         </PopoverContent>
       </Popover>
-    </span>
+    </TriggerContainer>
   );
 };
 
 const DesktopTooltipContainer: FC<Props> = ({ condition }) => {
   return (
     <TooltipProvider>
-      <span className='rad:relative'>
+      <TriggerContainer>
         <Tooltip delayDuration={0}>
-          <TooltipTrigger className={commonCss}>
+          <StyledTooltipTrigger>
             <TooltipIconContainer condition={condition} />
             <TooltipEmojiContainer condition={condition} />
-          </TooltipTrigger>
+          </StyledTooltipTrigger>
           <TooltipContent
             className={css`
               background-color: ${condition.backgroundColor};
@@ -66,7 +90,7 @@ const DesktopTooltipContainer: FC<Props> = ({ condition }) => {
             <TooltipHtmlContent html={condition.label} />
           </TooltipContent>
         </Tooltip>
-      </span>
+      </TriggerContainer>
     </TooltipProvider>
   );
 };
