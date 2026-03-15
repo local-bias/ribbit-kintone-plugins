@@ -1,0 +1,21 @@
+@layer theme, base, components, utilities;
+@import 'tailwindcss/theme.css' layer(theme);
+@import 'tailwindcss/preflight.css' layer(base);
+@import 'tailwindcss/utilities.css' layer(utilities);
+@import 'tw-animate-css';
+
+@import '@repo/tailwindcss/config.css';
+
+@layer base {
+  .MuiAutocomplete-popper[role='presentation'] {
+    ::-webkit-scrollbar {
+      @apply w-1 h-1 md:w-2 md:h-2;
+    }
+    ::-webkit-scrollbar-thumb {
+      @apply rounded-full bg-foreground/30;
+    }
+    ::-webkit-scrollbar-track {
+      @apply bg-transparent;
+    }
+  }
+}
