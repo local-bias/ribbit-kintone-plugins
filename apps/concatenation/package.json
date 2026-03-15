@@ -8,7 +8,7 @@
     "build:css-desktop": "pnpm dlx @tailwindcss/cli -i ./src/styles/desktop.css -o ./.plugin/contents/desktop.css --minify",
     "build:css-config": "pnpm dlx @tailwindcss/cli -i ./src/styles/config.css -o ./.plugin/contents/config.css --minify",
     "build:js": "plugin build",
-    "build": "concurrently \"pnpm:build:*\" && plugin zip",
+    "build": "pnpm run build:js && concurrently \"pnpm:build:css-*\" && plugin zip",
     "standalone": "concurrently \"pnpm:build:*\" && plugin zip --env standalone",
     "dev:js": "plugin dev",
     "dev:css-desktop": "pnpm dlx @tailwindcss/cli -i ./src/styles/desktop.css -o ./.plugin/dev/desktop.css --watch",
