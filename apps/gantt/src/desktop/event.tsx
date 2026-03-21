@@ -1,13 +1,19 @@
 import { manager } from '@/lib/event-manager';
 import { GUEST_SPACE_ID } from '@/lib/global';
 import { getCategoryFieldCodes, VIEW_ROOT_ID } from '@/lib/plugin';
-import { getAllRecords, getQueryCondition } from '@konomi-app/kintone-utilities';
+import {
+  getAllRecordsWithId,
+  getFormFields,
+  getQueryCondition,
+  kintoneAPI,
+} from '@konomi-app/kintone-utilities';
 import { store } from '@repo/jotai';
 import { createRoot, Root } from 'react-dom/client';
 import GanttApp from './app';
 import {
   currentConditionAtom,
   ganttAppIdAtom,
+  ganttFormFieldsAtom,
   ganttLoadingAtom,
   ganttRecordsAtom,
   ganttScaleAtom,
@@ -57,19 +63,32 @@ manager.add(['app.record.index.show'], async (event) => {
       ...getCategoryFieldCodes(targetCondition),
       targetCondition.progressFieldCode,
       targetCondition.categorySortFieldCode,
+      ...targetCondition.tooltipFieldCodes,
     ].filter(Boolean);
 
-    const query = getQueryCondition() ?? undefined;
+    const condition = getQueryCondition() ?? undefined;
 
-    const records = await getAllRecords({
-      app: event.appId,
-      query,
-      fields: ['$id', ...fields],
-      guestSpaceId: GUEST_SPACE_ID,
-      debug: false,
-    });
+    const onStep: Parameters<typeof getAllRecordsWithId>[0]['onStep'] = ({ incremental }) => {
+      store.set(ganttRecordsAtom, (prev) => [...prev, ...incremental]);
+    };
 
-    store.set(ganttRecordsAtom, records);
+    const [, { properties }] = await Promise.all([
+      getAllRecordsWithId({
+        app: event.appId,
+        condition,
+        fields: ['$id', ...fields],
+        guestSpaceId: GUEST_SPACE_ID,
+        onStep,
+        debug: false,
+      }),
+      getFormFields({
+        app: event.appId,
+        guestSpaceId: GUEST_SPACE_ID,
+        debug: false,
+      }),
+    ]);
+
+    store.set(ganttFormFieldsAtom, Object.values(properties) as kintoneAPI.FieldProperty[]);
   } catch (error) {
     console.error('[gantt] Failed to fetch records:', error);
   } finally {
@@ -78,3 +97,22 @@ manager.add(['app.record.index.show'], async (event) => {
 
   return event;
 });
+
+/**
+ * iframe 内でレコード編集が保存またはキャンセルされた場合に、親ウィンドウへ通知する。
+ * edit-record-dialog が付与する `gantt_inline_edit=1` クエリパラメータの有無で判定。
+ */
+const INLINE_EDIT_PARAM = 'gantt_inline_edit';
+
+if (new URLSearchParams(location.search).has(INLINE_EDIT_PARAM)) {
+  manager.add(['app.record.edit.submit.success'], (event) => {
+    window.parent.postMessage({ type: 'gantt-edit-submit-success' }, location.origin);
+    return event;
+  });
+
+  // キャンセル時は詳細画面に遷移するため、detail.show で検知して閉じる
+  manager.add(['app.record.detail.show'], (event) => {
+    window.parent.postMessage({ type: 'gantt-edit-cancelled' }, location.origin);
+    return event;
+  });
+}

@@ -76,3 +76,22 @@ export const categorySortFieldsAtom: Atom<Promise<kintoneAPI.FieldProperty[]>> =
     return fields.filter((field) => field.type === 'NUMBER');
   }
 );
+
+/** ツールチップ追加表示フィールド（全フィールド対象） */
+export const tooltipSelectableFieldsAtom: Atom<Promise<kintoneAPI.FieldProperty[]>> = atom(
+  async (get) => {
+    const fields = await get(currentAppFieldsAtom);
+    // システムフィールド（$id, $revision等）を除く全フィールドを対象とする
+    const excludeTypes = new Set([
+      'RECORD_NUMBER',
+      'CREATOR',
+      'CREATED_TIME',
+      'MODIFIER',
+      'UPDATED_TIME',
+      'STATUS',
+      'STATUS_ASSIGNEE',
+      'CATEGORY',
+    ]);
+    return fields.filter((field) => !excludeTypes.has(field.type));
+  }
+);

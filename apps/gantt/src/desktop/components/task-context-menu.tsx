@@ -1,10 +1,26 @@
+import { GUEST_SPACE_ID } from '@/lib/global';
+import { t } from '@/lib/i18n';
+import { getCategoryFieldCodes } from '@/lib/plugin';
 import styled from '@emotion/styled';
-import * as ContextMenu from '@radix-ui/react-context-menu';
+import {
+  ContextMenuContent,
+  ContextMenuDestructiveItem,
+  ContextMenuIconWrapper,
+  ContextMenuItem,
+  ContextMenuPortal,
+  ContextMenuRoot,
+  ContextMenuSeparator,
+  ContextMenuSub,
+  ContextMenuSubContent,
+  ContextMenuSubTrigger,
+  ContextMenuSubTriggerArrow,
+  ContextMenuTrigger,
+} from '@repo/ui';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { FC, ReactNode, useCallback } from 'react';
-import { useAtomValue } from 'jotai';
 import { toast } from 'sonner';
 import { GanttTask } from '../hooks/use-gantt-layout';
-import { currentConditionAtom, ganttAppIdAtom } from '../public-state';
+import { currentConditionAtom, editRecordDialogAtom, ganttAppIdAtom } from '../public-state';
 import {
   deleteTask,
   duplicateTask,
@@ -12,129 +28,8 @@ import {
   refreshRecords,
   updateTaskProgress,
 } from '../record-operations';
-import { GUEST_SPACE_ID } from '@/lib/global';
-import { t } from '@/lib/i18n';
-import { getCategoryFieldCodes } from '@/lib/plugin';
 
-const StyledContent = styled(ContextMenu.Content)`
-  min-width: 180px;
-  background-color: #fff;
-  border-radius: 6px;
-  padding: 4px;
-  box-shadow:
-    0 10px 38px -10px rgba(22, 23, 24, 0.35),
-    0 10px 20px -15px rgba(22, 23, 24, 0.2);
-  z-index: 100;
-  animation: fadeIn 0.1s ease-out;
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: scale(0.96);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-`;
-
-const StyledItem = styled(ContextMenu.Item)`
-  font-size: 13px;
-  line-height: 1;
-  color: #333;
-  display: flex;
-  align-items: center;
-  height: 32px;
-  padding: 0 12px;
-  position: relative;
-  user-select: none;
-  outline: none;
-  border-radius: 4px;
-  cursor: pointer;
-  gap: 8px;
-
-  &[data-highlighted] {
-    background-color: #4285f4;
-    color: #fff;
-  }
-
-  &[data-disabled] {
-    color: #aaa;
-    pointer-events: none;
-  }
-`;
-
-const StyledSeparator = styled(ContextMenu.Separator)`
-  height: 1px;
-  background-color: #e0e0e0;
-  margin: 4px 0;
-`;
-
-const DestructiveItem = styled(StyledItem)`
-  color: #ea4335;
-
-  &[data-highlighted] {
-    background-color: #ea4335;
-    color: #fff;
-  }
-`;
-
-const StyledSubTrigger = styled(ContextMenu.SubTrigger)`
-  font-size: 13px;
-  line-height: 1;
-  color: #333;
-  display: flex;
-  align-items: center;
-  height: 32px;
-  padding: 0 12px;
-  position: relative;
-  user-select: none;
-  outline: none;
-  border-radius: 4px;
-  cursor: pointer;
-  gap: 8px;
-
-  &[data-highlighted] {
-    background-color: #4285f4;
-    color: #fff;
-  }
-
-  &[data-disabled] {
-    color: #aaa;
-    pointer-events: none;
-  }
-`;
-
-const StyledSubContent = styled(ContextMenu.SubContent)`
-  min-width: 140px;
-  background-color: #fff;
-  border-radius: 6px;
-  padding: 4px;
-  box-shadow:
-    0 10px 38px -10px rgba(22, 23, 24, 0.35),
-    0 10px 20px -15px rgba(22, 23, 24, 0.2);
-  z-index: 101;
-  animation: fadeIn 0.1s ease-out;
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: scale(0.96);
-    }
-    to {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-`;
-
-const SubTriggerArrow = styled.span`
-  margin-left: auto;
-  font-size: 11px;
-`;
-
-const ProgressItem = styled(StyledItem)<{ active?: boolean }>`
+const ProgressItem = styled(ContextMenuItem)<{ active?: boolean }>`
   font-weight: ${({ active }) => (active ? 600 : 400)};
   color: ${({ active }) => (active ? '#4285f4' : '#333')};
 
@@ -142,15 +37,6 @@ const ProgressItem = styled(StyledItem)<{ active?: boolean }>`
     background-color: #4285f4;
     color: #fff;
   }
-`;
-
-const IconWrapper = styled.span`
-  display: inline-flex;
-  width: 16px;
-  height: 16px;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
 `;
 
 interface TaskContextMenuProps {
@@ -161,6 +47,7 @@ interface TaskContextMenuProps {
 export const TaskContextMenu: FC<TaskContextMenuProps> = ({ task, children }) => {
   const condition = useAtomValue(currentConditionAtom);
   const appId = useAtomValue(ganttAppIdAtom);
+  const setEditRecordDialog = useSetAtom(editRecordDialogAtom);
 
   const handleOpenRecord = useCallback(() => {
     if (task.id) {
@@ -171,10 +58,9 @@ export const TaskContextMenu: FC<TaskContextMenuProps> = ({ task, children }) =>
 
   const handleEditRecord = useCallback(() => {
     if (task.id) {
-      const url = `${location.pathname}show#record=${task.id}&mode=edit`;
-      window.open(url, '_blank');
+      setEditRecordDialog({ taskId: task.id, taskTitle: task.title });
     }
-  }, [task.id]);
+  }, [task.id, task.title, setEditRecordDialog]);
 
   const handleDeleteRecord = useCallback(async () => {
     if (!task.id || !condition || !appId) {
@@ -299,29 +185,29 @@ export const TaskContextMenu: FC<TaskContextMenuProps> = ({ task, children }) =>
   const hasProgressField = !!condition?.progressFieldCode;
 
   return (
-    <ContextMenu.Root>
-      <ContextMenu.Trigger asChild>{children}</ContextMenu.Trigger>
-      <ContextMenu.Portal>
-        <StyledContent>
-          <StyledItem onSelect={handleOpenRecord}>
-            <IconWrapper>📄</IconWrapper>
+    <ContextMenuRoot>
+      <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
+      <ContextMenuPortal>
+        <ContextMenuContent>
+          <ContextMenuItem onSelect={handleOpenRecord}>
+            <ContextMenuIconWrapper>📄</ContextMenuIconWrapper>
             {t('desktop.contextMenu.openRecord')}
-          </StyledItem>
-          <StyledItem onSelect={handleEditRecord}>
-            <IconWrapper>✏️</IconWrapper>
+          </ContextMenuItem>
+          <ContextMenuItem onSelect={handleEditRecord}>
+            <ContextMenuIconWrapper>✏️</ContextMenuIconWrapper>
             {t('desktop.contextMenu.editRecord')}
-          </StyledItem>
-          <StyledSeparator />
+          </ContextMenuItem>
+          <ContextMenuSeparator />
           {hasProgressField && (
             <>
-              <ContextMenu.Sub>
-                <StyledSubTrigger>
-                  <IconWrapper>📊</IconWrapper>
+              <ContextMenuSub>
+                <ContextMenuSubTrigger>
+                  <ContextMenuIconWrapper>📊</ContextMenuIconWrapper>
                   {t('desktop.contextMenu.updateProgress')}
-                  <SubTriggerArrow>▶</SubTriggerArrow>
-                </StyledSubTrigger>
-                <ContextMenu.Portal>
-                  <StyledSubContent sideOffset={2} alignOffset={-5}>
+                  <ContextMenuSubTriggerArrow>▶</ContextMenuSubTriggerArrow>
+                </ContextMenuSubTrigger>
+                <ContextMenuPortal>
+                  <ContextMenuSubContent sideOffset={2} alignOffset={-5}>
                     {progressOptions.map((value) => (
                       <ProgressItem
                         key={value}
@@ -331,23 +217,23 @@ export const TaskContextMenu: FC<TaskContextMenuProps> = ({ task, children }) =>
                         {value}%
                       </ProgressItem>
                     ))}
-                  </StyledSubContent>
-                </ContextMenu.Portal>
-              </ContextMenu.Sub>
-              <StyledSeparator />
+                  </ContextMenuSubContent>
+                </ContextMenuPortal>
+              </ContextMenuSub>
+              <ContextMenuSeparator />
             </>
           )}
-          <StyledItem onSelect={handleDuplicateRecord}>
-            <IconWrapper>📋</IconWrapper>
+          <ContextMenuItem onSelect={handleDuplicateRecord}>
+            <ContextMenuIconWrapper>📋</ContextMenuIconWrapper>
             {t('desktop.contextMenu.duplicateRecord')}
-          </StyledItem>
-          <StyledSeparator />
-          <DestructiveItem onSelect={handleDeleteRecord}>
-            <IconWrapper>🗑️</IconWrapper>
+          </ContextMenuItem>
+          <ContextMenuSeparator />
+          <ContextMenuDestructiveItem onSelect={handleDeleteRecord}>
+            <ContextMenuIconWrapper>🗑️</ContextMenuIconWrapper>
             {t('desktop.contextMenu.deleteRecord')}
-          </DestructiveItem>
-        </StyledContent>
-      </ContextMenu.Portal>
-    </ContextMenu.Root>
+          </ContextMenuDestructiveItem>
+        </ContextMenuContent>
+      </ContextMenuPortal>
+    </ContextMenuRoot>
   );
 };

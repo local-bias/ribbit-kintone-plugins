@@ -5,7 +5,7 @@ import { DateColumn, HEADER_HEIGHT } from '../hooks/use-gantt-layout';
 const HeaderContainer = styled.div`
   position: sticky;
   top: 0;
-  z-index: 10;
+  // z-index: 10;
   background-color: #fafafa;
   border-bottom: 1px solid #e0e0e0;
   height: ${HEADER_HEIGHT}px;

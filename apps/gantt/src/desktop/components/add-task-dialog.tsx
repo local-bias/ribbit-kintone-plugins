@@ -8,12 +8,21 @@ import {
   DialogActions,
   Button,
   TextField,
+  Chip,
+  Box,
+  Typography,
 } from '@mui/material';
 import { toast } from 'sonner';
-import { addTaskDialogOpenAtom, currentConditionAtom, ganttAppIdAtom } from '../public-state';
+import {
+  addTaskDialogOpenAtom,
+  addTaskInitialCategoryPathAtom,
+  currentConditionAtom,
+  ganttAppIdAtom,
+} from '../public-state';
 import { createNewTask, refreshRecords } from '../record-operations';
 import { GUEST_SPACE_ID } from '@/lib/global';
 import { getCategoryFieldCodes } from '@/lib/plugin';
+import { t } from '@/lib/i18n';
 
 const FormField = styled.div`
   margin-bottom: 16px;
@@ -30,6 +39,8 @@ function formatToday(): string {
 export const AddTaskDialog: FC = () => {
   const open = useAtomValue(addTaskDialogOpenAtom);
   const setOpen = useSetAtom(addTaskDialogOpenAtom);
+  const initialCategoryPath = useAtomValue(addTaskInitialCategoryPathAtom);
+  const setInitialCategoryPath = useSetAtom(addTaskInitialCategoryPathAtom);
   const condition = useAtomValue(currentConditionAtom);
   const appId = useAtomValue(ganttAppIdAtom);
 
@@ -40,10 +51,11 @@ export const AddTaskDialog: FC = () => {
 
   const handleClose = useCallback(() => {
     setOpen(false);
+    setInitialCategoryPath(null);
     setTitle('');
     setStartDate(formatToday());
     setEndDate(formatToday());
-  }, [setOpen]);
+  }, [setOpen, setInitialCategoryPath]);
 
   const handleSave = useCallback(async () => {
     if (!condition || !appId) {
@@ -51,17 +63,17 @@ export const AddTaskDialog: FC = () => {
     }
 
     if (!title.trim()) {
-      toast.warning('タイトルを入力してください');
+      toast.warning(t('desktop.toast.addTaskTitleRequired'));
       return;
     }
 
     if (!startDate || !endDate) {
-      toast.warning('開始日と終了日を入力してください');
+      toast.warning(t('desktop.toast.addTaskDateRequired'));
       return;
     }
 
     if (startDate > endDate) {
-      toast.warning('終了日は開始日以降にしてください');
+      toast.warning(t('desktop.toast.addTaskDateInvalid'));
       return;
     }
 
@@ -76,6 +88,7 @@ export const AddTaskDialog: FC = () => {
         title: title.trim(),
         startDate,
         endDate,
+        categoryFields: initialCategoryPath ?? undefined,
         guestSpaceId: GUEST_SPACE_ID,
       });
 
@@ -94,23 +107,49 @@ export const AddTaskDialog: FC = () => {
         guestSpaceId: GUEST_SPACE_ID,
       });
 
-      toast.success('新しいタスクを追加しました');
+      toast.success(t('desktop.toast.addTaskSuccess'));
       handleClose();
     } catch (error) {
       console.error('[gantt] Failed to create task:', error);
-      toast.error('タスクの追加に失敗しました');
+      toast.error(t('desktop.toast.addTaskError'));
     } finally {
       setSaving(false);
     }
-  }, [condition, appId, title, startDate, endDate, handleClose]);
+  }, [condition, appId, title, startDate, endDate, initialCategoryPath, handleClose]);
+
+  // カテゴリーを持つ場合のダイアログタイトル
+  const dialogTitle =
+    initialCategoryPath && initialCategoryPath.length > 0
+      ? t(
+          'desktop.addTask.titleWithCategory',
+          initialCategoryPath[initialCategoryPath.length - 1]!.value || t('desktop.noGroup')
+        )
+      : t('desktop.addTask.title');
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth='sm' fullWidth>
-      <DialogTitle>新規タスク追加</DialogTitle>
+      <DialogTitle>{dialogTitle}</DialogTitle>
       <DialogContent>
+        {initialCategoryPath && initialCategoryPath.length > 0 && (
+          <FormField>
+            <Typography variant='caption' color='text.secondary' gutterBottom display='block'>
+              {t('desktop.addTask.fieldCategory')}
+            </Typography>
+            <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap', mt: 0.5 }}>
+              {initialCategoryPath.map((entry) => (
+                <Chip
+                  key={entry.fieldCode}
+                  label={entry.value || t('desktop.noGroup')}
+                  size='small'
+                  variant='outlined'
+                />
+              ))}
+            </Box>
+          </FormField>
+        )}
         <FormField>
           <TextField
-            label='タイトル'
+            label={t('desktop.addTask.fieldTitle')}
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             fullWidth
@@ -121,7 +160,7 @@ export const AddTaskDialog: FC = () => {
         </FormField>
         <FormField>
           <TextField
-            label='開始日'
+            label={t('desktop.addTask.fieldStartDate')}
             type='date'
             value={startDate}
             onChange={(e) => setStartDate(e.target.value)}
@@ -133,7 +172,7 @@ export const AddTaskDialog: FC = () => {
         </FormField>
         <FormField>
           <TextField
-            label='終了日'
+            label={t('desktop.addTask.fieldEndDate')}
             type='date'
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
@@ -146,10 +185,10 @@ export const AddTaskDialog: FC = () => {
       </DialogContent>
       <DialogActions>
         <Button onClick={handleClose} disabled={saving}>
-          キャンセル
+          {t('desktop.addTask.cancel')}
         </Button>
         <Button onClick={handleSave} variant='contained' disabled={saving}>
-          {saving ? '追加中...' : '追加'}
+          {saving ? t('desktop.addTask.saving') : t('desktop.addTask.save')}
         </Button>
       </DialogActions>
     </Dialog>

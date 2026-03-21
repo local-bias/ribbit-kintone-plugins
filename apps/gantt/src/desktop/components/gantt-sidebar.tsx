@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
-import { FC, ReactNode, useCallback } from 'react';
-import { useAtom } from 'jotai';
+import { FC, ReactNode, useCallback, useState } from 'react';
+import { useAtom, useSetAtom } from 'jotai';
 import {
   GanttGroup,
   GanttTask,
@@ -10,8 +10,13 @@ import {
 import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { collapsedGroupsAtom } from '../public-state';
+import {
+  addTaskDialogOpenAtom,
+  addTaskInitialCategoryPathAtom,
+  collapsedGroupsAtom,
+} from '../public-state';
 import { TaskContextMenu } from './task-context-menu';
+import { t } from '@/lib/i18n';
 
 const INDENT_PER_LEVEL = 16;
 
@@ -21,15 +26,12 @@ const GroupHeader = styled.div<{ depth: number; isParent: boolean }>`
   height: ${GROUP_HEADER_HEIGHT}px;
   display: flex;
   align-items: center;
-  padding: 0 8px 0 ${({ depth }) => 8 + depth * INDENT_PER_LEVEL}px;
+  padding: 0 4px 0 ${({ depth }) => 8 + depth * INDENT_PER_LEVEL}px;
   background-color: ${({ isParent }) => (isParent ? '#eee' : '#f5f5f5')};
   border-bottom: 1px solid #e0e0e0;
   font-size: 12px;
   font-weight: 600;
   color: #555;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
   cursor: pointer;
   user-select: none;
   gap: 4px;
@@ -50,6 +52,41 @@ const CollapseIcon = styled.span<{ collapsed: boolean }>`
   transition: transform 0.15s ease;
   transform: ${({ collapsed }) => (collapsed ? 'rotate(-90deg)' : 'rotate(0deg)')};
   flex-shrink: 0;
+`;
+
+const GroupLabelText = styled.span`
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  min-width: 0;
+`;
+
+const AddTaskButton = styled.button<{ isVisible: boolean }>`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: #666;
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  opacity: ${({ isVisible }) => (isVisible ? 1 : 0)};
+  pointer-events: ${({ isVisible }) => (isVisible ? 'auto' : 'none')};
+  transition:
+    opacity 0.15s ease,
+    background-color 0.15s ease;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    color: #333;
+  }
 `;
 
 const TaskItem = styled.div<{ depth: number }>`
@@ -145,6 +182,9 @@ function countGroupTasks(group: GanttGroup, allGroups: GanttGroup[]): number {
 
 export const GanttSidebar: FC<GanttSidebarProps> = ({ groups }) => {
   const [collapsedGroups, setCollapsedGroups] = useAtom(collapsedGroupsAtom);
+  const setAddTaskDialogOpen = useSetAtom(addTaskDialogOpenAtom);
+  const setInitialCategoryPath = useSetAtom(addTaskInitialCategoryPathAtom);
+  const [hoveredGroupKey, setHoveredGroupKey] = useState<string | null>(null);
 
   const toggleCollapse = useCallback(
     (key: string) => {
@@ -159,6 +199,15 @@ export const GanttSidebar: FC<GanttSidebarProps> = ({ groups }) => {
       });
     },
     [setCollapsedGroups]
+  );
+
+  const handleAddTask = useCallback(
+    (group: GanttGroup, e: React.MouseEvent) => {
+      e.stopPropagation();
+      setInitialCategoryPath(group.categoryPath);
+      setAddTaskDialogOpen(true);
+    },
+    [setInitialCategoryPath, setAddTaskDialogOpen]
   );
 
   // 折りたたまれた親の子グループを非表示にする
@@ -189,6 +238,7 @@ export const GanttSidebar: FC<GanttSidebarProps> = ({ groups }) => {
         }
         const isCollapsed = collapsedGroups.has(group.key);
         const taskCount = countGroupTasks(group, groups);
+        const isHovered = hoveredGroupKey === group.key;
         return (
           <DroppableGroup key={group.key} group={group}>
             <GroupHeader
@@ -196,14 +246,25 @@ export const GanttSidebar: FC<GanttSidebarProps> = ({ groups }) => {
               isParent={group.isParent}
               title={group.label}
               onClick={() => toggleCollapse(group.key)}
+              onMouseEnter={() => setHoveredGroupKey(group.key)}
+              onMouseLeave={() => setHoveredGroupKey(null)}
             >
               <CollapseIcon collapsed={isCollapsed}>▼</CollapseIcon>
-              {group.label}（{taskCount}）
+              <GroupLabelText>
+                {group.label}（{taskCount}）
+              </GroupLabelText>
+              <AddTaskButton
+                isVisible={isHovered}
+                title={t('desktop.sidebar.addTaskToGroup')}
+                onClick={(e) => handleAddTask(group, e)}
+              >
+                ＋
+              </AddTaskButton>
             </GroupHeader>
             {!isCollapsed && !group.isParent && (
               <SortableContext
                 id={group.key}
-                items={group.tasks.map((t) => `sort-${t.id}`)}
+                items={group.tasks.map((task) => `sort-${task.id}`)}
                 strategy={verticalListSortingStrategy}
               >
                 {group.tasks.map((task) => (

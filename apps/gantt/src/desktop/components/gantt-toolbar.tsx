@@ -1,113 +1,107 @@
+import { t } from '@/lib/i18n';
 import { GanttScale } from '@/schema/plugin-config';
 import styled from '@emotion/styled';
-import { useAtom, useSetAtom } from 'jotai';
-import { FC } from 'react';
+import {
+  ToolbarActionButton,
+  ToolbarAddButton,
+  ToolbarButtonGroup,
+  ToolbarContainer,
+  ToolbarGroupButton,
+  ToolbarNavButton,
+  ToolbarSearchClear,
+  ToolbarSearchIcon,
+  ToolbarSearchInput,
+  ToolbarSearchWrapper,
+  ToolbarSeparator,
+  ToolbarSpacer,
+} from '@repo/ui';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { ListChevronsDownUp, ListChevronsUpDown } from 'lucide-react';
+import { FC, useCallback, useRef } from 'react';
 import {
   addTaskDialogOpenAtom,
+  allGroupKeysAtom,
+  collapsedGroupsAtom,
   ganttGroupByAtom,
   ganttScaleAtom,
+  ganttScrollMaxAtom,
+  ganttScrollXAtom,
   ganttViewDateAtom,
 } from '../public-state';
 
-const ToolbarContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  border-bottom: 1px solid #e0e0e0;
-  background-color: #fafafa;
-  flex-wrap: wrap;
+const PeriodLabel = styled.span`
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  min-width: 80px;
+  text-align: center;
+  user-select: none;
 `;
 
-const ButtonGroup = styled.div`
-  display: flex;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  overflow: hidden;
-`;
-
-const GroupButton = styled.button<{ active?: boolean }>`
-  padding: 4px 12px;
-  border: none;
-  border-right: 1px solid #ccc;
-  background-color: ${({ active }) => (active ? '#4285F4' : '#fff')};
-  color: ${({ active }) => (active ? '#fff' : '#333')};
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 20px;
-  transition: background-color 0.15s;
-
-  &:last-child {
-    border-right: none;
-  }
-
-  &:hover {
-    background-color: ${({ active }) => (active ? '#3367d6' : '#f0f0f0')};
-  }
-`;
-
-const ActionButton = styled.button`
-  padding: 4px 12px;
+const ExpandCollapseButton = styled.button<{ title?: string }>`
+  padding: 4px 6px;
   border: 1px solid #ccc;
   border-radius: 4px;
   background-color: #fff;
-  color: #333;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 20px;
-  transition: background-color 0.15s;
-
-  &:hover {
-    background-color: #f0f0f0;
-  }
-`;
-
-const AddButton = styled.button`
-  padding: 4px 12px;
-  border: 1px solid #4285f4;
-  border-radius: 4px;
-  background-color: #4285f4;
-  color: #fff;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 500;
-  line-height: 20px;
-  transition: background-color 0.15s;
-
-  &:hover {
-    background-color: #3367d6;
-  }
-`;
-
-const NavButton = styled.button`
-  padding: 4px 8px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  background-color: #fff;
-  color: #333;
+  color: #666;
   cursor: pointer;
   font-size: 14px;
-  font-weight: 500;
   line-height: 20px;
   transition: background-color 0.15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   min-width: 28px;
 
   &:hover {
     background-color: #f0f0f0;
+    color: #333;
   }
 `;
 
-const Separator = styled.div`
-  width: 1px;
-  height: 24px;
-  background-color: #e0e0e0;
-  margin: 0 4px;
+const ScrollSliderWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 100px;
+  max-width: 180px;
+  flex: 1 1 100px;
 `;
 
-const Spacer = styled.div`
-  flex: 1;
+const ScrollSlider = styled.input`
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  border-radius: 2px;
+  background: #d0d0d0;
+  outline: none;
+  cursor: pointer;
+  transition: background 0.15s;
+
+  &:hover {
+    background: #b8b8b8;
+  }
+
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #4285f4;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+
+  &::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    border: none;
+    border-radius: 50%;
+    background: #4285f4;
+    cursor: pointer;
+  }
 `;
 
 function getNavigationDelta(scale: GanttScale): number {
@@ -121,11 +115,24 @@ function getNavigationDelta(scale: GanttScale): number {
   }
 }
 
+function getPeriodLabel(viewDate: Date, scale: GanttScale): string {
+  const year = viewDate.getFullYear();
+  const month = viewDate.getMonth() + 1;
+  if (scale === 'month') {
+    return t('desktop.toolbar.period.year', String(year));
+  }
+  return t('desktop.toolbar.period.month', String(year), String(month));
+}
+
 export const GanttToolbar: FC = () => {
   const [scale, setScale] = useAtom(ganttScaleAtom);
   const [groupBy, setGroupBy] = useAtom(ganttGroupByAtom);
   const [viewDate, setViewDate] = useAtom(ganttViewDateAtom);
+  const [scrollX, setScrollX] = useAtom(ganttScrollXAtom);
+  const scrollMax = useAtomValue(ganttScrollMaxAtom);
   const setDialogOpen = useSetAtom(addTaskDialogOpenAtom);
+  const setCollapsedGroups = useSetAtom(collapsedGroupsAtom);
+  const allGroupKeys = useAtomValue(allGroupKeysAtom);
 
   const handleToday = () => {
     setViewDate(new Date());
@@ -145,34 +152,68 @@ export const GanttToolbar: FC = () => {
     setViewDate(newDate);
   };
 
+  const handleExpandAll = useCallback(() => {
+    setCollapsedGroups(new Set<string>());
+  }, [setCollapsedGroups]);
+
+  const handleCollapseAll = useCallback(() => {
+    setCollapsedGroups(new Set(allGroupKeys));
+  }, [setCollapsedGroups, allGroupKeys]);
+
   return (
     <ToolbarContainer>
-      <ActionButton onClick={handleToday}>今日</ActionButton>
-      <NavButton onClick={handlePrev}>‹</NavButton>
-      <NavButton onClick={handleNext}>›</NavButton>
-      <Separator />
-      <ButtonGroup>
-        <GroupButton active={scale === 'day'} onClick={() => setScale('day')}>
-          日
-        </GroupButton>
-        <GroupButton active={scale === 'week'} onClick={() => setScale('week')}>
-          週
-        </GroupButton>
-        <GroupButton active={scale === 'month'} onClick={() => setScale('month')}>
-          月
-        </GroupButton>
-      </ButtonGroup>
-      <Separator />
-      <ButtonGroup>
-        <GroupButton active={groupBy === 'category'} onClick={() => setGroupBy('category')}>
-          カテゴリ
-        </GroupButton>
-        <GroupButton active={groupBy === 'assignee'} onClick={() => setGroupBy('assignee')}>
-          担当者
-        </GroupButton>
-      </ButtonGroup>
-      <Spacer />
-      <AddButton onClick={() => setDialogOpen(true)}>＋ 新規タスク</AddButton>
+      <ToolbarActionButton onClick={handleToday}>{t('desktop.toolbar.today')}</ToolbarActionButton>
+      <ToolbarNavButton onClick={handlePrev}>‹</ToolbarNavButton>
+      <ToolbarNavButton onClick={handleNext}>›</ToolbarNavButton>
+      <PeriodLabel>{getPeriodLabel(viewDate, scale)}</PeriodLabel>
+      <ToolbarSeparator />
+      <ToolbarButtonGroup>
+        <ToolbarGroupButton active={scale === 'day'} onClick={() => setScale('day')}>
+          {t('desktop.scale.day')}
+        </ToolbarGroupButton>
+        <ToolbarGroupButton active={scale === 'week'} onClick={() => setScale('week')}>
+          {t('desktop.scale.week')}
+        </ToolbarGroupButton>
+        <ToolbarGroupButton active={scale === 'month'} onClick={() => setScale('month')}>
+          {t('desktop.scale.month')}
+        </ToolbarGroupButton>
+      </ToolbarButtonGroup>
+      <ToolbarSeparator />
+      <ToolbarButtonGroup>
+        <ToolbarGroupButton active={groupBy === 'category'} onClick={() => setGroupBy('category')}>
+          {t('desktop.groupBy.category')}
+        </ToolbarGroupButton>
+        <ToolbarGroupButton active={groupBy === 'assignee'} onClick={() => setGroupBy('assignee')}>
+          {t('desktop.groupBy.assignee')}
+        </ToolbarGroupButton>
+      </ToolbarButtonGroup>
+      <ExpandCollapseButton onClick={handleExpandAll} title={t('desktop.toolbar.expandAll')}>
+        <ListChevronsUpDown style={{ width: '1.25em', height: '1.25em' }} />
+      </ExpandCollapseButton>
+      <ExpandCollapseButton onClick={handleCollapseAll} title={t('desktop.toolbar.collapseAll')}>
+        <ListChevronsDownUp style={{ width: '1.25em', height: '1.25em' }} />
+      </ExpandCollapseButton>
+      <ToolbarSpacer />
+      {scrollMax > 0 && (
+        <ScrollSliderWrapper>
+          <ScrollSlider
+            type='range'
+            min={0}
+            max={scrollMax}
+            step={1}
+            value={scrollX}
+            onChange={(e) => setScrollX(Number(e.target.value))}
+            title={t('desktop.toolbar.scrollSlider')}
+          />
+        </ScrollSliderWrapper>
+      )}
+      <ToolbarSearchWrapper>
+        <ToolbarSearchIcon>🔍</ToolbarSearchIcon>
+        <ToolbarSearchInput disabled type='text' placeholder={t('desktop.search.placeholder')} />
+      </ToolbarSearchWrapper>
+      <ToolbarAddButton onClick={() => setDialogOpen(true)}>
+        {t('desktop.toolbar.addTask')}
+      </ToolbarAddButton>
     </ToolbarContainer>
   );
 };

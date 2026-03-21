@@ -71,17 +71,53 @@ export const PluginConfigV2Schema = z.object({
   conditions: z.array(PluginConditionV2Schema),
 });
 
+// ─── V3 ──────────────────────────────
+
+export const PluginConditionV3Schema = z.object({
+  /** 条件ID（Jotai管理用） */
+  id: z.string(),
+  /** メモ（条件名） */
+  memo: z.string(),
+  /** 対象カスタムビューのID */
+  viewId: z.string(),
+  /** タスク名フィールド（SINGLE_LINE_TEXT / MULTI_LINE_TEXT） */
+  titleFieldCode: z.string(),
+  /** 開始日フィールド（DATE / DATETIME） */
+  startDateFieldCode: z.string(),
+  /** 終了日フィールド（DATE / DATETIME） */
+  endDateFieldCode: z.string(),
+  /** 担当者フィールド（USER_SELECT、任意 — ツールチップ表示用） */
+  assigneeFieldCode: z.string(),
+  /** 階層化カテゴリ設定（上から順に親→子） */
+  categories: z.array(CategorySettingSchema),
+  /** 進捗率フィールド（NUMBER、任意） */
+  progressFieldCode: z.string(),
+  /** カテゴリソート順フィールド（NUMBER、任意） */
+  categorySortFieldCode: z.string(),
+  /** デフォルトスケール */
+  defaultScale: z.enum(['day', 'week', 'month']),
+  /** ガントバーホバー時に追加表示するフィールドコード一覧 */
+  tooltipFieldCodes: z.array(z.string()),
+});
+
+export const PluginConfigV3Schema = z.object({
+  version: z.literal(3),
+  common: z.object({ memo: z.string() }),
+  conditions: z.array(PluginConditionV3Schema),
+});
+
 // ─── 共通型定義 ──────────────────────────────────────
 
 export const AnyPluginConfigSchema = z.discriminatedUnion('version', [
   PluginConfigV1Schema,
   PluginConfigV2Schema,
+  PluginConfigV3Schema,
 ]);
 
-export const LatestPluginConditionSchema = PluginConditionV2Schema;
+export const LatestPluginConditionSchema = PluginConditionV3Schema;
 
 export type AnyPluginConfig = z.infer<typeof AnyPluginConfigSchema>;
-export type PluginConfig = z.infer<typeof PluginConfigV2Schema>;
+export type PluginConfig = z.infer<typeof PluginConfigV3Schema>;
 export type PluginCondition = PluginConfig['conditions'][number];
 export type GanttScale = PluginCondition['defaultScale'];
 export type CategorySetting = z.infer<typeof CategorySettingSchema>;
@@ -99,10 +135,11 @@ export const getNewCondition = (): PluginCondition => ({
   progressFieldCode: '',
   categorySortFieldCode: '',
   defaultScale: 'day',
+  tooltipFieldCodes: [],
 });
 
 export const createConfig = (): PluginConfig => ({
-  version: 2,
+  version: 3,
   common: { memo: '' },
   conditions: [getNewCondition()],
 });
@@ -130,7 +167,18 @@ export const migrateConfig = (anyConfig: AnyPluginConfig): PluginConfig => {
         })),
       });
     }
-    case 2:
+    case 2: {
+      const v2 = anyConfig;
+      return migrateConfig({
+        version: 3,
+        common: v2.common,
+        conditions: v2.conditions.map((c) => ({
+          ...c,
+          tooltipFieldCodes: [],
+        })),
+      });
+    }
+    case 3:
     default:
       return anyConfig;
   }

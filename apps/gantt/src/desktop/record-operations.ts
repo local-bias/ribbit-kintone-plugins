@@ -76,21 +76,37 @@ export async function updateTaskDates(params: {
   });
 }
 
+/** フィールドタイプに応じた kintone API 用フィールド値を構築する */
+export function buildCategoryFieldValue(code: string, fieldType: string): { value: unknown } {
+  switch (fieldType) {
+    case 'USER_SELECT':
+    case 'GROUP_SELECT':
+    case 'ORGANIZATION_SELECT':
+      return { value: code ? [{ code }] : [] };
+    case 'CHECK_BOX':
+    case 'MULTI_SELECT':
+      return { value: code ? [code] : [] };
+    default:
+      return { value: code };
+  }
+}
+
 /** タスクのカテゴリフィールドを更新する */
 export async function updateTaskCategory(params: {
   appId: number;
   taskId: string;
   categoryFieldCode: string;
   newCategory: string;
+  fieldType: string;
   guestSpaceId?: string;
 }): Promise<void> {
-  const { appId, taskId, categoryFieldCode, newCategory, guestSpaceId } = params;
+  const { appId, taskId, categoryFieldCode, newCategory, fieldType, guestSpaceId } = params;
 
   await updateRecord({
     app: appId,
     id: Number(taskId),
     record: {
-      [categoryFieldCode]: { value: newCategory },
+      [categoryFieldCode]: buildCategoryFieldValue(newCategory, fieldType),
     },
     guestSpaceId,
     debug: process.env.NODE_ENV === 'development',
@@ -245,6 +261,8 @@ export async function createNewTask(params: {
   title: string;
   startDate: string;
   endDate: string;
+  /** カテゴリーフィールドの初期値（省略可） */
+  categoryFields?: { fieldCode: string; value: string; code: string; fieldType: string }[];
   guestSpaceId?: string;
 }): Promise<void> {
   const {
@@ -255,8 +273,18 @@ export async function createNewTask(params: {
     title,
     startDate,
     endDate,
+    categoryFields,
     guestSpaceId,
   } = params;
+
+  const categoryRecord: Record<string, { value: unknown }> = {};
+  if (categoryFields) {
+    for (const { fieldCode, code, fieldType } of categoryFields) {
+      if (fieldCode) {
+        categoryRecord[fieldCode] = buildCategoryFieldValue(code, fieldType);
+      }
+    }
+  }
 
   await addRecord({
     app: appId,
@@ -264,6 +292,7 @@ export async function createNewTask(params: {
       [titleFieldCode]: { value: title },
       [startDateFieldCode]: { value: startDate },
       [endDateFieldCode]: { value: endDate },
+      ...categoryRecord,
     },
     guestSpaceId,
     debug: process.env.NODE_ENV === 'development',
@@ -286,4 +315,40 @@ export async function refreshRecords(params: {
   });
 
   store.set(ganttRecordsAtom, records);
+}
+
+/** 単一レコードを再取得して ganttRecordsAtom 内の該当レコードを更新する */
+export async function refreshSingleRecord(params: {
+  appId: number;
+  taskId: string;
+  fields: string[];
+  guestSpaceId?: string;
+}): Promise<void> {
+  const { appId, taskId, fields, guestSpaceId } = params;
+
+  const response = await getAllRecords({
+    app: appId,
+    fields: ['$id', ...fields],
+    query: `$id = "${taskId}"`,
+    guestSpaceId,
+    debug: false,
+  });
+
+  if (response.length === 0) {
+    // レコードが削除された場合は一覧から除外
+    const records = store.get(ganttRecordsAtom);
+    store.set(
+      ganttRecordsAtom,
+      records.filter((r) => (r.$id as { value: string })?.value !== taskId)
+    );
+    return;
+  }
+
+  const updatedRecord = response[0]!;
+  const records = store.get(ganttRecordsAtom);
+  const newRecords = records.map((r) => {
+    const recordId = (r.$id as { value: string })?.value;
+    return recordId === taskId ? updatedRecord : r;
+  });
+  store.set(ganttRecordsAtom, newRecords);
 }

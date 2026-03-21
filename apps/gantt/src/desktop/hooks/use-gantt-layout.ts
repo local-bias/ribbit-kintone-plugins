@@ -1,4 +1,5 @@
 import { PluginCondition, GanttScale, CategorySetting } from '@/schema/plugin-config';
+import { t } from '@/lib/i18n';
 import { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { useMemo } from 'react';
 
@@ -51,7 +52,12 @@ export interface GanttTask {
 
 export interface CategoryPathEntry {
   fieldCode: string;
+  /** 表示用ラベル（USER_SELECT 等の場合は name） */
   value: string;
+  /** API 更新用コード（USER_SELECT 等の場合はユーザー/グループ/組織コード、それ以外は value と同じ） */
+  code: string;
+  /** kintone フィールドタイプ */
+  fieldType: string;
 }
 
 export interface GanttGroup {
@@ -181,6 +187,16 @@ function addMonths(date: Date, months: number): Date {
   return d;
 }
 
+/** 文字列から決定論的なハッシュインデックスを計算する */
+function hashStringToIndex(value: string, max: number): number {
+  let hash = 5381;
+  for (let i = 0; i < value.length; i++) {
+    hash = ((hash << 5) + hash) ^ value.charCodeAt(i);
+    hash = hash >>> 0; // 32ビット符号なし整数に変換
+  }
+  return hash % max;
+}
+
 function getColorForValue(value: string, colorMap: Map<string, string>): string {
   if (!value) {
     return COLOR_PALETTE[0]!;
@@ -188,13 +204,15 @@ function getColorForValue(value: string, colorMap: Map<string, string>): string 
   if (colorMap.has(value)) {
     return colorMap.get(value)!;
   }
-  const index = colorMap.size % COLOR_PALETTE.length;
+  // colorMap.size（追加順）ではなく値のハッシュからインデックスを決定することで、
+  // records配列の処理順序が変わっても同じ値には常に同じ色が割り当てられる
+  const index = hashStringToIndex(value, COLOR_PALETTE.length);
   const color = COLOR_PALETTE[index]!;
   colorMap.set(value, color);
   return color;
 }
 
-/** フィールドからカテゴリ値を取得（USER_SELECT の場合は最初のユーザー名） */
+/** フィールドからカテゴリ値を取得（USER_SELECT の場合は最初のユーザー名、name未設定時はcodeにフォールバック） */
 function getCategoryValue(record: kintoneAPI.RecordData, fieldCode: string): string {
   if (!fieldCode) {
     return '';
@@ -204,44 +222,20 @@ function getCategoryValue(record: kintoneAPI.RecordData, fieldCode: string): str
     return '';
   }
   const value = field.value;
-  // USER_SELECT フィールド
+  // USER_SELECT / GROUP_SELECT / ORGANIZATION_SELECT フィールド
   if (Array.isArray(value)) {
     if (value.length === 0) {
       return '';
     }
     const first = value[0];
-    if (typeof first === 'object' && first !== null && 'name' in first) {
-      return String((first as { name?: string }).name || '');
+    if (typeof first === 'object' && first !== null) {
+      const obj = first as { name?: string; code?: string };
+      // 楽観的更新後は name が存在しない場合があるため code にフォールバック
+      return String(obj.name || obj.code || '');
     }
     return '';
   }
   return String(value ?? '');
-}
-
-/** USER_SELECT フィールドから全ユーザー名の配列を取得 */
-function getCategoryUserNames(record: kintoneAPI.RecordData, fieldCode: string): string[] {
-  if (!fieldCode) {
-    return [];
-  }
-  const field = record[fieldCode];
-  if (!field || !Array.isArray(field.value)) {
-    return [];
-  }
-  return (field.value as { name?: string; code?: string }[]).map((u) =>
-    String(u.name || u.code || '')
-  );
-}
-
-/** フィールドが USER_SELECT かどうかを判定 */
-function isUserSelectField(record: kintoneAPI.RecordData, fieldCode: string): boolean {
-  if (!fieldCode) {
-    return false;
-  }
-  const field = record[fieldCode];
-  if (!field) {
-    return false;
-  }
-  return Array.isArray(field.value);
 }
 
 /** カテゴリ色設定から色マップを構築 */
@@ -264,42 +258,100 @@ function findColorCategoryIndex(categories: CategorySetting[]): number {
 
 // ─── 階層グループ化ヘルパー ──────────────────────────
 
+/** expandTaskCategories の内部型: 1 レベル分の値情報 */
+interface CategoryPathItem {
+  /** 表示用ラベル */
+  value: string;
+  /** API 更新用コード */
+  code: string;
+  /** kintone フィールドタイプ */
+  fieldType: string;
+}
+
 interface TaskCategoryAssignment {
   task: GanttTask;
   /** 各カテゴリ階層での値（ユーザーフィールドの場合は展開済み） */
-  path: string[];
+  path: CategoryPathItem[];
 }
 
 /**
  * タスクをカテゴリ階層の各レベルで展開する。
- * USER_SELECT フィールドの場合、ユーザーごとに行を複製する。
+ * USER_SELECT / GROUP_SELECT / ORGANIZATION_SELECT フィールドの場合、エントリごとに行を複製する。
+ * CHECK_BOX / MULTI_SELECT フィールドの場合、選択値ごとに行を複製する。
  */
 function expandTaskCategories(
   task: GanttTask,
   record: kintoneAPI.RecordData,
-  categories: CategorySetting[]
+  categories: CategorySetting[],
+  fieldTypeMap: Map<string, string>
 ): TaskCategoryAssignment[] {
   if (categories.length === 0) {
     return [{ task, path: [] }];
   }
 
   // 各レベルで取りうる値を配列として取得
-  const allLevelValues: string[][] = categories.map((cat) => {
-    if (isUserSelectField(record, cat.fieldCode)) {
-      const names = getCategoryUserNames(record, cat.fieldCode);
-      return names.length > 0 ? names : [''];
+  const allLevelValues: CategoryPathItem[][] = categories.map((cat) => {
+    const fieldType = fieldTypeMap.get(cat.fieldCode) ?? '';
+    const field = record[cat.fieldCode];
+    const rawValue = field?.value;
+
+    if (
+      fieldType === 'USER_SELECT' ||
+      fieldType === 'GROUP_SELECT' ||
+      fieldType === 'ORGANIZATION_SELECT'
+    ) {
+      if (!Array.isArray(rawValue) || rawValue.length === 0) {
+        return [{ value: '', code: '', fieldType }];
+      }
+      return (rawValue as { code?: string; name?: string }[]).map((u) => ({
+        value: String(u.name || u.code || ''),
+        code: String(u.code || ''),
+        fieldType,
+      }));
     }
-    return [getCategoryValue(record, cat.fieldCode) || ''];
+
+    if (fieldType === 'CHECK_BOX' || fieldType === 'MULTI_SELECT') {
+      if (!Array.isArray(rawValue) || rawValue.length === 0) {
+        return [{ value: '', code: '', fieldType }];
+      }
+      return (rawValue as string[]).map((v) => ({ value: v, code: v, fieldType }));
+    }
+
+    // フォールバック: fieldTypeMap が未ロードの場合は値の構造から判定
+    if (Array.isArray(rawValue)) {
+      if (rawValue.length === 0) {
+        return [{ value: '', code: '', fieldType }];
+      }
+      const first = rawValue[0];
+      if (typeof first === 'object' && first !== null && 'code' in first) {
+        // オブジェクト配列 → USER_SELECT 系
+        return (rawValue as { code?: string; name?: string }[]).map((u) => ({
+          value: String(u.name || u.code || ''),
+          code: String(u.code || ''),
+          fieldType: fieldType || 'USER_SELECT',
+        }));
+      }
+      // 文字列配列 → CHECK_BOX 系
+      return (rawValue as string[]).map((v) => ({
+        value: v,
+        code: v,
+        fieldType: fieldType || 'CHECK_BOX',
+      }));
+    }
+
+    // 通常のスカラー文字列フィールド
+    const value = String(rawValue ?? '');
+    return [{ value, code: value, fieldType }];
   });
 
   // 直積（カルテシアン積）を求めてすべての組み合わせを生成
-  function cartesianProduct(arrays: string[][]): string[][] {
+  function cartesianProduct(arrays: CategoryPathItem[][]): CategoryPathItem[][] {
     if (arrays.length === 0) {
       return [[]];
     }
     const [first, ...rest] = arrays;
     const restProduct = cartesianProduct(rest);
-    const result: string[][] = [];
+    const result: CategoryPathItem[][] = [];
     for (const val of first!) {
       for (const rp of restProduct) {
         result.push([val, ...rp]);
@@ -327,7 +379,7 @@ function buildHierarchicalGroups(
     return [
       {
         key: '__all__',
-        label: '全タスク',
+        label: t('desktop.allTasks'),
         code: '',
         depth: 0,
         isParent: false,
@@ -340,22 +392,25 @@ function buildHierarchicalGroups(
 
   if (categories.length === 1) {
     // 単一カテゴリ → フラットグループ（従来どおり）
-    const groupMap = new Map<string, GanttTask[]>();
+    const groupMap = new Map<string, { tasks: GanttTask[]; code: string; fieldType: string }>();
     for (const { task, path } of assignments) {
-      const key = path[0] ?? '';
-      const existing = groupMap.get(key) ?? [];
-      existing.push(task);
+      const item = path[0];
+      const key = item?.value ?? '';
+      const code = item?.code ?? key;
+      const fieldType = item?.fieldType ?? '';
+      const existing = groupMap.get(key) ?? { tasks: [], code, fieldType };
+      existing.tasks.push(task);
       groupMap.set(key, existing);
     }
 
     return sortGroupEntries(
-      Array.from(groupMap.entries()).map(([key, tasks]) => ({
+      Array.from(groupMap.entries()).map(([key, { tasks, code, fieldType }]) => ({
         key,
-        label: key || '未分類',
-        code: key,
+        label: key || t('desktop.noGroup'),
+        code,
         depth: 0,
         isParent: false,
-        categoryPath: [{ fieldCode: categories[0]!.fieldCode, value: key }],
+        categoryPath: [{ fieldCode: categories[0]!.fieldCode, value: key, code, fieldType }],
         tasks: tasks.sort((a, b) => a.startDate.getTime() - b.startDate.getTime()),
         collapsed: false,
       })),
@@ -369,6 +424,7 @@ function buildHierarchicalGroups(
     key: string;
     label: string;
     code: string;
+    fieldType: string;
     depth: number;
     fieldCode: string;
     value: string;
@@ -382,6 +438,7 @@ function buildHierarchicalGroups(
     key: '__root__',
     label: '',
     code: '',
+    fieldType: '',
     depth: -1,
     fieldCode: '',
     value: '',
@@ -395,19 +452,25 @@ function buildHierarchicalGroups(
     const categoryPath: CategoryPathEntry[] = [];
 
     for (let depth = 0; depth < path.length; depth++) {
-      const value = path[depth] ?? '';
+      const item = path[depth]!;
       const fieldCode = categories[depth]?.fieldCode ?? '';
-      categoryPath.push({ fieldCode, value });
+      categoryPath.push({
+        fieldCode,
+        value: item.value,
+        code: item.code,
+        fieldType: item.fieldType,
+      });
       const nodeKey = categoryPath.map((e) => e.value).join('|');
 
       if (!current.children.has(nodeKey)) {
         current.children.set(nodeKey, {
           key: nodeKey,
-          label: value || '未分類',
-          code: value,
+          label: item.value || t('desktop.noGroup'),
+          code: item.code,
+          fieldType: item.fieldType,
           depth,
           fieldCode,
-          value,
+          value: item.value,
           children: new Map(),
           tasks: [],
           categoryPath: [...categoryPath],
@@ -431,7 +494,7 @@ function buildHierarchicalGroups(
         code: child.code,
         depth: child.depth,
         isParent: child.children.size > 0,
-        categoryPath: child.categoryPath,
+        categoryPath: child.categoryPath, // code と fieldType が含まれる
         tasks: child.tasks.sort((a, b) => a.startDate.getTime() - b.startDate.getTime()),
         collapsed: false,
       })),
@@ -475,8 +538,19 @@ export function useGanttLayout(params: {
   scale: GanttScale;
   viewDate: Date;
   groupBy: 'category' | 'assignee';
+  searchQuery?: string;
+  /** フィールドタイプ判定用のフォームフィールド定義 */
+  formFieldTypeMap: Map<string, string>;
 }) {
-  const { records, condition, scale, viewDate, groupBy } = params;
+  const {
+    records,
+    condition,
+    scale,
+    viewDate,
+    groupBy,
+    searchQuery = '',
+    formFieldTypeMap,
+  } = params;
 
   return useMemo(() => {
     if (!condition) {
@@ -490,6 +564,7 @@ export function useGanttLayout(params: {
         rangeEnd: startOfDay(viewDate),
         dateToX: () => 0,
         todayX: 0,
+        viewDateX: 0,
         colorMap: new Map<string, string>(),
       };
     }
@@ -576,6 +651,16 @@ export function useGanttLayout(params: {
       // パディング追加
       rangeStart = addDays(startOfDay(minStart), -7);
       rangeEnd = addDays(startOfDay(maxEnd), 7);
+    }
+
+    // タスクの日付が現在日時から大きく離れていても、viewDate（今日）を常にレンジに含める。
+    // これにより、初期表示時に日付ヘッダーと罫線が必ず表示される。
+    const viewDateBase = startOfDay(viewDate);
+    if (viewDateBase.getTime() < rangeStart.getTime()) {
+      rangeStart = addDays(viewDateBase, -14);
+    }
+    if (viewDateBase.getTime() > rangeEnd.getTime()) {
+      rangeEnd = addDays(viewDateBase, 14);
     }
 
     // スケールに合わせてレンジを拡張
@@ -667,6 +752,7 @@ export function useGanttLayout(params: {
     }
 
     const todayX = dateToX(today);
+    const viewDateX = dateToX(startOfDay(viewDate));
 
     // グループ化
     let groups: GanttGroup[];
@@ -694,7 +780,7 @@ export function useGanttLayout(params: {
         .sort(([a], [b]) => a.localeCompare(b, 'ja'))
         .map(([key, { tasks: groupTasks, code }]) => ({
           key,
-          label: key || '未割当',
+          label: key || t('desktop.noAssignee'),
           code,
           depth: 0,
           isParent: false,
@@ -706,7 +792,12 @@ export function useGanttLayout(params: {
       // カテゴリ階層グループ化
       const assignments: TaskCategoryAssignment[] = [];
       for (const task of tasks) {
-        const expanded = expandTaskCategories(task, task.record, condition.categories);
+        const expanded = expandTaskCategories(
+          task,
+          task.record,
+          condition.categories,
+          formFieldTypeMap
+        );
         assignments.push(...expanded);
       }
       groups = buildHierarchicalGroups(assignments, condition.categories, condition);
@@ -722,7 +813,8 @@ export function useGanttLayout(params: {
       rangeEnd,
       dateToX,
       todayX,
+      viewDateX,
       colorMap: dynamicColorMap,
     };
-  }, [records, condition, scale, viewDate, groupBy]);
+  }, [records, condition, scale, viewDate, groupBy, searchQuery, formFieldTypeMap]);
 }

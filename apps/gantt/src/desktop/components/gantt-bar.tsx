@@ -1,8 +1,13 @@
-import styled from '@emotion/styled';
-import { Tooltip } from '@mui/material';
-import { FC, useCallback, useState } from 'react';
+import { t } from '@/lib/i18n';
+import type { GanttScale } from '@/schema/plugin-config';
 import { useDndMonitor, useDraggable } from '@dnd-kit/core';
-import { COLOR_PALETTE, GanttTask, TASK_ROW_HEIGHT } from '../hooks/use-gantt-layout';
+import styled from '@emotion/styled';
+import { getFieldValueAsString } from '@konomi-app/kintone-utilities';
+import { Tooltip } from '@mui/material';
+import { useAtomValue } from 'jotai';
+import { FC, useCallback, useState } from 'react';
+import { COLOR_PALETTE, COLUMN_WIDTH, GanttTask, TASK_ROW_HEIGHT } from '../hooks/use-gantt-layout';
+import { currentConditionAtom, ganttFormFieldsAtom, ganttScaleAtom } from '../public-state';
 import { TaskContextMenu } from './task-context-menu';
 
 const BAR_HEIGHT = 22;
@@ -98,6 +103,32 @@ const ProgressFill = styled.div<{ progress: number; color: string }>`
   transition: width 0.2s ease;
 `;
 
+const ResizeDateLabel = styled.div<{ side: 'left' | 'right' }>`
+  position: absolute;
+  top: -24px;
+  ${({ side }) => (side === 'left' ? 'left: -4px' : 'right: -4px')};
+  padding: 2px 6px;
+  background-color: rgba(25, 118, 210, 0.95);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  border-radius: 3px;
+  white-space: nowrap;
+  pointer-events: none;
+  z-index: 10;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.25);
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    ${({ side }) => (side === 'left' ? 'left: 8px' : 'right: 8px')};
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid rgba(25, 118, 210, 0.95);
+  }
+`;
+
 const BarLabel = styled.div`
   position: absolute;
   top: 0;
@@ -131,6 +162,23 @@ function formatDate(date: Date): string {
   return `${y}/${m}/${d}`;
 }
 
+function formatShortDate(date: Date): string {
+  const m = date.getMonth() + 1;
+  const d = date.getDate();
+  return `${m}/${d}`;
+}
+
+function calcResizeDaysDelta(deltaX: number, scale: GanttScale): number {
+  const columnWidth = COLUMN_WIDTH[scale] ?? 40;
+  if (scale === 'day') {
+    return Math.round(deltaX / columnWidth);
+  } else if (scale === 'week') {
+    return Math.round((deltaX / columnWidth) * 7);
+  } else {
+    return Math.round((deltaX / columnWidth) * 30);
+  }
+}
+
 interface GanttBarProps {
   task: GanttTask;
   left: number;
@@ -158,6 +206,9 @@ const ResizeEndHandle: FC<{ task: GanttTask }> = ({ task }) => {
 
 export const GanttBar: FC<GanttBarProps> = ({ task, left, width, colorMap }) => {
   const color = getColor(task.colorValue, colorMap);
+  const scale = useAtomValue(ganttScaleAtom);
+  const condition = useAtomValue(currentConditionAtom);
+  const formFields = useAtomValue(ganttFormFieldsAtom);
 
   const { attributes, listeners, setNodeRef, isDragging } = useDraggable({
     id: `bar-${task.id}`,
@@ -201,6 +252,19 @@ export const GanttBar: FC<GanttBarProps> = ({ task, left, width, colorMap }) => 
 
   const isResizing = resizeSide !== null;
 
+  // リサイズ中の日付計算
+  const resizeDaysDelta = isResizing ? calcResizeDaysDelta(resizeDelta, scale) : 0;
+  let resizeDateLabel: string | null = null;
+  if (resizeSide === 'start' && resizeDaysDelta !== 0) {
+    const newStart = new Date(task.startDate);
+    newStart.setDate(newStart.getDate() + resizeDaysDelta);
+    resizeDateLabel = formatShortDate(newStart);
+  } else if (resizeSide === 'end' && resizeDaysDelta !== 0) {
+    const newEnd = new Date(task.endDate);
+    newEnd.setDate(newEnd.getDate() + resizeDaysDelta);
+    resizeDateLabel = formatShortDate(newEnd);
+  }
+
   // リサイズ中のビジュアル調整
   let visualLeft = left;
   let visualWidth = width;
@@ -219,11 +283,39 @@ export const GanttBar: FC<GanttBarProps> = ({ task, left, width, colorMap }) => 
       <div>
         {formatDate(task.startDate)} 〜 {formatDate(task.endDate)}
       </div>
-      {task.assignees.length > 0 && <div>担当: {task.assignees.join(', ')}</div>}
-      {task.categoryValues.filter(Boolean).length > 0 && (
-        <div>カテゴリ: {task.categoryValues.filter(Boolean).join(' > ')}</div>
+      {task.assignees.length > 0 && (
+        <div>
+          {t('desktop.tooltip.assignee')}: {task.assignees.join(', ')}
+        </div>
       )}
-      {task.progress > 0 && <div>進捗: {task.progress}%</div>}
+      {task.categoryValues.filter(Boolean).length > 0 && (
+        <div>
+          {t('desktop.tooltip.category')}: {task.categoryValues.filter(Boolean).join(' > ')}
+        </div>
+      )}
+      {task.progress > 0 && (
+        <div>
+          {t('desktop.tooltip.progress')}: {task.progress}%
+        </div>
+      )}
+      {condition &&
+        condition.tooltipFieldCodes.length > 0 &&
+        condition.tooltipFieldCodes.map((fieldCode) => {
+          if (!fieldCode || !task.record || !task.record[fieldCode]) {
+            return null;
+          }
+          const fieldValue = getFieldValueAsString(task.record![fieldCode]);
+          if (!fieldValue) {
+            return null;
+          }
+          const fieldDef = formFields.find((f) => f.code === fieldCode);
+          const label = fieldDef?.label ?? fieldCode;
+          return (
+            <div key={fieldCode}>
+              {label}: {fieldValue}
+            </div>
+          );
+        })}
     </div>
   );
 
@@ -255,6 +347,11 @@ export const GanttBar: FC<GanttBarProps> = ({ task, left, width, colorMap }) => 
           </BarContainer>
           {isResizing && (
             <ResizeEdgeIndicator side={resizeSide === 'start' ? 'left' : 'right'} color={color} />
+          )}
+          {isResizing && resizeDateLabel && (
+            <ResizeDateLabel side={resizeSide === 'start' ? 'left' : 'right'}>
+              {resizeDateLabel}
+            </ResizeDateLabel>
           )}
           <ResizeStartHandle task={task} />
           <ResizeEndHandle task={task} />
