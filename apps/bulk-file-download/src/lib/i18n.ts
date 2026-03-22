@@ -49,7 +49,9 @@ const ui = mergeDeep(commonUi, {
     'desktop.download.error': 'ファイルのダウンロードに失敗しました',
     'desktop.download.errorLog': 'ダウンロードエラー:',
     'desktop.download.noFiles': 'ダウンロード対象のファイルがありません',
+    'desktop.download.success': 'ファイルをダウンロードしました',
     'desktop.loading.fetchingRecords': 'レコード情報を取得しています',
+    'desktop.loading.extractingFiles': 'ファイル情報を取得しています',
     'desktop.loading.downloadingFiles': 'ファイルをダウンロードしています',
     // Errors
     'error.pluginError': 'プラグイン「{0}」の処理内でエラーが発生しました。',
@@ -106,6 +108,7 @@ const ui = mergeDeep(commonUi, {
     'desktop.download.error': 'Failed to download files',
     'desktop.download.errorLog': 'Download error:',
     'desktop.download.noFiles': 'No files to download',
+    'desktop.download.success': 'Files downloaded successfully',
     'desktop.loading.fetchingRecords': 'Fetching record information',
     'desktop.loading.downloadingFiles': 'Downloading files',
     // Errors

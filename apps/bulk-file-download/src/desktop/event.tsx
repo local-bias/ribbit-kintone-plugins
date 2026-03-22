@@ -3,6 +3,7 @@ import { GUEST_SPACE_ID, isDev } from '@/lib/global';
 import { t } from '@/lib/i18n';
 import { PluginCondition } from '@/schema/plugin-config';
 import config from '@/../plugin.config.mjs';
+import { toast } from '@konomi-app/ui';
 import {
   downloadFile,
   getApp,
@@ -18,7 +19,6 @@ import { currentAppIdAtom, store } from '@repo/jotai';
 import JSZip from 'jszip';
 import { DownloadButton } from './components/download-button';
 import { validPluginConditionsAtom } from './public-state';
-import { loadingOverlay } from '@/lib/loading';
 import { css } from '@emotion/css';
 
 /** アプリ情報のキャッシュ */
@@ -200,9 +200,8 @@ async function handleListDownload(condition: PluginCondition): Promise<void> {
   const appId = store.get(currentAppIdAtom);
   const query = getQuery() ?? '';
 
+  const toastId = toast.loading(t('desktop.loading.downloadingFiles'));
   try {
-    loadingOverlay.show();
-    loadingOverlay.label = t('desktop.loading.fetchingRecords');
     const records = await getAllRecords({
       app: appId,
       query,
@@ -210,25 +209,31 @@ async function handleListDownload(condition: PluginCondition): Promise<void> {
       debug: isDev,
     });
 
-    loadingOverlay.label = t('desktop.loading.downloadingFiles');
     const allFiles: { fileName: string; fileKey: string }[] = [];
     for (let i = 0; i < records.length; i++) {
       const record = records[i]!;
-      loadingOverlay.progress = ((i + 1) / records.length) * 100;
       allFiles.push(...extractFileInfoFromRecord(record, condition.fieldCodes));
     }
 
     if (allFiles.length === 0) {
-      alert(t('desktop.download.noFiles'));
+      toast.update(toastId, {
+        type: 'warning',
+        message: t('desktop.download.noFiles'),
+      });
       return;
     }
 
     await downloadFilesAsZip(allFiles, condition.zipFileName);
-  } finally {
-    loadingOverlay.hide();
-    setTimeout(() => {
-      loadingOverlay.progress = 0;
-    }, 100);
+    toast.update(toastId, {
+      type: 'success',
+      message: t('desktop.download.success'),
+    });
+  } catch (error) {
+    toast.update(toastId, {
+      type: 'error',
+      message: t('desktop.download.error'),
+    });
+    console.error(t('desktop.download.errorLog'), error);
   }
 }
 
@@ -242,7 +247,7 @@ async function handleDetailDownload(
   const files = extractFileInfoFromRecord(record, condition.fieldCodes);
 
   if (files.length === 0) {
-    alert(t('desktop.download.noFiles'));
+    toast.warning(t('desktop.download.noFiles'));
     return;
   }
 
