@@ -1,17 +1,18 @@
+import { dataUrlAtom } from '@/desktop/original-view/states/kintone';
+import { zodTextFormat } from 'openai/helpers/zod.mjs';
 import { z } from 'zod';
 import {
-  EndpointAdapter,
   ChatCompletionRequest,
+  EndpointAdapter,
   GeneratedImage,
-  hasImageContent,
+  hasFileContent,
   isO1SeriesModel,
-  sanitizeMessagesForApi,
+  parseStructuredResponse,
   StructuredAIResponse,
   TokenUsage,
 } from '../endpoint-adapter';
 import { OPENROUTER_CHAT_COMPLETION_ENDPOINT } from '../static';
-import { nanoid } from 'nanoid';
-import { zodTextFormat } from 'openai/helpers/zod.mjs';
+import { store } from '../store';
 
 /**
  * OpenRouter ChatCompletionのレスポンスボディ型
@@ -47,7 +48,7 @@ type OpenRouterResponseBody = {
 export class OpenRouterAdapter implements EndpointAdapter {
   readonly endpoint = OPENROUTER_CHAT_COMPLETION_ENDPOINT;
 
-  buildRequestPayload(request: ChatCompletionRequest): Record<string, unknown> {
+  async buildRequestPayload(request: ChatCompletionRequest): Promise<Record<string, unknown>> {
     const {
       model,
       temperature,
@@ -64,28 +65,96 @@ export class OpenRouterAdapter implements EndpointAdapter {
     let max_tokens = maxTokens === 0 ? undefined : maxTokens;
 
     // 画像が含まれている場合はmax_tokensの指定が必須
-    if (!max_tokens && hasImageContent(messages)) {
+    if (!max_tokens && hasFileContent(messages)) {
       max_tokens = 2048;
     }
 
-    // システムプロンプトが指定されている場合は先頭に追加
-    const messagesWithSystem = systemPrompt
-      ? [
-          {
-            id: nanoid(),
-            role: 'system' as const,
-            content: systemPrompt,
-          },
-          ...messages,
-        ]
-      : messages;
+    const responseInput: Record<string, unknown>[] = [];
+    if (systemPrompt) {
+      responseInput.push({
+        role: 'system',
+        content: [{ type: 'input_text', text: systemPrompt }],
+      });
+    }
+    for (const message of messages) {
+      const content: Record<string, unknown>[] = [
+        {
+          type: 'text',
+          text: message.content,
+        },
+      ];
+
+      if (!message.attachments?.length) {
+        responseInput.push({ role: message.role, content });
+        continue;
+      }
+      for (const attachment of message.attachments) {
+        if (attachment.type === 'file-base64') {
+          if (attachment.mimeType.startsWith('image/')) {
+            content.push({
+              type: 'image_url',
+              image_url: {
+                url: attachment.dataUrl,
+              },
+              detail: 'high',
+            });
+          } else {
+            content.push({
+              type: 'file',
+              file: {
+                filename: attachment.fileName,
+                file_data: attachment.dataUrl,
+              },
+            });
+          }
+        } else if (attachment.type === 'file') {
+          // ファイルの実体を取得し、base64エンコードする
+          const dataUrl = await store.get(dataUrlAtom(attachment.fileKey));
+          if (dataUrl) {
+            // mimeTypeが画像の場合は`"input_Image"`それ以外は`"input_file"`として扱う
+            if (attachment.mimeType.startsWith('image/')) {
+              content.push({
+                type: 'image_url',
+                image_url: {
+                  url: dataUrl,
+                },
+                detail: 'high',
+              });
+            } else {
+              content.push({
+                type: 'file',
+                file: {
+                  filename: attachment.fileName,
+                  file_data: dataUrl,
+                },
+              });
+            }
+          }
+        }
+      }
+      responseInput.push({ role: message.role, content });
+    }
+
+    let responseFormat: Record<string, unknown> = { type: 'text' };
+    if (schema) {
+      // jsonスキーマはヘルパー関数を使い、それ以外のパラメータは直接指定する
+      const jsonSchema = zodTextFormat(schema, 'json_response').schema;
+      responseFormat = {
+        type: 'json_schema',
+        json_schema: {
+          name: 'response_schema',
+          strict: true,
+          schema: jsonSchema,
+        },
+      };
+    }
 
     const payload: Record<string, unknown> = {
       model,
       temperature,
       max_completion_tokens: max_tokens,
-      messages: sanitizeMessagesForApi(messagesWithSystem),
-      response_format: schema ? zodTextFormat(schema, 'json_response') : { type: 'text' },
+      messages: responseInput,
+      response_format: responseFormat,
       verbosity: verbosity === 'model-default' ? undefined : verbosity,
       reasoning_effort: reasoningEffort === 'model-default' ? undefined : reasoningEffort,
     };
@@ -125,8 +194,8 @@ export class OpenRouterAdapter implements EndpointAdapter {
     // テキストコンテンツを抽出
     const textContent = this.extractTextContent(body);
 
-    // Zodスキーマでパース
-    const data = schema.parse(JSON.parse(textContent));
+    // Zodスキーマでパース（Structured Output非対応モデルのフォールバック付き）
+    const data = parseStructuredResponse(textContent, schema);
 
     // 生成画像を抽出
     const generatedImages = this.extractGeneratedImages(body);

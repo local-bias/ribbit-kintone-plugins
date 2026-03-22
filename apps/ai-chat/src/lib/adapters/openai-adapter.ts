@@ -1,18 +1,24 @@
-import { InteractiveAIResponseSchema, ReasoningEffortType } from '@/schema/ai';
+import { dataUrlAtom } from '@/desktop/original-view/states/kintone';
+import { ReasoningEffortType } from '@/schema/ai';
 import { zodTextFormat } from 'openai/helpers/zod';
+import {
+  EasyInputMessage,
+  ResponseInputMessageContentList,
+} from 'openai/resources/responses/responses.mjs';
 import { z } from 'zod';
 import {
   ChatCompletionRequest,
   EndpointAdapter,
   GeneratedImage,
-  hasImageContent,
+  hasFileContent,
   isO1SeriesModel,
-  sanitizeMessagesForApi,
+  parseStructuredResponse,
   StructuredAIResponse,
   TokenUsage,
 } from '../endpoint-adapter';
 import { getWebSearchLocation } from '../i18n';
 import { ChatMessageContent, OPENAI_ENDPOINT } from '../static';
+import { store } from '../store';
 
 /**
  * Response API用のコンテンツパート型定義
@@ -62,7 +68,7 @@ type OpenAIResponseAPIBody = {
 export class OpenAIAdapter implements EndpointAdapter {
   readonly endpoint = OPENAI_ENDPOINT;
 
-  buildRequestPayload(request: ChatCompletionRequest): Record<string, unknown> {
+  async buildRequestPayload(request: ChatCompletionRequest): Promise<Record<string, unknown>> {
     const {
       model,
       temperature,
@@ -79,45 +85,77 @@ export class OpenAIAdapter implements EndpointAdapter {
       schema,
     } = request;
 
-    let max_tokens = maxTokens === 0 ? undefined : maxTokens;
-
-    // 画像が含まれている場合はmax_tokensの指定が必須
-    if (!max_tokens && hasImageContent(messages)) {
-      max_tokens = 2048;
-    }
-
-    // メッセージをサニタイズ（ファクトチェック除外、generated_image除外）
-    const regularMessages = sanitizeMessagesForApi(messages);
-
+    const responseInput: EasyInputMessage[] = [];
     if (systemPrompt) {
-      regularMessages.unshift({
+      responseInput.push({
         role: 'system',
-        content: systemPrompt,
+        content: [{ type: 'input_text', text: systemPrompt }],
       });
+    }
+    for (const message of messages) {
+      const content: ResponseInputMessageContentList = [
+        {
+          type: message.role === 'assistant' ? ('output_text' as 'input_text') : 'input_text',
+          text: message.content,
+        },
+      ];
+
+      if (!message.attachments?.length) {
+        responseInput.push({ role: message.role, content });
+        continue;
+      }
+      for (const attachment of message.attachments) {
+        if (attachment.type === 'file-base64') {
+          if (attachment.mimeType.startsWith('image/')) {
+            content.push({
+              type: 'input_image',
+              image_url: attachment.dataUrl,
+              detail: 'high',
+            });
+          } else {
+            content.push({
+              type: 'input_file',
+              filename: attachment.fileName,
+              file_data: attachment.dataUrl,
+            });
+          }
+        } else if (attachment.type === 'file') {
+          // ファイルの実体を取得し、base64エンコードする
+          const dataUrl = await store.get(dataUrlAtom(attachment.fileKey));
+          if (dataUrl) {
+            // mimeTypeが画像の場合は`"input_Image"`それ以外は`"input_file"`として扱う
+            if (attachment.mimeType.startsWith('image/')) {
+              content.push({
+                type: 'input_image',
+                image_url: dataUrl,
+                detail: 'high',
+              });
+            } else {
+              content.push({
+                type: 'input_file',
+                filename: attachment.fileName,
+                file_data: dataUrl,
+              });
+            }
+          }
+        }
+      }
+      responseInput.push({ role: message.role, content });
     }
 
     // HTML出力モード用のプロンプト拡張
     if (htmlOutputEnabled && currentHtml) {
-      // 後ろから2番目(最後のユーザー指示の直前)に追加
-      if (regularMessages.length >= 2) {
-        const lastAssistantMessage = regularMessages[regularMessages.length - 2];
-        if (typeof lastAssistantMessage.content === 'string') {
-          lastAssistantMessage.content += `\n\n\`\`\`html\n${currentHtml}\n\`\`\``;
-        }
+      const index = responseInput.findLastIndex((msg) => msg.role === 'assistant');
+      if (index !== -1) {
+        responseInput[index].content += `\n\n\`\`\`html\n${currentHtml}\n\`\`\``;
       }
     }
-
-    // Response API用のメッセージ形式に変換
-    const responseInputMessages: ResponseApiMessage[] = regularMessages.map((msg) => ({
-      role: msg.role,
-      content: this.convertContentForResponses(msg.content),
-    }));
 
     const payload: Record<string, unknown> = {
       model,
       temperature,
-      max_output_tokens: max_tokens,
-      input: responseInputMessages,
+      max_output_tokens: maxTokens || undefined,
+      input: responseInput,
       text: schema
         ? { format: zodTextFormat(schema, 'json_response') }
         : {
@@ -178,8 +216,8 @@ export class OpenAIAdapter implements EndpointAdapter {
     // テキストコンテンツを抽出
     const textContent = this.extractTextContent(body);
 
-    // Zodスキーマでパース
-    const data = schema.parse(JSON.parse(textContent));
+    // Zodスキーマでパース（Structured Output非対応モデルのフォールバック付き）
+    const data = parseStructuredResponse(textContent, schema);
 
     // 生成画像を抽出
     const generatedImages = this.extractGeneratedImages(body);

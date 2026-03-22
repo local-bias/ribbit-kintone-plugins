@@ -545,6 +545,63 @@ export const PluginConditionV13Schema = z.object({
   allowQuickReplies: z.boolean().default(true),
 });
 
+export const PluginConditionV14Schema = z.object({
+  /**
+   * プラグイン設定を一意に識別するためのID
+   * 設定の並び替えに使用されます
+   */
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  aiModel: z.string(),
+  aiIcon: z.string(),
+  temperature: z.number(),
+  systemPrompt: z.string(),
+  maxTokens: z.number(),
+  examples: z.array(z.string()),
+  allowImageUpload: z.boolean(),
+  /**
+   * どれだけ推論を行うか
+   */
+  reasoningEffort: ReasoningEffortTypeSchema,
+  /**
+   * どれだけ詳しく回答するか
+   */
+  verbosity: VerbosityTypeSchema,
+  /**
+   * ウェブ検索の利用を許可するかどうか
+   */
+  allowWebSearch: z.boolean(),
+  /**
+   * ウェブ検索を初期状態で有効にするかどうか
+   */
+  defaultWebSearchEnabled: z.boolean().default(false),
+  /**
+   * OpenAI Prompt API用のプロンプトID (任意)
+   */
+  promptId: z.string().default(''),
+  /**
+   * AIによる画像生成を許可するかどうか
+   */
+  allowImageGeneration: z.boolean(),
+  /**
+   * ファクトチェック機能を有効にするかどうか
+   */
+  enableFactCheck: z.boolean().default(false),
+  /**
+   * ファクトチェック結果をログに記録するかどうか
+   */
+  enableFactCheckLog: z.boolean().default(false),
+  /**
+   * AIによるHTML出力を許可するかどうか
+   */
+  allowHtmlOutput: z.boolean().default(false),
+  /**
+   * クイックリプライを有効にするかどうか
+   */
+  allowQuickReplies: z.boolean().default(true),
+});
+
 export const PluginConfigV13Schema = z.object({
   version: z.literal(13),
   common: z.object({
@@ -572,6 +629,104 @@ export const PluginConfigV13Schema = z.object({
   conditions: z.array(PluginConditionV13Schema),
 });
 
+export const PluginConfigV14Schema = z.object({
+  version: z.literal(14),
+  common: z.object({
+    providerType: AiProviderTypeV1Schema,
+    viewId: z.string(),
+    outputAppId: z.string(),
+    outputAppSpaceId: z.string().optional(),
+    outputKeyFieldCode: z.string(),
+    outputContentFieldCode: z.string(),
+    /** 添付ファイルを格納するファイルフィールド（対話ログ - ユーザー削除可能） */
+    outputFileFieldCode: z.string().optional(),
+    logAppId: z.string().optional(),
+    logAppSpaceId: z.string().optional(),
+    logKeyFieldCode: z.string().optional(),
+    logContentFieldCode: z.string().optional(),
+    /** 添付ファイルを格納するファイルフィールド（対話ログ - ユーザー削除不可） */
+    logFileFieldCode: z.string().optional(),
+    // Log App バージョン選択
+    logAppVersion: z.enum(['v1', 'v2']).default('v2'),
+    // Log App V2設定
+    logAppV2SessionIdFieldCode: z.string().optional(),
+    logAppV2AssistantIdFieldCode: z.string().optional(),
+    logAppV2RoleFieldCode: z.string().optional(),
+    logAppV2ContentFieldCode: z.string().optional(),
+    enablesAnimation: z.boolean(),
+    enablesShiftEnter: z.boolean(),
+    enablesEnter: z.boolean(),
+  }),
+  conditions: z.array(PluginConditionV13Schema),
+});
+
+export const PluginConfigV15Schema = z.object({
+  version: z.literal(15),
+  common: z.object({
+    providerType: AiProviderTypeV1Schema,
+    viewId: z.string(),
+    outputAppId: z.string(),
+    outputAppSpaceId: z.string().optional(),
+    outputKeyFieldCode: z.string(),
+    outputContentFieldCode: z.string(),
+    /** 添付ファイルを格納するファイルフィールド（対話ログ - ユーザー削除可能） */
+    outputFileFieldCode: z.string().optional(),
+    logAppId: z.string().optional(),
+    logAppSpaceId: z.string().optional(),
+    logKeyFieldCode: z.string().optional(),
+    logContentFieldCode: z.string().optional(),
+    /** 添付ファイルを格納するファイルフィールド（対話ログ - ユーザー削除不可） */
+    logFileFieldCode: z.string().optional(),
+    // Log App バージョン選択
+    logAppVersion: z.enum(['v1', 'v2']).default('v2'),
+    // Log App V2設定
+    logAppV2SessionIdFieldCode: z.string().optional(),
+    logAppV2AssistantIdFieldCode: z.string().optional(),
+    logAppV2RoleFieldCode: z.string().optional(),
+    logAppV2ContentFieldCode: z.string().optional(),
+    enablesAnimation: z.boolean(),
+    enablesShiftEnter: z.boolean(),
+    enablesEnter: z.boolean(),
+  }),
+  conditions: z.array(PluginConditionV14Schema),
+});
+
+
+export const PluginConfigV16Schema = z.object({
+  version: z.literal(16),
+  common: z.object({
+    providerType: AiProviderTypeV1Schema,
+    viewId: z.string(),
+    outputAppId: z.string(),
+    outputAppSpaceId: z.string().optional(),
+    outputKeyFieldCode: z.string(),
+    outputContentFieldCode: z.string(),
+    /** 添付ファイルを格納するファイルフィールド（対話ログ - ユーザー削除可能） */
+    outputFileFieldCode: z.string().optional(),
+    logAppId: z.string().optional(),
+    logAppSpaceId: z.string().optional(),
+    enablesAnimation: z.boolean(),
+    enablesShiftEnter: z.boolean(),
+    enablesEnter: z.boolean(),
+    // 🔥 ログv1のサポートを終了し、v2に統一する
+    logAppSessionIdFieldCode: z.string().optional(),
+    logAppAssistantIdFieldCode: z.string().optional(),
+    logAppRoleFieldCode: z.string().optional(),
+    logAppContentFieldCode: z.string().optional(),
+    logAppFileFieldCode: z.string().optional(),
+    // logAppVersion: z.enum(['v1', 'v2']).default('v2'),
+    // logKeyFieldCode: z.string().optional(),
+    // logContentFieldCode: z.string().optional(),
+    // logFileFieldCode: z.string().optional(),
+    // logAppV2SessionIdFieldCode: z.string().optional(),
+    // logAppV2AssistantIdFieldCode: z.string().optional(),
+    // logAppV2RoleFieldCode: z.string().optional(),
+    // logAppV2ContentFieldCode: z.string().optional(),
+
+  }),
+  conditions: z.array(PluginConditionV14Schema),
+});
+
 export const AnyPluginConfigSchema = z.discriminatedUnion('version', [
   PluginConfigV1Schema,
   PluginConfigV2Schema,
@@ -586,12 +741,15 @@ export const AnyPluginConfigSchema = z.discriminatedUnion('version', [
   PluginConfigV11Schema,
   PluginConfigV12Schema,
   PluginConfigV13Schema,
+  PluginConfigV14Schema,
+  PluginConfigV15Schema,
+  PluginConfigV16Schema,
 ]);
 
 /** 🔌 プラグインがアプリ単位で保存する設定情報 */
-export type PluginConfig = z.infer<typeof PluginConfigV13Schema>;
+export type PluginConfig = z.infer<typeof PluginConfigV16Schema>;
 
-export const LatestPluginConditionSchema = PluginConditionV13Schema;
+export const LatestPluginConditionSchema = PluginConditionV14Schema;
 
 /** 🔌 プラグインの共通設定 */
 export type PluginCommonConfig = PluginConfig['common'];

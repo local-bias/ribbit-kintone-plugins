@@ -34,7 +34,9 @@ trusted: AIの回答とウェブ上の情報が一致している。
 caution: AIの回答とウェブ上の情報が矛盾しているが、理解を妨げるものではない。
 inaccurate: AIの回答とウェブ上の情報が矛盾しており、重大な誤解を招く可能性がある。`;
 
-export const PROMPT_INTERACTIVE_AI_RESPONSE_MESSAGE = `ユーザーの質問に対する回答をマークダウン形式で出力します`;
+export const PROMPT_INTERACTIVE_AI_RESPONSE_MESSAGE = `ユーザーの質問に対する回答をマークダウン形式で出力してください。
+回答はバッククォートを使用したコードブロックで囲まないでください。
+また、エスケープシーケンスを使用しないでください。`;
 
 export const PROMPT_INTERACTIVE_AI_RESPONSE_HTML = `ユーザーにとって有用な場合のみHTMLを出力します。
 

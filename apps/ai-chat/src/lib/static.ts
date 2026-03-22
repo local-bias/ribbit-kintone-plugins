@@ -41,14 +41,10 @@ export const URL_PROMOTION = 'https://promotion.konomi.app/kintone-plugin';
 export const URL_BANNER = 'https://promotion.konomi.app/kintone-plugin/sidebar';
 
 export const OPENAI_MODELS = [
-  'gpt-4.1',
-  'gpt-4.1-mini',
-  'gpt-4.1-nano',
-  'gpt-4o',
-  'gpt-4o-mini',
-  'gpt-4',
+  'gpt-5.2',
+  'gpt-5.2-chat-latest',
+  'gpt-5-nano',
   'o4-mini',
-  'o3-mini',
 ] satisfies ChatModel[];
 
 export const O1_SERIES_MODELS = ['o1', 'o1-preview', 'o3-mini', 'o4-mini'] satisfies ChatModel[];
@@ -85,6 +81,36 @@ export type ChatMessageContentPart =
 
 export type ChatMessageContent = string | ChatMessageContentPart[];
 
+export type FileAttachment = {
+  type: 'file';
+  fileKey: string;
+  mimeType: string;
+  fileName: string;
+};
+
+export type FileBase64Attachment = {
+  type: 'file-base64';
+  dataUrl: string;
+  mimeType: string;
+  fileName: string;
+};
+
+export type FactCheckAttachment = {
+  type: 'fact-check';
+  result: FactCheckResult;
+};
+
+export type MessageAttachment = FileAttachment | FileBase64Attachment | FactCheckAttachment;
+
+export type ChatMessage = ChatMessageV2;
+
+export type ChatMessageV2 = {
+  id: string;
+  role: 'system' | 'user' | 'assistant';
+  content: string;
+  attachments?: MessageAttachment[];
+};
+
 /**
  * ファクトチェックメッセージ
  * role: 'fact-check' のメッセージ専用型
@@ -101,13 +127,13 @@ export type FactCheckMessage = {
 /**
  * 通常のチャットメッセージ
  */
-export type RegularChatMessage = {
+type RegularChatMessage = {
   id: string;
   role: 'system' | 'user' | 'assistant';
   content: ChatMessageContent;
 };
 
-export type ChatMessage = RegularChatMessage | FactCheckMessage;
+type ChatMessageV1 = RegularChatMessage | FactCheckMessage;
 
 export type AnyChatHistory =
   | ChatHistoryV1
@@ -118,55 +144,110 @@ export type AnyChatHistory =
   | ChatHistoryV6
   | ChatHistoryV7
   | ChatHistoryV8
-  | ChatHistoryV9;
+  | ChatHistoryV9
+  | ChatHistoryV10;
 
-type ChatHistoryV9 = Omit<ChatHistoryV8, 'version'> & {
-  version: 9;
+export type ChatHistory = ChatHistoryV10;
+
+export type ChatMessageRole = ChatHistory['messages'][number]['role'];
+
+export type ChatHistoryV10 = {
+  version: 10;
+  id: string;
+  assistantId: string;
+  title: string;
+  messages: ChatMessageV2[];
   /** AI が生成した HTML (Structured Output で取得) */
   html?: string;
 };
 
-type ChatHistoryV8 = Omit<ChatHistoryV7, 'version' | 'messages'> & {
-  version: 8;
-  messages: ChatMessage[];
-};
-
-type ChatHistoryV7 = Omit<
-  ChatHistoryV6,
-  'version' | 'aiModel' | 'temperature' | 'maxTokens' | 'iconUrl' | 'verbosity' | 'reasoningEffort'
-> & {
-  version: 7;
+type ChatHistoryV9 = {
+  version: 9;
+  id: string;
   assistantId: string;
+  title: string;
+  messages: ChatMessageV1[];
+  /** AI が生成した HTML (Structured Output で取得) */
+  html?: string;
 };
 
-export type ChatHistory = ChatHistoryV9;
+interface ChatHistoryV8 {
+  version: 8;
+  id: string;
+  assistantId: string;
+  title: string;
+  messages: ChatMessageV1[];
+}
 
-export type ChatMessageRole = ChatHistory['messages'][number]['role'];
+interface ChatHistoryV7 {
+  version: 7;
+  id: string;
+  assistantId: string;
+  title: string;
+  messages: RegularChatMessage[];
+}
 
-type ChatHistoryV6 = Omit<ChatHistoryV5, 'version'> & {
+interface ChatHistoryV6 {
   version: 6;
-  verbosity: VerbosityType;
-  reasoningEffort: ReasoningEffortType;
-};
-
-type ChatHistoryV5 = Omit<ChatHistoryV4, 'version' | 'messages'> & {
-  version: 5;
-  messages: (ChatHistoryV4['messages'][number] & { id: string })[];
-};
-
-type ChatHistoryV4 = Omit<ChatHistoryV3, 'version' | 'messages'> & {
-  version: 4;
-  messages: (Omit<RegularChatMessage, 'id'> & { id?: string })[];
-};
-
-type ChatHistoryV3 = Omit<ChatHistoryV2, 'version'> & {
-  version: 3;
+  id: string;
+  title: string;
+  iconUrl: string;
   aiModel: string;
   temperature: number;
   maxTokens: number;
-};
+  messages: RegularChatMessage[];
+  verbosity: VerbosityType;
+  reasoningEffort: ReasoningEffortType;
+}
 
-type ChatHistoryV1 = {
+interface ChatHistoryV5 {
+  version: 5;
+  id: string;
+  title: string;
+  iconUrl: string;
+  aiModel: string;
+  temperature: number;
+  maxTokens: number;
+  messages: RegularChatMessage[];
+}
+
+interface ChatHistoryV4 {
+  version: 4;
+  id: string;
+  title: string;
+  iconUrl: string;
+  aiModel: string;
+  temperature: number;
+  maxTokens: number;
+  messages: (Omit<RegularChatMessage, 'id'> & { id?: string })[];
+}
+
+interface ChatHistoryV3 {
+  version: 3;
+  id: string;
+  title: string;
+  messages: {
+    role: 'system' | 'user' | 'assistant';
+    content: string;
+  }[];
+  iconUrl: string;
+  aiModel: string;
+  temperature: number;
+  maxTokens: number;
+}
+
+interface ChatHistoryV2 {
+  version: 2;
+  id: string;
+  title: string;
+  messages: {
+    role: 'system' | 'user' | 'assistant';
+    content: string;
+  }[];
+  iconUrl: string;
+}
+
+interface ChatHistoryV1 {
   version: 1;
   id: string;
   title: string;
@@ -174,9 +255,4 @@ type ChatHistoryV1 = {
     role: 'system' | 'user' | 'assistant';
     content: string;
   }[];
-};
-
-type ChatHistoryV2 = Omit<ChatHistoryV1, 'version'> & {
-  version: 2;
-  iconUrl: string;
-};
+}
