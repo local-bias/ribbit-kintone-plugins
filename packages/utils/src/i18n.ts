@@ -11,6 +11,8 @@ export const commonUi = {
     'common.config.button.save': '設定を保存',
     'common.config.button.return': 'プラグイン一覧へ戻る',
     'common.config.toast.save': '設定を保存しました',
+    'common.config.toast.save.description':
+      'アプリ設定に戻り、「アプリを更新」ボタンを押すと、設定が反映されます。',
     'common.config.toast.onConditionDelete': '設定情報を削除しました',
     'common.config.toast.reset': '設定をリセットしました',
     'common.config.toast.import': '設定情報をインポートしました',
