@@ -10,7 +10,7 @@
     "build:js": "plugin build",
     "build": "pnpm run build:js && concurrently \"pnpm:build:css-*\" && plugin zip",
     "standalone": "pnpm run build && plugin zip --env standalone",
-    "dev:js": "plugin dev --cert-dir /home/dev/config/cert",
+    "dev:js": "plugin dev --cert-dir ~/config/cert",
     "dev:css-desktop": "pnpm dlx @tailwindcss/cli -i ./src/styles/desktop.css -o ./.plugin/dev/desktop.css --watch",
     "dev:css-config": "pnpm dlx @tailwindcss/cli -i ./src/styles/config.css -o ./.plugin/dev/config.css --watch",
     "dev": "concurrently \"pnpm:dev:*\""
@@ -30,7 +30,7 @@
     "@konomi-app/kintone-utilities": "^6.1.0",
     "@konomi-app/kintone-utilities-jotai": "^2.3.3",
     "@konomi-app/kintone-utilities-react": "^3.0.3",
-    "@konomi-app/ui": "^5.5.0",
+    "@konomi-app/ui": "^5.7.1",
     "@konomi-app/ui-react": "^3.0.1",
     "@mui/icons-material": "^7.3.9",
     "@mui/material": "^7.3.9",
