@@ -1,7 +1,8 @@
+import { t } from '@/lib/i18n';
 import { PluginConfigImportButton } from '@konomi-app/kintone-utilities-react';
+import { toast } from '@konomi-app/ui';
 import { atom, useSetAtom } from 'jotai';
-import { enqueueSnackbar } from 'notistack';
-import React, { ChangeEvent, FC, memo } from 'react';
+import { ChangeEvent, FC, memo } from 'react';
 import { pluginConfigAtom } from '../../../states/plugin';
 
 const onFileLoad = (file: File | Blob, encoding = 'UTF-8') => {
@@ -31,12 +32,9 @@ const handlePluginConfigImportAtom = atom(
       const fileEvent = await onFileLoad(file);
       const text = (fileEvent.target?.result ?? '') as string;
       set(pluginConfigAtom, JSON.parse(text));
-      enqueueSnackbar('設定情報をインポートしました', { variant: 'success' });
+      toast.success(t('common.config.toast.import'));
     } catch (error) {
-      enqueueSnackbar(
-        '設定情報のインポートに失敗しました、ファイルに誤りがないか確認してください',
-        { variant: 'error' }
-      );
+      toast.error(t('common.config.error.import'));
       throw error;
     }
   }

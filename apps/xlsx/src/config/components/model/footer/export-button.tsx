@@ -1,9 +1,10 @@
 import { loadingAtom, loadingEndAtom, loadingStartAtom } from '@/common/global-state';
 import { PLUGIN_NAME } from '@/common/static';
+import { t } from '@/lib/i18n';
 import { PluginConfigExportButton } from '@konomi-app/kintone-utilities-react';
+import { toast } from '@konomi-app/ui';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
-import { enqueueSnackbar } from 'notistack';
-import React, { FC, memo } from 'react';
+import { FC, memo } from 'react';
 import { pluginConfigAtom } from '../../../states/plugin';
 
 const handlePluginConfigExportAtom = atom(null, async (get, set) => {
@@ -20,12 +21,9 @@ const handlePluginConfigExportAtom = atom(null, async (get, set) => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    enqueueSnackbar('プラグインの設定情報をエクスポートしました', { variant: 'success' });
+    toast.success(t('common.config.toast.export'));
   } catch (error) {
-    enqueueSnackbar(
-      'プラグインの設定情報のエクスポートに失敗しました。プラグイン開発者にお問い合わせください。',
-      { variant: 'error' }
-    );
+    toast.error(t('common.config.error.export'));
     throw error;
   } finally {
     set(loadingEndAtom);

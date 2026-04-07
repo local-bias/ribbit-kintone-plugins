@@ -1,13 +1,14 @@
 import { loadingAtom, loadingEndAtom, loadingStartAtom } from '@/common/global-state';
+import { t } from '@/lib/i18n';
 import styled from '@emotion/styled';
-import { storeStorage } from '@konomi-app/kintone-utilities';
+import { storePluginConfig } from '@konomi-app/kintone-utilities';
 import { PluginFooter } from '@konomi-app/kintone-utilities-react';
+import { toast } from '@konomi-app/ui';
 import SaveIcon from '@mui/icons-material/Save';
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import { Button, CircularProgress } from '@mui/material';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
-import { enqueueSnackbar } from 'notistack';
-import React, { FC, useCallback } from 'react';
+import { FC, useCallback } from 'react';
 import { pluginConfigAtom } from '../../../states/plugin';
 import ExportButton from './export-button';
 import ImportButton from './import-button';
@@ -18,14 +19,14 @@ const handlePluginConfigSaveAtom = atom(null, (get, set) => {
   try {
     const storage = get(pluginConfigAtom);
 
-    storeStorage(storage!, () => true);
-    enqueueSnackbar('設定を保存しました', {
-      variant: 'success',
-      action: (
-        <Button color='inherit' size='small' variant='outlined' onClick={() => history.back()}>
-          プラグイン一覧に戻る
-        </Button>
-      ),
+    storePluginConfig(storage!);
+    toast.success(t('common.config.toast.save'), {
+      description: t('common.config.toast.save.description'),
+      action: {
+        label: t('common.config.button.return'),
+        onClick: () => history.back(),
+      },
+      duration: 6000,
     });
   } finally {
     set(loadingEndAtom);
@@ -47,7 +48,7 @@ const Component: FC<{ className?: string }> = ({ className }) => {
           onClick={onSaveButtonClick}
           startIcon={loading ? <CircularProgress color='inherit' size={20} /> : <SaveIcon />}
         >
-          設定を保存
+          {t('common.config.button.save')}
         </Button>
         <Button
           variant='contained'
@@ -58,7 +59,7 @@ const Component: FC<{ className?: string }> = ({ className }) => {
             loading ? <CircularProgress color='inherit' size={20} /> : <SettingsBackupRestoreIcon />
           }
         >
-          プラグイン一覧へ戻る
+          {t('common.config.button.return')}
         </Button>
       </div>
       <div>

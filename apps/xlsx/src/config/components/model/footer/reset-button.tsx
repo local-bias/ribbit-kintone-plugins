@@ -1,4 +1,6 @@
 import { createConfig } from '@/common/plugin';
+import { t } from '@/lib/i18n';
+import { toast } from '@konomi-app/ui';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import {
   Button,
@@ -11,8 +13,7 @@ import {
   Tooltip,
 } from '@mui/material';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
-import { enqueueSnackbar } from 'notistack';
-import React, { FC } from 'react';
+import { FC } from 'react';
 import { pluginConfigAtom } from '../../../states/plugin';
 
 const openAtom = atom(false);
@@ -28,7 +29,7 @@ const handleDialogCloseAtom = atom(null, (_, set) => {
 const handlePluginConfigResetAtom = atom(null, (_, set) => {
   set(pluginConfigAtom, createConfig());
   set(openAtom, false);
-  enqueueSnackbar('設定をリセットしました', { variant: 'success' });
+  toast.success(t('common.config.toast.reset'));
 });
 
 function ResetDialog() {

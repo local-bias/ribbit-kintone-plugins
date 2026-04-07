@@ -1,10 +1,10 @@
 import { restorePluginConfig, getHeaderSpace } from '@konomi-app/kintone-utilities';
 import { getButton } from './button-creation';
 import { download } from './conversion';
-import { showToast } from './notification';
 import { createConfig } from '@/common/plugin';
 import { listener } from '@/common/listener';
 import { PLUGIN_ID } from '@/common/global';
+import { toast } from '@konomi-app/ui';
 
 const BUTTON_ID = 'ribbit-plugin-xlsx';
 
@@ -27,10 +27,10 @@ listener.add(['app.record.index.show'], async (event) => {
     button.disabled = true;
     try {
       await download(event, storage);
-      showToast('Excelファイルをダウンロードしました', 'success');
+      toast.success('Excelファイルをダウンロードしました');
     } catch (error) {
       console.error(error);
-      showToast('ダウンロードに失敗しました', 'error');
+      toast.error('ダウンロードに失敗しました');
     } finally {
       button.disabled = false;
     }
