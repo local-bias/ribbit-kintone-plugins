@@ -29,7 +29,7 @@
     "@konomi-app/kintone-utilities": "^6.2.0",
     "@konomi-app/kintone-utilities-jotai": "^2.5.0",
     "@konomi-app/kintone-utilities-react": "^3.0.3",
-    "@konomi-app/ui": "^5.8.1",
+    "@konomi-app/ui": "^5.11.0",
     "@konomi-app/ui-react": "^3.0.1",
     "@mui/icons-material": "^7.3.9",
     "@mui/material": "^7.3.9",
