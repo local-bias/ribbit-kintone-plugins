@@ -2,7 +2,6 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "./base.json",
   "compilerOptions": {
-    "baseUrl": ".",
     "noImplicitAny": true,
     "strictNullChecks": true,
     "sourceMap": true,
@@ -12,7 +11,8 @@
       "esnext",
       "dom"
     ],
-    "outDir": "dist",
+    "outDir": "./dist",
+    "rootDir": "./src",
     "allowJs": true,
     "moduleResolution": "bundler",
     "allowSyntheticDefaultImports": true,

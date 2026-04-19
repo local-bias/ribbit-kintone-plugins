@@ -3,12 +3,12 @@
   "compilerOptions": {
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "baseUrl": ".",
     "lib": ["es2023", "DOM", "DOM.Iterable"],
     "paths": {
       "@/*": ["./src/*"]
     },
-    "outDir": "dist"
+    "rootDir": "./src",
+    "outDir": "./dist"
   },
   "files": ["./node_modules/@konomi-app/k2/types.d.ts"],
   "include": ["src"],
