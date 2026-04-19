@@ -1,5 +1,5 @@
 import {
-  displayingChatMessagesAtom,
+  chatMessagesAtom,
   inputTextAtom,
   selectedPluginConditionAtom,
 } from '@/desktop/original-view/states/states';
@@ -46,7 +46,7 @@ function Examples() {
 }
 
 export default function InputExamples() {
-  const messages = useAtomValue(displayingChatMessagesAtom);
+  const messages = useAtomValue(chatMessagesAtom);
 
   if (messages.length) {
     return null;

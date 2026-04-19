@@ -75,7 +75,9 @@ function ChatHistories({ className }: { className?: string }) {
                     <ChatIcon />
                   )}
                 </ListItemIcon>
-                <ListItemText primary={history.title} />
+                <ListItemText
+                  primary={typeof history.title === 'string' ? history.title : '不明なチャット'}
+                />
                 {selectedHistoryId === history.id && (
                   <IconButton
                     onClick={removeSelectedHistory}

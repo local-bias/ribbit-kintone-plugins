@@ -1,6 +1,6 @@
 import { pluginCommonConfigAtom, pluginConditionsAtom } from '@/desktop/public-state';
 import { isDev } from '@/lib/global';
-import { ChatHistory, ChatMessage, RegularChatMessage, URL_QUERY_CHAT_ID } from '@/lib/static';
+import { ChatHistory, ChatMessage, URL_QUERY_CHAT_ID } from '@/lib/static';
 import { PluginCondition } from '@/schema/plugin-config';
 import { deleteAllRecordsByQuery, isGuestSpace, isMobile } from '@konomi-app/kintone-utilities';
 import { produce } from 'immer';
@@ -85,12 +85,12 @@ export const webSearchEnabledAtom = atom(
       return false;
     }
     const toggles = get(webSearchToggleStateAtom);
-    return toggles[condition.id] ?? false;
+    return toggles[condition.id] ?? condition.defaultWebSearchEnabled ?? false;
   },
   (get, set, newValue: boolean | ((prev: boolean) => boolean)) => {
     const condition = get(selectedPluginConditionAtom);
     set(webSearchToggleStateAtom, (prev) => {
-      const current = prev[condition.id] ?? false;
+      const current = prev[condition.id] ?? condition.defaultWebSearchEnabled ?? false;
       const nextValue = typeof newValue === 'function' ? newValue(current) : newValue;
       return {
         ...prev,
@@ -161,7 +161,7 @@ export const htmlPreviewHiddenAtom = atom(
 
 export const chatHistoriesAtom = atom<ChatHistory[]>([]);
 
-const chatMessagesAtom = atom<ChatMessage[]>((get) => {
+export const chatMessagesAtom = atom<ChatMessage[]>((get) => {
   const chatHistory = get(chatHistoriesAtom);
   const selectedHistoryId = get(selectedHistoryIdAtom);
   if (!selectedHistoryId) {
@@ -174,13 +174,6 @@ const chatMessagesAtom = atom<ChatMessage[]>((get) => {
   }
 
   return selectedHistory.messages;
-});
-export const displayingChatMessagesAtom = atom<RegularChatMessage[]>((get) => {
-  const chatMessages = get(chatMessagesAtom);
-  return chatMessages.filter(
-    (message): message is RegularChatMessage =>
-      message.role === 'user' || message.role === 'assistant'
-  );
 });
 
 const chatHistoriesPaginationChunkSizeAtom = atom(30);

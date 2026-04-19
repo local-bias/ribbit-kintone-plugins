@@ -1,6 +1,6 @@
 import { ReasoningEffortType, VerbosityType } from '@/schema/ai';
 import { z } from 'zod';
-import { ChatMessage, ChatMessageContentPart, RegularChatMessage } from './static';
+import { ChatMessage, ChatMessageContentPart } from './static';
 
 /**
  * AI生成画像
@@ -102,7 +102,9 @@ export interface EndpointAdapter {
    * @param request 統一されたリクエストパラメータ
    * @returns エンドポイント固有のペイロード
    */
-  buildRequestPayload(request: ChatCompletionRequest): Record<string, unknown>;
+  buildRequestPayload(
+    request: ChatCompletionRequest
+  ): Record<string, unknown> | Promise<Record<string, unknown>>;
 
   /**
    * レスポンスをパースする
@@ -133,12 +135,110 @@ export const stripMessageIds = (messages: ChatMessage[]): Omit<ChatMessage, 'id'
 };
 
 /**
- * 画像が含まれているかチェックする
+ * 画像やファイル（PDF等）が含まれているかチェックする
  */
-export const hasImageContent = (messages: ChatMessage[]): boolean => {
-  return messages.some(
-    (m) => Array.isArray(m.content) && m.content.some((c) => c.type === 'image_url')
-  );
+export const hasFileContent = (messages: ChatMessage[]): boolean => {
+  return messages.some((m) => {
+    // Check in content parts
+    if (Array.isArray(m.content) && m.content.some((c) => c.type === 'image_url')) {
+      return true;
+    }
+    // Check in attachments
+    if (m.attachments?.some((a) => a.type === 'file-base64' || a.type === 'file')) {
+      return true;
+    }
+    return false;
+  });
+};
+
+/**
+ * テキストからJSONブロックを抽出する。
+ * Markdownコードブロック（```json ... ``` や ``` ... ```）で囲まれたJSONや、
+ * テキスト中に埋め込まれた最初のJSON object を検出して返す。
+ * 見つからなければ null を返す。
+ */
+const extractJsonFromText = (text: string): string | null => {
+  // 1) Markdownコードブロック内のJSONを検出
+  const codeBlockMatch = text.match(/```(?:json)?\s*\n?([\s\S]*?)\n?```/);
+  if (codeBlockMatch?.[1]) {
+    const candidate = codeBlockMatch[1].trim();
+    try {
+      JSON.parse(candidate);
+      return candidate;
+    } catch {
+      // コードブロック内がJSONでなければ次を試す
+    }
+  }
+
+  // 2) テキスト中の最初の { ... } ブロックを検出（ネスト対応）
+  const firstBrace = text.indexOf('{');
+  if (firstBrace !== -1) {
+    let depth = 0;
+    let inString = false;
+    let escape = false;
+    for (let i = firstBrace; i < text.length; i++) {
+      const ch = text[i];
+      if (escape) {
+        escape = false;
+        continue;
+      }
+      if (ch === '\\' && inString) {
+        escape = true;
+        continue;
+      }
+      if (ch === '"') {
+        inString = !inString;
+        continue;
+      }
+      if (inString) continue;
+      if (ch === '{') depth++;
+      else if (ch === '}') {
+        depth--;
+        if (depth === 0) {
+          const candidate = text.slice(firstBrace, i + 1);
+          try {
+            JSON.parse(candidate);
+            return candidate;
+          } catch {
+            break;
+          }
+        }
+      }
+    }
+  }
+
+  return null;
+};
+
+/**
+ * AIレスポンスのテキストをJSONとしてパースし、Zodスキーマで検証する。
+ *
+ * 以下の順にフォールバックを試みる:
+ * 1. そのままJSON.parseを試行
+ * 2. Markdownコードブロックや埋め込みJSON objectを抽出して再試行
+ * 3. テキスト全体をmessageフィールドとして構造化データに変換
+ */
+export const parseStructuredResponse = <T>(textContent: string, schema: z.ZodType<T>): T => {
+  // 1) そのままパースを試行
+  try {
+    return schema.parse(JSON.parse(textContent));
+  } catch {
+    // fall through
+  }
+
+  // 2) テキスト中からJSONブロックを抽出して試行
+  const extracted = extractJsonFromText(textContent);
+  if (extracted) {
+    try {
+      return schema.parse(JSON.parse(extracted));
+    } catch {
+      // fall through
+    }
+  }
+
+  // 3) JSONパース不可: テキストをmessageとして構造化データにフォールバック
+  // html, quickReplies は nullable なので null を指定（スキーマで omit されていても Zod が無視する）
+  return schema.parse({ message: textContent, html: null, quickReplies: null });
 };
 
 /**
@@ -154,32 +254,8 @@ export const isO1SeriesModel = (model: string): boolean => {
  * - generated_image パートをフィルタリング (API送信不可)
  * - ファクトチェックメッセージを除外
  */
-export const sanitizeMessagesForApi = (
-  messages: ChatMessage[]
-): Omit<RegularChatMessage, 'id'>[] => {
-  return messages
-    .filter((m): m is RegularChatMessage => m.role !== 'fact-check')
-    .map(({ id, content, ...rest }) => {
-      // 文字列の場合はそのまま
-      if (typeof content === 'string') {
-        return { ...rest, content };
-      }
-
-      // 配列の場合、generated_image をフィルタリング
-      const sanitizedContent = content.filter(
-        (part: ChatMessageContentPart) => part.type !== 'generated_image'
-      );
-
-      // フィルタリング後に空になった場合はプレースホルダー
-      if (sanitizedContent.length === 0) {
-        return { ...rest, content: '[画像を生成しました]' };
-      }
-
-      // テキストのみの場合は文字列に変換
-      if (sanitizedContent.length === 1 && sanitizedContent[0].type === 'text') {
-        return { ...rest, content: sanitizedContent[0].text };
-      }
-
-      return { ...rest, content: sanitizedContent };
-    });
+export const sanitizeMessagesForApi = (messages: ChatMessage[]): Omit<ChatMessage, 'id'>[] => {
+  return messages.map(({ id, content, ...rest }) => {
+    return { ...rest, content };
+  });
 };

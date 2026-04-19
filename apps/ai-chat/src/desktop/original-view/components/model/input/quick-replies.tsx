@@ -17,6 +17,7 @@ const QuickReplyButton = styled(Button)`
 `;
 
 const Container = styled.div`
+  padding-left: 64px;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   gap: calc(var(--🐸spacing) * 2);

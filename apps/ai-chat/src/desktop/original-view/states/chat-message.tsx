@@ -18,7 +18,6 @@ import { checkFact } from '../actions/fact-check';
 import { handlePushAssistantMessageAtom, handleUpdateHtmlAtom } from './chat-history';
 import { handleUpdateLogAppAtom, handleUpdateOutputAppAtom } from './kintone';
 import { enableFactCheckAtom } from './states';
-import { isDev } from '@/lib/global';
 
 const handleFetchChatCompletionsAtom = atom(null, async (get, set) => {
   try {
@@ -74,6 +73,7 @@ const handleFetchChatCompletionsAtom = atom(null, async (get, set) => {
     await set(handlePushAssistantMessageAtom, {
       content: assistantMessage.content,
       id: assistantMessage.id,
+      attachments: assistantMessage.attachments,
     });
 
     // HTMLが返された場合、履歴を更新
@@ -90,19 +90,12 @@ const handleFetchChatCompletionsAtom = atom(null, async (get, set) => {
 
     // ファクトチェック
     const enableFactCheck = get(enableFactCheckAtom);
-    if (enableFactCheck && typeof assistantMessage.content === 'string') {
+    if (enableFactCheck) {
       // use last user message as context
       const lastUserMessage = chatHistory.messages.findLast((m) => m.role === 'user');
       let context = '';
       if (lastUserMessage) {
-        if (typeof lastUserMessage.content === 'string') {
-          context = lastUserMessage.content;
-        } else if (Array.isArray(lastUserMessage.content)) {
-          context = lastUserMessage.content
-            .filter((c) => c.type === 'text')
-            .map((c) => c.text)
-            .join('');
-        }
+        context = lastUserMessage.content;
       }
 
       console.log('context', context);
@@ -147,10 +140,10 @@ const handleFetchChatCompletionsAtom = atom(null, async (get, set) => {
 export const handleSendMessageAtom = atom(null, async (_, set) => {
   try {
     set(pendingRequestCountAtom, (count) => count + 1);
-    // ユーザーメッセージのログ保存（V2用）
+    // ユーザーメッセージのログ保存
     await set(handleUpdateLogAppAtom);
     await Promise.allSettled([set(handleFetchChatCompletionsAtom), set(handleUpdateOutputAppAtom)]);
-    Promise.allSettled([
+    await Promise.allSettled([
       // 履歴保存
       set(handleUpdateOutputAppAtom),
       // ログ保存（V1/V2共通）

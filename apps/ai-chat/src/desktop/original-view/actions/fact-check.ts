@@ -70,19 +70,23 @@ ${answer}
     // response.data は既にパース済みの FactCheckResult
     const result: FactCheckResult = response.data;
 
-    // Create fact-check message and add to chat history
-    // This will be picked up by the derived factCheckStateAtom
-    const factCheckMessage: FactCheckMessage = {
-      id: nanoid(),
-      role: 'fact-check',
-      targetMessageId: messageId,
-      content: result,
-    };
-
     const currentHistory = store.get(selectedHistoryAtom);
     if (currentHistory) {
       const updatedHistory = produce(currentHistory, (draft) => {
-        draft.messages.push(factCheckMessage);
+        const targetMessage = draft.messages.find((m) => m.id === messageId);
+        if (targetMessage) {
+          if (!targetMessage.attachments) {
+            targetMessage.attachments = [];
+          }
+          // Remove existing fact-check attachments
+          targetMessage.attachments = targetMessage.attachments.filter(
+            (a) => a.type !== 'fact-check'
+          );
+          targetMessage.attachments.push({
+            type: 'fact-check',
+            result,
+          });
+        }
       });
       store.set(selectedHistoryAtom, updatedHistory);
 

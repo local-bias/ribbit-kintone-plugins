@@ -4,7 +4,6 @@ import {
 } from '@/desktop/original-view/states/states';
 import { Pagination } from '@mui/material';
 import { useAtom, useAtomValue } from 'jotai';
-import React, { FC } from 'react';
 
 export default function HistoryPagination() {
   const [paginationIndex, setPaginationIndex] = useAtom(chatHistoriesPaginationIndexAtom);

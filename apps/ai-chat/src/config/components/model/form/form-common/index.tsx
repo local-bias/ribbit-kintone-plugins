@@ -11,11 +11,11 @@ import {
 } from '@konomi-app/kintone-utilities-react';
 import ApiKeyForm from './form-api-key';
 import LogAppIdForm from './form-log-app-id';
-import LogV1FieldsForm from './form-log-v1-fields';
+import FormLogFileField from './form-log-file-field';
 import LogV2FieldsForm from './form-log-v2-fields';
-import LogVersionForm from './form-log-version';
 import OutputAppIdForm from './form-output-app-id';
 import OutputContentForm from './form-output-content';
+import FormOutputFileField from './form-output-file-field';
 import OutputKeyForm from './form-output-key';
 import ViewIdState from './form-view-id';
 import AiProviderTypeForm from './provider-type';
@@ -74,6 +74,12 @@ export default function FormCommon() {
         <div className='mt-4'>
           <OutputContentForm />
         </div>
+        <div className='mt-4'>
+          <PluginFormDescription last>
+            添付ファイルを保存するフィールドを選択してください。ファイルフィールドのみ選択可能です。
+          </PluginFormDescription>
+          <FormOutputFileField />
+        </div>
       </PluginFormSection>
       <PluginFormSection>
         <PluginFormTitle>対話ログ設定(ユーザーによって削除不可)</PluginFormTitle>
@@ -86,11 +92,13 @@ export default function FormCommon() {
         <div className='mb-4'>
           <LogAppIdForm />
         </div>
-        <div className='mb-4'>
-          <LogVersionForm />
-        </div>
-        <LogV1FieldsForm />
         <LogV2FieldsForm />
+        <div className='mt-4'>
+          <PluginFormDescription last>
+            添付ファイルを保存するフィールドを選択してください。ファイルフィールドのみ選択可能です。
+          </PluginFormDescription>
+          <FormLogFileField />
+        </div>
       </PluginFormSection>
       <PluginFormSection>
         <PluginFormTitle>送信オプション</PluginFormTitle>

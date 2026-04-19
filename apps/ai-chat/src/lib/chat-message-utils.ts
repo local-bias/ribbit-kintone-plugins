@@ -2,7 +2,7 @@ import { nanoid } from 'nanoid';
 import { z } from 'zod';
 import { InteractiveAIResponseSchema } from '@/schema/ai';
 import type { GeneratedImage, StructuredAIResponse } from './endpoint-adapter';
-import type { ChatHistory, ChatMessageContentPart, RegularChatMessage } from './static';
+import type { ChatHistory, ChatMessage, ChatMessageContentPart, MessageAttachment } from './static';
 
 export type InteractiveAIResponse = z.infer<typeof InteractiveAIResponseSchema>;
 
@@ -14,32 +14,26 @@ export function buildChatMessage(
   response: StructuredAIResponse<
     { message: string } & Partial<Omit<InteractiveAIResponse, 'message'>>
   >
-): RegularChatMessage {
-  const parts: ChatMessageContentPart[] = [];
-
-  // テキストコンテンツ
-  if (response.data.message) {
-    parts.push({ type: 'text', text: response.data.message });
-  }
+): ChatMessage {
+  const attachments: MessageAttachment[] = [];
 
   // 生成画像
   if (response.generatedImages) {
     for (const img of response.generatedImages) {
-      parts.push({
-        type: 'generated_image',
-        image_url: img.url,
-        revised_prompt: img.revisedPrompt,
+      attachments.push({
+        type: 'file-base64',
+        dataUrl: img.url,
+        mimeType: 'image/png',
+        fileName: `generated_image_${nanoid()}.png`,
       });
     }
   }
 
-  // テキストのみの場合は文字列として返す
-  const content = parts.length === 1 && parts[0].type === 'text' ? parts[0].text : parts;
-
   return {
     id: nanoid(),
     role: 'assistant',
-    content,
+    content: response.data.message,
+    attachments,
   };
 }
 

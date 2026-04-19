@@ -39,11 +39,15 @@ export const extractFactCheckStateFromHistory = (history: ChatHistory | null): F
 
   const state: FactCheckState = {};
   for (const message of history.messages) {
-    if (message.role === 'fact-check') {
-      state[message.targetMessageId] = {
-        status: message.content.level,
-        result: message.content,
-      };
+    if (message.role === 'assistant' && message.attachments) {
+      for (const attachment of message.attachments) {
+        if (attachment.type === 'fact-check') {
+          state[message.id] = {
+            status: attachment.result.level,
+            result: attachment.result,
+          };
+        }
+      }
     }
   }
   return state;

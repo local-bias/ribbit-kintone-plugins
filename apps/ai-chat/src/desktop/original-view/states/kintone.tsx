@@ -1,19 +1,26 @@
 import { pluginCommonConfigAtom } from '@/desktop/public-state';
+import { remapHistoryFileKeys, uploadHistoryAttachments } from '@/lib/file-utils';
 import { GUEST_SPACE_ID, isDev } from '@/lib/global';
 import {
   addRecord,
+  downloadFile,
+  getAllRecords,
   getSpace,
+  updateRecord,
   upsertRecord,
   withSpaceIdFallback,
 } from '@konomi-app/kintone-utilities';
 import { atom } from 'jotai';
 import { atomFamily } from 'jotai-family';
 import { selectedHistoryAtom } from './states';
+import { eagerAtom } from 'jotai-eager';
+import { addChatLog } from '../action';
 
 type UpdateAppParams = {
   appId: string;
   keyFieldCode: string;
   contentFieldCode: string;
+  fileFieldCode?: string;
   guestSpaceId: string | null;
 };
 
@@ -68,26 +75,114 @@ export const logAppGuestSpaceIdAtom = atom(async (get) => {
   }
 });
 
-const handleUpdateAppAtom = atom(null, async (get, _, params: UpdateAppParams) => {
-  const { appId, keyFieldCode, contentFieldCode, guestSpaceId } = params;
+const handleUpdateAppAtom = atom(null, async (get, set, params: UpdateAppParams) => {
+  const { appId, keyFieldCode, contentFieldCode, fileFieldCode, guestSpaceId } = params;
   const selectedHistory = get(selectedHistoryAtom);
   if (!selectedHistory) {
     throw new Error('チャットが選択されていません');
   }
 
+  let historyToSave = selectedHistory;
+  let allFileKeys: string[] = [];
+  let fileKeyToUploadName = new Map<string, string>();
+
+  if (fileFieldCode) {
+    // ファイルフィールドが設定されている場合: file-base64 をアップロードして永続化用の履歴を作成
+    const result = await uploadHistoryAttachments(selectedHistory, guestSpaceId);
+    historyToSave = result.history;
+    allFileKeys = result.fileKeys;
+    fileKeyToUploadName = result.fileKeyToUploadName;
+  }
+
+  // 最新の履歴状態を取得しマージ（AI応答で新しいメッセージが追加されている可能性があるため）
+  const currentHistory = get(selectedHistoryAtom);
+  if (currentHistory && currentHistory.messages.length > historyToSave.messages.length) {
+    // 永続化対象以降の新しいメッセージを含める
+    const additionalMessages = currentHistory.messages.slice(historyToSave.messages.length);
+    historyToSave = {
+      ...historyToSave,
+      messages: [...historyToSave.messages, ...additionalMessages],
+    };
+  }
+
+  const record: Record<string, { value: unknown }> = {
+    [keyFieldCode]: { value: historyToSave.id },
+    [contentFieldCode]: { value: JSON.stringify(historyToSave) },
+  };
+
+  if (fileFieldCode && allFileKeys.length > 0) {
+    record[fileFieldCode] = {
+      value: allFileKeys.map((fk) => ({ fileKey: fk })),
+    };
+  }
+
   await upsertRecord({
     app: appId,
-    updateKey: {
-      field: keyFieldCode,
-      value: selectedHistory.id,
-    },
-    record: {
-      [keyFieldCode]: { value: selectedHistory.id },
-      [contentFieldCode]: { value: JSON.stringify(selectedHistory) },
-    },
+    updateKey: { field: keyFieldCode, value: historyToSave.id },
+    record,
     guestSpaceId: guestSpaceId ?? undefined,
-    debug: process.env.NODE_ENV === 'development',
+    debug: isDev,
   });
+
+  // 新規アップロードがある場合、永続fileKeyを取得してcontent JSONを修正
+  if (fileFieldCode && fileKeyToUploadName.size > 0) {
+    try {
+      const records = await getAllRecords({
+        app: appId,
+        query: `${keyFieldCode} = "${historyToSave.id}"`,
+        fields: [keyFieldCode, fileFieldCode],
+        guestSpaceId: guestSpaceId ?? undefined,
+        debug: isDev,
+      });
+
+      const savedRecord = records[0];
+      if (savedRecord?.[fileFieldCode]) {
+        const fileFieldValue = savedRecord[fileFieldCode].value;
+        if (Array.isArray(fileFieldValue)) {
+          // uploadName → permanentFileKey マッピングを構築
+          const tempToPermanentMap = new Map<string, string>();
+          for (const [tempKey, uploadName] of fileKeyToUploadName) {
+            const permanentFile = (fileFieldValue as Array<{ fileKey: string; name: string }>).find(
+              (f) => f.name === uploadName
+            );
+            if (permanentFile) {
+              tempToPermanentMap.set(tempKey, permanentFile.fileKey);
+            }
+          }
+
+          if (tempToPermanentMap.size > 0) {
+            // 永続fileKeyで content JSON を修正
+            const correctedHistory = remapHistoryFileKeys(historyToSave, tempToPermanentMap);
+
+            await updateRecord({
+              app: appId,
+              updateKey: { field: keyFieldCode, value: historyToSave.id },
+              record: {
+                [contentFieldCode]: { value: JSON.stringify(correctedHistory) },
+              },
+              guestSpaceId: guestSpaceId ?? undefined,
+              debug: isDev,
+            });
+
+            // in-memory state を更新（file-base64 → file with permanent keys）
+            const latestHistory = get(selectedHistoryAtom);
+            if (latestHistory) {
+              const updatedMessages = latestHistory.messages.map((msg) => {
+                const correctedMsg = correctedHistory.messages.find((m) => m.id === msg.id);
+                if (correctedMsg?.attachments) {
+                  return { ...msg, attachments: correctedMsg.attachments };
+                }
+                return msg;
+              });
+              set(selectedHistoryAtom, { ...latestHistory, messages: updatedMessages });
+            }
+          }
+        }
+      }
+    } catch (error) {
+      isDev && console.error('永続fileKeyの取得・修正に失敗しました', error);
+    }
+  }
 });
 
 export const handleUpdateOutputAppAtom = atom(null, async (get, set) => {
@@ -97,6 +192,7 @@ export const handleUpdateOutputAppAtom = atom(null, async (get, set) => {
     outputAppId: appId,
     outputContentFieldCode: contentFieldCode,
     outputKeyFieldCode: keyFieldCode,
+    outputFileFieldCode: fileFieldCode,
   } = common;
 
   if (!appId || !contentFieldCode || !keyFieldCode) {
@@ -109,34 +205,12 @@ export const handleUpdateOutputAppAtom = atom(null, async (get, set) => {
     appId,
     keyFieldCode,
     contentFieldCode,
+    fileFieldCode: fileFieldCode || undefined,
     guestSpaceId,
   });
 });
 
-const handleUpdateLogAppV1Atom = atom(null, async (get, set) => {
-  const common = get(pluginCommonConfigAtom);
-
-  const {
-    logAppId: appId,
-    logContentFieldCode: contentFieldCode,
-    logKeyFieldCode: keyFieldCode,
-  } = common;
-
-  if (!appId || !contentFieldCode || !keyFieldCode) {
-    process.env.NODE_ENV === 'development' && console.warn('Log app is not configured');
-    return;
-  }
-
-  const guestSpaceId = await get(logAppGuestSpaceIdAtom);
-  await set(handleUpdateAppAtom, {
-    appId,
-    keyFieldCode,
-    contentFieldCode,
-    guestSpaceId,
-  });
-});
-
-const handleUpdateLogAppV2Atom = atom(null, async (get) => {
+export const handleUpdateLogAppAtom = atom(null, async (get) => {
   const common = get(pluginCommonConfigAtom);
   const selectedHistory = get(selectedHistoryAtom);
 
@@ -147,21 +221,12 @@ const handleUpdateLogAppV2Atom = atom(null, async (get) => {
 
   const {
     logAppId,
-    logAppV2SessionIdFieldCode,
-    logAppV2AssistantIdFieldCode,
-    logAppV2RoleFieldCode,
-    logAppV2ContentFieldCode,
+    logAppSessionIdFieldCode,
+    logAppAssistantIdFieldCode,
+    logAppRoleFieldCode,
+    logAppContentFieldCode,
+    logAppFileFieldCode,
   } = common;
-
-  if (
-    !logAppId ||
-    !logAppV2SessionIdFieldCode ||
-    !logAppV2RoleFieldCode ||
-    !logAppV2ContentFieldCode
-  ) {
-    process.env.NODE_ENV === 'development' && console.warn('Log app V2 is not properly configured');
-    return;
-  }
 
   // 最新メッセージを取得
   const latestMessage = selectedHistory.messages[selectedHistory.messages.length - 1];
@@ -169,38 +234,46 @@ const handleUpdateLogAppV2Atom = atom(null, async (get) => {
     return;
   }
 
-  const record: Record<string, { value: string }> = {
-    [logAppV2SessionIdFieldCode]: { value: selectedHistory.id },
-    [logAppV2RoleFieldCode]: { value: latestMessage.role },
-    [logAppV2ContentFieldCode]: {
-      value:
-        typeof latestMessage.content === 'string'
-          ? latestMessage.content
-          : JSON.stringify(latestMessage.content),
-    },
-  };
-
-  if (logAppV2AssistantIdFieldCode) {
-    record[logAppV2AssistantIdFieldCode] = { value: selectedHistory.assistantId };
-  }
+  const content =
+    typeof latestMessage.content === 'string'
+      ? latestMessage.content
+      : JSON.stringify(latestMessage.content);
 
   const guestSpaceId = await get(logAppGuestSpaceIdAtom);
-  // 追加だけなので非同期で実行
-  addRecord({
-    app: logAppId,
-    record,
-    guestSpaceId: guestSpaceId ?? undefined,
-    debug: process.env.NODE_ENV === 'development',
+  await addChatLog({
+    appId: logAppId,
+    sessionId: selectedHistory.id,
+    assistantId: selectedHistory.assistantId,
+    role: latestMessage.role,
+    content,
+    attachments: latestMessage.attachments,
+    sessionIdFieldCode: logAppSessionIdFieldCode,
+    assistantIdFieldCode: logAppAssistantIdFieldCode,
+    roleFieldCode: logAppRoleFieldCode,
+    contentFieldCode: logAppContentFieldCode,
+    fileFieldCode: logAppFileFieldCode,
+    guestSpaceId,
   });
 });
 
-export const handleUpdateLogAppAtom = atom(null, async (get, set) => {
-  const common = get(pluginCommonConfigAtom);
-  const { logAppVersion } = common;
+export const fileAtom = atomFamily((fileKey: string) =>
+  atom(async () => {
+    const file = await downloadFile({ fileKey, guestSpaceId: GUEST_SPACE_ID, debug: isDev });
+    return file;
+  })
+);
 
-  if (logAppVersion === 'v2') {
-    await set(handleUpdateLogAppV2Atom);
-  } else {
-    await set(handleUpdateLogAppV1Atom);
-  }
-});
+export const dataUrlAtom = atomFamily((fileKey: string) =>
+  atom(async (get) => {
+    const file = await get(fileAtom(fileKey));
+    if (!file) {
+      return null;
+    }
+    const arrayBuffer = await file.arrayBuffer();
+    const base64String = btoa(
+      new Uint8Array(arrayBuffer).reduce((data, byte) => data + String.fromCharCode(byte), '')
+    );
+    const dataUrl = `data:${file.type};base64,${base64String}`;
+    return dataUrl;
+  })
+);

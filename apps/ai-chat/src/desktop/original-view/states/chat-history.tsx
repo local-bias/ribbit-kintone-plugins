@@ -1,5 +1,6 @@
-import { getBase64EncodedImage } from '@/lib/image';
-import { ChatImageContentPart, ChatMessage, ChatMessageContent } from '@/lib/static';
+import { convertFileToAttachment, isConvertibleFile } from '@/lib/file-converter';
+import { getBase64EncodedFile } from '@/lib/image';
+import { ChatMessage, ChatMessageV2, MessageAttachment } from '@/lib/static';
 import { produce } from 'immer';
 import { atom } from 'jotai';
 import { nanoid } from 'nanoid';
@@ -37,25 +38,42 @@ const handlePushMessageAtom = atom(null, async (get, set, message: ChatMessage) 
 export const handlePushUserMessageAtom = atom(null, async (get, set) => {
   const content = get(inputTextAtom);
   const files = get(inputFilesAtom);
-  if (files) {
-    const imageUrlList = await Promise.all(files.map(async (file) => getBase64EncodedImage(file)));
-    const imageContents: ChatImageContentPart[] = imageUrlList.map((url) => ({
-      type: 'image_url',
-      image_url: {
-        url,
-      },
-    }));
+  if (files && files.length > 0) {
+    const attachments: MessageAttachment[] = [];
+
+    for (const file of files) {
+      if (isConvertibleFile(file)) {
+        // Excel / テキストファイル: テキストに変換して file-base64 添付
+        const converted = await convertFileToAttachment(file);
+        attachments.push({
+          type: 'file-base64',
+          dataUrl: converted.dataUrl,
+          mimeType: converted.mimeType,
+          fileName: converted.fileName,
+        });
+      } else {
+        // 画像 / PDF: 従来通り base64 添付
+        const dataUrl = await getBase64EncodedFile(file);
+        attachments.push({
+          type: 'file-base64',
+          dataUrl,
+          mimeType: file.type || 'application/octet-stream',
+          fileName: file.name || 'uploaded_file',
+        });
+      }
+    }
 
     await set(handlePushMessageAtom, {
       id: nanoid(),
       role: 'user',
-      content: [{ type: 'text', text: content.replace(/\n/, '  \n') }, ...imageContents],
+      content,
+      ...(attachments.length > 0 ? { attachments } : {}),
     });
   } else {
     await set(handlePushMessageAtom, {
       id: nanoid(),
       role: 'user',
-      content: content.replace(/\n/, '  \n'),
+      content: content.replace(/\n/g, '  \n'),
     });
   }
   set(inputTextAtom, '');
@@ -64,11 +82,16 @@ export const handlePushUserMessageAtom = atom(null, async (get, set) => {
 
 export const handlePushAssistantMessageAtom = atom(
   null,
-  async (_, set, payload: { content: ChatMessageContent; id?: string }) => {
+  async (
+    _,
+    set,
+    payload: { content: string; id?: string; attachments?: ChatMessageV2['attachments'] }
+  ) => {
     await set(handlePushMessageAtom, {
       id: payload.id ?? nanoid(),
       role: 'assistant',
       content: payload.content,
+      ...(payload.attachments ? { attachments: payload.attachments } : {}),
     });
   }
 );

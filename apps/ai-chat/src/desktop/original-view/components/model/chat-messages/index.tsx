@@ -2,7 +2,7 @@ import { ChatMessageProvider } from '@/desktop/original-view/contexts/chat-messa
 import {
   aiStateAtom,
   apiErrorMessageAtom,
-  displayingChatMessagesAtom,
+  chatMessagesAtom,
 } from '@/desktop/original-view/states/states';
 import { cn } from '@/lib/utils';
 import styled from '@emotion/styled';
@@ -11,15 +11,15 @@ import { Loader } from '@konomi-app/ui-react';
 import { useAtomValue } from 'jotai';
 import { PropsWithChildren } from 'react';
 import { ChatContent } from '../../layout/chat-content';
+import QuickReplies from '../input/quick-replies';
 import Commands from './commands';
 import Empty from './empty';
 import ErrorMessage from './error-message';
 import Message from './message';
 import MessageContainer from './message-container';
-import QuickReplies from '../input/quick-replies';
 
 function ChatMessages({ className, children }: PropsWithChildren<{ className?: string }>) {
-  const chatMessages = useAtomValue(displayingChatMessagesAtom);
+  const chatMessages = useAtomValue(chatMessagesAtom);
   const aiState = useAtomValue(aiStateAtom);
   const apiErrorMessage = useAtomValue(apiErrorMessageAtom);
 
@@ -36,7 +36,7 @@ function ChatMessages({ className, children }: PropsWithChildren<{ className?: s
             <ChatContent className='rad:group/message rad:grid rad:grid-cols-1 rad:lg:grid-cols-[1fr_900px_1fr] rad:[&>div]:w-full'>
               <div></div>
               <MessageContainer role={message.role} messageId={message.id}>
-                <Message message={message.content} />
+                <Message message={message.content} attachments={message.attachments} />
               </MessageContainer>
               <Commands />
             </ChatContent>

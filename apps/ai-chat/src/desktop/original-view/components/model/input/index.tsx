@@ -2,6 +2,7 @@ import styled from '@emotion/styled';
 import { isMobile } from '@konomi-app/kintone-utilities';
 import NewChatButton from '../new-chat';
 import AIModeSelector from './ai-mode-selector';
+import DropZone from './drop-zone';
 import Examples from './examples';
 import FileInput from './file-input';
 import Files from './files';
@@ -57,13 +58,15 @@ export default function UserInput() {
             </div>
           </div>
         </div>
-        <InputGroup>
-          <div className='rad:flex'>
-            <Input />
-            <FileInput />
-          </div>
-          <Files />
-        </InputGroup>
+        <DropZone>
+          <InputGroup>
+            <div className='rad:flex'>
+              <Input />
+              <FileInput />
+            </div>
+            <Files />
+          </InputGroup>
+        </DropZone>
       </div>
       <div className='rad:text-center rad:text-[10px] rad:md:text-xs rad:text-gray-500 rad:mb-1'>
         アシスタントは不正確な情報を表示することがあるため、生成された回答を再確認するようにしてください。

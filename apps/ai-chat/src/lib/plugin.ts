@@ -18,21 +18,21 @@ export const isPluginConditionMet = (condition: PluginCondition): boolean => {
  * プラグインの設定情報のひな形を返却します
  */
 export const createConfig = (): PluginConfig => ({
-  version: 13,
+  version: 16,
   common: {
     providerType: 'openrouter',
     viewId: '',
     outputAppId: '',
     outputKeyFieldCode: '',
     outputContentFieldCode: '',
+    outputFileFieldCode: '',
     logAppId: '',
-    logKeyFieldCode: '',
-    logContentFieldCode: '',
-    logAppVersion: 'v1',
-    logAppV2SessionIdFieldCode: '',
-    logAppV2AssistantIdFieldCode: '',
-    logAppV2RoleFieldCode: '',
-    logAppV2ContentFieldCode: '',
+    logAppSpaceId: '',
+    logAppContentFieldCode: '',
+    logAppAssistantIdFieldCode: '',
+    logAppSessionIdFieldCode: '',
+    logAppRoleFieldCode: '',
+    logAppFileFieldCode: '',
     enablesAnimation: false,
     enablesEnter: false,
     enablesShiftEnter: false,
@@ -180,7 +180,43 @@ export const migrateConfig = (storage: AnyPluginConfig): PluginConfig => {
         version: 13,
       });
     }
-    case 13:
+    case 13: {
+      return migrateConfig({
+        ...storage,
+        common: {
+          ...storage.common,
+          outputFileFieldCode: '',
+          logFileFieldCode: '',
+        },
+        version: 14,
+      });
+    }
+    case 14: {
+      return migrateConfig({
+        ...storage,
+        conditions: storage.conditions.map((condition) => ({
+          ...condition,
+          defaultWebSearchEnabled: false,
+        })),
+        version: 15,
+      });
+    }
+    case 15: {
+      return migrateConfig({
+        ...storage,
+        common: {
+          ...storage.common,
+          logAppContentFieldCode:
+            storage.common.logAppV2ContentFieldCode ?? storage.common.logContentFieldCode ?? '',
+          logAppAssistantIdFieldCode: storage.common.logAppV2AssistantIdFieldCode ?? '',
+          logAppSessionIdFieldCode: storage.common.logAppV2SessionIdFieldCode ?? '',
+          logAppRoleFieldCode: storage.common.logAppV2RoleFieldCode ?? '',
+          logAppFileFieldCode: storage.common.logFileFieldCode ?? '',
+        },
+        version: 16,
+      });
+    }
+    case 16:
     default: {
       return storage;
     }
@@ -233,6 +269,7 @@ export const getNewCondition = (): PluginCondition => ({
   reasoningEffort: 'model-default',
   verbosity: 'model-default',
   allowWebSearch: false,
+  defaultWebSearchEnabled: false,
   promptId: '',
   allowImageGeneration: false,
   enableFactCheck: false,

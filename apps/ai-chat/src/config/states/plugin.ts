@@ -79,18 +79,15 @@ export const outputKeyFieldCodeAtom = getCommonPropertyAtom('outputKeyFieldCode'
 export const outputContentFieldCodeAtom = getCommonPropertyAtom('outputContentFieldCode');
 export const logAppIdAtom = getCommonPropertyAtom('logAppId');
 export const logAppSpaceIdAtom = getCommonPropertyAtom('logAppSpaceId');
-export const logKeyFieldCodeAtom = getCommonPropertyAtom('logKeyFieldCode');
-export const logContentFieldCodeAtom = getCommonPropertyAtom('logContentFieldCode');
-export const logAppVersionAtom = getCommonPropertyAtom('logAppVersion');
-export const logAppV2SessionIdFieldCodeAtom = getCommonPropertyAtom('logAppV2SessionIdFieldCode');
-export const logAppV2AssistantIdFieldCodeAtom = getCommonPropertyAtom(
-  'logAppV2AssistantIdFieldCode'
-);
-export const logAppV2RoleFieldCodeAtom = getCommonPropertyAtom('logAppV2RoleFieldCode');
-export const logAppV2ContentFieldCodeAtom = getCommonPropertyAtom('logAppV2ContentFieldCode');
+export const logAppSessionIdFieldCodeAtom = getCommonPropertyAtom('logAppSessionIdFieldCode');
+export const logAppAssistantIdFieldCodeAtom = getCommonPropertyAtom('logAppAssistantIdFieldCode');
+export const logAppRoleFieldCodeAtom = getCommonPropertyAtom('logAppRoleFieldCode');
+export const logAppContentFieldCodeAtom = getCommonPropertyAtom('logAppContentFieldCode');
+export const logAppFileFieldCodeAtom = getCommonPropertyAtom('logAppFileFieldCode');
 export const enablesAnimationAtom = getCommonPropertyAtom('enablesAnimation');
 export const enablesEnterAtom = getCommonPropertyAtom('enablesEnter');
 export const enablesShiftEnterAtom = getCommonPropertyAtom('enablesShiftEnter');
+export const outputFileFieldCodeAtom = getCommonPropertyAtom('outputFileFieldCode');
 
 export const aiModelAtom = getConditionPropertyAtom('aiModel');
 export const assistantNameAtom = getConditionPropertyAtom('name');
@@ -103,6 +100,7 @@ export const systemPromptAtom = getConditionPropertyAtom('systemPrompt');
 export const promptIdAtom = getConditionPropertyAtom('promptId');
 export const allowImageUploadAtom = getConditionPropertyAtom('allowImageUpload');
 export const allowWebSearchAtom = getConditionPropertyAtom('allowWebSearch');
+export const defaultWebSearchEnabledAtom = getConditionPropertyAtom('defaultWebSearchEnabled');
 export const allowImageGenerationAtom = getConditionPropertyAtom('allowImageGeneration');
 export const reasoningEffortAtom = getConditionPropertyAtom('reasoningEffort');
 export const verbosityAtom = getConditionPropertyAtom('verbosity');

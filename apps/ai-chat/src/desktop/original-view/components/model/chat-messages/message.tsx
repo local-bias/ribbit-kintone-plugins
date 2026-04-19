@@ -3,24 +3,19 @@ import { useChatMessage } from '@/desktop/original-view/contexts/chat-message';
 import { handleSendMessageAtom } from '@/desktop/original-view/states/chat-message';
 import { loadingAtom, selectedHistoryAtom } from '@/desktop/original-view/states/states';
 import { getTextFromMessageContent } from '@/lib/chatgpt';
-import {
-  ChatGeneratedImageContentPart,
-  ChatHistory,
-  ChatImageContentPart,
-  ChatMessageContent,
-  ChatTextContentPart,
-} from '@/lib/static';
+import { ChatHistory, MessageAttachment } from '@/lib/static';
 import SendIcon from '@mui/icons-material/Send';
 import { Button, TextField } from '@mui/material';
 import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
 import { useSnackbar } from 'notistack';
 import React, { useCallback, useState } from 'react';
-import GeneratedImage from './generated-image';
+import AttachedFile from './file';
 import { buildCollapsedPreview } from './utils';
 
 type Props = {
-  message: ChatMessageContent;
+  message: string;
+  attachments?: MessageAttachment[];
   cursor?: boolean;
   className?: string;
 };
@@ -48,7 +43,7 @@ function EditMode() {
         }
         // Only edit regular messages (not fact-check messages)
         const originalMessage = messages[index];
-        if (!originalMessage || originalMessage.role === 'fact-check') {
+        if (!originalMessage) {
           enqueueSnackbar('このメッセージは編集できません', { variant: 'error' });
           return;
         }
@@ -85,7 +80,7 @@ function EditMode() {
   );
 }
 
-function ChatMessageComponent({ message }: Props) {
+function ChatMessageComponent({ message, attachments }: Props) {
   const { message: messageObj, isCollapsed, isCollapsible } = useChatMessage();
   const shouldShowCollapsed = isCollapsible && isCollapsed;
 
@@ -93,21 +88,9 @@ function ChatMessageComponent({ message }: Props) {
     return null;
   }
 
-  let text = '';
-  let images: ChatImageContentPart[] = [];
-  let generatedImages: ChatGeneratedImageContentPart[] = [];
+  let text = message;
 
-  if (typeof message === 'string') {
-    text = message;
-  } else {
-    text = (message.find((m) => m.type === 'text') as ChatTextContentPart | undefined)?.text || '';
-    images = message.filter((m) => m.type === 'image_url') as ChatImageContentPart[];
-    generatedImages = message.filter(
-      (m) => m.type === 'generated_image'
-    ) as ChatGeneratedImageContentPart[];
-  }
-
-  const displayText = shouldShowCollapsed ? buildCollapsedPreview(text) : text;
+  const displayText = shouldShowCollapsed ? buildCollapsedPreview(message) : text;
 
   return (
     <div>
@@ -115,27 +98,9 @@ function ChatMessageComponent({ message }: Props) {
         dangerouslySetInnerHTML={{ __html: getHTMLfromMarkdown(displayText) }}
         className='rad:[&>_*:first-of-type]:mt-0 rad:[&>_*:last-of-type]:mb-0'
       />
-      {/* ユーザーがアップロードした画像 */}
-      {!shouldShowCollapsed && !!images.length && (
-        <div className='rad:flex rad:flex-wrap rad:gap-2 rad:mt-4!'>
-          {images.map((image, i) => (
-            <div key={i} className='rad:w-32 rad:h-32 rad:overflow-hidden'>
-              <img
-                src={image.image_url.url ?? ''}
-                className='rad:w-full rad:h-full rad:object-cover'
-              />
-            </div>
-          ))}
-        </div>
-      )}
-      {/* AIが生成した画像 */}
-      {!shouldShowCollapsed && !!generatedImages.length && (
-        <div className='rad:flex rad:flex-wrap rad:gap-4 rad:mt-4!'>
-          {generatedImages.map((image, i) => (
-            <GeneratedImage key={i} image={image} />
-          ))}
-        </div>
-      )}
+      {(attachments ?? []).map((attachment, i) => (
+        <AttachedFile key={i} attachment={attachment} />
+      ))}
     </div>
   );
 }

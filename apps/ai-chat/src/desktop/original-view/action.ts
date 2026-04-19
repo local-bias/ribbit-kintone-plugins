@@ -1,10 +1,21 @@
 import { createEndpointAdapter } from '@/lib/adapters';
 import { ketch } from '@/lib/browser';
 import type { ChatCompletionRequest, StructuredAIResponse } from '@/lib/endpoint-adapter';
+import { uploadMessageBase64Attachments } from '@/lib/file-utils';
 import { isDev, isProd } from '@/lib/global';
-import { AnyChatHistory, ChatHistory, ChatMessage, OPENAI_MODELS } from '@/lib/static';
+import {
+  AnyChatHistory,
+  ChatHistory,
+  ChatImageContentPart,
+  ChatGeneratedImageContentPart,
+  ChatMessage,
+  ChatMessageV2,
+  MessageAttachment,
+  OPENAI_MODELS,
+} from '@/lib/static';
 import { ReasoningEffortType, VerbosityType } from '@/schema/ai';
 import { AiProviderType } from '@/schema/plugin-config';
+import { addRecord, uploadFile } from '@konomi-app/kintone-utilities';
 import { marked } from 'marked';
 import { nanoid } from 'nanoid';
 import { z } from 'zod';
@@ -56,14 +67,99 @@ export const migrateChatHistory = (chatHistory: AnyChatHistory): ChatHistory => 
         version: 9,
         html: undefined,
       });
-    case 9:
+    case 9: {
+      const newMessages: ChatMessageV2[] = [];
+      for (let i = 0; i < chatHistory.messages.length; i++) {
+        const message = chatHistory.messages[i];
+        const nextMessage = chatHistory.messages[i + 1] ?? null;
+
+        if (message.role === 'fact-check') {
+          continue;
+        }
+
+        if (message.role === 'user') {
+          let text = '';
+          const attachments: ChatMessageV2['attachments'] = [];
+          if (typeof message.content === 'string') {
+            text = message.content;
+          } else {
+            message.content.forEach((p) => {
+              if (p.type === 'image_url') {
+                const img = p as ChatImageContentPart;
+                const dataUrl = img.image_url.url;
+                const mimeType = dataUrl.match(/^data:(.*?);/)?.[1] ?? 'image/png';
+                attachments.push({
+                  type: 'file-base64',
+                  dataUrl,
+                  mimeType,
+                  fileName: `image.${mimeType.split('/')[1] ?? 'png'}`,
+                });
+              }
+              if (p.type === 'text') {
+                text += p.text;
+              }
+            });
+          }
+          newMessages.push({
+            id: message.id,
+            role: message.role,
+            content: text,
+            attachments,
+          });
+        } else if (message.role === 'assistant') {
+          const factCheck = nextMessage?.role === 'fact-check' ? nextMessage : null;
+
+          let text = '';
+          const attachments: ChatMessageV2['attachments'] = [];
+          if (typeof message.content === 'string') {
+            text = message.content;
+          } else {
+            message.content.forEach((p) => {
+              if (p.type === 'generated_image') {
+                const img = p as ChatGeneratedImageContentPart;
+                const dataUrl = img.image_url;
+                const mimeType = dataUrl.match(/^data:(.*?);/)?.[1] ?? 'image/png';
+                attachments.push({
+                  type: 'file-base64',
+                  dataUrl,
+                  mimeType,
+                  fileName: `generated.${mimeType.split('/')[1] ?? 'png'}`,
+                });
+              }
+              if (p.type === 'text') {
+                text += p.text;
+              }
+            });
+          }
+          if (factCheck) {
+            attachments.push({
+              type: 'fact-check',
+              result: factCheck.content,
+            });
+          }
+          newMessages.push({
+            id: message.id,
+            role: message.role,
+            content: text,
+            attachments,
+          });
+        }
+      }
+
+      return migrateChatHistory({
+        ...chatHistory,
+        version: 10,
+        messages: newMessages,
+      });
+    }
+    case 10:
     default:
       return chatHistory;
   }
 };
 
 export const createNewChatHistory = (params: Omit<ChatHistory, 'version'>): ChatHistory => {
-  return { version: 9, ...params };
+  return { version: 10, ...params };
 };
 
 /**
@@ -136,7 +232,7 @@ export async function fetchAICompletion<T>(
   };
 
   // リクエストペイロードの構築（アダプタに委譲）
-  const payload = adapter.buildRequestPayload(request);
+  const payload = await adapter.buildRequestPayload(request);
 
   isDev &&
     console.log(`${logTitle} - API Request`, {
@@ -148,9 +244,7 @@ export async function fetchAICompletion<T>(
   // API呼び出し
   const response = await ketch(adapter.endpoint, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
   });
 
@@ -177,18 +271,82 @@ export const getHTMLfromMarkdown = (markdown: string): string => {
   return marked(markdown, { async: false }) as string;
 };
 
-export const getChatTitle = (message: ChatMessage): string => {
-  // ファクトチェックメッセージは対象外
-  if (message.role === 'fact-check') {
-    return 'ファクトチェック';
-  }
+/**
+ * チャットの新規作成時、ユーザーのメッセージからタイトルを生成する
+ * @param message チャットメッセージ
+ * @returns チャットタイトル
+ */
+export function getChatTitle(message: ChatMessage): string {
   const { content } = message;
   if (!content) {
     return '空のメッセージ';
   }
-  if (typeof content === 'string') {
-    return content.slice(0, 16);
+  return content.slice(0, 16);
+}
+
+export async function addChatLog(params: {
+  appId?: string;
+  sessionId: string;
+  assistantId: string;
+  role: string;
+  content: string;
+  file?: File;
+  attachments?: MessageAttachment[];
+  sessionIdFieldCode?: string;
+  assistantIdFieldCode?: string;
+  roleFieldCode?: string;
+  contentFieldCode?: string;
+  guestSpaceId: string | null;
+  fileFieldCode?: string;
+}) {
+  const {
+    appId,
+    sessionIdFieldCode,
+    assistantIdFieldCode,
+    roleFieldCode,
+    contentFieldCode,
+    guestSpaceId,
+    fileFieldCode,
+    file,
+    attachments,
+  } = params;
+
+  if (!appId) {
+    isDev && console.warn('Log app is not properly configured');
+    return;
   }
-  const found = content.find((m) => m.type === 'text') as any | undefined;
-  return (found?.text ?? '空のメッセージ').slice(0, 16);
-};
+
+  const record: Record<string, { value: unknown }> = {};
+
+  if (fileFieldCode && attachments?.length) {
+    const uploadedFileKeys = await uploadMessageBase64Attachments(attachments, guestSpaceId);
+    if (uploadedFileKeys.length > 0) {
+      record[fileFieldCode] = {
+        value: uploadedFileKeys.map((fileKey) => ({ fileKey })),
+      };
+    }
+  } else if (file && fileFieldCode) {
+    // ファイルがある場合はKintoneにアップロードしてからレコードにセット
+    const uploadedFile = await uploadFile({
+      file: { name: file.name, data: file },
+      guestSpaceId: guestSpaceId ?? undefined,
+      debug: isDev,
+    });
+    record[fileFieldCode] = { value: [{ fileKey: uploadedFile.fileKey }] };
+  }
+
+  if (contentFieldCode) {
+    record[contentFieldCode] = { value: params.content };
+  }
+  if (sessionIdFieldCode) {
+    record[sessionIdFieldCode] = { value: params.sessionId };
+  }
+  if (assistantIdFieldCode) {
+    record[assistantIdFieldCode] = { value: params.assistantId };
+  }
+  if (roleFieldCode) {
+    record[roleFieldCode] = { value: params.role };
+  }
+
+  return addRecord({ app: appId, record, guestSpaceId: guestSpaceId ?? undefined, debug: isDev });
+}

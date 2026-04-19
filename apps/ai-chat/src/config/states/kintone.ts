@@ -9,14 +9,7 @@ import {
   withSpaceIdFallback,
 } from '@konomi-app/kintone-utilities';
 import { atom } from 'jotai';
-import {
-  logAppIdAtom,
-  logAppSpaceIdAtom,
-  logContentFieldCodeAtom,
-  logKeyFieldCodeAtom,
-  outputAppIdAtom,
-  outputAppSpaceIdAtom,
-} from './plugin';
+import { logAppIdAtom, logAppSpaceIdAtom, outputAppIdAtom, outputAppSpaceIdAtom } from './plugin';
 import { pickBy } from 'remeda';
 
 export const currentAppIdAtom = atom(() => {
@@ -103,6 +96,13 @@ export const outputAppTextPropertiesState = atom<Promise<kintoneAPI.FieldPropert
   }
 );
 
+export const outputAppFilePropertiesState = atom<Promise<kintoneAPI.FieldProperty[]>>(
+  async (get) => {
+    const allProperties = await get(outputAppPropertiesState);
+    return allProperties.filter((field) => field.type === 'FILE');
+  }
+);
+
 export const logAppPropertiesState = atom<Promise<kintoneAPI.FieldProperty[]>>(async (get) => {
   const appId = get(logAppIdAtom);
   if (!appId) {
@@ -141,18 +141,7 @@ export const logAppTextPropertiesState = atom<Promise<kintoneAPI.FieldProperty[]
   );
 });
 
-export const logAppTextPropertiesWithoutContentState = atom<Promise<kintoneAPI.FieldProperty[]>>(
-  async (get) => {
-    const allProperties = await get(logAppTextPropertiesState);
-    const contentFieldCode = get(logContentFieldCodeAtom);
-    return allProperties.filter((field) => field.code !== contentFieldCode);
-  }
-);
-
-export const logAppTextPropertiesWithoutKeyState = atom<Promise<kintoneAPI.FieldProperty[]>>(
-  async (get) => {
-    const allProperties = await get(logAppTextPropertiesState);
-    const keyFieldCode = get(logKeyFieldCodeAtom);
-    return allProperties.filter((field) => field.code !== keyFieldCode);
-  }
-);
+export const logAppFilePropertiesState = atom<Promise<kintoneAPI.FieldProperty[]>>(async (get) => {
+  const allProperties = await get(logAppPropertiesState);
+  return allProperties.filter((field) => field.type === 'FILE');
+});

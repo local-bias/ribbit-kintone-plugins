@@ -1,5 +1,5 @@
 import { shouldCollapseUserMessage } from '@/desktop/original-view/components/model/chat-messages/utils';
-import { RegularChatMessage } from '@/lib/static';
+import { ChatMessage } from '@/lib/static';
 import { useAtomCallback } from 'jotai/utils';
 import React, { createContext, ReactNode, useCallback, useContext } from 'react';
 import invariant from 'tiny-invariant';
@@ -7,7 +7,7 @@ import { handleSendMessageAtom } from '../states/chat-message';
 import { selectedHistoryAtom } from '../states/states';
 
 type ChatMessageContextType = {
-  message: RegularChatMessage;
+  message: ChatMessage;
   isEditing: boolean;
   toggleIsEditing: () => void;
   isCollapsed: boolean;
