@@ -1,10 +1,9 @@
-import { restorePluginConfig, getHeaderSpace } from '@konomi-app/kintone-utilities';
+import { listener } from '@/common/listener';
+import { restorePluginConfig } from '@/lib/plugin';
+import { getHeaderSpace } from '@konomi-app/kintone-utilities';
+import { toast } from '@konomi-app/ui';
 import { getButton } from './button-creation';
 import { download } from './conversion';
-import { createConfig } from '@/common/plugin';
-import { listener } from '@/common/listener';
-import { PLUGIN_ID } from '@/common/global';
-import { toast } from '@konomi-app/ui';
 
 const BUTTON_ID = 'ribbit-plugin-xlsx';
 
@@ -14,7 +13,18 @@ listener.add(['app.record.index.show'], async (event) => {
     return event;
   }
 
-  const storage = restorePluginConfig(PLUGIN_ID) ?? createConfig();
+  const pluginConfig = restorePluginConfig();
+  const viewId = String(event.viewId);
+
+  // 現在の一覧に適用する条件を選択します（優先度: 配列の後ろほど高い）
+  const matchingCondition = [...pluginConfig.conditions].reverse().find((condition) => {
+    if (!condition.targetViewsEnabled) return true;
+    return condition.targetViews.includes(viewId);
+  });
+
+  if (!matchingCondition) {
+    return event;
+  }
 
   const button = getButton(BUTTON_ID);
   const headerMenuSpace = getHeaderSpace(event.type);
@@ -26,7 +36,7 @@ listener.add(['app.record.index.show'], async (event) => {
   button.onclick = async () => {
     button.disabled = true;
     try {
-      await download(event, storage);
+      await download(event, matchingCondition);
       toast.success('Excelファイルをダウンロードしました');
     } catch (error) {
       console.error(error);

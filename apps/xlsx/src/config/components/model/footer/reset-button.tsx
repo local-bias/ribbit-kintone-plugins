@@ -1,5 +1,5 @@
-import { createConfig } from '@/common/plugin';
 import { t } from '@/lib/i18n';
+import { createConfig } from '@/lib/plugin';
 import { toast } from '@konomi-app/ui';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import {

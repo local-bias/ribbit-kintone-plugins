@@ -16,7 +16,7 @@ export default /** @type { const } */ ({
   manifest: {
     base: {
       manifest_version: 1,
-      version: '1.4.1',
+      version: '1.5.0',
       type: 'APP',
       name: {
         en: 'Excel Export Plugin',

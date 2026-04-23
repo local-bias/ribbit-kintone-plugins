@@ -1,5 +1,6 @@
 import { GUEST_SPACE_ID } from '@/common/global';
 import { store } from '@/lib/store';
+import { PluginCondition } from '@/schema/plugin-config';
 import {
   getAllRecords,
   getAppId,
@@ -48,19 +49,37 @@ function toExcelSerial(date: Date): number {
   return (date.getTime() - epoch) / 86400000;
 }
 
+/** UTC の Date をローカルタイムゾーンに補正した Excel シリアル値に変換します */
+function toLocalExcelSerial(utcDate: Date): number {
+  const localDate = new Date(utcDate.getTime() - utcDate.getTimezoneOffset() * 60000);
+  return toExcelSerial(localDate);
+}
+
+/** UTC の ISO 文字列をローカルタイムゾーンの日時文字列 (yyyy/MM/dd HH:mm:ss) に変換します */
+function formatLocalDatetime(isoString: string): string {
+  const d = new Date(isoString);
+  const y = d.getFullYear();
+  const mo = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  const h = String(d.getHours()).padStart(2, '0');
+  const mi = String(d.getMinutes()).padStart(2, '0');
+  const s = String(d.getSeconds()).padStart(2, '0');
+  return `${y}/${mo}/${day} ${h}:${mi}:${s}`;
+}
+
 /* ---- メイン関数 ----------------------------------------------------------- */
 
 /**
  * 受け取ったkintoneレコードを変換し、XLSX形式でダウンロードします
  */
-export async function download(event: kintoneAPI.js.Event, config: kintone.plugin.Storage) {
+export async function download(event: kintoneAPI.js.Event, condition: PluginCondition) {
   const appId = getAppId();
 
   if (!appId) {
     return;
   }
 
-  const query = (config.allRecords ? getQueryCondition() : getQuery()) || '';
+  const query = (condition.allRecords ? getQueryCondition() : getQuery()) || '';
 
   const targetRecords = await getAllRecords({
     app: appId,
@@ -82,12 +101,7 @@ export async function download(event: kintoneAPI.js.Event, config: kintone.plugi
   const merges: Range[] = [];
   const sheet: WorkSheet = utils.aoa_to_sheet([[]]);
 
-  const fields = await getFields(
-    views,
-    properties,
-    String(event.viewId),
-    Boolean(config.allFields)
-  );
+  const fields = getFields(views, properties, String(event.viewId), condition);
 
   process.env.NODE_ENV === 'development' && console.log({ fields, views });
 
@@ -167,7 +181,7 @@ export async function download(event: kintoneAPI.js.Event, config: kintone.plugi
 
         subValue.value.map((tableRow, j) => {
           Object.keys((field as any).fields).map((key, k) => {
-            const value = getFieldValue(tableRow.value[key], config.dateAsExcel);
+            const value = getFieldValue(tableRow.value[key], condition.dateAsExcel);
             setCell(sheet, row + j, col + k, value);
             trackWidth(col + k, value);
           });
@@ -175,11 +189,11 @@ export async function download(event: kintoneAPI.js.Event, config: kintone.plugi
 
         col += Object.keys((field as any).fields).length;
       } else {
-        const value = getFieldValue(targetField, config.dateAsExcel);
+        const value = getFieldValue(targetField, condition.dateAsExcel);
         setCell(sheet, row, col, value);
         trackWidth(col, value);
 
-        if (includesSubtable && config.union) {
+        if (includesSubtable && condition.union) {
           merges.push({
             s: { r: row, c: col },
             e: { r: row + rowCount - 1, c: col },
@@ -209,11 +223,11 @@ export async function download(event: kintoneAPI.js.Event, config: kintone.plugi
     },
   ];
 
-  const sheetName = buildSheetName(config.sheetName ?? '{appName}', app.name, appId);
+  const sheetName = buildSheetName(condition.sheetName ?? '{appName}', app.name, appId);
   const workbook = utils.book_new();
   utils.book_append_sheet(workbook, sheet, sheetName);
 
-  const fileName = buildFileName(config.fileNameTemplate ?? '{appName}_{date}', app.name, appId);
+  const fileName = buildFileName(condition.fileNameTemplate ?? '{appName}_{date}', app.name, appId);
   writeFile(workbook, `${fileName}.xlsx`);
 }
 
@@ -273,14 +287,25 @@ function buildSheetName(template: string, appName: string, appId: string | numbe
 
 /**
  * 出力するフィールド情報を返却します
+ *
+ * 優先度:
+ * 1. `targetFieldsEnabled` が `true` の場合、`targetFields` で指定されたフィールドのみ
+ * 2. `allFields` が `true` の場合、全フィールド
+ * 3. それ以外は、現在表示中の一覧のフィールド
  */
 const getFields = (
   views: ViewList,
   properties: kintoneAPI.FieldProperties,
   viewId: string,
-  displaysAll: boolean
+  condition: PluginCondition
 ): kintoneAPI.FieldProperty[] => {
-  if (displaysAll) {
+  if (condition.targetFieldsEnabled && condition.targetFields.length > 0) {
+    return condition.targetFields
+      .map(({ fieldCode }) => Object.values(properties).find((p) => p.code === fieldCode))
+      .filter(Boolean) as kintoneAPI.FieldProperty[];
+  }
+
+  if (condition.allFields) {
     return Object.values(properties);
   }
 
@@ -357,14 +382,16 @@ const getFieldValue = (field: kintoneAPI.Field, dateAsExcel = false): CellValue 
       return field.value || '';
 
     case 'DATETIME':
+    case 'CREATED_TIME':
+    case 'UPDATED_TIME':
       if (dateAsExcel && field.value) {
         return {
           __isDate: true,
-          serial: toExcelSerial(new Date(field.value)),
+          serial: toLocalExcelSerial(new Date(field.value)),
           format: 'yyyy/mm/dd\\ hh:mm:ss',
         };
       }
-      return field.value || '';
+      return field.value ? formatLocalDatetime(field.value) : '';
 
     case 'TIME':
       if (dateAsExcel && field.value) {

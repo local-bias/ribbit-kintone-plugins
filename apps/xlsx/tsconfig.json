@@ -1,9 +1,10 @@
 {
   "extends": "@repo/typescript-config/kintone.json",
   "compilerOptions": {
-    "baseUrl": ".",
     "typeRoots": ["src/types", "node_modules/@types"],
-    "paths": { "@/*": ["./src/*"] }
+    "paths": { "@/*": ["./src/*"] },
+    "outDir": "./dist",
+    "rootDir": "./src"
   },
   "files": [
     "./node_modules/@kintone/dts-gen/kintone.d.ts",

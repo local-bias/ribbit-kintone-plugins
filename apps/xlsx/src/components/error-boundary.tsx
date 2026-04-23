@@ -3,7 +3,7 @@ import { Alert, AlertTitle, Button } from '@mui/material';
 import { ErrorBoundary, FallbackProps } from 'react-error-boundary';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
 import styled from '@emotion/styled';
-import config from 'plugin.config.mjs';
+import config from '@/../plugin.config.mjs';
 import { URL_INQUIRY } from '@/common/static';
 
 const ErrorFallbackComponent: FC<FallbackProps & { className?: string }> = ({
