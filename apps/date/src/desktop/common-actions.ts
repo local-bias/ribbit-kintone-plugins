@@ -61,11 +61,28 @@ export const getAdjustedDate = (params: {
         adjusted = adjusted.endOf(target);
         break;
       case 'add':
-        adjusted = adjusted.plus({ [target]: basisValue });
+      case 'subtract': {
+        // Luxonの`plus`/`minus`は数値を要求する。文字列のままだと"Invalid unit value"となるため、
+        // 数値へ変換し、変換できない場合(NaN, 空文字列など)は該当の調整処理をスキップする。
+        const numericValue = typeof basisValue === 'number' ? basisValue : Number(basisValue);
+        if (!Number.isFinite(numericValue)) {
+          if (process.env.NODE_ENV === 'development') {
+            console.warn(`[date/getAdjustedDate] Invalid numeric value for adjustment; skipping.`, {
+              target,
+              type,
+              basisType,
+              basisFieldCode,
+              basisValue,
+            });
+          }
+          break;
+        }
+        adjusted =
+          type === 'add'
+            ? adjusted.plus({ [target]: numericValue })
+            : adjusted.minus({ [target]: numericValue });
         break;
-      case 'subtract':
-        adjusted = adjusted.minus({ [target]: basisValue });
-        break;
+      }
     }
   }
   return adjusted;

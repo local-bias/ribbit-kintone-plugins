@@ -49,37 +49,88 @@ export const useBulkUpdate = (params: { condition: PluginCondition }) => {
       const recordsToUpdate: UpdateAllRecordsParams['records'] = [];
       const skipped: { id: string; reason: string }[] = [];
 
-      for (const record of targetRecords) {
-        const validationResult = validateRecord({ record, condition });
-        if (!validationResult.valid) {
-          if (!isProd) {
-            console.warn(validationResult.errorMessage);
+      try {
+        for (const record of targetRecords) {
+          const validationResult = validateRecord({ record, condition });
+          if (!validationResult.valid) {
+            if (!isProd) {
+              console.warn(validationResult.errorMessage);
+            }
+            skipped.push({
+              id: String(record.$id?.value ?? ''),
+              reason: validationResult.errorMessage,
+            });
+            continue;
           }
-          skipped.push({
-            id: String(record.$id?.value ?? ''),
-            reason: validationResult.errorMessage,
+
+          const targetField = record[condition.targetFieldCode]!;
+          const basisField = record[condition.basisFieldCode];
+          const targetFieldType = targetField.type;
+
+          const basisDate =
+            condition.basisType === 'currentDate'
+              ? DateTime.local()
+              : DateTime.fromISO(basisField!.value as string);
+
+          if (!basisDate.isValid) {
+            const reason = `${t('desktop.validation.error.basisFieldCode.invalid')} (${basisDate.invalidReason ?? ''})`;
+            if (!isProd) {
+              console.warn(reason, record);
+            }
+            skipped.push({ id: String(record.$id?.value ?? ''), reason });
+            continue;
+          }
+
+          let adjustedDate: DateTime;
+          try {
+            adjustedDate = getAdjustedDate({ basisDate, record, condition });
+          } catch (error) {
+            if (!isProd) {
+              console.warn('[date/bulk-update] getAdjustedDate failed; skipping record.', {
+                record,
+                error,
+              });
+            }
+            skipped.push({
+              id: String(record.$id?.value ?? ''),
+              reason: getErrorMessage(error),
+            });
+            continue;
+          }
+
+          if (!adjustedDate.isValid) {
+            if (!isProd) {
+              console.warn(
+                '[date/bulk-update] Adjusted date is invalid; skipping record.',
+                record,
+                adjustedDate.invalidReason
+              );
+            }
+            skipped.push({
+              id: String(record.$id?.value ?? ''),
+              reason: adjustedDate.invalidReason ?? 'Invalid adjusted date',
+            });
+            continue;
+          }
+
+          const value =
+            targetFieldType === 'DATE' ? adjustedDate.toFormat('yyyy-MM-dd') : adjustedDate.toISO();
+
+          recordsToUpdate.push({
+            id: record.$id!.value as string,
+            record: { [condition.targetFieldCode]: { value } },
           });
-          continue;
         }
-
-        const targetField = record[condition.targetFieldCode]!;
-        const basisField = record[condition.basisFieldCode];
-        const targetFieldType = targetField.type;
-
-        const basisDate =
-          condition.basisType === 'currentDate'
-            ? DateTime.local()
-            : DateTime.fromISO(basisField!.value as string);
-
-        const adjustedDate = getAdjustedDate({ basisDate, record, condition });
-
-        const value =
-          targetFieldType === 'DATE' ? adjustedDate.toFormat('yyyy-MM-dd') : adjustedDate.toISO();
-
-        recordsToUpdate.push({
-          id: record.$id!.value as string,
-          record: { [condition.targetFieldCode]: { value } },
+      } catch (error) {
+        if (!isProd) {
+          console.error(error);
+        }
+        await dialog.alert({
+          type: 'error',
+          title: t('desktop.bulkUpdate.dialog.content.error.updateRecords'),
+          description: getErrorMessage(error),
         });
+        return;
       }
 
       // Step 3: 更新対象なし
