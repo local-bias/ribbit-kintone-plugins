@@ -1,51 +1,96 @@
-import * as React from 'react';
+import styled from '@emotion/styled';
 import { GripVerticalIcon } from 'lucide-react';
+import * as React from 'react';
 import * as ResizablePrimitive from 'react-resizable-panels';
 
-import { cn } from '@repo/utils';
+const StyledPanelGroup = styled(ResizablePrimitive.PanelGroup)`
+  display: flex;
+  height: 100%;
+  width: 100%;
 
-function ResizablePanelGroup({
-  className,
-  ...props
-}: React.ComponentProps<typeof ResizablePrimitive.PanelGroup>) {
-  return (
-    <ResizablePrimitive.PanelGroup
-      data-slot='resizable-panel-group'
-      className={cn(
-        'rui:flex rui:h-full rui:w-full rui:data-[panel-group-direction=vertical]:flex-col',
-        className
-      )}
-      {...props}
-    />
-  );
+  &[data-panel-group-direction='vertical'] {
+    flex-direction: column;
+  }
+`;
+
+function ResizablePanelGroup(props: React.ComponentProps<typeof ResizablePrimitive.PanelGroup>) {
+  return <StyledPanelGroup data-slot='resizable-panel-group' {...props} />;
 }
 
 function ResizablePanel({ ...props }: React.ComponentProps<typeof ResizablePrimitive.Panel>) {
   return <ResizablePrimitive.Panel data-slot='resizable-panel' {...props} />;
 }
 
+const StyledPanelResizeHandle = styled(ResizablePrimitive.PanelResizeHandle)`
+  position: relative;
+  display: flex;
+  width: 1px;
+  align-items: center;
+  justify-content: center;
+  background-color: #e0e0e0;
+  outline: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    left: 50%;
+    width: 4px;
+    transform: translateX(-50%);
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 0 1px #1976d2;
+  }
+
+  &[data-panel-group-direction='vertical'] {
+    height: 1px;
+    width: 100%;
+
+    &::after {
+      left: 0;
+      height: 4px;
+      width: 100%;
+      transform: translateX(0) translateY(-50%);
+    }
+
+    & > div {
+      transform: rotate(90deg);
+    }
+  }
+`;
+
+const HandleIndicator = styled.div`
+  z-index: 10;
+  display: flex;
+  height: 16px;
+  width: 12px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 2px;
+  border: 1px solid #e0e0e0;
+  background-color: #e0e0e0;
+`;
+
+const StyledGripIcon = styled(GripVerticalIcon)`
+  width: 10px;
+  height: 10px;
+`;
+
 function ResizableHandle({
   withHandle,
-  className,
   ...props
 }: React.ComponentProps<typeof ResizablePrimitive.PanelResizeHandle> & {
   withHandle?: boolean;
 }) {
   return (
-    <ResizablePrimitive.PanelResizeHandle
-      data-slot='resizable-handle'
-      className={cn(
-        'rui:bg-border rui:focus-visible:ring-ring rui:relative rui:flex rui:w-px rui:items-center rui:justify-center rui:after:absolute rui:after:inset-y-0 rui:after:left-1/2 rui:after:w-1 rui:after:-translate-x-1/2 rui:focus-visible:ring-1 rui:focus-visible:ring-offset-1 rui:focus-visible:outline-hidden rui:data-[panel-group-direction=vertical]:h-px rui:data-[panel-group-direction=vertical]:w-full rui:data-[panel-group-direction=vertical]:after:left-0 rui:data-[panel-group-direction=vertical]:after:h-1 rui:data-[panel-group-direction=vertical]:after:w-full rui:data-[panel-group-direction=vertical]:after:translate-x-0 rui:data-[panel-group-direction=vertical]:after:-translate-y-1/2 rui:[&[data-panel-group-direction=vertical]>div]:rotate-90',
-        className
-      )}
-      {...props}
-    >
+    <StyledPanelResizeHandle data-slot='resizable-handle' {...props}>
       {withHandle && (
-        <div className='rui:bg-border rui:z-10 rui:flex rui:h-4 rui:w-3 rui:items-center rui:justify-center rui:rounded-xs rui:border'>
-          <GripVerticalIcon className='rui:size-2.5' />
-        </div>
+        <HandleIndicator>
+          <StyledGripIcon />
+        </HandleIndicator>
       )}
-    </ResizablePrimitive.PanelResizeHandle>
+    </StyledPanelResizeHandle>
   );
 }
 

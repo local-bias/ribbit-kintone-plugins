@@ -1,8 +1,8 @@
-import * as React from 'react';
+import styled from '@emotion/styled';
+import { keyframes } from '@emotion/react';
 import * as DialogPrimitive from '@radix-ui/react-dialog';
 import { XIcon } from 'lucide-react';
-
-import { cn } from '@repo/utils';
+import * as React from 'react';
 
 function Dialog({ ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) {
   return <DialogPrimitive.Root data-slot='dialog' {...props} />;
@@ -20,24 +20,101 @@ function DialogClose({ ...props }: React.ComponentProps<typeof DialogPrimitive.C
   return <DialogPrimitive.Close data-slot='dialog-close' {...props} />;
 }
 
-function DialogOverlay({
-  className,
-  ...props
-}: React.ComponentProps<typeof DialogPrimitive.Overlay>) {
-  return (
-    <DialogPrimitive.Overlay
-      data-slot='dialog-overlay'
-      className={cn(
-        'rui:data-[state=open]:animate-in rui:data-[state=closed]:animate-out rui:data-[state=closed]:fade-out-0 rui:data-[state=open]:fade-in-0 rui:fixed rui:inset-0 rui:z-50 rui:bg-black/50',
-        className
-      )}
-      {...props}
-    />
-  );
+const fadeIn = keyframes`
+  from { opacity: 0; }
+  to { opacity: 1; }
+`;
+
+const fadeOut = keyframes`
+  from { opacity: 1; }
+  to { opacity: 0; }
+`;
+
+const zoomIn = keyframes`
+  from { opacity: 0; transform: translate(-50%, -50%) scale(0.95); }
+  to { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+`;
+
+const zoomOut = keyframes`
+  from { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+  to { opacity: 0; transform: translate(-50%, -50%) scale(0.95); }
+`;
+
+const StyledOverlay = styled(DialogPrimitive.Overlay)`
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background-color: rgba(0, 0, 0, 0.5);
+  animation: ${fadeIn} 0.15s ease-out;
+
+  &[data-state='closed'] {
+    animation: ${fadeOut} 0.15s ease-in;
+  }
+`;
+
+function DialogOverlay(props: React.ComponentProps<typeof DialogPrimitive.Overlay>) {
+  return <StyledOverlay data-slot='dialog-overlay' {...props} />;
 }
 
+const StyledDialogContent = styled(DialogPrimitive.Content)`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 50;
+  display: grid;
+  width: calc(100% - 32px);
+  max-width: 512px;
+  gap: 16px;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  background-color: #fff;
+  padding: 24px;
+  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.16);
+  animation: ${zoomIn} 0.2s ease-out;
+
+  &[data-state='closed'] {
+    animation: ${zoomOut} 0.15s ease-in;
+  }
+`;
+
+const StyledCloseButton = styled(DialogPrimitive.Close)`
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  border-radius: 4px;
+  opacity: 0.7;
+  transition: opacity 0.15s ease;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #1976d2;
+    outline-offset: 2px;
+  }
+
+  &:disabled {
+    pointer-events: none;
+  }
+
+  & svg {
+    width: 16px;
+    height: 16px;
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+`;
+
 function DialogContent({
-  className,
   children,
   showCloseButton = true,
   ...props
@@ -47,73 +124,58 @@ function DialogContent({
   return (
     <DialogPortal data-slot='dialog-portal'>
       <DialogOverlay />
-      <DialogPrimitive.Content
-        data-slot='dialog-content'
-        className={cn(
-          'rui:bg-background rui:data-[state=open]:animate-in rui:data-[state=closed]:animate-out rui:data-[state=closed]:fade-out-0 rui:data-[state=open]:fade-in-0 rui:data-[state=closed]:zoom-out-95 rui:data-[state=open]:zoom-in-95 rui:fixed rui:top-[50%] rui:left-[50%] rui:z-50 rui:grid rui:w-full rui:max-w-[calc(100%-2rem)] rui:translate-x-[-50%] rui:translate-y-[-50%] rui:gap-4 rui:rounded-lg rui:border rui:p-6 rui:shadow-lg rui:duration-200 rui:sm:max-w-lg',
-          className
-        )}
-        {...props}
-      >
+      <StyledDialogContent data-slot='dialog-content' {...props}>
         {children}
         {showCloseButton && (
-          <DialogPrimitive.Close
-            data-slot='dialog-close'
-            className='rui:ring-offset-background rui:focus:ring-ring rui:data-[state=open]:bg-accent rui:data-[state=open]:text-muted-foreground rui:absolute rui:top-4 rui:right-4 rui:rounded-xs rui:opacity-70 rui:transition-opacity rui:hover:opacity-100 rui:focus:ring-2 rui:focus:ring-offset-2 rui:focus:outline-hidden rui:disabled:pointer-events-none rui:[&_svg]:pointer-events-none rui:[&_svg]:shrink-0 rui:[&_svg:not([class*=size-])]:size-4'
-          >
+          <StyledCloseButton data-slot='dialog-close'>
             <XIcon />
-            <span className='rui:sr-only'>Close</span>
-          </DialogPrimitive.Close>
+          </StyledCloseButton>
         )}
-      </DialogPrimitive.Content>
+      </StyledDialogContent>
     </DialogPortal>
   );
 }
 
-function DialogHeader({ className, ...props }: React.ComponentProps<'div'>) {
-  return (
-    <div
-      data-slot='dialog-header'
-      className={cn('rui:flex rui:flex-col rui:gap-2 rui:text-center rui:sm:text-left', className)}
-      {...props}
-    />
-  );
+const StyledDialogHeader = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+function DialogHeader(props: React.ComponentProps<'div'>) {
+  return <StyledDialogHeader data-slot='dialog-header' {...props} />;
 }
 
-function DialogFooter({ className, ...props }: React.ComponentProps<'div'>) {
-  return (
-    <div
-      data-slot='dialog-footer'
-      className={cn(
-        'rui:flex rui:flex-col-reverse rui:gap-2 rui:sm:flex-row rui:sm:justify-end',
-        className
-      )}
-      {...props}
-    />
-  );
+const StyledDialogFooter = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  gap: 8px;
+`;
+
+function DialogFooter(props: React.ComponentProps<'div'>) {
+  return <StyledDialogFooter data-slot='dialog-footer' {...props} />;
 }
 
-function DialogTitle({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Title>) {
-  return (
-    <DialogPrimitive.Title
-      data-slot='dialog-title'
-      className={cn('rui:text-lg rui:leading-none rui:font-semibold', className)}
-      {...props}
-    />
-  );
+const StyledDialogTitle = styled(DialogPrimitive.Title)`
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #212121;
+`;
+
+function DialogTitle(props: React.ComponentProps<typeof DialogPrimitive.Title>) {
+  return <StyledDialogTitle data-slot='dialog-title' {...props} />;
 }
 
-function DialogDescription({
-  className,
-  ...props
-}: React.ComponentProps<typeof DialogPrimitive.Description>) {
-  return (
-    <DialogPrimitive.Description
-      data-slot='dialog-description'
-      className={cn('rui:text-muted-foreground rui:text-sm', className)}
-      {...props}
-    />
-  );
+const StyledDialogDescription = styled(DialogPrimitive.Description)`
+  font-size: 14px;
+  color: #757575;
+  line-height: 1.5;
+`;
+
+function DialogDescription(props: React.ComponentProps<typeof DialogPrimitive.Description>) {
+  return <StyledDialogDescription data-slot='dialog-description' {...props} />;
 }
 
 export {

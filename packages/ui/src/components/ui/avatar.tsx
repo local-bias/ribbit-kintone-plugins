@@ -1,45 +1,46 @@
-import * as React from 'react';
+import styled from '@emotion/styled';
 import * as AvatarPrimitive from '@radix-ui/react-avatar';
 
-import { cn } from '@repo/utils';
+const StyledAvatarRoot = styled(AvatarPrimitive.Root)`
+  position: relative;
+  display: flex;
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+  overflow: hidden;
+  border-radius: 50%;
+`;
 
-function Avatar({ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Root>) {
-  return (
-    <AvatarPrimitive.Root
-      data-slot='avatar'
-      className={cn(
-        'rui:relative rui:flex rui:size-8 rui:shrink-0 rui:overflow-hidden rui:rounded-full',
-        className
-      )}
-      {...props}
-    />
-  );
+function Avatar(props: React.ComponentProps<typeof AvatarPrimitive.Root>) {
+  return <StyledAvatarRoot data-slot='avatar' {...props} />;
 }
 
-function AvatarImage({ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Image>) {
-  return (
-    <AvatarPrimitive.Image
-      data-slot='avatar-image'
-      className={cn('rui:aspect-square rui:size-full', className)}
-      {...props}
-    />
-  );
+const StyledAvatarImage = styled(AvatarPrimitive.Image)`
+  aspect-ratio: 1;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+`;
+
+function AvatarImage(props: React.ComponentProps<typeof AvatarPrimitive.Image>) {
+  return <StyledAvatarImage data-slot='avatar-image' {...props} />;
 }
 
-function AvatarFallback({
-  className,
-  ...props
-}: React.ComponentProps<typeof AvatarPrimitive.Fallback>) {
-  return (
-    <AvatarPrimitive.Fallback
-      data-slot='avatar-fallback'
-      className={cn(
-        'rui:bg-muted rui:flex rui:size-full rui:items-center rui:justify-center rui:rounded-full',
-        className
-      )}
-      {...props}
-    />
-  );
+const StyledAvatarFallback = styled(AvatarPrimitive.Fallback)`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  color: #616161;
+  font-size: 14px;
+  font-weight: 500;
+`;
+
+function AvatarFallback(props: React.ComponentProps<typeof AvatarPrimitive.Fallback>) {
+  return <StyledAvatarFallback data-slot='avatar-fallback' {...props} />;
 }
 
 export { Avatar, AvatarImage, AvatarFallback };

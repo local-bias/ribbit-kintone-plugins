@@ -1,7 +1,7 @@
-import * as React from 'react';
+import styled from '@emotion/styled';
+import { keyframes } from '@emotion/react';
 import * as PopoverPrimitive from '@radix-ui/react-popover';
-
-import { cn } from '@repo/utils';
+import * as React from 'react';
 
 function Popover({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Root>) {
   return <PopoverPrimitive.Root data-slot='popover' {...props} />;
@@ -11,22 +11,43 @@ function PopoverTrigger({ ...props }: React.ComponentProps<typeof PopoverPrimiti
   return <PopoverPrimitive.Trigger data-slot='popover-trigger' {...props} />;
 }
 
+const fadeIn = keyframes`
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+`;
+
+const fadeOut = keyframes`
+  from { opacity: 1; transform: scale(1); }
+  to { opacity: 0; transform: scale(0.95); }
+`;
+
+const StyledPopoverContent = styled(PopoverPrimitive.Content)`
+  z-index: 50;
+  width: 288px;
+  border-radius: 8px;
+  border: 1px solid #e0e0e0;
+  background-color: #fff;
+  padding: 16px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  outline: none;
+  animation: ${fadeIn} 0.15s ease-out;
+
+  &[data-state='closed'] {
+    animation: ${fadeOut} 0.1s ease-in;
+  }
+`;
+
 function PopoverContent({
-  className,
   align = 'center',
   sideOffset = 4,
   ...props
 }: React.ComponentProps<typeof PopoverPrimitive.Content>) {
   return (
     <PopoverPrimitive.Portal>
-      <PopoverPrimitive.Content
+      <StyledPopoverContent
         data-slot='popover-content'
         align={align}
         sideOffset={sideOffset}
-        className={cn(
-          'rui:bg-popover rui:text-popover-foreground rui:data-[state=open]:animate-in rui:data-[state=closed]:animate-out rui:data-[state=closed]:fade-out-0 rui:data-[state=open]:fade-in-0 rui:data-[state=closed]:zoom-out-95 rui:data-[state=open]:zoom-in-95 rui:data-[side=bottom]:slide-in-from-top-2 rui:data-[side=left]:slide-in-from-right-2 rui:data-[side=right]:slide-in-from-left-2 rui:data-[side=top]:slide-in-from-bottom-2 rui:z-50 rui:w-72 rui:origin-(--radix-popover-content-transform-origin) rui:rounded-md rui:border rui:p-4 rui:shadow-md rui:outline-hidden',
-          className
-        )}
         {...props}
       />
     </PopoverPrimitive.Portal>

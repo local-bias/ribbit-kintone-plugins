@@ -29,7 +29,9 @@ function ErrorFallbackComponent(props: FallbackComponentProps) {
   return (
     <div className={className}>
       <Alert severity='error'>
-        <AlertTitle title={error.message}>エラーが発生しました</AlertTitle>
+        <AlertTitle title={error instanceof Error ? error.message : '不明なエラー'}>
+          エラーが発生しました
+        </AlertTitle>
         <h2>エラー解決のヒント</h2>
         <ol>
           <li>
@@ -85,8 +87,8 @@ function ErrorFallbackComponent(props: FallbackComponentProps) {
                     プラグインID: config.id,
                     プラグイン名: config.manifest.base.name.ja,
                     バージョン: config.manifest.base.version,
-                    エラーメッセージ: error?.message ?? '不明なエラー ',
-                    エラースタック: error?.stack,
+                    エラーメッセージ: error instanceof Error ? error.message : '不明なエラー',
+                    エラースタック: error instanceof Error ? error.stack : undefined,
                     エラー詳細: error,
                   },
                   null,

@@ -1,41 +1,75 @@
+import styled from '@emotion/styled';
 import * as React from 'react';
-import { Slot } from '@radix-ui/react-slot';
-import { cva, type VariantProps } from 'class-variance-authority';
 
-import { cn } from '@repo/utils';
+type BadgeVariant = 'default' | 'secondary' | 'destructive' | 'outline';
 
-const badgeVariants = cva(
-  'rui:inline-flex rui:items-center rui:justify-center rui:rounded-full rui:border rui:px-3 rui:py-1 rui:text-[11px] rui:md:text-[13px] rui:font-medium rui:w-fit rui:whitespace-nowrap rui:shrink-0 rui:[&>svg]:size-3 rui:gap-1 rui:[&>svg]:pointer-events-none rui:focus-visible:border-ring rui:focus-visible:ring-ring/50 rui:focus-visible:ring-[3px] rui:aria-invalid:ring-destructive/20 rui:dark:aria-invalid:ring-destructive/40 rui:aria-invalid:border-destructive rui:transition-[color,box-shadow] rui:overflow-hidden',
-  {
-    variants: {
-      variant: {
-        default:
-          'rui:border-transparent rui:bg-primary rui:text-primary-foreground rui:[a&]:hover:bg-primary/90',
-        secondary:
-          'rui:border-transparent rui:bg-secondary rui:text-secondary-foreground rui:[a&]:hover:bg-secondary/90',
-        destructive:
-          'rui:border-transparent rui:bg-destructive rui:text-white rui:[a&]:hover:bg-destructive/90 rui:focus-visible:ring-destructive/20 rui:dark:focus-visible:ring-destructive/40 rui:dark:bg-destructive/60',
-        outline:
-          'rui:text-foreground rui:[a&]:hover:bg-accent rui:[a&]:hover:text-accent-foreground',
-      },
-    },
-    defaultVariants: {
-      variant: 'default',
-    },
-  }
-);
-
-function Badge({
-  className,
-  variant,
-  asChild = false,
-  ...props
-}: React.ComponentProps<'span'> & VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
-  const Comp = asChild ? Slot : 'span';
-
-  return (
-    <Comp data-slot='badge' className={cn(badgeVariants({ variant }), className)} {...props} />
-  );
+interface BadgeStyleProps {
+  variant?: BadgeVariant;
 }
 
-export { Badge, badgeVariants };
+const variantStyles: Record<BadgeVariant, string> = {
+  default: `
+    background-color: #1976d2;
+    color: #fff;
+    border-color: transparent;
+    &:hover { background-color: #1565c0; }
+  `,
+  secondary: `
+    background-color: #f5f5f5;
+    color: #424242;
+    border-color: transparent;
+    &:hover { background-color: #eeeeee; }
+  `,
+  destructive: `
+    background-color: #d32f2f;
+    color: #fff;
+    border-color: transparent;
+    &:hover { background-color: #c62828; }
+  `,
+  outline: `
+    background-color: transparent;
+    color: #212121;
+    border-color: #bdbdbd;
+    &:hover { background-color: #f5f5f5; }
+  `,
+};
+
+const StyledBadge = styled.span<BadgeStyleProps>`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid;
+  padding: 2px 12px;
+  font-size: 12px;
+  font-weight: 500;
+  width: fit-content;
+  white-space: nowrap;
+  flex-shrink: 0;
+  gap: 4px;
+  overflow: hidden;
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease,
+    box-shadow 0.15s ease;
+  line-height: 1.5;
+
+  & > svg {
+    width: 12px;
+    height: 12px;
+    pointer-events: none;
+  }
+
+  ${({ variant = 'default' }) => variantStyles[variant]}
+`;
+
+interface BadgeProps extends React.ComponentProps<'span'> {
+  variant?: BadgeVariant;
+}
+
+function Badge({ variant = 'default', ...props }: BadgeProps) {
+  return <StyledBadge data-slot='badge' variant={variant} {...props} />;
+}
+
+export { Badge };
+export type { BadgeVariant, BadgeProps };

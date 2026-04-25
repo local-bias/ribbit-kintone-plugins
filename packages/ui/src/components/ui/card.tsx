@@ -1,77 +1,83 @@
+import styled from '@emotion/styled';
 import * as React from 'react';
-import { cn } from '@repo/utils';
 
-function Card({ className, ...props }: React.ComponentProps<'div'>) {
-  return (
-    <div
-      data-slot='card'
-      className={cn(
-        'rui:bg-card rui:text-card-foreground rui:flex rui:flex-col rui:gap-6 rui:rounded-xl rui:border rui:border-border rui:py-6 rui:shadow-sm',
-        className
-      )}
-      {...props}
-    />
-  );
+const StyledCard = styled.div`
+  background-color: #fff;
+  color: #212121;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  border-radius: 12px;
+  border: 1px solid #e0e0e0;
+  padding: 24px 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+`;
+
+function Card(props: React.ComponentProps<'div'>) {
+  return <StyledCard data-slot='card' {...props} />;
 }
 
-function CardHeader({ className, ...props }: React.ComponentProps<'div'>) {
-  return (
-    <div
-      data-slot='card-header'
-      className={cn(
-        'rui:@container/card-header rui:grid rui:auto-rows-min rui:grid-rows-[auto_auto] rui:items-start rui:gap-1.5 rui:px-6 rui:has-data-[slot=card-action]:grid-cols-[1fr_auto] rui:[.border-b]:pb-6',
-        className
-      )}
-      {...props}
-    />
-  );
+const StyledCardHeader = styled.div`
+  display: grid;
+  grid-auto-rows: min-content;
+  grid-template-rows: auto auto;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 0 24px;
+`;
+
+function CardHeader(props: React.ComponentProps<'div'>) {
+  return <StyledCardHeader data-slot='card-header' {...props} />;
 }
 
-function CardTitle({ className, ...props }: React.ComponentProps<'div'>) {
-  return (
-    <div
-      data-slot='card-title'
-      className={cn('rui:leading-none rui:font-semibold', className)}
-      {...props}
-    />
-  );
+const StyledCardTitle = styled.div`
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.2;
+  color: #212121;
+`;
+
+function CardTitle(props: React.ComponentProps<'div'>) {
+  return <StyledCardTitle data-slot='card-title' {...props} />;
 }
 
-function CardDescription({ className, ...props }: React.ComponentProps<'div'>) {
-  return (
-    <div
-      data-slot='card-description'
-      className={cn('rui:text-muted-foreground rui:text-sm', className)}
-      {...props}
-    />
-  );
+const StyledCardDescription = styled.div`
+  color: #757575;
+  font-size: 14px;
+  line-height: 1.5;
+`;
+
+function CardDescription(props: React.ComponentProps<'div'>) {
+  return <StyledCardDescription data-slot='card-description' {...props} />;
 }
 
-function CardAction({ className, ...props }: React.ComponentProps<'div'>) {
-  return (
-    <div
-      data-slot='card-action'
-      className={cn(
-        'rui:col-start-2 rui:row-span-2 rui:row-start-1 rui:self-start rui:justify-self-end',
-        className
-      )}
-      {...props}
-    />
-  );
+const StyledCardAction = styled.div`
+  grid-column-start: 2;
+  grid-row: 1 / span 2;
+  align-self: flex-start;
+  justify-self: end;
+`;
+
+function CardAction(props: React.ComponentProps<'div'>) {
+  return <StyledCardAction data-slot='card-action' {...props} />;
 }
 
-function CardContent({ className, ...props }: React.ComponentProps<'div'>) {
-  return <div data-slot='card-content' className={cn('rui:px-6', className)} {...props} />;
+const StyledCardContent = styled.div`
+  padding: 0 24px;
+`;
+
+function CardContent(props: React.ComponentProps<'div'>) {
+  return <StyledCardContent data-slot='card-content' {...props} />;
 }
 
-function CardFooter({ className, ...props }: React.ComponentProps<'div'>) {
-  return (
-    <div
-      data-slot='card-footer'
-      className={cn('rui:flex rui:items-center rui:px-6 rui:[.border-t]:pt-6', className)}
-      {...props}
-    />
-  );
+const StyledCardFooter = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+`;
+
+function CardFooter(props: React.ComponentProps<'div'>) {
+  return <StyledCardFooter data-slot='card-footer' {...props} />;
 }
 
 export { Card, CardHeader, CardFooter, CardTitle, CardAction, CardDescription, CardContent };
