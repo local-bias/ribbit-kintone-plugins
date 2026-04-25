@@ -22,6 +22,7 @@ type Props = {
 
 const TriggerContainer = styled.span`
   position: relative;
+  margin-left: 4px;
 `;
 
 const triggerStyles = `
@@ -77,6 +78,10 @@ const DesktopTooltipContainer: FC<Props> = ({ condition }) => {
             <TooltipEmojiContainer condition={condition} />
           </StyledTooltipTrigger>
           <TooltipContent
+            style={{
+              backgroundColor: condition.backgroundColor,
+              color: condition.foregroundColor,
+            }}
             className={css`
               background-color: ${condition.backgroundColor};
               color: ${condition.foregroundColor};
