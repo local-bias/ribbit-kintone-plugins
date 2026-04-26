@@ -4,7 +4,7 @@ import { isMobile } from '@konomi-app/kintone-utilities';
 import { useAtomValue } from 'jotai';
 import { DocumentIcon } from '../../ui/document-icon';
 
-type Props = Readonly<{ recordId: string; }>;
+type Props = Readonly<{ recordId: string }>;
 
 export default function TableCellDetailsLink({ recordId }: Props) {
   const condition = useAtomValue(pluginConditionAtom)!;

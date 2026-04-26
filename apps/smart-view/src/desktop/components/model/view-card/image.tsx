@@ -6,8 +6,8 @@ import { useAtomValue } from 'jotai';
 import { Suspense } from 'react';
 import ViewCardNoImage from './no-image';
 
-type Props = { file: kintoneAPI.field.File['value'][number] | null; className?: string; };
-type ImageProps = { file: kintoneAPI.field.File['value'][number]; };
+type Props = { file: kintoneAPI.field.File['value'][number] | null; className?: string };
+type ImageProps = { file: kintoneAPI.field.File['value'][number] };
 
 function ViewCardImage({ file }: ImageProps) {
   const fileUrl = useAtomValue(fileUrlAtom(file.fileKey));
@@ -26,7 +26,11 @@ function ViewCardImageSuspense({ file }: ImageProps) {
 }
 
 export default function ViewCardImageContainer({ className, file }: Props) {
-  return <Container className={className}>{file ? <ViewCardImageSuspense file={file} /> : <ViewCardNoImage />}</Container>;
+  return (
+    <Container className={className}>
+      {file ? <ViewCardImageSuspense file={file} /> : <ViewCardNoImage />}
+    </Container>
+  );
 }
 
 const Container = styled.div`

@@ -137,37 +137,35 @@ export function Autocomplete() {
     }, 0);
   };
 
-  const onKeyDown = useAtomCallback(
-    (get, set, event: React.KeyboardEvent<HTMLInputElement>) => {
-      const options = get(filteredOptionsAtom);
-      if (
-        (event.key !== 'ArrowDown' && event.key !== 'ArrowUp' && event.key !== 'Enter') ||
-        options.length === 0
-      ) {
-        return;
-      }
-      event.preventDefault();
-      let optionCursor = get(optionCursorAtom);
-      if (event.key === 'ArrowDown') {
-        optionCursor = Math.min(optionCursor + 1, options.length - 1);
-      } else if (event.key === 'ArrowUp') {
-        optionCursor = Math.max(optionCursor - 1, -1);
-      } else if (event.key === 'Enter') {
-        const selectedOption = options[optionCursor];
-        if (selectedOption) {
-          handleSelectOption(selectedOption);
-        }
-        return;
-      }
-      set(optionCursorAtom, optionCursor);
-      if (optionCursor === -1) {
-        return;
-      }
-      optionsRef.current?.scrollTo({
-        top: (optionsRef.current?.children[optionCursor] as HTMLElement)?.offsetTop,
-      });
+  const onKeyDown = useAtomCallback((get, set, event: React.KeyboardEvent<HTMLInputElement>) => {
+    const options = get(filteredOptionsAtom);
+    if (
+      (event.key !== 'ArrowDown' && event.key !== 'ArrowUp' && event.key !== 'Enter') ||
+      options.length === 0
+    ) {
+      return;
     }
-  );
+    event.preventDefault();
+    let optionCursor = get(optionCursorAtom);
+    if (event.key === 'ArrowDown') {
+      optionCursor = Math.min(optionCursor + 1, options.length - 1);
+    } else if (event.key === 'ArrowUp') {
+      optionCursor = Math.max(optionCursor - 1, -1);
+    } else if (event.key === 'Enter') {
+      const selectedOption = options[optionCursor];
+      if (selectedOption) {
+        handleSelectOption(selectedOption);
+      }
+      return;
+    }
+    set(optionCursorAtom, optionCursor);
+    if (optionCursor === -1) {
+      return;
+    }
+    optionsRef.current?.scrollTo({
+      top: (optionsRef.current?.children[optionCursor] as HTMLElement)?.offsetTop,
+    });
+  });
 
   return (
     <div className='relative' onBlur={onBlur}>

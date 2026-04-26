@@ -11,7 +11,7 @@ const SidebarComponent: FC = () => {
   const { enqueueSnackbar } = useSnackbar();
   const [conditions, setConditions] = useAtom(pluginConditionsAtom);
   const [selectedConditionId, setSelectedConditionId] = useAtom(selectedConditionIdAtom);
-  const label = useCallback((params: { condition: PluginCondition; index: number; }) => {
+  const label = useCallback((params: { condition: PluginCondition; index: number }) => {
     const { index, condition } = params;
     return (
       <div>

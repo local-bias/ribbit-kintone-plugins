@@ -11,7 +11,7 @@ type Props = {
   className?: string;
 };
 
-function ViewCardFieldLabel({ fieldCode }: { fieldCode: string; }) {
+function ViewCardFieldLabel({ fieldCode }: { fieldCode: string }) {
   const properties = useAtomValue(currentAppFieldPropertiesAtom);
   const property = Object.values(properties).find((p) => p.code === fieldCode);
 

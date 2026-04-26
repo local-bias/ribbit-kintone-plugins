@@ -12,19 +12,19 @@ export const MyTable = styled.table<{
 
   display: grid;
   grid-template-columns: ${({ isDetailCellHidden = false }) => (isDetailCellHidden ? '' : 'auto')} ${({
-      viewFields,
-      condition,
-    }) => {
-      const fields = viewFields ?? condition?.viewFields ?? [];
-      return fields
-        .map(({ width }) => {
-          if (width === 0) {
-            return '1fr';
-          }
-          return `${width}px`;
-        })
-        .join(' ');
-    }};
+    viewFields,
+    condition,
+  }) => {
+    const fields = viewFields ?? condition?.viewFields ?? [];
+    return fields
+      .map(({ width }) => {
+        if (width === 0) {
+          return '1fr';
+        }
+        return `${width}px`;
+      })
+      .join(' ');
+  }};
   justify-content: flex-start;
 
   th {

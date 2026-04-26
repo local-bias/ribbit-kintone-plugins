@@ -6,7 +6,7 @@ import {
   InformationCircleIcon,
 } from '@heroicons/react/24/solid';
 
-type Props = { iconType: IconType; iconColor: string; };
+type Props = { iconType: IconType; iconColor: string };
 
 export function TooltipIcon({ iconType, iconColor }: Props) {
   switch (iconType) {

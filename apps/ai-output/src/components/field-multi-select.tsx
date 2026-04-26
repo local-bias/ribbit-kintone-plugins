@@ -4,10 +4,11 @@ import { Atom, useAtomValue } from 'jotai';
 import { ComponentProps, Suspense, useCallback } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
-interface ContainerProps extends Omit<
-  ComponentProps<typeof Autocomplete>,
-  'multiple' | 'onChange' | 'value' | 'renderInput' | 'options'
-> {
+interface ContainerProps
+  extends Omit<
+    ComponentProps<typeof Autocomplete>,
+    'multiple' | 'onChange' | 'value' | 'renderInput' | 'options'
+  > {
   fieldPropertiesAtom: Atom<kintoneAPI.FieldProperty[] | Promise<kintoneAPI.FieldProperty[]>>;
   fieldCodes: string[];
   onChange: (codes: string[]) => void;

@@ -324,8 +324,7 @@ const ui = mergeDeep(commonUi, {
     'config.buttonLabel.label': 'ป้ายปุ่ม',
     'config.buttonLabel.placeholder': 'ดาวน์โหลดทั้งหมด',
     'config.fieldCodes.title': 'ฟิลด์ไฟล์แนบ',
-    'config.fieldCodes.description':
-      'เลือกฟิลด์ไฟล์แนบที่จะดาวน์โหลด สามารถเลือกฟิลด์ในซับเทเบิลได้ด้วย',
+    'config.fieldCodes.description': 'เลือกฟิลด์ไฟล์แนบที่จะดาวน์โหลด สามารถเลือกฟิลด์ในซับเทเบิลได้ด้วย',
     'config.fieldCodes.addField': 'เพิ่มฟิลด์',
     'config.fieldCodes.deleteField': 'ลบฟิลด์นี้',
     'config.buttonLocation.title': 'ตำแหน่งปุ่ม',

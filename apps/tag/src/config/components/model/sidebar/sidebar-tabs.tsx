@@ -2,7 +2,11 @@ import { PluginConditionTabs } from '@konomi-app/kintone-utilities-react';
 import { Tab } from '@mui/material';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { FC, useEffect } from 'react';
-import { pluginConditionsAtom, selectedConditionIdAtom, tabIndexAtom } from '../../../states/plugin';
+import {
+  pluginConditionsAtom,
+  selectedConditionIdAtom,
+  tabIndexAtom,
+} from '../../../states/plugin';
 
 const Component: FC = () => {
   const tabIndex = useAtomValue(tabIndexAtom);

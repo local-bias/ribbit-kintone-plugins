@@ -1842,10 +1842,8 @@ export const ui = {
     'common.error.retry.description': 'คลิกปุ่ม "ลองใหม่" ด้านล่างเพื่อทำงานอีกครั้ง',
     'common.error.retry.button': 'ลองใหม่',
     'common.error.latestVersion.title': 'ติดตั้งปลั๊กอินเวอร์ชันล่าสุด',
-    'common.error.latestVersion.description1':
-      'การติดตั้งปลั๊กอินเวอร์ชันล่าสุดอาจช่วยแก้ไขปัญหาได้',
-    'common.error.latestVersion.description2':
-      'ดาวน์โหลดเวอร์ชันล่าสุดจากลิงก์ด้านล่างและติดตั้งใหม่',
+    'common.error.latestVersion.description1': 'การติดตั้งปลั๊กอินเวอร์ชันล่าสุดอาจช่วยแก้ไขปัญหาได้',
+    'common.error.latestVersion.description2': 'ดาวน์โหลดเวอร์ชันล่าสุดจากลิงก์ด้านล่างและติดตั้งใหม่',
     'common.error.latestVersion.button': 'ดาวน์โหลดเวอร์ชันล่าสุด',
     'common.error.updateSettings.title': 'อัปเดตการตั้งค่าปลั๊กอิน',
     'common.error.updateSettings.description':
@@ -1854,10 +1852,8 @@ export const ui = {
     'common.error.updateSettings.steps.2': 'คลิกปุ่ม "บันทึก" โดยไม่เปลี่ยนการตั้งค่า',
     'common.error.updateSettings.steps.3': 'อัปเดตแอป',
     'common.error.updateSettings.steps.4': 'ตรวจสอบว่าการทำงานดีขึ้นหรือไม่',
-    'common.error.updateSettings.steps.5':
-      '-- หากการทำงานไม่ดีขึ้น ให้ทำตามขั้นตอนเพิ่มเติมเหล่านี้ --',
-    'common.error.updateSettings.steps.6':
-      'เปิดหน้าจอการตั้งค่าปลั๊กอินอีกครั้งและคลิกปุ่มรีเซ็ตที่มุมล่างขวา',
+    'common.error.updateSettings.steps.5': '-- หากการทำงานไม่ดีขึ้น ให้ทำตามขั้นตอนเพิ่มเติมเหล่านี้ --',
+    'common.error.updateSettings.steps.6': 'เปิดหน้าจอการตั้งค่าปลั๊กอินอีกครั้งและคลิกปุ่มรีเซ็ตที่มุมล่างขวา',
     'common.error.updateSettings.steps.7': 'ทำการตั้งค่าที่จำเป็นและคลิกปุ่ม "บันทึก"',
     'common.error.updateSettings.steps.8': 'อัปเดตแอป',
     'common.error.updateSettings.steps.9': 'ตรวจสอบว่าการทำงานดีขึ้นหรือไม่',
@@ -1891,8 +1887,7 @@ export const ui = {
     'common.tooltip.recordDetail': 'รายละเอียดเรคคอร์ด',
     'common.tooltip.recordEdit': 'แก้ไขเรคคอร์ด',
     'common.tooltip.recordDelete': 'ลบเรคคอร์ด',
-    'common.tooltip.lookupCopyField':
-      'ฟิลด์นี้ไม่สามารถแก้ไขได้เนื่องจากตั้งค่าเป็นปลายทางคัดลอกของฟิลด์ lookup',
+    'common.tooltip.lookupCopyField': 'ฟิลด์นี้ไม่สามารถแก้ไขได้เนื่องจากตั้งค่าเป็นปลายทางคัดลอกของฟิลด์ lookup',
     'common.tooltip.noEditPermission': 'ไม่มีสิทธิ์แก้ไข',
 
     'common.cache.inProgress': 'แคชกำลังดำเนินการ อาจยังมีเรคคอร์ดที่ตรงกับเงื่อนไขอยู่',
@@ -1921,8 +1916,7 @@ export const ui = {
     'config.app.form.view-fields.isEditable.description': 'หากปิดสวิตช์ จะไม่แสดงในหน้าจอแก้ไข',
     'config.app.form.view-fields.isEditable.label': 'แสดงในหน้าจอแก้ไข',
     'config.app.form.view-fields.displayName.title': 'ชื่อการแสดงผล',
-    'config.app.form.view-fields.displayName.description':
-      'หากตั้งค่าไว้ จะแสดงค่านี้แทนชื่อฟิลด์มาตรฐาน',
+    'config.app.form.view-fields.displayName.description': 'หากตั้งค่าไว้ จะแสดงค่านี้แทนชื่อฟิลด์มาตรฐาน',
     'config.app.form.view-fields.displayName.label': 'ชื่อการแสดงผล',
     'config.app.form.view-fields.nowrap.title': 'การตั้งค่าการตัดบรรทัด',
     'config.app.form.view-fields.nowrap.description':
@@ -1940,8 +1934,7 @@ export const ui = {
     'config.app.form.paginationChunk.label': 'จำนวนเรคคอร์ดที่แสดงต่อหน้า',
     'config.app.form.isPaginationChunkControlShown.description':
       'หากเปิดใช้งานการตั้งค่านี้ จะแสดงแบบฟอร์มที่อนุญาตให้เปลี่ยนจำนวนเรคคอร์ดที่แสดงต่อหน้า',
-    'config.app.form.isPaginationChunkControlShown.label':
-      'อนุญาตให้เปลี่ยนจำนวนการแสดงผลจากรายการ',
+    'config.app.form.isPaginationChunkControlShown.label': 'อนุญาตให้เปลี่ยนจำนวนการแสดงผลจากรายการ',
     'config.app.form.pagination.title': 'การตั้งค่าการแบ่งหน้า',
     'config.app.form.pagination.description.1':
       'คุณสามารถเปลี่ยนจำนวนเรคคอร์ดที่แสดงต่อหน้าได้ ในสภาพแวดล้อมที่มีสเปคต่ำ การลดจำนวนเรคคอร์ดที่แสดงอาจช่วยปรับปรุงประสิทธิภาพ',
@@ -2041,21 +2034,18 @@ export const ui = {
     'config.toast.reset': 'รีเซ็ตการตั้งค่าแล้ว',
     'config.toast.import': 'นำเข้าข้อมูลการตั้งค่าแล้ว',
     'config.toast.export': 'ส่งออกข้อมูลการตั้งค่าปลั๊กอินแล้ว',
-    'config.error.import':
-      'ไม่สามารถนำเข้าข้อมูลการตั้งค่าได้ โปรดตรวจสอบไฟล์ว่ามีข้อผิดพลาดหรือไม่',
+    'config.error.import': 'ไม่สามารถนำเข้าข้อมูลการตั้งค่าได้ โปรดตรวจสอบไฟล์ว่ามีข้อผิดพลาดหรือไม่',
     'config.error.export': 'ไม่สามารถส่งออกข้อมูลการตั้งค่าปลั๊กอินได้ โปรดติดต่อนักพัฒนาปลั๊กอิน',
 
     'desktop.app.empty.title': 'ไม่พบเรคคอร์ดที่ตรงกับเงื่อนไข',
-    'desktop.app.empty.description.1':
-      'นอกจากเงื่อนไขการค้นหาที่ป้อน เงื่อนไขการกรองของรายการยังถูกใช้ด้วย',
+    'desktop.app.empty.description.1': 'นอกจากเงื่อนไขการค้นหาที่ป้อน เงื่อนไขการกรองของรายการยังถูกใช้ด้วย',
     'desktop.app.empty.description.2': 'หากคุณไม่พบเรคคอร์ดที่ต้องการ โปรดตรวจสอบเงื่อนไขการกรอง',
     'desktop.app.editor.title': 'แก้ไขเรคคอร์ด',
     'desktop.app.editor.save': 'บันทึก',
     'desktop.app.editor.cancel': 'ยกเลิก',
     'desktop.app.editor.lookup.success': 'ดึงข้อมูลจากแหล่งอ้างอิงแล้ว',
     'desktop.app.toast.recordUpdated': 'อัปเดตเรคคอร์ดแล้ว',
-    'desktop.app.toast.partialRecordUpdated':
-      'อัปเดตเรคคอร์ดแล้ว แต่ไม่สามารถอัปเดต {0} เรคคอร์ดได้ ({1})',
+    'desktop.app.toast.partialRecordUpdated': 'อัปเดตเรคคอร์ดแล้ว แต่ไม่สามารถอัปเดต {0} เรคคอร์ดได้ ({1})',
     'desktop.app.toast.recordUpdateFailed': 'ไม่สามารถอัปเดตเรคคอร์ดได้',
     'desktop.app.toast.recordUpdateFailedWithMessage': 'ไม่สามารถอัปเดตเรคคอร์ดได้ ({0})',
     'desktop.app.toast.recordDeleted': 'ลบเรคคอร์ดแล้ว',
@@ -2093,8 +2083,7 @@ export const ui = {
       'ตั้งค่าความสูงสูงสุดของเซลล์ หากตั้งค่าไว้ ความสูงของเซลล์จะคงที่แม้จะมีข้อมูลหลายบรรทัดและจะมีแถบเลื่อนแนวตั้ง หากเว้นว่างไว้ ความสูงจะขยายอัตโนมัติ',
     'config.app.form.view-fields.maxHeight.label': 'ความสูงสูงสุด (พิกเซล)',
     'config.app.form.view-fields.minigraph.title': 'กราฟขนาดเล็ก',
-    'config.app.form.view-fields.minigraph.description':
-      'แสดงตารางย่อยเป็นกราฟอย่างง่ายแทนที่จะเป็นตาราง',
+    'config.app.form.view-fields.minigraph.description': 'แสดงตารางย่อยเป็นกราฟอย่างง่ายแทนที่จะเป็นตาราง',
     'config.app.form.view-fields.minigraph.label': 'แสดงกราฟขนาดเล็ก',
     'config.app.form.view-fields.minigraph.graphType.label': 'ประเภทกราฟ',
     'config.app.form.view-fields.minigraph.valueField.label': 'ฟิลด์ที่จะใช้เป็นค่า',
@@ -2125,8 +2114,7 @@ export const ui = {
     'config.error.migration.step3': 'คลิกปุ่ม "บันทึก" เพื่อบันทึกการตั้งค่า',
     'config.error.migration.resetButton': 'รีเซ็ตการตั้งค่า',
     'config.error.migration.resetSuccess': 'รีเซ็ตการตั้งค่าแล้ว โปรดกำหนดค่าใหม่และบันทึก',
-    'config.error.migration.resetFailed':
-      'ไม่สามารถรีเซ็ตการตั้งค่าได้ โปรดโหลดหน้าซ้ำแล้วลองอีกครั้ง',
+    'config.error.migration.resetFailed': 'ไม่สามารถรีเซ็ตการตั้งค่าได้ โปรดโหลดหน้าซ้ำแล้วลองอีกครั้ง',
   },
 } as const;
 

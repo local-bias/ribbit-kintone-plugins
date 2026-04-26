@@ -34,7 +34,12 @@ function SrcAppFormComponent() {
         );
       }}
       renderInput={(params) => (
-        <TextField {...params} label={t('config.condition.srcAppId.label')} variant='outlined' color='primary' />
+        <TextField
+          {...params}
+          label={t('config.condition.srcAppId.label')}
+          variant='outlined'
+          color='primary'
+        />
       )}
     />
   );

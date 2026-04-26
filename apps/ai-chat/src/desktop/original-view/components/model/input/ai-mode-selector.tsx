@@ -47,8 +47,8 @@ export default function AIModeSelector() {
   const currentMode: AIMode = webSearchEnabled
     ? 'web-search'
     : imageGenerationEnabled
-    ? 'image-generation'
-    : 'standard';
+      ? 'image-generation'
+      : 'standard';
 
   const handleChange = (event: SelectChangeEvent<AIMode>) => {
     const newMode = event.target.value as AIMode;

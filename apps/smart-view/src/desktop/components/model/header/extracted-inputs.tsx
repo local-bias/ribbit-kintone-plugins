@@ -12,7 +12,7 @@ import { Autocomplete, Skeleton, TextField, Tooltip } from '@mui/material';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { Suspense } from 'react';
 
-type Props = { input: PluginExtractedInput; index: number; };
+type Props = { input: PluginExtractedInput; index: number };
 
 function ExtractedAutocomplete({ input, index }: Props) {
   const appFields = useAtomValue(currentAppFieldPropertiesAtom);

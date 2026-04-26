@@ -29,7 +29,7 @@ function MinigraphForm({ property }: { property: kintoneAPI.property.Subtable })
   const condition = useAtomValue(selectedConditionAtom);
   const viewField = selectedIndex !== null ? condition.viewFields[selectedIndex] : null;
 
-  // React 19 optimized: Cache property fields array 
+  // React 19 optimized: Cache property fields array
   const propertyFieldsArray = Object.values(property.fields);
   // React 19 optimized: Cache filtered fields to avoid recalculation
   const valueSelectableFields = propertyFieldsArray.filter(

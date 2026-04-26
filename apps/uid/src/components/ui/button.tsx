@@ -105,7 +105,11 @@ export function buttonVariants({
   variant = 'default',
   size = 'default',
   className,
-}: { variant?: ButtonVariant; size?: ButtonSize; className?: string } = {}) {
+}: {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  className?: string;
+} = {}) {
   return cx(
     buttonBase,
     variantStyles[variant] ?? variantStyles.default,

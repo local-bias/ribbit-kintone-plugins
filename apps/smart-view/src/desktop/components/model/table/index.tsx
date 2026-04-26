@@ -1,8 +1,5 @@
 import { useAtomValue } from 'jotai';
-import {
-  pluginConditionAtom,
-  resolvedTableColumnsAtom
-} from '../../../states/plugin';
+import { pluginConditionAtom, resolvedTableColumnsAtom } from '../../../states/plugin';
 import RecordTableBody from './body';
 import RecordTableHead from './head';
 import { MyTable } from './layout';

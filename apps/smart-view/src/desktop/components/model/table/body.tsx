@@ -4,10 +4,7 @@ import { isProd } from '@/lib/global';
 import { Skeleton } from '@mui/material';
 import { useAtomValue } from 'jotai';
 import { Suspense, useDeferredValue } from 'react';
-import {
-  pluginConditionAtom,
-  resolvedTableColumnsAtom,
-} from '../../../states/plugin';
+import { pluginConditionAtom, resolvedTableColumnsAtom } from '../../../states/plugin';
 import { areAllCurrentAppRecordsReadyAtom, displayingTableRowsAtom } from '../../../states/records';
 import { DocumentIcon } from '../../ui/document-icon';
 import TableCell from './cell';
@@ -15,7 +12,7 @@ import TableCellDetailsLink from './cell-details-link';
 import { MyTableBody } from './layout';
 
 // React 19: Component will be automatically optimized by React Compiler
-function RecordTableBodyRow(props: { tableRow: TableRow; }) {
+function RecordTableBodyRow(props: { tableRow: TableRow }) {
   const { tableRow } = props;
   const recordId = tableRow.record.$id.value as string;
   const columns = useAtomValue(resolvedTableColumnsAtom);

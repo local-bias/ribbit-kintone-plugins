@@ -69,50 +69,52 @@ type FieldCodeSelectProps = {
 function FieldCodeSelect({ index, value }: FieldCodeSelectProps) {
   const fields = useAtomValue(selectableViewFieldsAtom);
   const onFieldChange = useSetAtom(handleViewFieldChangeAtom);
-  return (<Autocomplete
-    value={
-      fields.find(
-        (field) =>
-          field.code === value.fieldCode && field.joinConditionId === value.joinConditionId
-      ) ?? null
-    }
-    sx={{ width: '350px' }}
-    options={fields}
-    isOptionEqualToValue={(option, v) =>
-      option.code === v.code && option.joinConditionId === v.joinConditionId
-    }
-    getOptionLabel={(option) =>
-      `${option.appName ? `【${option.appName}】` : ''}${option.label}(${option.code})`
-    }
-    onChange={(_, field) => onFieldChange(index, field)}
-    renderOption={(props, option) => {
-      const { key, ...optionProps } = props;
-      return (
-        <Box key={key} component='li' {...optionProps}>
-          <div className='grid'>
-            {option.appName && (
-              <div className='text-xs text-blue-400'>
-                {t('common.autocomplete.options.appName', option.appName)}
+  return (
+    <Autocomplete
+      value={
+        fields.find(
+          (field) =>
+            field.code === value.fieldCode && field.joinConditionId === value.joinConditionId
+        ) ?? null
+      }
+      sx={{ width: '350px' }}
+      options={fields}
+      isOptionEqualToValue={(option, v) =>
+        option.code === v.code && option.joinConditionId === v.joinConditionId
+      }
+      getOptionLabel={(option) =>
+        `${option.appName ? `【${option.appName}】` : ''}${option.label}(${option.code})`
+      }
+      onChange={(_, field) => onFieldChange(index, field)}
+      renderOption={(props, option) => {
+        const { key, ...optionProps } = props;
+        return (
+          <Box key={key} component='li' {...optionProps}>
+            <div className='grid'>
+              {option.appName && (
+                <div className='text-xs text-blue-400'>
+                  {t('common.autocomplete.options.appName', option.appName)}
+                </div>
+              )}
+              <div className='text-xs text-gray-400'>
+                {t('common.autocomplete.options.fieldCode', option.code)}
               </div>
-            )}
-            <div className='text-xs text-gray-400'>
-              {t('common.autocomplete.options.fieldCode', option.code)}
+              {option.label}
             </div>
-            {option.label}
-          </div>
-        </Box>
-      );
-    }}
-    renderInput={(params) => (
-      <TextField
-        {...params}
-        label={t('config.app.form.view-fields.fieldCode.label')}
-        slotProps={{ inputLabel: { shrink: true } }}
-        variant='outlined'
-        color='primary'
-      />
-    )}
-  />);
+          </Box>
+        );
+      }}
+      renderInput={(params) => (
+        <TextField
+          {...params}
+          label={t('config.app.form.view-fields.fieldCode.label')}
+          slotProps={{ inputLabel: { shrink: true } }}
+          variant='outlined'
+          color='primary'
+        />
+      )}
+    />
+  );
 }
 
 function FieldCodeSelectContainer(props: FieldCodeSelectProps) {
@@ -122,7 +124,6 @@ function FieldCodeSelectContainer(props: FieldCodeSelectProps) {
     </Suspense>
   );
 }
-
 
 const FieldRow: FC<{
   value: PluginViewField;

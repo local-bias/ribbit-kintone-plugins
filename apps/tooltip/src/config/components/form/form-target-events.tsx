@@ -7,7 +7,7 @@ import { useCallback } from 'react';
 
 type OptionValue = PluginCondition['targetEvents'][number];
 
-const OPTIONS: { value: OptionValue; label: string; }[] = [
+const OPTIONS: { value: OptionValue; label: string }[] = [
   {
     value: 'create',
     label: 'レコード追加画面',

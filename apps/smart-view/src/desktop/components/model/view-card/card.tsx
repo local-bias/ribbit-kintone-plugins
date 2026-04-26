@@ -25,7 +25,7 @@ function ViewCardComponent({ className, record }: Props) {
   const imageFieldCode = useAtomValue(cardImageFieldCodeAtom);
   const viewFields = useAtomValue(cardViewFieldsAtom) ?? [];
 
-  const files = imageFieldCode ? (record.record[imageFieldCode]?.value as FileInfo[]) ?? [] : [];
+  const files = imageFieldCode ? ((record.record[imageFieldCode]?.value as FileInfo[]) ?? []) : [];
 
   let image: FileInfo | null = null;
 
@@ -43,14 +43,19 @@ function ViewCardComponent({ className, record }: Props) {
         <div className='🐸fields'>
           {viewFields.map((field, i) => {
             return (
-              <ViewCardField key={i} field={record.record[field.fieldCode]} fieldCode={field.fieldCode} />
+              <ViewCardField
+                key={i}
+                field={record.record[field.fieldCode]}
+                fieldCode={field.fieldCode}
+              />
             );
           })}
         </div>
         <div className='🐸actions'>
           <a
-            href={`${location.pathname}show${isMobile() ? '?' : '#'}record=${record.record.$id.value
-              }&l.view=${condition.viewId}&l.q${getQueryString() ? `=${getQueryString()}` : ''}`}
+            href={`${location.pathname}show${isMobile() ? '?' : '#'}record=${
+              record.record.$id.value
+            }&l.view=${condition.viewId}&l.q${getQueryString() ? `=${getQueryString()}` : ''}`}
             {...(condition.isOpenInNewTab ? { target: '_blank' } : {})}
           >
             <Tooltip title='レコード詳細'>

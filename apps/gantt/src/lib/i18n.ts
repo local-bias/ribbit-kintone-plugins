@@ -43,7 +43,8 @@ const ui = mergeDeep(commonUi, {
     'config.condition.tooltipFieldCodes.label': '追加表示フィールド',
     'config.condition.tooltipFieldCodes.add': '＋ フィールドを追加',
     'config.condition.tooltipFieldCodes.remove': 'このフィールドを削除',
-    'config.condition.tooltipFieldCodes.plusOnly': '2件以上の追加表示フィールドはガントチャートプラグイン プラスでのみ利用可能です',
+    'config.condition.tooltipFieldCodes.plusOnly':
+      '2件以上の追加表示フィールドはガントチャートプラグイン プラスでのみ利用可能です',
     'config.form.description.viewId':
       'ガントチャートを表示するカスタムビューを選択してください。事前にアプリの設定画面で、表示形式が「カスタマイズ」のビュー（一覧）を作成しておく必要があります。',
     'config.form.description.fields':

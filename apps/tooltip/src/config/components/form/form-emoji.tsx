@@ -30,7 +30,7 @@ function EmojiPicker() {
       </div>
       <Picker
         data={data}
-        onEmojiSelect={({ native }: { native: string; }) => onChange(native)}
+        onEmojiSelect={({ native }: { native: string }) => onChange(native)}
         i18n={i18n}
       />
     </div>

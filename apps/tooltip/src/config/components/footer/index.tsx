@@ -51,7 +51,7 @@ function FooterContent({ onSaveButtonClick, onBackButtonClick }: Props) {
       </div>
     </PluginFooter>
   );
-};
+}
 
 export default function Footer() {
   const { enqueueSnackbar } = useSnackbar();

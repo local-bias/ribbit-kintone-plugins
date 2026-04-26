@@ -3,7 +3,7 @@ import { useAtomValue } from 'jotai';
 import { displayingTableRowsAtom } from '../../../states/records';
 import ViewCard from './card';
 
-export default function ViewCardList({ className }: { className?: string; }) {
+export default function ViewCardList({ className }: { className?: string }) {
   const records = useAtomValue(displayingTableRowsAtom);
 
   return (

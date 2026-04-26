@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export default function ViewCardNoImage({ className }: { className?: string; }) {
+export default function ViewCardNoImage({ className }: { className?: string }) {
   return (
     <Container className={className}>
       <div>

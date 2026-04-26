@@ -316,9 +316,9 @@ const getFields = (
   }
 
   return foundView.fields
-    .map<
-      kintoneAPI.FieldProperty | undefined
-    >((field) => Object.values(properties).find((property) => property.code === field))
+    .map<kintoneAPI.FieldProperty | undefined>((field) =>
+      Object.values(properties).find((property) => property.code === field)
+    )
     .filter(Boolean) as kintoneAPI.FieldProperty[];
 };
 

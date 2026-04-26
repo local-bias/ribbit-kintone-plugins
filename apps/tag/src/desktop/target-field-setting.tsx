@@ -22,7 +22,9 @@ manager.add(
       }
 
       if (event.record[condition.targetField]) {
-        event.record[condition.targetField]!.value = tagData.tags.map(({ value }) => value).join(', ');
+        event.record[condition.targetField]!.value = tagData.tags
+          .map(({ value }) => value)
+          .join(', ');
       }
     }
 

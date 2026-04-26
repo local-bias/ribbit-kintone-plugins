@@ -7,7 +7,7 @@ export function usePluginAtoms<
   T extends {
     common: Record<string, unknown>;
     conditions: ({ id: string } & Record<string, unknown>)[];
-  }
+  },
 >(
   pluginConfigAtom: PrimitiveAtom<T>,
   options: {
@@ -38,7 +38,7 @@ export function usePluginAtoms<
   });
 
   const selectedConditionIdAtom = atomWithDefault<string | null>((get) =>
-    enableCommonCondition ? null : get(pluginConditionsAtom)[0]?.id ?? null
+    enableCommonCondition ? null : (get(pluginConditionsAtom)[0]?.id ?? null)
   );
 
   const isConditionIdUnselectedAtom = atom((get) => get(selectedConditionIdAtom) === null);

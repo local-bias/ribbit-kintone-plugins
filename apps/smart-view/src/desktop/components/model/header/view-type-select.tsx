@@ -13,7 +13,7 @@ import { ReactNode } from 'react';
 const TYPES = [
   { value: 'table', icon: <TableRowsIcon /> },
   { value: 'card', icon: <ViewModuleIcon /> },
-] satisfies { value: PluginViewType; icon: ReactNode; }[];
+] satisfies { value: PluginViewType; icon: ReactNode }[];
 
 function ViewTypeSelectComponent() {
   const viewType = useAtomValue(viewTypeAtom);

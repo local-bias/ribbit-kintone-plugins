@@ -23,7 +23,7 @@ const Container: FC<ContainerProps> = ({ condition, initValue }) => {
     s.set(inputValueAtom, initValue);
     s.set(pluginConditionAtom, condition);
     // Subscribe to the effect for syncing input value to kintone record
-    s.sub(inputValueSyncEffect, () => { });
+    s.sub(inputValueSyncEffect, () => {});
     return s;
   }, []);
 
@@ -41,4 +41,3 @@ const Container: FC<ContainerProps> = ({ condition, initValue }) => {
 };
 
 export default Container;
-

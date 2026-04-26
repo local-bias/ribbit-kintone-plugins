@@ -125,11 +125,7 @@ function pseudoRandom(seed: number): number {
   return x - Math.floor(x);
 }
 
-const SKELETON_GROUPS = [
-  { taskCount: 4 },
-  { taskCount: 3 },
-  { taskCount: 2 },
-];
+const SKELETON_GROUPS = [{ taskCount: 4 }, { taskCount: 3 }, { taskCount: 2 }];
 
 export const SkeletonLoader: FC = () => {
   return (

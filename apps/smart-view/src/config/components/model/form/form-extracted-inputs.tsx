@@ -18,7 +18,7 @@ import { FC, Suspense, useCallback } from 'react';
 import { extractedInputFieldsAtom } from '../../../states/app-fields';
 import { extractedInputsAtom } from '../../../states/plugin';
 
-const INPUT_TYPES: { type: PluginExtractedInputType; label: string; }[] = [
+const INPUT_TYPES: { type: PluginExtractedInputType; label: string }[] = [
   { type: 'text', label: t('config.app.form.extractedInputs.type.text') },
   {
     type: 'autocomplete',
@@ -53,7 +53,7 @@ const Row = styled.div`
   }
 `;
 
-function FieldSelect({ fieldCode, i }: { fieldCode: string; i: number; }) {
+function FieldSelect({ fieldCode, i }: { fieldCode: string; i: number }) {
   const fields = useAtomValue(extractedInputFieldsAtom);
   const onFieldCodeChange = useAtomCallback(
     useCallback((_, set, rowIndex: number, value: string) => {
@@ -98,13 +98,9 @@ function FieldSelect({ fieldCode, i }: { fieldCode: string; i: number; }) {
   );
 }
 
-function FieldSelectContainer(props: { fieldCode: string; i: number; }) {
+function FieldSelectContainer(props: { fieldCode: string; i: number }) {
   return (
-    <Suspense
-      fallback={
-        <Skeleton variant='rounded' width={350} height={56} />
-      }
-    >
+    <Suspense fallback={<Skeleton variant='rounded' width={350} height={56} />}>
       <FieldSelect {...props} />
     </Suspense>
   );

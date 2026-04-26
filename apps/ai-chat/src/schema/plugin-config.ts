@@ -691,7 +691,6 @@ export const PluginConfigV15Schema = z.object({
   conditions: z.array(PluginConditionV14Schema),
 });
 
-
 export const PluginConfigV16Schema = z.object({
   version: z.literal(16),
   common: z.object({
@@ -722,7 +721,6 @@ export const PluginConfigV16Schema = z.object({
     // logAppV2AssistantIdFieldCode: z.string().optional(),
     // logAppV2RoleFieldCode: z.string().optional(),
     // logAppV2ContentFieldCode: z.string().optional(),
-
   }),
   conditions: z.array(PluginConditionV14Schema),
 });
