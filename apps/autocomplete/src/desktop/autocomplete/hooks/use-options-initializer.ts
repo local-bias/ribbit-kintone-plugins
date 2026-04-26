@@ -1,10 +1,10 @@
-import { useAtom, useAtomValue } from 'jotai';
-import { autoCompleteOptionsAtom, cachedOptionsAtom, pluginConditionAtom } from '../states';
-import { useEffect } from 'react';
 import { getAllRecordsWithId } from '@konomi-app/kintone-utilities';
-import { LOCAL_STORAGE_KEY } from '@/lib/static';
+import { useAtom, useAtomValue } from 'jotai';
+import { useEffect } from 'react';
 import { GUEST_SPACE_ID } from '@/lib/global';
 import { getAutocompleteOptions, getAutocompleteValues } from '@/lib/plugin';
+import { LOCAL_STORAGE_KEY } from '@/lib/static';
+import { autoCompleteOptionsAtom, cachedOptionsAtom, pluginConditionAtom } from '../states';
 
 export const useOptionsInitializer = () => {
   const condition = useAtomValue(pluginConditionAtom);

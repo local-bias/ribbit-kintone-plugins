@@ -1,8 +1,8 @@
-import { manager } from '@/lib/event-manager';
-import { restorePluginConfig } from '@/lib/plugin';
 import { css } from '@emotion/css';
 import { getMetaFieldId_UNSTABLE, isMobile } from '@konomi-app/kintone-utilities';
 import { createRoot } from 'react-dom/client';
+import { manager } from '@/lib/event-manager';
+import { restorePluginConfig } from '@/lib/plugin';
 import { getInitialTagData } from '../action';
 import App from './app';
 

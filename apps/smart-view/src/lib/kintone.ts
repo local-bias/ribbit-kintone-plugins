@@ -2,7 +2,7 @@ import {
   getAppId,
   getFieldValueAsString,
   getFormFields,
-  kintoneAPI,
+  type kintoneAPI,
 } from '@konomi-app/kintone-utilities';
 import { isDev } from './global';
 

@@ -1,7 +1,7 @@
-import { pluginConditionAtom } from '@/desktop/states/plugin';
-import { getQueryString } from '@/lib/cybozu';
 import { isMobile } from '@konomi-app/kintone-utilities';
 import { useAtomValue } from 'jotai';
+import { pluginConditionAtom } from '@/desktop/states/plugin';
+import { getQueryString } from '@/lib/cybozu';
 import { DocumentIcon } from '../../ui/document-icon';
 
 type Props = Readonly<{ recordId: string }>;

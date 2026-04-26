@@ -1,10 +1,10 @@
-import { ResolvedTableColumnProps } from '@/desktop/states/plugin';
-import { createChartData } from '@/lib/chart';
 import styled from '@emotion/styled';
-import { kintoneAPI } from '@konomi-app/kintone-utilities';
-import { ReactNode } from 'react';
-import { SubtableChartLabels } from './chart-labels';
+import type { kintoneAPI } from '@konomi-app/kintone-utilities';
+import type { ReactNode } from 'react';
+import type { ResolvedTableColumnProps } from '@/desktop/states/plugin';
+import { createChartData } from '@/lib/chart';
 import { ChartContainer } from './chart-container';
+import { SubtableChartLabels } from './chart-labels';
 
 const Total = styled.div`
   position: relative;
@@ -50,8 +50,8 @@ export default function StackedBarChart(props: {
   }
 
   let ratioTotal = 0;
-  let gradients: string[] = [];
-  let labels: ReactNode[] = [];
+  const gradients: string[] = [];
+  const labels: ReactNode[] = [];
   chartData.data.forEach((data, i) => {
     const { label, value, color } = data;
     const per = (value / chartData.total) * 100;

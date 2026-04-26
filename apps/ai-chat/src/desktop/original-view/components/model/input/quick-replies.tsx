@@ -1,3 +1,9 @@
+import styled from '@emotion/styled';
+import { Button, Tooltip } from '@mui/material';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtomCallback } from 'jotai/utils';
+import { nanoid } from 'nanoid';
+import { useCallback } from 'react';
 import { handleSendMessageAtom } from '@/desktop/original-view/states/chat-message';
 import {
   inputTextAtom,
@@ -5,12 +11,6 @@ import {
   quickRepliesAtom,
   selectedHistoryAtom,
 } from '@/desktop/original-view/states/states';
-import styled from '@emotion/styled';
-import { Button, Tooltip } from '@mui/material';
-import { useAtomValue, useSetAtom } from 'jotai';
-import { useAtomCallback } from 'jotai/utils';
-import { nanoid } from 'nanoid';
-import { useCallback } from 'react';
 
 const QuickReplyButton = styled(Button)`
   font-size: 14px;

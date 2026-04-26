@@ -1,7 +1,7 @@
-import { currentAppFileFieldsAtom } from '@/config/states/kintone';
-import { getConditionPropertyAtom } from '@/config/states/plugin';
 import { JotaiFieldSelect } from '@konomi-app/kintone-utilities-jotai';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { currentAppFileFieldsAtom } from '@/config/states/kintone';
+import { getConditionPropertyAtom } from '@/config/states/plugin';
 
 const fieldCodeAtom = getConditionPropertyAtom('targetFileFieldCode');
 

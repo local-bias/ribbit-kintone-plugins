@@ -1,16 +1,16 @@
-import { manager } from '@/lib/event-manager';
-import { GUEST_SPACE_ID, isDev } from '@/lib/global';
 import {
   getFieldElement,
   getQuery,
   getRecords,
   isMobile,
-  kintoneAPI,
+  type kintoneAPI,
 } from '@konomi-app/kintone-utilities';
 import { ComponentManager } from '@konomi-app/kintone-utilities-react';
 import { currentAppIdAtom, store } from '@repo/jotai';
-import config from '@/../plugin.config.mjs';
 import { entries } from 'remeda';
+import config from '@/../plugin.config.mjs';
+import { manager } from '@/lib/event-manager';
+import { GUEST_SPACE_ID, isDev } from '@/lib/global';
 import { createPreviewButton } from './actions';
 import App from './components';
 import { fileFieldsWithZipAtom, targetRecordAtom } from './public-state';

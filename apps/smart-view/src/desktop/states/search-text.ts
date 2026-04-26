@@ -1,9 +1,9 @@
-import { URL_SEARCH_PARAMS_TEXT } from '@/lib/statics';
-import { store } from '@/lib/store';
 import { atom } from 'jotai';
 import { observe } from 'jotai-effect';
+import type { ChangeEvent } from 'react';
+import { URL_SEARCH_PARAMS_TEXT } from '@/lib/statics';
+import { store } from '@/lib/store';
 import { paginationIndexAtom } from './pagination';
-import { ChangeEvent } from 'react';
 
 export const searchTextAtom = atom(
   new URLSearchParams(location.search).get(URL_SEARCH_PARAMS_TEXT) ?? ''

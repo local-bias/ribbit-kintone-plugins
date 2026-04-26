@@ -1,12 +1,12 @@
+import { Button } from '@mui/material';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { RotateCw } from 'lucide-react';
 import { handleSendMessageAtom } from '@/desktop/original-view/states/chat-message';
 import {
   isChatHistorySelectedAtom,
   loadingAtom,
   selectedHistoryAtom,
 } from '@/desktop/original-view/states/states';
-import { Button } from '@mui/material';
-import { atom, useAtomValue, useSetAtom } from 'jotai';
-import { RotateCw } from 'lucide-react';
 
 const handleClickAtom = atom(null, async (get, set) => {
   const current = get(selectedHistoryAtom);

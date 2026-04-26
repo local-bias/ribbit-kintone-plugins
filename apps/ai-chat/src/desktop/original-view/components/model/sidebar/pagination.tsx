@@ -1,9 +1,9 @@
+import { Pagination } from '@mui/material';
+import { useAtom, useAtomValue } from 'jotai';
 import {
   chatHistoriesPaginationIndexAtom,
   chatHistoriesPaginationMaxAtom,
 } from '@/desktop/original-view/states/states';
-import { Pagination } from '@mui/material';
-import { useAtom, useAtomValue } from 'jotai';
 
 export default function HistoryPagination() {
   const [paginationIndex, setPaginationIndex] = useAtom(chatHistoriesPaginationIndexAtom);

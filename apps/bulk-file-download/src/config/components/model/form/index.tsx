@@ -1,7 +1,3 @@
-import { appSpacesAtom } from '@/config/states/kintone';
-import { getConditionPropertyAtom } from '@/config/states/plugin';
-import { t } from '@/lib/i18n';
-import { ButtonLocation } from '@/schema/plugin-config';
 import { JotaiText } from '@konomi-app/kintone-utilities-jotai';
 import {
   PluginFormDescription,
@@ -13,12 +9,16 @@ import {
   InputLabel,
   MenuItem,
   Select,
+  type SelectChangeEvent,
   Skeleton,
   TextField,
-  type SelectChangeEvent,
 } from '@mui/material';
 import { useAtom, useAtomValue } from 'jotai';
 import { Suspense } from 'react';
+import { appSpacesAtom } from '@/config/states/kintone';
+import { getConditionPropertyAtom } from '@/config/states/plugin';
+import { t } from '@/lib/i18n';
+import type { ButtonLocation } from '@/schema/plugin-config';
 
 import DeleteButton from './condition-delete-button';
 import FieldCodesForm from './form-fields';

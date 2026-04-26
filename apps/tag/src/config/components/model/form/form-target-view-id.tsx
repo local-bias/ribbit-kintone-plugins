@@ -1,8 +1,8 @@
-import { allViewsAtom } from '@/config/states/kintone';
-import { getConditionPropertyAtom } from '@/config/states/plugin';
 import { MenuItem, Skeleton, TextField } from '@mui/material';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { ChangeEventHandler, FC, memo, Suspense } from 'react';
+import { type ChangeEventHandler, type FC, memo, Suspense } from 'react';
+import { allViewsAtom } from '@/config/states/kintone';
+import { getConditionPropertyAtom } from '@/config/states/plugin';
 
 const state = getConditionPropertyAtom('targetViewId');
 

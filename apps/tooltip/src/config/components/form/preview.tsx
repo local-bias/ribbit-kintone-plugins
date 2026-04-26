@@ -1,8 +1,8 @@
+import { useAtomValue } from 'jotai';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { selectedConditionAtom } from '@/config/states/plugin';
 import { TooltipHtmlContent } from '@/lib/components/tooltip-html-content';
 import { TooltipIcon } from '@/lib/components/tooltip-icon';
-import { useAtomValue } from 'jotai';
 
 function PreviewEmoji() {
   const condition = useAtomValue(selectedConditionAtom);

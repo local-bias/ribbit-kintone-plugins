@@ -1,9 +1,3 @@
-import { JotaiSwitch, JotaiText } from '@/components/jotai';
-import {
-  commonSettingsShownAtom,
-  disableVanillaFileFieldAtom,
-  dropzoneDescriptionAtom,
-} from '@/config/states/plugin';
 import {
   PluginFormDescription,
   PluginFormSection,
@@ -11,7 +5,13 @@ import {
 } from '@konomi-app/kintone-utilities-react';
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
 import { useAtomValue } from 'jotai';
-import { FC } from 'react';
+import type { FC } from 'react';
+import { JotaiSwitch, JotaiText } from '@/components/jotai';
+import {
+  commonSettingsShownAtom,
+  disableVanillaFileFieldAtom,
+  dropzoneDescriptionAtom,
+} from '@/config/states/plugin';
 import CommonSettings from './common';
 import DeleteButton from './condition-delete-button';
 import FileFieldCodeForm from './form-field-code';

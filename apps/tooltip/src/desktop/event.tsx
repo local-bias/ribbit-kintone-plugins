@@ -1,10 +1,10 @@
+import { css } from '@emotion/css';
+import { getMetaFields_UNSTABLE } from '@konomi-app/kintone-utilities';
+import { createRoot } from 'react-dom/client';
 import { manager } from '@/lib/event-manager';
 import { isProd } from '@/lib/global';
 import { restorePluginConfig } from '@/lib/plugin';
 import { PLUGIN_NAME } from '@/lib/static';
-import { css } from '@emotion/css';
-import { getMetaFields_UNSTABLE } from '@konomi-app/kintone-utilities';
-import { createRoot } from 'react-dom/client';
 import TooltipContainer from './components';
 
 let rendered = false;

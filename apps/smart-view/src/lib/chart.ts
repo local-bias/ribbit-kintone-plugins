@@ -1,5 +1,5 @@
-import { ResolvedTableColumnProps } from '@/desktop/states/plugin';
-import { getFieldValueAsString, kintoneAPI } from '@konomi-app/kintone-utilities';
+import { getFieldValueAsString, type kintoneAPI } from '@konomi-app/kintone-utilities';
+import type { ResolvedTableColumnProps } from '@/desktop/states/plugin';
 
 export const CHART_COLORS = [
   'var(--🐸chart-1)',

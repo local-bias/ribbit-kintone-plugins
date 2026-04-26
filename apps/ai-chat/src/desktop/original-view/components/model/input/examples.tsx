@@ -1,10 +1,10 @@
+import styled from '@emotion/styled';
+import { useAtomValue, useSetAtom } from 'jotai';
 import {
   chatMessagesAtom,
   inputTextAtom,
   selectedPluginConditionAtom,
 } from '@/desktop/original-view/states/states';
-import styled from '@emotion/styled';
-import { useAtomValue, useSetAtom } from 'jotai';
 
 const ExampleMessage = styled.div`
   padding: calc(var(--🐸spacing) * 3);

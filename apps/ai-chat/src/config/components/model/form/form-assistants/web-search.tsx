@@ -1,9 +1,9 @@
-import { allowWebSearchAtom, defaultWebSearchEnabledAtom } from '@/config/states/plugin';
 import { JotaiSwitch } from '@konomi-app/kintone-utilities-jotai';
 import { PluginFormDescription, PluginFormTitle } from '@konomi-app/kintone-utilities-react';
 import { Skeleton } from '@mui/material';
 import { useAtomValue } from 'jotai';
 import { Suspense } from 'react';
+import { allowWebSearchAtom, defaultWebSearchEnabledAtom } from '@/config/states/plugin';
 
 function WebSearchSwitchContent() {
   const allowWebSearch = useAtomValue(allowWebSearchAtom);

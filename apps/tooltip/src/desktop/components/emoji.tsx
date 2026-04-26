@@ -1,5 +1,5 @@
-import { PluginCondition } from '@/schema/plugin-config';
-import { FC } from 'react';
+import type { FC } from 'react';
+import type { PluginCondition } from '@/schema/plugin-config';
 
 type Props = { condition: PluginCondition };
 

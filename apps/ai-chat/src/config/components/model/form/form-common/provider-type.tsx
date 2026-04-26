@@ -1,7 +1,7 @@
-import { providerTypeAtom } from '@/config/states/plugin';
-import { AiProviderType } from '@/schema/plugin-config';
 import { FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { providerTypeAtom } from '@/config/states/plugin';
+import type { AiProviderType } from '@/schema/plugin-config';
 
 const AiProviderTypeOptions: {
   value: AiProviderType;

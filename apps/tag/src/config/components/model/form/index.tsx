@@ -1,10 +1,9 @@
-import { FC } from 'react';
-
 import {
   PluginFormDescription,
   PluginFormSection,
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
+import type { FC } from 'react';
 import DeleteButton from './condition-delete-button';
 import ConfigFieldForm from './form-config-field';
 import HideConfigFieldForm from './form-config-shown';

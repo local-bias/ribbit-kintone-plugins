@@ -1,9 +1,8 @@
+import { PluginConditionAppendButton } from '@konomi-app/kintone-utilities-react';
 import { produce } from 'immer';
 import { useSetAtom } from 'jotai';
-import { FC, memo } from 'react';
-
+import { type FC, memo } from 'react';
 import { getNewCondition } from '@/lib/plugin';
-import { PluginConditionAppendButton } from '@konomi-app/kintone-utilities-react';
 import { pluginConfigAtom } from '../../../states/plugin';
 
 const Container: FC = () => {

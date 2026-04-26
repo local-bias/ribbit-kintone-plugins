@@ -1,6 +1,6 @@
-import { currentAppFieldsAtom } from '@/desktop/public-state';
 import { useAtomValue } from 'jotai';
-import { Suspense, type FC } from 'react';
+import { type FC, Suspense } from 'react';
+import { currentAppFieldsAtom } from '@/desktop/public-state';
 import { useCondition } from './condition-context';
 
 const FieldNameComponent: FC = () => {

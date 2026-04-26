@@ -1,5 +1,4 @@
-import { PrimitiveAtom } from 'jotai';
-import { atom } from 'jotai';
+import { atom, type PrimitiveAtom } from 'jotai';
 
 export const DEFAULT_INVALID_INDEX_ERROR = 'Invalid index';
 

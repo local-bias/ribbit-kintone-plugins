@@ -1,3 +1,8 @@
+import styled from '@emotion/styled';
+import { isMobile } from '@konomi-app/kintone-utilities';
+import { Loader } from '@konomi-app/ui-react';
+import { useAtomValue } from 'jotai';
+import type { PropsWithChildren } from 'react';
 import { ChatMessageProvider } from '@/desktop/original-view/contexts/chat-message';
 import {
   aiStateAtom,
@@ -5,11 +10,6 @@ import {
   chatMessagesAtom,
 } from '@/desktop/original-view/states/states';
 import { cn } from '@/lib/utils';
-import styled from '@emotion/styled';
-import { isMobile } from '@konomi-app/kintone-utilities';
-import { Loader } from '@konomi-app/ui-react';
-import { useAtomValue } from 'jotai';
-import { PropsWithChildren } from 'react';
 import { ChatContent } from '../../layout/chat-content';
 import QuickReplies from '../input/quick-replies';
 import Commands from './commands';

@@ -1,6 +1,6 @@
 import { Skeleton } from '@mui/material';
 import { useAtomValue } from 'jotai';
-import { FC, Suspense } from 'react';
+import { type FC, Suspense } from 'react';
 import { customViewsAtom } from '../../states/kintone';
 import { viewIdAtom } from '../../states/plugin';
 

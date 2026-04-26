@@ -2,8 +2,8 @@ import styled from '@emotion/styled';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
 import { Alert, AlertTitle, Button } from '@mui/material';
 import { URL_INQUIRY } from '@repo/constants';
-import { PropsWithChildren, useState } from 'react';
-import { FallbackProps, ErrorBoundary as PrimitiveErrorBoundary } from 'react-error-boundary';
+import { type PropsWithChildren, useState } from 'react';
+import { type FallbackProps, ErrorBoundary as PrimitiveErrorBoundary } from 'react-error-boundary';
 
 type FallbackComponentProps = FallbackProps & {
   className?: string;

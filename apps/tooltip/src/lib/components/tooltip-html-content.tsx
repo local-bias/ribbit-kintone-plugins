@@ -1,5 +1,5 @@
-import { sanitizeTooltipHtml } from '@/lib/tooltip-html';
 import { css } from '@emotion/css';
+import { sanitizeTooltipHtml } from '@/lib/tooltip-html';
 
 type Props = {
   html: string;

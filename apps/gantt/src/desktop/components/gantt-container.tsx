@@ -1,8 +1,8 @@
-import { t } from '@/lib/i18n';
 import styled from '@emotion/styled';
 import { EmptyState } from '@repo/ui';
 import { useAtomValue } from 'jotai';
-import { FC } from 'react';
+import type { FC } from 'react';
+import { t } from '@/lib/i18n';
 import { currentConditionAtom, ganttLoadingAtom, ganttRecordsAtom } from '../public-state';
 import { AddTaskDialog } from './add-task-dialog';
 import { EditRecordDialog } from './edit-record-dialog';

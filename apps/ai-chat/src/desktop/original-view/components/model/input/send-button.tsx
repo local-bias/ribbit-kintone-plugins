@@ -1,9 +1,9 @@
-import { handleSendMessageAtom } from '@/desktop/original-view/states/chat-message';
-import { handlePushUserMessageAtom } from '@/desktop/original-view/states/chat-history';
-import { isSendButtonDisabledAtom } from '@/desktop/original-view/states/states';
 import SendIcon from '@mui/icons-material/Send';
 import { Button } from '@mui/material';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { handlePushUserMessageAtom } from '@/desktop/original-view/states/chat-history';
+import { handleSendMessageAtom } from '@/desktop/original-view/states/chat-message';
+import { isSendButtonDisabledAtom } from '@/desktop/original-view/states/states';
 
 const handleButtonClickAtom = atom(null, async (_, set) => {
   await set(handlePushUserMessageAtom);

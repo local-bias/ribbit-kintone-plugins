@@ -1,11 +1,10 @@
-import { kintoneAPI } from '@konomi-app/kintone-utilities';
+import type { kintoneAPI } from '@konomi-app/kintone-utilities';
 
 export const flatLayout = (layout: kintoneAPI.Layout): kintoneAPI.LayoutField[] => {
   const results: kintoneAPI.LayoutField[] = [];
   for (const chunk of layout) {
     if (chunk.type === 'ROW') {
       results.push(...flatLayoutRow(chunk));
-      continue;
     } else if (chunk.type === 'GROUP') {
       results.push(...flatLayout(chunk.layout));
     } else if (chunk.type === 'SUBTABLE') {

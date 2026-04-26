@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import type { FC } from 'react';
 import Modal from './modal';
 
 const Component: FC = () => <Modal />;

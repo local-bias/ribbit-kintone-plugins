@@ -1,6 +1,6 @@
-import { FC, useEffect } from 'react';
-import { useAtomValue } from 'jotai';
 import { getCurrentRecord, setCurrentRecord } from '@konomi-app/kintone-utilities';
+import { useAtomValue } from 'jotai';
+import { type FC, useEffect } from 'react';
 import { pluginConditionAtom, tagDataAtom } from '../states/plugin';
 
 const Component: FC = () => {

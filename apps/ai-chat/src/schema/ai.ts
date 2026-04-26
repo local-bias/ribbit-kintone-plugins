@@ -1,3 +1,4 @@
+import { z } from 'zod';
 import {
   PROMPT_INTERACTIVE_AI_RESPONSE_HTML,
   PROMPT_INTERACTIVE_AI_RESPONSE_MESSAGE,
@@ -5,7 +6,6 @@ import {
   PROMPT_INTERACTIVE_AI_RESPONSE_QUICK_REPLIES_ACTION,
   PROMPT_INTERACTIVE_AI_RESPONSE_QUICK_REPLIES_LABEL,
 } from '@/prompts/ai';
-import { z } from 'zod';
 
 const MODALITY_TYPES = ['text', 'image', 'audio', 'video', 'file'] as const;
 

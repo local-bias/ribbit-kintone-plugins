@@ -1,7 +1,7 @@
+import { getFormLayout } from '@konomi-app/kintone-utilities';
 import { GUEST_SPACE_ID, isProd } from '@/lib/global';
 import { PLUGIN_NAME } from '@/lib/statics';
 import { store } from '@/lib/store';
-import { getFormLayout } from '@konomi-app/kintone-utilities';
 import { appFormLayoutAtom, currentAppIdAtom, formLayoutReadyAtom } from './states/kintone';
 
 export const initializeAppFormLayout = async () => {

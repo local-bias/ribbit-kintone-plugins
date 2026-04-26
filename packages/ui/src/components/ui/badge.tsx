@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import * as React from 'react';
+import type * as React from 'react';
 
 type BadgeVariant = 'default' | 'secondary' | 'destructive' | 'outline';
 
@@ -71,5 +71,5 @@ function Badge({ variant = 'default', ...props }: BadgeProps) {
   return <StyledBadge data-slot='badge' variant={variant} {...props} />;
 }
 
+export type { BadgeProps, BadgeVariant };
 export { Badge };
-export type { BadgeVariant, BadgeProps };

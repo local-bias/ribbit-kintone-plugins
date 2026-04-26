@@ -1,5 +1,5 @@
 import { ThemeProvider as MUIThemeProvider } from '@mui/material';
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 import { getMUITheme } from '../lib/i18n-mui';
 
 export function ThemeProvider({ children }: PropsWithChildren) {

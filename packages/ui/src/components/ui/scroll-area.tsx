@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area';
-import * as React from 'react';
+import type * as React from 'react';
 
 const StyledScrollAreaRoot = styled(ScrollAreaPrimitive.Root)`
   position: relative;

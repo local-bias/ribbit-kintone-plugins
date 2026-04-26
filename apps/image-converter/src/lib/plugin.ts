@@ -1,13 +1,13 @@
-import {
-  AnyPluginConfig,
-  LatestPluginConditionSchema,
-  PluginCondition,
-  PluginConfig,
-} from '@/schema/plugin-config';
 import { restorePluginConfig as restore } from '@konomi-app/kintone-utilities';
 import { nanoid } from 'nanoid';
-import { isProd, PLUGIN_ID } from './global';
 import { IMAGE_FORMAT_LIST } from '@/schema/image';
+import {
+  type AnyPluginConfig,
+  LatestPluginConditionSchema,
+  type PluginCondition,
+  type PluginConfig,
+} from '@/schema/plugin-config';
+import { isProd, PLUGIN_ID } from './global';
 
 /**
  * プラグインの設定情報が、最新の設定情報の形式に準拠しているか検証します

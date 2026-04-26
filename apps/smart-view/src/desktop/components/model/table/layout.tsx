@@ -1,5 +1,5 @@
-import { PluginCondition, PluginViewField } from '@/schema/plugin-config';
 import styled from '@emotion/styled';
+import type { PluginCondition, PluginViewField } from '@/schema/plugin-config';
 
 export const MyTable = styled.table<{
   condition: PluginCondition | null;

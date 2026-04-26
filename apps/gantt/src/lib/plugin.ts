@@ -1,13 +1,13 @@
 import { restorePluginConfig as primitiveRestore } from '@konomi-app/kintone-utilities';
-import { PLUGIN_ID } from './global';
 import {
+  type AnyPluginConfig,
   createConfig,
   getNewCondition,
   migrateConfig,
-  type AnyPluginConfig,
   type PluginCondition,
   type PluginConfig,
 } from '@/schema/plugin-config';
+import { PLUGIN_ID } from './global';
 
 export { createConfig, getNewCondition, migrateConfig };
 

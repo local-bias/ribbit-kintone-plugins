@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { PackageOpen } from 'lucide-react';
-import { FC, ReactNode } from 'react';
+import type { FC, ReactNode } from 'react';
 
 const Container = styled.div`
   display: flex;

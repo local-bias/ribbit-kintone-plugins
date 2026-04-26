@@ -1,13 +1,13 @@
-import {
-  AnyPluginConfig,
-  LatestPluginConditionSchema,
-  PluginCondition,
-  PluginConfig,
-  PluginJoinCondition,
-  PluginViewField,
-} from '@/schema/plugin-config';
 import { restorePluginConfig as primitiveRestore } from '@konomi-app/kintone-utilities';
 import { nanoid } from 'nanoid';
+import {
+  type AnyPluginConfig,
+  LatestPluginConditionSchema,
+  type PluginCondition,
+  type PluginConfig,
+  type PluginJoinCondition,
+  type PluginViewField,
+} from '@/schema/plugin-config';
 import { PLUGIN_ID } from './global';
 
 export const validatePluginCondition = (condition: unknown): boolean => {

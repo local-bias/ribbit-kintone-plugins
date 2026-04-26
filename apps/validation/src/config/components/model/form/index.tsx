@@ -1,15 +1,15 @@
-import { getConditionPropertyAtom } from '@/config/states/plugin';
 import { JotaiSwitch } from '@konomi-app/kintone-utilities-jotai';
 import {
   PluginFormDescription,
   PluginFormSection,
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
-import { FC } from 'react';
+import type { FC } from 'react';
+import { getConditionPropertyAtom } from '@/config/states/plugin';
 import DeleteButton from './condition-delete-button';
 import FieldCodeForm from './form-fieldcode';
-import TargetEventsForm from './form-target-events';
 import ValidationRulesForm from './form-rules';
+import TargetEventsForm from './form-target-events';
 
 const FormContent: FC = () => {
   return (

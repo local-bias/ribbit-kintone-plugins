@@ -1,5 +1,3 @@
-import { t } from '@/lib/i18n';
-import { GanttScale } from '@/schema/plugin-config';
 import styled from '@emotion/styled';
 import {
   ToolbarActionButton,
@@ -17,7 +15,9 @@ import {
 } from '@repo/ui';
 import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { ListChevronsDownUp, ListChevronsUpDown } from 'lucide-react';
-import { FC, useCallback, useRef } from 'react';
+import { type FC, useCallback, useRef } from 'react';
+import { t } from '@/lib/i18n';
+import type { GanttScale } from '@/schema/plugin-config';
 import {
   addTaskDialogOpenAtom,
   allGroupKeysAtom,

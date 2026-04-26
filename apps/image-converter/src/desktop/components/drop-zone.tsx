@@ -1,11 +1,11 @@
-import { pluginConditionAtom } from '@/desktop/states';
-import { handleFileDropAtom } from '@/lib/global-states';
-import { cn } from '@repo/utils';
 import { Loader } from '@konomi-app/ui-react';
 import { loadingAtom } from '@repo/jotai';
+import { cn } from '@repo/utils';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { Upload } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
+import { pluginConditionAtom } from '@/desktop/states';
+import { handleFileDropAtom } from '@/lib/global-states';
 
 function DropzoneDescription({ conditionId }: { conditionId: string }) {
   const condition = useAtomValue(pluginConditionAtom(conditionId));

@@ -1,5 +1,5 @@
-import { pluginCommonConfigAtom } from '@/desktop/public-state';
 import { useAtomValue } from 'jotai';
+import { pluginCommonConfigAtom } from '@/desktop/public-state';
 
 export default function SendingOption() {
   const commonConfig = useAtomValue(pluginCommonConfigAtom);

@@ -1,9 +1,9 @@
+import styled from '@emotion/styled';
 import { Chip } from '@mui/material';
 import { produce } from 'immer';
-import { FC } from 'react';
 import { useAtom } from 'jotai';
+import type { FC } from 'react';
 import { tagDataAtom } from '../states/plugin';
-import styled from '@emotion/styled';
 
 const TagContainer = styled.div`
   display: flex;

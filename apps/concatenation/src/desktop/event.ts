@@ -1,7 +1,7 @@
-import { FORMATTABLE_FIELD_TYPES, restorePluginConfig } from '@/lib/plugin';
-import { manager } from '@/lib/listener';
-import { getFieldValueAsString, kintoneAPI } from '@konomi-app/kintone-utilities';
+import { getFieldValueAsString, type kintoneAPI } from '@konomi-app/kintone-utilities';
 import { DateTime } from 'luxon';
+import { manager } from '@/lib/listener';
+import { FORMATTABLE_FIELD_TYPES, restorePluginConfig } from '@/lib/plugin';
 
 const { conditions } = restorePluginConfig();
 
@@ -20,9 +20,9 @@ for (const condition of conditions) {
   const monitoredFields = concatenationItems.filter((item) => item.type === 'field');
 
   const changeEvents = monitoredFields.flatMap((item) => [
-    //@ts-ignore
+    //@ts-expect-error
     `app.record.edit.change.${item.value}`,
-    //@ts-ignore
+    //@ts-expect-error
     `app.record.create.change.${item.value}`,
   ]);
 
@@ -31,7 +31,7 @@ for (const condition of conditions) {
       return event;
     }
 
-    //@ts-ignore
+    //@ts-expect-error
     event.record[targetField].disabled = true;
 
     return event;
@@ -51,7 +51,7 @@ for (const condition of conditions) {
               item.isOmittedIfPreviousEmpty &&
               i > 0 &&
               arr[i - 1]?.type === 'field' &&
-              //@ts-ignore
+              //@ts-expect-error
               !record[arr[i - 1].value]?.value
             ) {
               return '';
@@ -61,7 +61,7 @@ for (const condition of conditions) {
               item.isOmittedIfNextEmpty &&
               i < arr.length - 1 &&
               arr[i + 1]?.type === 'field' &&
-              //@ts-ignore
+              //@ts-expect-error
               !record[arr[i + 1].value]?.value
             ) {
               return '';

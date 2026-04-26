@@ -1,11 +1,11 @@
-import { getNewViewField } from '@/lib/plugin';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
 import { DialogContent, List, ListItem, ListItemButton, Skeleton } from '@mui/material';
 import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
 import { useSnackbar } from 'notistack';
-import { FC, FCX, Suspense, useCallback } from 'react';
+import { type FC, type FCX, Suspense, useCallback } from 'react';
 import type { DeepReadonly } from 'utility-types';
+import { getNewViewField } from '@/lib/plugin';
 import { listViewDialogShownAtom } from '../../../../../states/importing-view-fields';
 import { listViewsAtom } from '../../../../../states/kintone';
 import { getConditionPropertyAtom } from '../../../../../states/plugin';

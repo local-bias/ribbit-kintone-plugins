@@ -1,4 +1,7 @@
-import { kintoneAPI, restorePluginConfig as primitiveRestore } from '@konomi-app/kintone-utilities';
+import {
+  type kintoneAPI,
+  restorePluginConfig as primitiveRestore,
+} from '@konomi-app/kintone-utilities';
 import { nanoid } from 'nanoid';
 import { PLUGIN_ID } from './global';
 

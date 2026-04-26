@@ -1,12 +1,3 @@
-import {
-  displayChatHistoriesAtom,
-  handleChatHistoryDeleteAtom,
-  handleHistoryIdSelectAtom,
-  historiesFetchedAtom,
-  loadingAtom,
-  selectedHistoryIdAtom,
-} from '@/desktop/original-view/states/states';
-import { pluginConditionsAtom } from '@/desktop/public-state';
 import styled from '@emotion/styled';
 import ChatIcon from '@mui/icons-material/Chat';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -20,6 +11,15 @@ import {
   Skeleton,
 } from '@mui/material';
 import { useAtomValue, useSetAtom } from 'jotai';
+import {
+  displayChatHistoriesAtom,
+  handleChatHistoryDeleteAtom,
+  handleHistoryIdSelectAtom,
+  historiesFetchedAtom,
+  loadingAtom,
+  selectedHistoryIdAtom,
+} from '@/desktop/original-view/states/states';
+import { pluginConditionsAtom } from '@/desktop/public-state';
 
 function ChatHistories({ className }: { className?: string }) {
   const histories = useAtomValue(displayChatHistoriesAtom);

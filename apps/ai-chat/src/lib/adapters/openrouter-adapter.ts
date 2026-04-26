@@ -1,15 +1,15 @@
-import { dataUrlAtom } from '@/desktop/original-view/states/kintone';
 import { zodTextFormat } from 'openai/helpers/zod.mjs';
-import { z } from 'zod';
+import type { z } from 'zod';
+import { dataUrlAtom } from '@/desktop/original-view/states/kintone';
 import {
-  ChatCompletionRequest,
-  EndpointAdapter,
-  GeneratedImage,
+  type ChatCompletionRequest,
+  type EndpointAdapter,
+  type GeneratedImage,
   hasFileContent,
   isO1SeriesModel,
   parseStructuredResponse,
-  StructuredAIResponse,
-  TokenUsage,
+  type StructuredAIResponse,
+  type TokenUsage,
 } from '../endpoint-adapter';
 import { OPENROUTER_CHAT_COMPLETION_ENDPOINT } from '../static';
 import { store } from '../store';

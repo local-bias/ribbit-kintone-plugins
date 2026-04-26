@@ -1,6 +1,6 @@
-import { createContext, useContext, type FC, type ReactNode } from 'react';
+import { createContext, type FC, type ReactNode, useContext } from 'react';
 import invariant from 'tiny-invariant';
-import { PluginCondition } from '@/lib/plugin';
+import type { PluginCondition } from '@/lib/plugin';
 
 type ContextType = { condition: PluginCondition };
 

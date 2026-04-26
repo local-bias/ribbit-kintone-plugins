@@ -1,10 +1,10 @@
+import type { kintoneAPI } from '@konomi-app/kintone-utilities';
+import { useAtomValue } from 'jotai';
 import { SubtableDetails } from '@/desktop/components/ui/subtable-details';
 import { appFormLayoutAtom, currentAppFieldPropertiesAtom } from '@/desktop/states/kintone';
-import { ResolvedTableColumnProps } from '@/desktop/states/plugin';
-import { kintoneAPI } from '@konomi-app/kintone-utilities';
-import { useAtomValue } from 'jotai';
-import { FieldValue } from '..';
+import type { ResolvedTableColumnProps } from '@/desktop/states/plugin';
 import { Subtable as MySubtable, MyTableBody, MyTableHead } from '../../table/layout';
+import { FieldValue } from '..';
 import SubtableChart from './chart';
 
 function minigraphEnabled(

@@ -1,7 +1,7 @@
 import { PluginConditionTabs } from '@konomi-app/kintone-utilities-react';
 import { Tab } from '@mui/material';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { FC, useEffect } from 'react';
+import { type FC, useEffect } from 'react';
 import {
   pluginConditionsAtom,
   selectedConditionIdAtom,

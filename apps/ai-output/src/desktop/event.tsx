@@ -1,14 +1,13 @@
-import { manager } from '@/lib/event-manager';
-import { restorePluginConfig, isUsagePluginConditionMet } from '@/lib/plugin';
+import { getHeaderSpace, getSpaceElement, updateRecord } from '@konomi-app/kintone-utilities';
+import { toast } from '@konomi-app/ui';
+import config from '@/../plugin.config.mjs';
 import { PLUGIN_NAME } from '@/lib/constants';
+import { manager } from '@/lib/event-manager';
 import { GUEST_SPACE_ID } from '@/lib/global';
+import { isUsagePluginConditionMet, restorePluginConfig } from '@/lib/plugin';
+import type { PluginCondition } from '@/schema/plugin-config';
 import { executeAIInference } from './orchestrator';
 import { applyAIResponseToRecord, buildRecordUpdatePayload } from './record-writer';
-import { getHeaderSpace, getSpaceElement, updateRecord } from '@konomi-app/kintone-utilities';
-import type { PluginCondition } from '@/schema/plugin-config';
-
-import config from '@/../plugin.config.mjs';
-import { toast } from '@konomi-app/ui';
 
 const BUTTON_CONTAINER_ID = `🐸${config.id}-buttons`;
 

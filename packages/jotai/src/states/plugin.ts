@@ -1,8 +1,8 @@
 import { produce } from 'immer';
-import { atom, WritableAtom, type PrimitiveAtom } from 'jotai';
+import { atom, type PrimitiveAtom, type WritableAtom } from 'jotai';
+import { atomWithDefault, type RESET } from 'jotai/utils';
 import { focusAtom } from 'jotai-optics';
-import { atomWithDefault, RESET } from 'jotai/utils';
-import { type SetStateAction } from 'react';
+import type { SetStateAction } from 'react';
 
 // プラグインの基本設定インターフェース
 type PluginConfigBase = {
@@ -148,7 +148,7 @@ export function usePluginAtoms<
         produce(current, (draft) => {
           const index = draft.findIndex((condition) => condition.id === selectedConditionId);
           if (index !== -1) {
-            //@ts-ignore
+            //@ts-expect-error
             draft[index] = typeof newValue === 'function' ? newValue(draft[index]!) : newValue;
           }
         })

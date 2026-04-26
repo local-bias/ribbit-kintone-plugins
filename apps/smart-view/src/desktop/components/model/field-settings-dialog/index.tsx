@@ -1,28 +1,11 @@
-import { isFieldSettingsDialogOpenAtom, visibleFieldsAtom } from '@/desktop/states/visible-fields';
-import { currentAppFieldPropertiesAtom } from '@/desktop/states/kintone';
-import styled from '@emotion/styled';
 import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Typography,
-  IconButton,
-  Paper,
-  Chip,
-} from '@mui/material';
-import { useAtomValue, useAtom } from 'jotai';
-import { FC, memo, useCallback, useMemo } from 'react';
-import { nanoid } from 'nanoid';
-import {
-  DndContext,
   closestCenter,
+  DndContext,
+  type DragEndEvent,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
-  DragEndEvent,
 } from '@dnd-kit/core';
 import {
   arrayMove,
@@ -32,9 +15,26 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
-import CloseIcon from '@mui/icons-material/Close';
+import styled from '@emotion/styled';
 import AddIcon from '@mui/icons-material/Add';
+import CloseIcon from '@mui/icons-material/Close';
+import DragIndicatorIcon from '@mui/icons-material/DragIndicator';
+import {
+  Button,
+  Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Paper,
+  Typography,
+} from '@mui/material';
+import { useAtom, useAtomValue } from 'jotai';
+import { nanoid } from 'nanoid';
+import { type FC, memo, useCallback, useMemo } from 'react';
+import { currentAppFieldPropertiesAtom } from '@/desktop/states/kintone';
+import { isFieldSettingsDialogOpenAtom, visibleFieldsAtom } from '@/desktop/states/visible-fields';
 
 const StyledDialog = styled(Dialog)`
   & > div {

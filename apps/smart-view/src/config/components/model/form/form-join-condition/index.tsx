@@ -1,6 +1,6 @@
-import { joinConditionsAtom } from '@/config/states/plugin';
 import { JotaiDndContext, JotaiSortableContext } from '@konomi-app/kintone-utilities-jotai';
-import { FC } from 'react';
+import type { FC } from 'react';
+import { joinConditionsAtom } from '@/config/states/plugin';
 import Form from './form';
 
 const Component: FC = () => (

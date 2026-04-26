@@ -1,7 +1,7 @@
+import type { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { controlField, getChangeEvents } from '@/common/kintone';
 import { manager } from '@/lib/event-manager';
 import { restorePluginConfig } from '@/lib/plugin';
-import { kintoneAPI } from '@konomi-app/kintone-utilities';
 
 class C {
   private readonly _fieldCode: string;
@@ -19,10 +19,10 @@ class C {
     const record = e.record as kintoneAPI.RecordData;
     controlField(record, this._fieldCode, (field) => {
       if (rule(e)) {
-        //@ts-ignore
+        //@ts-expect-error
         field.disabled = !this._editable;
       } else {
-        //@ts-ignore
+        //@ts-expect-error
         field.disabled = this._editable;
       }
     });

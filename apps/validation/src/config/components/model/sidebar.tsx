@@ -1,12 +1,12 @@
+import { BundledSidebar } from '@konomi-app/kintone-utilities-react';
+import { useAtom, useAtomValue } from 'jotai';
+import { useSnackbar } from 'notistack';
+import { type FC, Suspense, useCallback } from 'react';
 import { currentAppFieldsAtom } from '@/config/states/kintone';
 import { pluginConditionsAtom, selectedConditionIdAtom } from '@/config/states/plugin';
 import { t } from '@/lib/i18n';
 import { getNewCondition, isPluginConditionMet } from '@/lib/plugin';
-import { PluginCondition } from '@/schema/plugin-config';
-import { BundledSidebar } from '@konomi-app/kintone-utilities-react';
-import { useAtom, useAtomValue } from 'jotai';
-import { useSnackbar } from 'notistack';
-import { FC, Suspense, useCallback } from 'react';
+import type { PluginCondition } from '@/schema/plugin-config';
 
 const SidebarLabel: FC<{ condition: PluginCondition; index: number }> = ({ condition, index }) => {
   const fields = useAtomValue(currentAppFieldsAtom);

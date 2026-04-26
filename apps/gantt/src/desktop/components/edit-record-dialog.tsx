@@ -1,10 +1,10 @@
+import { EditRecordDialog as SharedEditRecordDialog } from '@repo/ui';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { type FC, useCallback, useMemo } from 'react';
+import { toast } from 'sonner';
 import { GUEST_SPACE_ID } from '@/lib/global';
 import { t } from '@/lib/i18n';
 import { getCategoryFieldCodes } from '@/lib/plugin';
-import { EditRecordDialog as SharedEditRecordDialog } from '@repo/ui';
-import { useAtomValue, useSetAtom } from 'jotai';
-import { FC, useCallback, useMemo } from 'react';
-import { toast } from 'sonner';
 import { currentConditionAtom, editRecordDialogAtom, ganttAppIdAtom } from '../public-state';
 import { refreshSingleRecord } from '../record-operations';
 

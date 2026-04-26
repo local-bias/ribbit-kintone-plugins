@@ -1,5 +1,4 @@
-import { getConditionPropertyAtom } from '@/config/states/plugin';
-import { t } from '@/lib/i18n';
+import styled from '@emotion/styled';
 import { useArray } from '@konomi-app/kintone-utilities-jotai';
 import {
   PluginFormDescription,
@@ -10,10 +9,11 @@ import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Autocomplete, IconButton, MenuItem, TextField, Tooltip } from '@mui/material';
 import { useAtomValue } from 'jotai';
-import { FC } from 'react';
-import { appFieldsAtom } from '../../../states/kintone';
 import { nanoid } from 'nanoid';
-import styled from '@emotion/styled';
+import type { FC } from 'react';
+import { getConditionPropertyAtom } from '@/config/states/plugin';
+import { t } from '@/lib/i18n';
+import { appFieldsAtom } from '../../../states/kintone';
 
 const conditionPropertyAtom = getConditionPropertyAtom('customIDRules');
 

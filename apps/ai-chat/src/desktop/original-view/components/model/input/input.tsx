@@ -1,10 +1,10 @@
+import { useAtom, useAtomValue } from 'jotai';
+import { useAtomCallback } from 'jotai/utils';
+import { type ChangeEventHandler, type KeyboardEventHandler, useCallback } from 'react';
 import { handlePushUserMessageAtom } from '@/desktop/original-view/states/chat-history';
 import { handleSendMessageAtom } from '@/desktop/original-view/states/chat-message';
 import { inputTextAtom, loadingAtom } from '@/desktop/original-view/states/states';
 import { pluginCommonConfigAtom } from '@/desktop/public-state';
-import { useAtom, useAtomValue } from 'jotai';
-import { useAtomCallback } from 'jotai/utils';
-import { ChangeEventHandler, KeyboardEventHandler, useCallback } from 'react';
 
 export default function ChatInput() {
   const commonConfig = useAtomValue(pluginCommonConfigAtom);

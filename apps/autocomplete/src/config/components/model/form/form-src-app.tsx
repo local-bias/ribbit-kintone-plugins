@@ -2,9 +2,9 @@ import { Autocomplete, Box, Skeleton, TextField } from '@mui/material';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
+import { t } from '@/lib/i18n';
 import { kintoneAppsAtom } from '../../../states/kintone';
 import { handleSrcAppChangeAtom, srcAppIdAtom } from '../../../states/plugin';
-import { t } from '@/lib/i18n';
 
 function SrcAppFormComponent() {
   const allApps = useAtomValue(kintoneAppsAtom);

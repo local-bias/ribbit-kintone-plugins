@@ -1,6 +1,6 @@
-import { ReasoningEffortType, VerbosityType } from '@/schema/ai';
-import { z } from 'zod';
-import { ChatMessage, ChatMessageContentPart } from './static';
+import type { z } from 'zod';
+import type { ReasoningEffortType, VerbosityType } from '@/schema/ai';
+import { type ChatMessage, ChatMessageContentPart } from './static';
 
 /**
  * AI生成画像

@@ -1,3 +1,5 @@
+import { restorePluginConfig as primitiveRestore } from '@konomi-app/kintone-utilities';
+import { produce } from 'immer';
 import {
   createConfig,
   getNewCondition,
@@ -5,8 +7,6 @@ import {
   type PluginCondition,
   type PluginConfig,
 } from '@/schema/plugin-config';
-import { restorePluginConfig as primitiveRestore } from '@konomi-app/kintone-utilities';
-import { produce } from 'immer';
 import { PLUGIN_ID } from './global';
 
 export { createConfig, getNewCondition, migrateConfig };

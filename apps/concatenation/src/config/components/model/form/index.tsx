@@ -3,10 +3,10 @@ import {
   PluginFormSection,
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
+import { t } from '@/lib/i18n';
 import DeleteButton from './condition-delete-button';
 import ConcatenationItemsForm from './form-concatenation-items';
 import TargetFieldForm from './form-target-field';
-import { t } from '@/lib/i18n';
 
 export default function ConditionForm() {
   return (

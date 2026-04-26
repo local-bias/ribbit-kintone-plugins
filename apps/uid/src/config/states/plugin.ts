@@ -1,14 +1,14 @@
+import { produce } from 'immer';
+import { atom, type PrimitiveAtom } from 'jotai';
+import { atomWithDefault } from 'jotai/utils';
+import { focusAtom } from 'jotai-optics';
+import type { SetStateAction } from 'react';
 import {
-  PluginCommonConfig,
-  PluginCondition,
-  PluginConfig,
+  type PluginCommonConfig,
+  type PluginCondition,
+  type PluginConfig,
   restorePluginConfig,
 } from '@/lib/plugin';
-import { produce } from 'immer';
-import { atom, PrimitiveAtom } from 'jotai';
-import { focusAtom } from 'jotai-optics';
-import { atomWithDefault } from 'jotai/utils';
-import { SetStateAction } from 'react';
 
 export const pluginConfigAtom = atom<PluginConfig>(restorePluginConfig());
 export const loadingAtom = atom(false);

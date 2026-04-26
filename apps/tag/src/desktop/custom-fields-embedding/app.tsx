@@ -1,5 +1,5 @@
 import { createStore, Provider } from 'jotai';
-import { FC, useMemo } from 'react';
+import { type FC, useMemo } from 'react';
 
 import Input from './components/input';
 import Layout from './components/layout';

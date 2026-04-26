@@ -1,7 +1,7 @@
-import { PluginViewField } from '@/schema/plugin-config';
 import { atom } from 'jotai';
-import { pluginConditionAtom } from './plugin';
 import { atomWithDefault } from 'jotai/utils';
+import type { PluginViewField } from '@/schema/plugin-config';
+import { pluginConditionAtom } from './plugin';
 
 /**
  * 画面上で表示するフィールドの配列

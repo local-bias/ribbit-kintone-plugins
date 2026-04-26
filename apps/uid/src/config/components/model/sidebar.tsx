@@ -1,11 +1,11 @@
-import { appFieldsAtom } from '@/config/states/kintone';
-import { pluginConditionsAtom, selectedConditionIdAtom } from '@/config/states/plugin';
-import { getNewCondition, isPluginConditionMet, PluginCondition } from '@/lib/plugin';
+import styled from '@emotion/styled';
 import { BundledSidebar } from '@konomi-app/kintone-utilities-react';
 import { useAtom, useAtomValue } from 'jotai';
 import { useSnackbar } from 'notistack';
-import { FC, Suspense } from 'react';
-import styled from '@emotion/styled';
+import { type FC, Suspense } from 'react';
+import { appFieldsAtom } from '@/config/states/kintone';
+import { pluginConditionsAtom, selectedConditionIdAtom } from '@/config/states/plugin';
+import { getNewCondition, isPluginConditionMet, type PluginCondition } from '@/lib/plugin';
 
 const LabelRoot = styled.div``;
 
@@ -57,7 +57,7 @@ const Sidebar: FC = () => {
   return (
     <BundledSidebar
       conditions={conditions}
-      // @ts-ignore
+      // @ts-expect-error
       setConditions={setConditions}
       getNewCondition={getNewCondition}
       labelComponent={label}

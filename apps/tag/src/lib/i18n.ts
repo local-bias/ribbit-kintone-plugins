@@ -127,7 +127,7 @@ export const defaultLang = 'ja' satisfies Language;
  */
 export function useTranslations(lang: keyof typeof ui) {
   return function t(key: keyof (typeof ui)[typeof defaultLang]): string {
-    //@ts-ignore
+    //@ts-expect-error
     return ui[lang][key] ?? ui[defaultLang][key];
   };
 }

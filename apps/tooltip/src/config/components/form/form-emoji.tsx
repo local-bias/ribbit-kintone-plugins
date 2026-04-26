@@ -1,4 +1,3 @@
-import { conditionEmojiAtom, conditionTypeAtom } from '@/config/states/plugin';
 import data from '@emoji-mart/data';
 import i18n from '@emoji-mart/data/i18n/ja.json';
 import Picker from '@emoji-mart/react';
@@ -10,6 +9,7 @@ import {
 import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
 import { useCallback } from 'react';
+import { conditionEmojiAtom, conditionTypeAtom } from '@/config/states/plugin';
 
 function EmojiPicker() {
   const emoji = useAtomValue(conditionEmojiAtom);

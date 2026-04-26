@@ -1,8 +1,8 @@
-import { currentAppSpaceFieldsAtom } from '@/config/states/kintone';
-import { getConditionPropertyAtom } from '@/config/states/plugin';
 import { Autocomplete, Skeleton, TextField } from '@mui/material';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
-import { FC, Suspense } from 'react';
+import { type FC, Suspense } from 'react';
+import { currentAppSpaceFieldsAtom } from '@/config/states/kintone';
+import { getConditionPropertyAtom } from '@/config/states/plugin';
 
 const spaceIdAtom = getConditionPropertyAtom('targetSpaceId');
 

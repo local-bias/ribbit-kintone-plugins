@@ -1,6 +1,6 @@
 import { nanoid } from 'nanoid';
-import { z } from 'zod';
-import { InteractiveAIResponseSchema } from '@/schema/ai';
+import type { z } from 'zod';
+import type { InteractiveAIResponseSchema } from '@/schema/ai';
 import type { GeneratedImage, StructuredAIResponse } from './endpoint-adapter';
 import type { ChatHistory, ChatMessage, ChatMessageContentPart, MessageAttachment } from './static';
 

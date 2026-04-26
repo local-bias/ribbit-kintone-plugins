@@ -1,12 +1,12 @@
-import { loadingAtom } from '@/common/global-state';
-import { t } from '@/lib/i18n';
 import styled from '@emotion/styled';
 import { PluginFooter } from '@konomi-app/kintone-utilities-react';
 import SaveIcon from '@mui/icons-material/Save';
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import { Button, CircularProgress } from '@mui/material';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { FC, useCallback } from 'react';
+import { type FC, useCallback } from 'react';
+import { loadingAtom } from '@/common/global-state';
+import { t } from '@/lib/i18n';
 import { handlePluginConfigSaveAtom } from '../../../states/plugin';
 import ExportButton from './export-button';
 import ImportButton from './import-button';

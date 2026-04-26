@@ -1,5 +1,5 @@
-import { readdir, stat, access, mkdir, copyFile } from 'fs/promises';
-import { join, dirname } from 'path';
+import { access, copyFile, mkdir, readdir, stat } from 'fs/promises';
+import { dirname, join } from 'path';
 
 const APPS_DIR = join(process.cwd(), 'apps');
 

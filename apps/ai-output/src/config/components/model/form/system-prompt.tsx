@@ -1,6 +1,10 @@
-import { getConditionPropertyAtom } from '@/config/states/plugin';
-import { currentAppFieldsAtom, kintoneAppsAtom } from '@/config/states/kintone';
 import styled from '@emotion/styled';
+import { JotaiAppSelect, QueryBuilder } from '@konomi-app/kintone-utilities-jotai';
+import {
+  PluginFormDescription,
+  PluginFormSection,
+  PluginFormTitle,
+} from '@konomi-app/kintone-utilities-react';
 import {
   Button,
   Dialog,
@@ -12,18 +16,14 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import { appFormFieldsAtom, currentAppIdAtom } from '@repo/jotai';
 import { atom, useAtom, useAtomValue } from 'jotai';
 import { Suspense, useCallback, useRef, useState } from 'react';
-import { JotaiAppSelect, QueryBuilder } from '@konomi-app/kintone-utilities-jotai';
-import { appFormFieldsAtom, currentAppIdAtom } from '@repo/jotai';
-import { GUEST_SPACE_ID, LANGUAGE } from '@/lib/global';
 import { PluginErrorBoundary } from '@/components/error-boundary';
 import { JotaiFieldMultiSelect } from '@/components/field-multi-select';
-import {
-  PluginFormDescription,
-  PluginFormSection,
-  PluginFormTitle,
-} from '@konomi-app/kintone-utilities-react';
+import { currentAppFieldsAtom, kintoneAppsAtom } from '@/config/states/kintone';
+import { getConditionPropertyAtom } from '@/config/states/plugin';
+import { GUEST_SPACE_ID, LANGUAGE } from '@/lib/global';
 
 const systemPromptAtom = getConditionPropertyAtom('systemPrompt');
 

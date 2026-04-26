@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { css, cx } from '@emotion/css';
+import * as React from 'react';
 
 const inputStyles = css`
   display: flex;

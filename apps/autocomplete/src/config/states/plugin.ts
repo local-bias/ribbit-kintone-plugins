@@ -1,13 +1,13 @@
-import { t } from '@/lib/i18n';
-import { createConfig, migrateConfig, PluginConfig, restorePluginConfig } from '@/lib/plugin';
-import { PLUGIN_NAME } from '@/lib/static';
 import { onFileLoad, storePluginConfig } from '@konomi-app/kintone-utilities';
 import { handleLoadingEndAtom, handleLoadingStartAtom, usePluginAtoms } from '@repo/jotai';
 import { saveAsJson } from '@repo/utils';
 import { atom } from 'jotai';
 import { enqueueSnackbar } from 'notistack';
-import { ChangeEvent, ReactNode } from 'react';
+import type { ChangeEvent, ReactNode } from 'react';
 import invariant from 'tiny-invariant';
+import { t } from '@/lib/i18n';
+import { createConfig, migrateConfig, type PluginConfig, restorePluginConfig } from '@/lib/plugin';
+import { PLUGIN_NAME } from '@/lib/static';
 import { kintoneAppsAtom } from './kintone';
 
 export const pluginConfigAtom = atom<PluginConfig>(restorePluginConfig());

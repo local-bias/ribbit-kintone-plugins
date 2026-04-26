@@ -1,3 +1,8 @@
+import styled from '@emotion/styled';
+import BugReportIcon from '@mui/icons-material/BugReport';
+import { Fab, Tooltip } from '@mui/material';
+import { useAtomValue } from 'jotai';
+import React, { type FC } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -6,11 +11,6 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { pluginConfigAtom } from '@/config/states/plugin';
-import BugReportIcon from '@mui/icons-material/BugReport';
-import { Fab, Tooltip } from '@mui/material';
-import { useAtomValue } from 'jotai';
-import React, { FC } from 'react';
-import styled from '@emotion/styled';
 
 const ModalHeading = styled.h2`
   font-size: 18px;

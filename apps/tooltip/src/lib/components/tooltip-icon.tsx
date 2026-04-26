@@ -1,10 +1,10 @@
-import { IconType } from '@/schema/plugin-config';
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
   ExclamationTriangleIcon,
   InformationCircleIcon,
 } from '@heroicons/react/24/solid';
+import type { IconType } from '@/schema/plugin-config';
 
 type Props = { iconType: IconType; iconColor: string };
 

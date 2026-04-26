@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
-import { t } from '@/lib/i18n';
 import { FolderDown } from 'lucide-react';
 import { useState } from 'react';
+import { t } from '@/lib/i18n';
 
 const StyledButton = styled.button`
   height: 48px;

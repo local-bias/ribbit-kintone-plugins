@@ -1,26 +1,36 @@
-import styled from '@emotion/styled';
-import { useAtomValue } from 'jotai';
-import { FC, useCallback, useEffect, useRef, useState } from 'react';
 import {
   DndContext,
-  DragEndEvent,
-  DragOverEvent,
+  type DragEndEvent,
+  type DragOverEvent,
   DragOverlay,
-  DragStartEvent,
+  type DragStartEvent,
   MouseSensor,
+  pointerWithin,
   TouchSensor,
   useDndMonitor,
   useSensor,
   useSensors,
-  pointerWithin,
 } from '@dnd-kit/core';
-import type { GanttScale } from '@/schema/plugin-config';
+import styled from '@emotion/styled';
+import { store } from '@repo/jotai';
+import { useAtomValue } from 'jotai';
+import { type FC, useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
-import { HEADER_HEIGHT, GanttTask, useGanttLayout, COLUMN_WIDTH } from '../hooks/use-gantt-layout';
+import { GUEST_SPACE_ID } from '@/lib/global';
+import { t } from '@/lib/i18n';
+import { getCategoryFieldCodes } from '@/lib/plugin';
+import type { GanttScale } from '@/schema/plugin-config';
+import {
+  COLUMN_WIDTH,
+  type GanttTask,
+  HEADER_HEIGHT,
+  useGanttLayout,
+} from '../hooks/use-gantt-layout';
 import {
   allGroupKeysAtom,
   currentConditionAtom,
   ganttAppIdAtom,
+  ganttFormFieldTypeMapAtom,
   ganttGroupByAtom,
   ganttRecordsAtom,
   ganttScaleAtom,
@@ -28,28 +38,23 @@ import {
   ganttScrollXAtom,
   ganttViewDateAtom,
   sidebarWidthAtom,
-  ganttFormFieldTypeMapAtom,
 } from '../public-state';
 import {
-  updateTaskDates,
-  updateTaskCategory,
-  updateTaskAssignee,
-  updateTaskStartDate,
-  updateTaskEndDate,
-  refreshRecords,
-  formatDate,
-  optimisticUpdateRecord,
-  getRecordsSnapshot,
-  restoreRecordsSnapshot,
   buildCategoryFieldValue,
+  formatDate,
+  getRecordsSnapshot,
+  optimisticUpdateRecord,
+  refreshRecords,
+  restoreRecordsSnapshot,
+  updateTaskAssignee,
+  updateTaskCategory,
+  updateTaskDates,
+  updateTaskEndDate,
+  updateTaskStartDate,
 } from '../record-operations';
-import { getCategoryFieldCodes } from '@/lib/plugin';
-import { store } from '@repo/jotai';
 import { GanttBody } from './gantt-body';
 import { GanttHeader } from './gantt-header';
 import { GanttSidebar } from './gantt-sidebar';
-import { GUEST_SPACE_ID } from '@/lib/global';
-import { t } from '@/lib/i18n';
 
 const ChartWrapper = styled.div`
   display: flex;

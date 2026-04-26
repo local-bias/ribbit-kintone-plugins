@@ -1,7 +1,7 @@
-import { store } from '@/lib/store';
-import { validPluginConditionsAtom } from '../public-state';
 import { manager } from '@/lib/event-manager';
+import { store } from '@/lib/store';
 import { getId } from '@/lib/utils';
+import { validPluginConditionsAtom } from '../public-state';
 
 const conditions = store
   .get(validPluginConditionsAtom)

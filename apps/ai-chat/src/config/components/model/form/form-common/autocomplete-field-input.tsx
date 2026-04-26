@@ -1,6 +1,6 @@
+import type { kintoneAPI } from '@konomi-app/kintone-utilities/dist/types/api';
+import { Autocomplete, TextField } from '@mui/material';
 import React, { FC, useCallback } from 'react';
-import { TextField, Autocomplete } from '@mui/material';
-import { kintoneAPI } from '@konomi-app/kintone-utilities/dist/types/api';
 
 type ContainerProps = {
   fields: kintoneAPI.FieldProperty[];

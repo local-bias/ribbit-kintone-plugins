@@ -1,8 +1,8 @@
-import { PluginCondition } from '@/schema/plugin-config';
 import styled from '@emotion/styled';
 import { store } from '@repo/jotai';
 import { Provider, useAtomValue } from 'jotai';
-import { Suspense, type FC } from 'react';
+import { type FC, Suspense } from 'react';
+import type { PluginCondition } from '@/schema/plugin-config';
 import { currentAppFormFieldsAtom } from './state';
 import { useBulkUpdate } from './use-bulk-update';
 

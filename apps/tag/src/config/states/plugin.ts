@@ -1,9 +1,9 @@
-import { t } from '@/lib/i18n';
-import { createConfig, restorePluginConfig } from '@/lib/plugin';
-import { PluginConfig } from '@/schema/plugin-config';
 import { handleLoadingEndAtom, handleLoadingStartAtom, usePluginAtoms } from '@repo/jotai';
 import { atom } from 'jotai';
 import { enqueueSnackbar } from 'notistack';
+import { t } from '@/lib/i18n';
+import { createConfig, restorePluginConfig } from '@/lib/plugin';
+import type { PluginConfig } from '@/schema/plugin-config';
 
 export const pluginConfigAtom = atom<PluginConfig>(restorePluginConfig());
 
@@ -38,7 +38,7 @@ export const importPluginConfigAtom = atom(
       if (!file) {
         return;
       }
-      // @ts-ignore
+      // @ts-expect-error
       const fileEvent = await new Promise<ProgressEvent<FileReader>>((resolve) => {
         const reader = new FileReader();
         reader.onload = resolve;

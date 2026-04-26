@@ -1,6 +1,6 @@
-import { GUEST_SPACE_ID, isDev } from '@/lib/global';
 import { appFormFieldsAtom, currentAppIdAtom } from '@repo/jotai';
 import { atom } from 'jotai';
+import { GUEST_SPACE_ID, isDev } from '@/lib/global';
 
 export const currentAppFieldsAtom = atom((get) => {
   const app = get(currentAppIdAtom);

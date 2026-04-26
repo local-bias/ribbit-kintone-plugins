@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import * as React from 'react';
+import type * as React from 'react';
 
 type ButtonVariant = 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
 type ButtonSize = 'default' | 'sm' | 'lg' | 'icon';
@@ -121,5 +121,5 @@ function Button({ variant = 'default', size = 'default', ...props }: ButtonProps
   return <StyledButton data-slot='button' variant={variant} size={size} {...props} />;
 }
 
+export type { ButtonProps, ButtonSize, ButtonVariant };
 export { Button };
-export type { ButtonVariant, ButtonSize, ButtonProps };

@@ -1,10 +1,10 @@
-import { openaiApiKeyAtom } from '@/config/states/plugin';
 import { JotaiText } from '@konomi-app/kintone-utilities-jotai';
 import {
   PluginFormDescription,
   PluginFormSection,
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
+import { openaiApiKeyAtom } from '@/config/states/plugin';
 
 function CommonSettingsForm() {
   return (

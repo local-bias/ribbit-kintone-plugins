@@ -1,3 +1,6 @@
+import { css } from '@emotion/css';
+import styled from '@emotion/styled';
+import { isMobile } from '@konomi-app/kintone-utilities';
 import {
   Popover,
   PopoverContent,
@@ -7,14 +10,11 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@repo/ui';
+import type { FC } from 'react';
 import { TooltipHtmlContent } from '@/lib/components/tooltip-html-content';
-import { PluginCondition } from '@/schema/plugin-config';
-import styled from '@emotion/styled';
-import { isMobile } from '@konomi-app/kintone-utilities';
-import { type FC } from 'react';
+import type { PluginCondition } from '@/schema/plugin-config';
 import TooltipEmojiContainer from './emoji';
 import TooltipIconContainer from './icon';
-import { css } from '@emotion/css';
 
 type Props = {
   condition: PluginCondition;

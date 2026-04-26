@@ -1,9 +1,9 @@
-import { restorePluginConfig } from '@/lib/plugin';
-import { PluginCondition, PluginConfig } from '@/schema/plugin-config';
 import { produce } from 'immer';
-import { atom, SetStateAction } from 'jotai';
+import { atom, type SetStateAction } from 'jotai';
 import { atomWithDefault } from 'jotai/utils';
-import { ViewFieldProperty } from './app-fields';
+import { restorePluginConfig } from '@/lib/plugin';
+import type { PluginCondition, PluginConfig } from '@/schema/plugin-config';
+import type { ViewFieldProperty } from './app-fields';
 
 const { config: initialConfig, error: configError } = restorePluginConfig();
 

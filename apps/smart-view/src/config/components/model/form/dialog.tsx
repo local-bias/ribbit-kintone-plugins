@@ -1,9 +1,4 @@
 import {
-  selectedConditionAtom,
-  selectedViewFieldDetailSettingIndexAtom,
-} from '@/config/states/plugin';
-import { t } from '@/lib/i18n';
-import {
   PluginFormDescription,
   PluginFormSection,
   PluginFormTitle,
@@ -21,7 +16,12 @@ import {
 import { produce } from 'immer';
 import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
-import { useCallback, type FC } from 'react';
+import { type FC, useCallback } from 'react';
+import {
+  selectedConditionAtom,
+  selectedViewFieldDetailSettingIndexAtom,
+} from '@/config/states/plugin';
+import { t } from '@/lib/i18n';
 import ViewFieldDetailDialogMinigraphForm from './dialog-minigraph';
 
 const Component: FC = () => {

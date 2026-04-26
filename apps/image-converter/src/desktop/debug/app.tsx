@@ -1,12 +1,12 @@
-import { PLUGIN_NAME } from '@/lib/constants';
-import { store } from '@/lib/store';
-import { PluginCondition } from '@/schema/plugin-config';
 import { css } from '@emotion/css';
 import { Button } from '@mui/material';
 import { cn } from '@repo/utils';
 import JsonView from '@uiw/react-json-view';
 import { Provider, useAtomValue } from 'jotai';
-import { useState, type FC } from 'react';
+import { type FC, useState } from 'react';
+import { PLUGIN_NAME } from '@/lib/constants';
+import { store } from '@/lib/store';
+import type { PluginCondition } from '@/schema/plugin-config';
 import { pluginConfigAtom } from '../public-state';
 
 const Condition: FC<{ condition: PluginCondition }> = ({ condition }) => {

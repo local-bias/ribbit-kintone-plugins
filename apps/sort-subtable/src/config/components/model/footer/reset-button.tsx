@@ -1,4 +1,4 @@
-import React, { FC, memo, useCallback, useState } from 'react';
+import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import {
   Button,
   Dialog,
@@ -9,11 +9,11 @@ import {
   IconButton,
   Tooltip,
 } from '@mui/material';
-import RestartAltIcon from '@mui/icons-material/RestartAlt';
-import { useRecoilCallback } from 'recoil';
-import { storageState } from '../../../states/plugin';
-import { createConfig } from '@/lib/plugin';
 import { useSnackbar } from 'notistack';
+import React, { type FC, memo, useCallback, useState } from 'react';
+import { useRecoilCallback } from 'recoil';
+import { createConfig } from '@/lib/plugin';
+import { storageState } from '../../../states/plugin';
 
 const Component: FC = () => {
   const { enqueueSnackbar } = useSnackbar();

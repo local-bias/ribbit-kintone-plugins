@@ -1,9 +1,4 @@
 import {
-  exportPluginConfigAtom,
-  importPluginConfigAtom,
-  updatePluginConfigAtom,
-} from '@/config/states/plugin-config';
-import {
   PluginConfigExportButton,
   PluginConfigImportButton,
   PluginFooter,
@@ -12,7 +7,12 @@ import SaveIcon from '@mui/icons-material/Save';
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import { Button, CircularProgress } from '@mui/material';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { FC, useCallback } from 'react';
+import { type FC, useCallback } from 'react';
+import {
+  exportPluginConfigAtom,
+  importPluginConfigAtom,
+  updatePluginConfigAtom,
+} from '@/config/states/plugin-config';
 import { loadingAtom } from '../../../states/plugin';
 import ResetButton from './reset-button';
 

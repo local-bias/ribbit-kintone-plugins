@@ -1,6 +1,6 @@
 import { FormControlLabel, Switch } from '@mui/material';
-import React, { FC, Suspense, memo } from 'react';
-import { RecoilState, useRecoilCallback, useRecoilValue } from 'recoil';
+import React, { type FC, memo, Suspense } from 'react';
+import { type RecoilState, useRecoilCallback, useRecoilValue } from 'recoil';
 
 type Props = {
   state: RecoilState<boolean>;

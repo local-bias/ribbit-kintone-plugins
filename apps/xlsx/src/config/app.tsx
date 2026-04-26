@@ -1,11 +1,11 @@
-import { URL_BANNER, URL_PROMOTION } from '@/common/static';
-import { PluginErrorBoundary } from '@/components/error-boundary';
-import { store } from '@/lib/store';
 import { PluginBanner, PluginContent, PluginLayout } from '@konomi-app/kintone-utilities-react';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
 import { Provider } from 'jotai';
 import { SnackbarProvider } from 'notistack';
 import React, { Suspense } from 'react';
+import { URL_BANNER, URL_PROMOTION } from '@/common/static';
+import { PluginErrorBoundary } from '@/components/error-boundary';
+import { store } from '@/lib/store';
 import Footer from './components/model/footer';
 import Form from './components/model/form';
 import Sidebar from './components/model/sidebar';

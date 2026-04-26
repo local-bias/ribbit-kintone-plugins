@@ -1,11 +1,11 @@
-import { GUEST_SPACE_ID } from '@/lib/global';
-import { restorePluginConfig } from '@/lib/plugin';
-import { kintoneAPI } from '@konomi-app/kintone-utilities';
+import type { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { appFormFieldsAtom, currentAppIdAtom } from '@repo/jotai';
 import { atom } from 'jotai';
-import { derive } from 'jotai-derive';
 import { atomFamily } from 'jotai/utils';
+import { derive } from 'jotai-derive';
 import { enqueueSnackbar } from 'notistack';
+import { GUEST_SPACE_ID } from '@/lib/global';
+import { restorePluginConfig } from '@/lib/plugin';
 
 export const pluginConfigAtom = atom(restorePluginConfig());
 

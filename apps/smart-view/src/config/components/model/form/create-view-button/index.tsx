@@ -1,15 +1,15 @@
+import { getAppId, getViews, type kintoneAPI, updateViews } from '@konomi-app/kintone-utilities';
+import { Button } from '@mui/material';
+import { useAtomValue } from 'jotai';
+import { useAtomCallback } from 'jotai/utils';
+import { useSnackbar } from 'notistack';
+import { type FC, useCallback } from 'react';
+import invariant from 'tiny-invariant';
 import { allAppViewsAtom } from '@/config/states/kintone';
 import { loadingAtom, loadingCountAtom, viewIdAtom } from '@/config/states/plugin';
 import { GUEST_SPACE_ID, isDev } from '@/lib/global';
 import { t } from '@/lib/i18n';
 import { VIEW_ROOT_ID } from '@/lib/statics';
-import { getAppId, getViews, kintoneAPI, updateViews } from '@konomi-app/kintone-utilities';
-import { Button } from '@mui/material';
-import { useAtomValue } from 'jotai';
-import { useAtomCallback } from 'jotai/utils';
-import { useSnackbar } from 'notistack';
-import { FC, useCallback } from 'react';
-import invariant from 'tiny-invariant';
 
 const ViewCreateButton: FC = () => {
   const loading = useAtomValue(loadingAtom);

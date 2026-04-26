@@ -1,12 +1,12 @@
-import {
-  AnyPluginConfig,
-  LatestPluginConditionSchema,
-  PluginCondition,
-  PluginConfig,
-  PluginConfigV0,
-} from '@/schema/plugin-config';
 import { restorePluginConfig as restore } from '@konomi-app/kintone-utilities';
 import { nanoid } from 'nanoid';
+import {
+  type AnyPluginConfig,
+  LatestPluginConditionSchema,
+  type PluginCondition,
+  type PluginConfig,
+  type PluginConfigV0,
+} from '@/schema/plugin-config';
 import { isProd, PLUGIN_ID } from './global';
 
 /**

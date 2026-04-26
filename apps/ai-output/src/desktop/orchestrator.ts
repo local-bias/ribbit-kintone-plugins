@@ -1,10 +1,10 @@
-import type { PluginCondition, ResolvedOutputFieldDef } from '@/schema/plugin-config';
-import { resolveLocalPlaceholders, resolveExternalPlaceholders } from './template-resolver';
-import { buildResponseSchema } from './schema-builder';
-import { collectReferencedAttachments } from './file-attachments';
-import { resolveOutputFields } from './field-resolver';
-import { callOpenAI } from './openai-client';
 import { dialog } from '@konomi-app/ui';
+import type { PluginCondition, ResolvedOutputFieldDef } from '@/schema/plugin-config';
+import { resolveOutputFields } from './field-resolver';
+import { collectReferencedAttachments } from './file-attachments';
+import { callOpenAI } from './openai-client';
+import { buildResponseSchema } from './schema-builder';
+import { resolveExternalPlaceholders, resolveLocalPlaceholders } from './template-resolver';
 
 interface AIInferenceResult {
   aiResponse: Record<string, unknown>;

@@ -1,4 +1,3 @@
-import { t } from '@/lib/i18n';
 import styled from '@emotion/styled';
 import {
   PluginConfigExportButton,
@@ -10,7 +9,8 @@ import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore
 import { Button } from '@mui/material';
 import { loadingAtom } from '@repo/jotai';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { FC, FCX, useCallback } from 'react';
+import { type FC, type FCX, useCallback } from 'react';
+import { t } from '@/lib/i18n';
 import {
   exportPluginConfigAtom,
   handlePluginConfigUpdateAtom,

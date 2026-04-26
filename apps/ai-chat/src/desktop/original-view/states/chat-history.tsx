@@ -1,9 +1,9 @@
-import { convertFileToAttachment, isConvertibleFile } from '@/lib/file-converter';
-import { getBase64EncodedFile } from '@/lib/image';
-import { ChatMessage, ChatMessageV2, MessageAttachment } from '@/lib/static';
 import { produce } from 'immer';
 import { atom } from 'jotai';
 import { nanoid } from 'nanoid';
+import { convertFileToAttachment, isConvertibleFile } from '@/lib/file-converter';
+import { getBase64EncodedFile } from '@/lib/image';
+import type { ChatMessage, ChatMessageV2, MessageAttachment } from '@/lib/static';
 import { createNewChatHistory, getChatTitle } from '../action';
 import {
   inputFilesAtom,

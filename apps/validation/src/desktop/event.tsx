@@ -1,8 +1,8 @@
+import type { kintoneAPI } from '@konomi-app/kintone-utilities';
+import { PLUGIN_NAME } from '@/lib/constants';
 import { manager } from '@/lib/event-manager';
 import { restorePluginConfig } from '@/lib/plugin';
-import { PluginCondition, ValidationRule, TargetEvent } from '@/schema/plugin-config';
-import { PLUGIN_NAME } from '@/lib/constants';
-import { kintoneAPI } from '@konomi-app/kintone-utilities';
+import type { PluginCondition, TargetEvent, ValidationRule } from '@/schema/plugin-config';
 
 type RecordData = kintoneAPI.RecordData;
 
@@ -20,7 +20,7 @@ interface ValidationResult {
 function setFieldError(record: RecordData, fieldCode: string, errorMessage: string | null): void {
   const field = record[fieldCode];
   if (field) {
-    // @ts-ignore - kintone API では field.error が存在するがTypeScript型には含まれていない
+    // @ts-expect-error - kintone API では field.error が存在するがTypeScript型には含まれていない
     field.error = errorMessage;
   }
 }

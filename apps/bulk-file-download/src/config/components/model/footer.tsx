@@ -1,11 +1,4 @@
 import {
-  exportPluginConfigAtom,
-  handlePluginConfigResetAtom,
-  importPluginConfigAtom,
-  updatePluginConfig,
-} from '@/config/states/plugin';
-import { t } from '@/lib/i18n';
-import {
   PluginConfigExportButton,
   PluginConfigImportButton,
   PluginConfigResetButton,
@@ -17,6 +10,13 @@ import { Button, CircularProgress } from '@mui/material';
 import { loadingAtom } from '@repo/jotai';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { useCallback } from 'react';
+import {
+  exportPluginConfigAtom,
+  handlePluginConfigResetAtom,
+  importPluginConfigAtom,
+  updatePluginConfig,
+} from '@/config/states/plugin';
+import { t } from '@/lib/i18n';
 
 interface Props {
   backToPluginList: () => void;

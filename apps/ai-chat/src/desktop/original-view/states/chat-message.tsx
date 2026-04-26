@@ -1,3 +1,4 @@
+import { atom } from 'jotai';
 import { fetchAICompletion } from '@/desktop/original-view/action';
 import {
   aiStateAtom,
@@ -13,7 +14,6 @@ import {
 import { pluginCommonConfigAtom } from '@/desktop/public-state';
 import { buildChatMessage } from '@/lib/chat-message-utils';
 import { InteractiveAIResponseSchema } from '@/schema/ai';
-import { atom } from 'jotai';
 import { checkFact } from '../actions/fact-check';
 import { handlePushAssistantMessageAtom, handleUpdateHtmlAtom } from './chat-history';
 import { handleUpdateLogAppAtom, handleUpdateOutputAppAtom } from './kintone';

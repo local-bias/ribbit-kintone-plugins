@@ -1,9 +1,9 @@
-import { GUEST_SPACE_ID } from '@/lib/global';
-import { TAG_CACHE_STORAGE_KEY } from '@/lib/static';
 import { getAllRecords, getAppId } from '@konomi-app/kintone-utilities';
 import { useAtom, useAtomValue } from 'jotai';
 import { useEffect } from 'react';
-import { allTagsAtom, cacheIdAtom, cachedTagsAtom, pluginConditionAtom } from '../states/plugin';
+import { GUEST_SPACE_ID } from '@/lib/global';
+import { TAG_CACHE_STORAGE_KEY } from '@/lib/static';
+import { allTagsAtom, cachedTagsAtom, cacheIdAtom, pluginConditionAtom } from '../states/plugin';
 
 /**
  * 既存タグを非同期で取得しキャッシュするフック

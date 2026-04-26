@@ -1,4 +1,3 @@
-import { t } from '@/lib/i18n';
 import DoNotDisturbAltIcon from '@mui/icons-material/DoNotDisturbAlt';
 import GppBadIcon from '@mui/icons-material/GppBad';
 import GppMaybeIcon from '@mui/icons-material/GppMaybe';
@@ -6,8 +5,9 @@ import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 import SecurityIcon from '@mui/icons-material/Security';
 import TaskAltIcon from '@mui/icons-material/TaskAlt';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
-import { Box, Card, CardContent, Link, Typography, alpha } from '@mui/material';
-import { FactCheckResult } from '../states/fact-check';
+import { alpha, Box, Card, CardContent, Link, Typography } from '@mui/material';
+import { t } from '@/lib/i18n';
+import type { FactCheckResult } from '../states/fact-check';
 
 interface Props {
   result: FactCheckResult;

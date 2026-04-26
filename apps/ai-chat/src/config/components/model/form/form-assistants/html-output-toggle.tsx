@@ -1,8 +1,8 @@
-import { conditionAllowHtmlOutputAtom } from '@/config/states/plugin';
-import { t } from '@/lib/i18n';
 import { PluginFormDescription, PluginFormTitle } from '@konomi-app/kintone-utilities-react';
 import { Switch } from '@mui/material';
 import { useAtom } from 'jotai';
+import { conditionAllowHtmlOutputAtom } from '@/config/states/plugin';
+import { t } from '@/lib/i18n';
 
 export default function HtmlOutputToggle() {
   const [allowHtmlOutput, setAllowHtmlOutput] = useAtom(conditionAllowHtmlOutputAtom);

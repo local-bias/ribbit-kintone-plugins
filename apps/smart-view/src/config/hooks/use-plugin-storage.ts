@@ -1,10 +1,10 @@
-import { t } from '@/lib/i18n';
-import { PLUGIN_NAME } from '@/lib/statics';
+import { storePluginConfig } from '@konomi-app/kintone-utilities';
 import { useAtomCallback } from 'jotai/utils';
 import { useSnackbar } from 'notistack';
 import { useCallback } from 'react';
+import { t } from '@/lib/i18n';
+import { PLUGIN_NAME } from '@/lib/statics';
 import { loadingCountAtom, pluginConfigAtom } from '../states/plugin';
-import { storePluginConfig } from '@konomi-app/kintone-utilities';
 
 export const usePluginStorage = () => {
   const { enqueueSnackbar } = useSnackbar();

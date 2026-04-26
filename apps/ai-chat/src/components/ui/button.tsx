@@ -1,7 +1,7 @@
-import * as React from 'react';
-import { Slot } from '@radix-ui/react-slot';
-import styled from '@emotion/styled';
 import { css } from '@emotion/react';
+import styled from '@emotion/styled';
+import { Slot } from '@radix-ui/react-slot';
+import type * as React from 'react';
 
 type ButtonVariant = 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
 type ButtonSize = 'default' | 'sm' | 'lg' | 'icon' | 'icon-sm' | 'icon-lg';
@@ -195,5 +195,5 @@ function Button({
   );
 }
 
+export type { ButtonSize, ButtonVariant };
 export { Button };
-export type { ButtonVariant, ButtonSize };

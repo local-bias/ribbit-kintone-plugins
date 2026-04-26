@@ -1,8 +1,8 @@
-import { verbosityAtom } from '@/config/states/plugin';
-import { VerbosityType } from '@/schema/ai';
 import { MenuItem, TextField } from '@mui/material';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
-import { ChangeEvent, FC } from 'react';
+import { type ChangeEvent, FC } from 'react';
+import { verbosityAtom } from '@/config/states/plugin';
+import type { VerbosityType } from '@/schema/ai';
 
 const VERBOSITY_OPTIONS = [
   { value: 'model-default', label: 'Model Default - モデルデフォルト' },

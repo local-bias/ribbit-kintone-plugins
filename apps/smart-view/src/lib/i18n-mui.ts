@@ -1,6 +1,6 @@
+import { createTheme } from '@mui/material';
 import { enUS, esES, jaJP, zhCN, zhTW } from '@mui/material/locale';
 import { LANGUAGE } from './global';
-import { createTheme } from '@mui/material';
 
 const getMUILang = () => {
   switch (LANGUAGE) {

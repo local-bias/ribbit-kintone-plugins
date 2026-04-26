@@ -1,5 +1,3 @@
-import { t } from '@/lib/i18n';
-import { PluginExtractedInputType } from '@/schema/plugin-config';
 import styled from '@emotion/styled';
 import AddIcon from '@mui/icons-material/Add';
 import {
@@ -14,7 +12,9 @@ import {
 import { produce } from 'immer';
 import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
-import { FC, Suspense, useCallback } from 'react';
+import { type FC, Suspense, useCallback } from 'react';
+import { t } from '@/lib/i18n';
+import type { PluginExtractedInputType } from '@/schema/plugin-config';
 import { extractedInputFieldsAtom } from '../../../states/app-fields';
 import { extractedInputsAtom } from '../../../states/plugin';
 

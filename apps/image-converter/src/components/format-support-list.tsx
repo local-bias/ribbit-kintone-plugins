@@ -1,6 +1,6 @@
-import { formatSupportListAtom } from '@/lib/global-states';
 import { cn } from '@repo/utils';
 import { useAtomValue } from 'jotai';
+import { formatSupportListAtom } from '@/lib/global-states';
 
 export default function FormatSupportList() {
   const supportList = useAtomValue(formatSupportListAtom);

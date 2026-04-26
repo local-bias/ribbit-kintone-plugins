@@ -1,12 +1,12 @@
-import { FileContent, getUncompressedSize, sortFileContents } from '@/lib/files';
-import { GUEST_SPACE_ID, isDev } from '@/lib/global';
-import { isUsagePluginConditionMet, restorePluginConfig } from '@/lib/plugin';
-import { downloadFile, kintoneAPI } from '@konomi-app/kintone-utilities';
+import { downloadFile, type kintoneAPI } from '@konomi-app/kintone-utilities';
 import { appFormFieldsAtom, currentAppIdAtom } from '@repo/jotai';
 import { atom } from 'jotai';
 import { atomFamily, atomWithReset } from 'jotai/utils';
 import zip from 'jszip';
 import { entries } from 'remeda';
+import { type FileContent, getUncompressedSize, sortFileContents } from '@/lib/files';
+import { GUEST_SPACE_ID, isDev } from '@/lib/global';
+import { isUsagePluginConditionMet, restorePluginConfig } from '@/lib/plugin';
 
 export const pluginConfigAtom = atom(restorePluginConfig());
 export const pluginConditionsAtom = atom((get) => get(pluginConfigAtom).conditions);
@@ -213,8 +213,6 @@ const unzipContentAtom = atomFamily((fileKey: string) =>
       const pathParts = path.split('/').filter(Boolean);
 
       if (pathParts.length === 0) {
-        // 何もしない（空パスはスキップ）
-        continue;
       } else if (pathParts.length === 1) {
         // ルートレベルのエントリ
         rootEntries.push(content);

@@ -1,5 +1,5 @@
-import { selectedPluginConditionAtom } from '@/desktop/original-view/states/states';
 import { useAtomValue } from 'jotai';
+import { selectedPluginConditionAtom } from '@/desktop/original-view/states/states';
 import { IconAIDefault } from '../../ui/icon-ai-default';
 
 export default function AiIcon() {

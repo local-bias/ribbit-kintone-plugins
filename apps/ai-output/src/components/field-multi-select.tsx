@@ -1,7 +1,7 @@
-import { kintoneAPI } from '@konomi-app/kintone-utilities';
+import type { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { Autocomplete, Box, TextField } from '@mui/material';
-import { Atom, useAtomValue } from 'jotai';
-import { ComponentProps, Suspense, useCallback } from 'react';
+import { type Atom, useAtomValue } from 'jotai';
+import { type ComponentProps, Suspense, useCallback } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 
 interface ContainerProps

@@ -1,7 +1,7 @@
-import { ReasoningEffortType, VerbosityType } from '@/schema/ai';
-import { FactCheckResult } from '@/schema/fact-check';
-import { ChatModel } from 'openai/resources';
+import type { ChatModel } from 'openai/resources';
 import config from '@/../plugin.config.mjs';
+import type { ReasoningEffortType, VerbosityType } from '@/schema/ai';
+import type { FactCheckResult } from '@/schema/fact-check';
 
 /**
  * OpenRouterのAPIエンドポイント

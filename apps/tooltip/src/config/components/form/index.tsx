@@ -1,18 +1,18 @@
-import { JotaiColorPicker } from '@/lib/components/jotai-color-picker';
 import {
   PluginFormDescription,
   PluginFormSection,
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
+import { JotaiColorPicker } from '@/lib/components/jotai-color-picker';
 import { getConditionPropertyAtom } from '../../states/plugin';
 import DeleteButton from './condition-delete-button';
 import EmojiForm from './form-emoji';
 import FieldCodeForm from './form-fieldcode';
 import IconColorForm from './form-icon-color';
 import IconTypeForm from './form-icon-type';
-import { HintEditor } from './hint-editor';
 import TargetEventsForm from './form-target-events';
 import TypeForm from './form-type';
+import { HintEditor } from './hint-editor';
 import Preview from './preview';
 
 export default function ConfigForm() {

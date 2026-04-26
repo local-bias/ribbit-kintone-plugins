@@ -1,11 +1,11 @@
-import { PluginErrorBoundary } from '@/lib/components/error-boundary';
-import { t } from '@/lib/i18n';
-import { store } from '@/lib/store';
 import PreviewIcon from '@mui/icons-material/Preview';
 import { Fab, Tooltip } from '@mui/material';
 import { Provider, useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { SnackbarProvider } from 'notistack';
-import { FC } from 'react';
+import type { FC } from 'react';
+import { PluginErrorBoundary } from '@/lib/components/error-boundary';
+import { t } from '@/lib/i18n';
+import { store } from '@/lib/store';
 import { Debug } from './components/debug';
 import Layout from './components/layout';
 import ChatMessages from './components/model/chat-messages';

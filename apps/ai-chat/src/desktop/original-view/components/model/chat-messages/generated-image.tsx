@@ -1,8 +1,8 @@
-import { ChatGeneratedImageContentPart } from '@/lib/static';
-import { Dialog, DialogContent, IconButton, Skeleton } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import { useState } from 'react';
 import styled from '@emotion/styled';
+import CloseIcon from '@mui/icons-material/Close';
+import { Dialog, DialogContent, IconButton, Skeleton } from '@mui/material';
+import { useState } from 'react';
+import type { ChatGeneratedImageContentPart } from '@/lib/static';
 
 type Props = {
   image: ChatGeneratedImageContentPart;

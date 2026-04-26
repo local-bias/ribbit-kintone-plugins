@@ -1,12 +1,12 @@
-import { currentAppFormFieldsAtom } from '@/config/states/kintone';
-import { concatenationItemsState } from '@/config/states/plugin';
-import { FORMATTABLE_FIELD_TYPES } from '@/lib/plugin';
 import { JotaiFieldSelect } from '@konomi-app/kintone-utilities-jotai';
 import { TextField } from '@mui/material';
 import { produce } from 'immer';
 import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
-import { FC, Suspense, useCallback } from 'react';
+import { type FC, Suspense, useCallback } from 'react';
+import { currentAppFormFieldsAtom } from '@/config/states/kintone';
+import { concatenationItemsState } from '@/config/states/plugin';
+import { FORMATTABLE_FIELD_TYPES } from '@/lib/plugin';
 
 type ContainerProps = { item: Plugin.Condition['concatenationItems'][number]; index: number };
 type Props = { item: Plugin.ConcatenationItem.Field; index: number };
@@ -21,7 +21,7 @@ const Component: FC<Props> = ({ item, index }) => {
       (_, set, index: number, value: string) =>
         set(concatenationItemsState, (prev) =>
           produce(prev, (draft) => {
-            //@ts-ignore
+            //@ts-expect-error
             draft[index].value = value;
           })
         ),
@@ -34,7 +34,7 @@ const Component: FC<Props> = ({ item, index }) => {
       (_, set, index: number, value: string) =>
         set(concatenationItemsState, (prev) =>
           produce(prev, (draft) => {
-            //@ts-ignore
+            //@ts-expect-error
             draft[index].format = value;
           })
         ),

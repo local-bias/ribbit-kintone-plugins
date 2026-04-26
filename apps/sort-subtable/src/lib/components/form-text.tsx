@@ -1,6 +1,6 @@
-import { TextField, TextFieldProps } from '@mui/material';
-import React, { ChangeEventHandler, FC, Suspense, memo } from 'react';
-import { RecoilState, useRecoilCallback, useRecoilValue } from 'recoil';
+import { TextField, type TextFieldProps } from '@mui/material';
+import React, { type ChangeEventHandler, type FC, memo, Suspense } from 'react';
+import { type RecoilState, useRecoilCallback, useRecoilValue } from 'recoil';
 
 type Props = {
   state: RecoilState<string>;

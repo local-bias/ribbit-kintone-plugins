@@ -1,11 +1,11 @@
+import { Tooltip } from '@mui/material';
+import { Check, ChevronDown, ChevronUp, Clipboard, Pencil, RotateCw, X } from 'lucide-react';
+import React, { type FC, forwardRef, type HTMLAttributes, useEffect } from 'react';
 import {
   useChatMessage,
   useRegenerateChatMessage,
 } from '@/desktop/original-view/contexts/chat-message';
-import { ChatTextContentPart } from '@/lib/static';
-import { Tooltip } from '@mui/material';
-import { Check, ChevronDown, ChevronUp, Clipboard, Pencil, RotateCw, X } from 'lucide-react';
-import React, { forwardRef, HTMLAttributes, useEffect, type FC } from 'react';
+import type { ChatTextContentPart } from '@/lib/static';
 
 const IconWrapper = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>((props, ref) => (
   <div

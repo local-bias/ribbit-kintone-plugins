@@ -1,5 +1,3 @@
-import { t } from '@/lib/i18n';
-import { createConfig } from '@/lib/plugin';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import {
   Button,
@@ -13,7 +11,9 @@ import {
 } from '@mui/material';
 import { useAtomCallback } from 'jotai/utils';
 import { useSnackbar } from 'notistack';
-import { FC, useCallback, useState } from 'react';
+import { type FC, useCallback, useState } from 'react';
+import { t } from '@/lib/i18n';
+import { createConfig } from '@/lib/plugin';
 import { pluginConfigAtom } from '../../../states/plugin';
 
 const Component: FC = () => {

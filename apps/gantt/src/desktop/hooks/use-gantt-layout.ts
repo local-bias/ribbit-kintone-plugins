@@ -1,7 +1,7 @@
-import { PluginCondition, GanttScale, CategorySetting } from '@/schema/plugin-config';
-import { t } from '@/lib/i18n';
-import { kintoneAPI } from '@konomi-app/kintone-utilities';
+import type { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { useMemo } from 'react';
+import { t } from '@/lib/i18n';
+import type { CategorySetting, GanttScale, PluginCondition } from '@/schema/plugin-config';
 
 /** スケール毎の列幅（ピクセル） */
 export const COLUMN_WIDTH: Record<GanttScale, number> = {

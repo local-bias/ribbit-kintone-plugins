@@ -1,4 +1,4 @@
-import zip from 'jszip';
+import type zip from 'jszip';
 import { z } from 'zod';
 
 export function formatFileSize(bytes?: number): string {

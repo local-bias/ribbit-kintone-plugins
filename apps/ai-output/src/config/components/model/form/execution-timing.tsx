@@ -1,6 +1,3 @@
-import { appSpacesState } from '@/config/states/kintone';
-import { getConditionPropertyAtom } from '@/config/states/plugin';
-import type { ExecutionTiming } from '@/schema/plugin-config';
 import {
   FormControl,
   FormControlLabel,
@@ -12,6 +9,9 @@ import {
 } from '@mui/material';
 import { useAtom, useAtomValue } from 'jotai';
 import { Suspense } from 'react';
+import { appSpacesState } from '@/config/states/kintone';
+import { getConditionPropertyAtom } from '@/config/states/plugin';
+import type { ExecutionTiming } from '@/schema/plugin-config';
 
 const executionTimingAtom = getConditionPropertyAtom('executionTiming');
 const spaceFieldIdAtom = getConditionPropertyAtom('spaceFieldId');

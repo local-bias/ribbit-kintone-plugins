@@ -1,7 +1,7 @@
-import { t } from '@/lib/i18n';
 import { PluginConfigImportButton } from '@konomi-app/kintone-utilities-react';
 import { useSetAtom } from 'jotai';
-import { FC, memo } from 'react';
+import { type FC, memo } from 'react';
+import { t } from '@/lib/i18n';
 import { handlePluginConfigImportAtom } from '../../../states/plugin';
 
 const Component: FC = () => {

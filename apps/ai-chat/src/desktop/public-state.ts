@@ -1,7 +1,7 @@
+import { getApp, getAppId, type kintoneAPI } from '@konomi-app/kintone-utilities';
+import { atom } from 'jotai';
 import { GUEST_SPACE_ID, isProd } from '@/lib/global';
 import { restorePluginConfig } from '@/lib/plugin';
-import { getApp, getAppId, kintoneAPI } from '@konomi-app/kintone-utilities';
-import { atom } from 'jotai';
 
 const { config: initialConfig, error: configError } = restorePluginConfig();
 

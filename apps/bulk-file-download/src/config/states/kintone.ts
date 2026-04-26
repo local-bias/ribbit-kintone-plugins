@@ -1,8 +1,8 @@
-import { GUEST_SPACE_ID, isDev } from '@/lib/global';
-import { t } from '@/lib/i18n';
-import { getFormLayout, getAppId, kintoneAPI } from '@konomi-app/kintone-utilities';
+import { getAppId, getFormLayout, type kintoneAPI } from '@konomi-app/kintone-utilities';
 import { appFormFieldsAtom, currentAppIdAtom } from '@repo/jotai';
 import { atom } from 'jotai';
+import { GUEST_SPACE_ID, isDev } from '@/lib/global';
+import { t } from '@/lib/i18n';
 
 export const currentAppFieldsAtom = atom((get) => {
   const app = get(currentAppIdAtom);

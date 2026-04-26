@@ -1,8 +1,8 @@
+import { JotaiFieldSelect } from '@konomi-app/kintone-utilities-jotai';
+import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { targetFieldsAtom } from '@/config/states/kintone';
 import { targetFieldCodeAtom } from '@/config/states/plugin';
 import { t } from '@/lib/i18n';
-import { JotaiFieldSelect } from '@konomi-app/kintone-utilities-jotai';
-import { atom, useAtomValue, useSetAtom } from 'jotai';
 
 const handleTargetFieldCodeChangeAtom = atom(null, (_, set, value: string) => {
   set(targetFieldCodeAtom, value);

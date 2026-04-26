@@ -1,14 +1,3 @@
-import { GUEST_SPACE_ID, isDev } from '@/lib/global';
-import { t } from '@/lib/i18n';
-import { createConfig, migrateConfig, restorePluginConfig } from '@/lib/plugin';
-import {
-  OPENAI_ENDPOINT_ROOT,
-  OPENROUTER_ENDPOINT_ROOT,
-  PLUGIN_NAME,
-  VIEW_ROOT_ID,
-} from '@/lib/static';
-import { handleLoadingEndAtom, handleLoadingStartAtom } from '@/lib/w-ui';
-import { PluginCommonConfig, PluginConfig } from '@/schema/plugin-config';
 import {
   getViews,
   onFileLoad,
@@ -20,8 +9,19 @@ import { produce } from 'immer';
 import { atom } from 'jotai';
 import { atomWithDefault } from 'jotai/utils';
 import { enqueueSnackbar } from 'notistack';
-import { ChangeEvent, ReactNode, SetStateAction } from 'react';
+import type { ChangeEvent, ReactNode, SetStateAction } from 'react';
 import invariant from 'tiny-invariant';
+import { GUEST_SPACE_ID, isDev } from '@/lib/global';
+import { t } from '@/lib/i18n';
+import { createConfig, migrateConfig, restorePluginConfig } from '@/lib/plugin';
+import {
+  OPENAI_ENDPOINT_ROOT,
+  OPENROUTER_ENDPOINT_ROOT,
+  PLUGIN_NAME,
+  VIEW_ROOT_ID,
+} from '@/lib/static';
+import { handleLoadingEndAtom, handleLoadingStartAtom } from '@/lib/w-ui';
+import type { PluginCommonConfig, PluginConfig } from '@/schema/plugin-config';
 import { currentAppIdAtom } from './kintone';
 import { usePluginAtoms } from './w-plugin';
 

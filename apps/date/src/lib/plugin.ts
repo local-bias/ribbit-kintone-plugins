@@ -1,14 +1,14 @@
-import {
-  Adjustment,
-  AnyPluginConfig,
-  LatestPluginConditionSchema,
-  PluginCondition,
-  PluginConfig,
-} from '@/schema/plugin-config';
 import { restorePluginConfig as primitiveRestore } from '@konomi-app/kintone-utilities';
-import { DateTimeUnit } from 'luxon';
-import { PLUGIN_ID } from './global';
+import type { DateTimeUnit } from 'luxon';
 import { nanoid } from 'nanoid';
+import {
+  type Adjustment,
+  type AnyPluginConfig,
+  LatestPluginConditionSchema,
+  type PluginCondition,
+  type PluginConfig,
+} from '@/schema/plugin-config';
+import { PLUGIN_ID } from './global';
 
 export const BASIS_TYPES = [
   { label: '入力時の日付', value: 'currentDate' },

@@ -1,6 +1,6 @@
+import { getAllApps, getSpace, withSpaceIdFallback } from '@konomi-app/kintone-utilities';
 import { GUEST_SPACE_ID, isProd } from '@/lib/global';
 import { store } from '@/lib/store';
-import { getAllApps, getSpace, withSpaceIdFallback } from '@konomi-app/kintone-utilities';
 import { allKintoneAppsAtom, kintoneSpacesAtom } from './states/kintone';
 
 (async () => {

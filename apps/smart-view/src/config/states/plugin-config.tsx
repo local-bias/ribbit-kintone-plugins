@@ -1,7 +1,3 @@
-import { GUEST_SPACE_ID, isDev } from '@/lib/global';
-import { t } from '@/lib/i18n';
-import { migrateConfig } from '@/lib/plugin';
-import { PLUGIN_NAME, VIEW_ROOT_ID } from '@/lib/statics';
 import {
   getAppId,
   getViews,
@@ -13,8 +9,12 @@ import { Button } from '@mui/material';
 import { produce } from 'immer';
 import { atom } from 'jotai';
 import { enqueueSnackbar } from 'notistack';
-import { ChangeEvent } from 'react';
+import type { ChangeEvent } from 'react';
 import invariant from 'tiny-invariant';
+import { GUEST_SPACE_ID, isDev } from '@/lib/global';
+import { t } from '@/lib/i18n';
+import { migrateConfig } from '@/lib/plugin';
+import { PLUGIN_NAME, VIEW_ROOT_ID } from '@/lib/statics';
 import { loadingCountAtom, pluginConfigAtom } from './plugin';
 
 export const updatePluginConfigAtom = atom(null, async (get, set) => {

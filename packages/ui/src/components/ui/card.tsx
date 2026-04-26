@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import * as React from 'react';
+import type * as React from 'react';
 
 const StyledCard = styled.div`
   background-color: #fff;
@@ -80,4 +80,4 @@ function CardFooter(props: React.ComponentProps<'div'>) {
   return <StyledCardFooter data-slot='card-footer' {...props} />;
 }
 
-export { Card, CardHeader, CardFooter, CardTitle, CardAction, CardDescription, CardContent };
+export { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle };

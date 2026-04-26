@@ -1,10 +1,10 @@
 import { atom } from 'jotai';
+import { RESET } from 'jotai/utils';
 import {
   previewZipFileKeyAtom,
   previewZipFileNameAtom,
   selectedFileContentKeyAtom,
 } from '../public-state';
-import { RESET } from 'jotai/utils';
 
 export const showDrawerAtom = atom(false);
 

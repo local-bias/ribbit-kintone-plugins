@@ -1,14 +1,14 @@
+import TableRowsIcon from '@mui/icons-material/TableRows';
+import ViewModuleIcon from '@mui/icons-material/ViewModule';
+import { Button, ButtonGroup } from '@mui/material';
+import { useAtomValue, useSetAtom } from 'jotai';
+import type { ReactNode } from 'react';
 import {
   handleViewTypeChangeAtom,
   pluginConditionAtom,
   viewTypeAtom,
 } from '@/desktop/states/plugin';
-import { PluginViewType } from '@/schema/plugin-config';
-import TableRowsIcon from '@mui/icons-material/TableRows';
-import ViewModuleIcon from '@mui/icons-material/ViewModule';
-import { Button, ButtonGroup } from '@mui/material';
-import { useAtomValue, useSetAtom } from 'jotai';
-import { ReactNode } from 'react';
+import type { PluginViewType } from '@/schema/plugin-config';
 
 const TYPES = [
   { value: 'table', icon: <TableRowsIcon /> },

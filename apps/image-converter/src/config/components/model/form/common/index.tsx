@@ -1,11 +1,11 @@
-import FormatSupportList from '@/components/format-support-list';
 import {
   PluginFormDescription,
   PluginFormSection,
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
 import { Alert, Button } from '@mui/material';
-import { FC } from 'react';
+import type { FC } from 'react';
+import FormatSupportList from '@/components/format-support-list';
 
 const Component: FC = () => (
   <div className='p-4'>

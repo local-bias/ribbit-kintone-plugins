@@ -1,4 +1,3 @@
-import { t } from '@/lib/i18n';
 import { Loader } from '@konomi-app/ui-react';
 import BlockIcon from '@mui/icons-material/Block';
 import GppBadIcon from '@mui/icons-material/GppBad';
@@ -7,6 +6,7 @@ import PolicyIcon from '@mui/icons-material/Policy';
 import VerifiedUserIcon from '@mui/icons-material/VerifiedUser';
 import { Box, Tooltip } from '@mui/material';
 import { useAtomValue } from 'jotai';
+import { t } from '@/lib/i18n';
 import { factCheckStateAtom } from '../states/states';
 import FactCheckTooltip from './fact-check-tooltip';
 

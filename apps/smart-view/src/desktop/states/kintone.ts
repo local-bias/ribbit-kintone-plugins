@@ -1,8 +1,8 @@
-import { GUEST_SPACE_ID } from '@/lib/global';
-import { t } from '@/lib/i18n';
-import { downloadFile, getAppId, kintoneAPI } from '@konomi-app/kintone-utilities';
+import { downloadFile, getAppId, type kintoneAPI } from '@konomi-app/kintone-utilities';
 import { atom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
+import { GUEST_SPACE_ID } from '@/lib/global';
+import { t } from '@/lib/i18n';
 import { resolvedTableColumnsAtom } from './plugin';
 
 export const currentAppIdAtom = atom(() => {

@@ -1,5 +1,3 @@
-import { getConditionPropertyAtom } from '@/config/states/plugin';
-import { t } from '@/lib/i18n';
 import { JotaiSwitch } from '@konomi-app/kintone-utilities-jotai';
 import {
   PluginFormDescription,
@@ -7,7 +5,9 @@ import {
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
 import { Tooltip } from '@mui/material';
-import { FC } from 'react';
+import type { FC } from 'react';
+import { getConditionPropertyAtom } from '@/config/states/plugin';
+import { t } from '@/lib/i18n';
 import DeletionButton from './condition-deletion-button';
 import CreateViewButton from './create-view-button';
 import ExtractedInputsForm from './form-extracted-inputs';

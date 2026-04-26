@@ -1,3 +1,9 @@
+import { JotaiSwitch, JotaiText } from '@konomi-app/kintone-utilities-jotai';
+import {
+  PluginFormDescription,
+  PluginFormSection,
+  PluginFormTitle,
+} from '@konomi-app/kintone-utilities-react';
 import {
   aiIconAtom,
   allowImageGenerationAtom,
@@ -8,12 +14,6 @@ import {
   promptIdAtom,
   systemPromptAtom,
 } from '@/config/states/plugin';
-import { JotaiSwitch, JotaiText } from '@konomi-app/kintone-utilities-jotai';
-import {
-  PluginFormDescription,
-  PluginFormSection,
-  PluginFormTitle,
-} from '@konomi-app/kintone-utilities-react';
 import AiModelForm from './ai-model';
 import DeleteButton from './condition-delete-button';
 import ExamplesForm from './examples';

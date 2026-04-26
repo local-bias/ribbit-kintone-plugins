@@ -1,9 +1,9 @@
-import { GUEST_SPACE_ID } from '@/lib/global';
 import styled from '@emotion/styled';
-import { getAppId, getAppSettings, kintoneAPI } from '@konomi-app/kintone-utilities';
+import { getAppId, getAppSettings, type kintoneAPI } from '@konomi-app/kintone-utilities';
 import { CircularProgress, Menu, MenuItem } from '@mui/material';
 import { Paintbrush } from 'lucide-react';
 import React from 'react';
+import { GUEST_SPACE_ID } from '@/lib/global';
 
 type Props = { initSettings: kintoneAPI.AppSettings; className?: string };
 

@@ -1,6 +1,3 @@
-import { getConditionPropertyAtom } from '@/config/states/plugin';
-import { getNewRule } from '@/lib/plugin';
-import { ValidationRule, ValidationType } from '@/schema/plugin-config';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
@@ -17,6 +14,9 @@ import {
 import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
 import { useCallback } from 'react';
+import { getConditionPropertyAtom } from '@/config/states/plugin';
+import { getNewRule } from '@/lib/plugin';
+import type { ValidationRule, ValidationType } from '@/schema/plugin-config';
 
 const VALIDATION_TYPE_OPTIONS: { value: ValidationType; label: string; requiresValue: boolean }[] =
   [

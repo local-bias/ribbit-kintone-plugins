@@ -1,6 +1,6 @@
 import { FormControlLabel, Skeleton, Switch } from '@mui/material';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { FC, memo, Suspense } from 'react';
+import { type FC, memo, Suspense } from 'react';
 import { getConditionPropertyAtom } from '../../../states/plugin';
 
 const state = getConditionPropertyAtom('hideConfigField');

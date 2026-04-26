@@ -1,4 +1,4 @@
-import { getFormFields, kintoneAPI, getAppId, getViews } from '@konomi-app/kintone-utilities';
+import { getAppId, getFormFields, getViews, type kintoneAPI } from '@konomi-app/kintone-utilities';
 import { atom } from 'jotai';
 import { GUEST_SPACE_ID, LANGUAGE } from '@/lib/global';
 

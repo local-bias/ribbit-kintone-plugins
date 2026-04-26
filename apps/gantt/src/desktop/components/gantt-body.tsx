@@ -1,15 +1,15 @@
-import styled from '@emotion/styled';
-import { FC, Fragment, useCallback } from 'react';
 import { useDroppable } from '@dnd-kit/core';
+import styled from '@emotion/styled';
 import { useAtomValue } from 'jotai';
+import { type FC, Fragment, useCallback } from 'react';
 import {
-  DateColumn,
-  GanttGroup,
+  type DateColumn,
+  type GanttGroup,
   GROUP_HEADER_HEIGHT,
   TASK_ROW_HEIGHT,
 } from '../hooks/use-gantt-layout';
-import { GanttBar } from './gantt-bar';
 import { collapsedGroupsAtom } from '../public-state';
+import { GanttBar } from './gantt-bar';
 
 const BodyContainer = styled.div`
   position: relative;

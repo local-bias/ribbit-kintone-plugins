@@ -1,6 +1,3 @@
-import { getConditionPropertyAtom } from '@/config/states/plugin';
-import { GUEST_SPACE_ID } from '@/lib/global';
-import { PluginCondition } from '@/schema/plugin-config';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import styled from '@emotion/styled';
@@ -22,7 +19,10 @@ import { appFormFieldsAtom, appViewsAtom, currentAppIdAtom } from '@repo/jotai';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { GripVertical } from 'lucide-react';
 import { nanoid } from 'nanoid';
-import { FC, Suspense } from 'react';
+import { type FC, Suspense } from 'react';
+import { getConditionPropertyAtom } from '@/config/states/plugin';
+import { GUEST_SPACE_ID } from '@/lib/global';
+import type { PluginCondition } from '@/schema/plugin-config';
 
 /* ---- Atoms ---------------------------------------------------------------- */
 

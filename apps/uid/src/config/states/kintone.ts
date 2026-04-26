@@ -1,6 +1,11 @@
-import { getFormFields, kintoneAPI, getAppId, getFormLayout } from '@konomi-app/kintone-utilities';
-import { GUEST_SPACE_ID } from '@/lib/global';
+import {
+  getAppId,
+  getFormFields,
+  getFormLayout,
+  type kintoneAPI,
+} from '@konomi-app/kintone-utilities';
 import { atom } from 'jotai';
+import { GUEST_SPACE_ID } from '@/lib/global';
 import { flatLayout } from '@/lib/kintone-api';
 
 const currentAppIdAtom = atom(() => {

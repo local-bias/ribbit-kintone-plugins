@@ -1,10 +1,10 @@
+import { getFormFields, type kintoneAPI } from '@konomi-app/kintone-utilities';
 import { GUEST_SPACE_ID } from '@/lib/global';
 import type {
   OutputFieldDef,
   OutputFieldType,
   ResolvedOutputFieldDef,
 } from '@/schema/plugin-config';
-import { getFormFields, kintoneAPI } from '@konomi-app/kintone-utilities';
 
 /** kintoneフィールドタイプから出力フィールドタイプへのマッピング */
 function inferOutputFieldType(kintoneType: string): OutputFieldType {

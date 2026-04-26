@@ -1,11 +1,6 @@
 import {
-  currentKintoneEventTypeAtom,
-  handleQueuedFileAddAtom,
-  pluginConditionAtom,
-} from '@/desktop/states';
-import {
   getCurrentRecord,
-  kintoneAPI,
+  type kintoneAPI,
   setCurrentRecord,
   updateRecord,
   uploadFile,
@@ -14,6 +9,11 @@ import { currentAppIdAtom, handleLoadingEndAtom, handleLoadingStartAtom } from '
 import { atom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
 import { enqueueSnackbar } from 'notistack';
+import {
+  currentKintoneEventTypeAtom,
+  handleQueuedFileAddAtom,
+  pluginConditionAtom,
+} from '@/desktop/states';
 import { GUEST_SPACE_ID, isProd } from './global';
 import { convertImageFormat, isFormatSupported } from './image';
 

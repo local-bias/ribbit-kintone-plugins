@@ -1,6 +1,6 @@
+import { useAtom, useAtomValue } from 'jotai';
 import { selectedPluginConditionIdAtom } from '@/desktop/original-view/states/states';
 import { pluginConditionsAtom } from '@/desktop/public-state';
-import { useAtom, useAtomValue } from 'jotai';
 import { IconAIDefault } from '../../ui/icon-ai-default';
 
 export default function EmptyChat() {

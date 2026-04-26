@@ -1,9 +1,9 @@
-import { restorePluginConfig } from '@/lib/plugin';
-import { PluginCondition, PluginConfig } from '@/schema/plugin-config';
 import { produce } from 'immer';
 import { atom } from 'jotai';
 import { atomWithDefault } from 'jotai/utils';
-import { SetStateAction } from 'react';
+import type { SetStateAction } from 'react';
+import { restorePluginConfig } from '@/lib/plugin';
+import type { PluginCondition, PluginConfig } from '@/schema/plugin-config';
 
 export const pluginConfigAtom = atom<PluginConfig>(restorePluginConfig());
 

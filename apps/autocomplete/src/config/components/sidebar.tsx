@@ -1,11 +1,11 @@
-import { pluginConditionsAtom, selectedConditionIdAtom } from '@/config/states/plugin';
-import { PluginErrorBoundary } from '@/lib/components/error-boundary';
-import { t } from '@/lib/i18n';
-import { getNewCondition, isPluginConditionMet, PluginCondition } from '@/lib/plugin';
 import { BundledSidebar } from '@konomi-app/kintone-utilities-react';
 import { useAtom } from 'jotai';
 import { useSnackbar } from 'notistack';
-import { FC, useCallback } from 'react';
+import { type FC, useCallback } from 'react';
+import { pluginConditionsAtom, selectedConditionIdAtom } from '@/config/states/plugin';
+import { PluginErrorBoundary } from '@/lib/components/error-boundary';
+import { t } from '@/lib/i18n';
+import { getNewCondition, isPluginConditionMet, type PluginCondition } from '@/lib/plugin';
 
 const SidebarComponent: FC = () => {
   const { enqueueSnackbar } = useSnackbar();

@@ -43,4 +43,4 @@ function AvatarFallback(props: React.ComponentProps<typeof AvatarPrimitive.Fallb
   return <StyledAvatarFallback data-slot='avatar-fallback' {...props} />;
 }
 
-export { Avatar, AvatarImage, AvatarFallback };
+export { Avatar, AvatarFallback, AvatarImage };

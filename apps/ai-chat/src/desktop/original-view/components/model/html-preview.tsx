@@ -1,10 +1,10 @@
-import { t } from '@/lib/i18n';
 import CloseIcon from '@mui/icons-material/Close';
 import CodeIcon from '@mui/icons-material/Code';
 import PreviewIcon from '@mui/icons-material/Preview';
 import PrintIcon from '@mui/icons-material/Print';
 import { IconButton, ToggleButton, ToggleButtonGroup, Tooltip, Typography } from '@mui/material';
-import { FC, useCallback, useRef, useState } from 'react';
+import { type FC, useCallback, useRef, useState } from 'react';
+import { t } from '@/lib/i18n';
 
 type Props = {
   html: string;

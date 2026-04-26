@@ -1,11 +1,11 @@
-import { Button, IconButton, TextField } from '@mui/material';
-import { useEffect, useState, type FC } from 'react';
-import CasinoIcon from '@mui/icons-material/Casino';
-import { useAtomValue } from 'jotai';
-import { selectedConditionAtom } from '@/config/states/plugin';
-import { getId } from '@/lib/utils';
-import { t } from '@/lib/i18n';
 import styled from '@emotion/styled';
+import CasinoIcon from '@mui/icons-material/Casino';
+import { Button, IconButton, TextField } from '@mui/material';
+import { useAtomValue } from 'jotai';
+import { type FC, useEffect, useState } from 'react';
+import { selectedConditionAtom } from '@/config/states/plugin';
+import { t } from '@/lib/i18n';
+import { getId } from '@/lib/utils';
 
 const PreviewContainer = styled.div`
   display: flex;

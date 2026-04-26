@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
-import { FC } from 'react';
-import { DateColumn, HEADER_HEIGHT } from '../hooks/use-gantt-layout';
+import type { FC } from 'react';
+import { type DateColumn, HEADER_HEIGHT } from '../hooks/use-gantt-layout';
 
 const HeaderContainer = styled.div`
   position: sticky;

@@ -1,3 +1,14 @@
+import styled from '@emotion/styled';
+import { JotaiFieldSelect } from '@konomi-app/kintone-utilities-jotai';
+import {
+  PluginFormDescription,
+  PluginFormSection,
+  PluginFormTitle,
+} from '@konomi-app/kintone-utilities-react';
+import { MenuItem, Skeleton, TextField, Tooltip } from '@mui/material';
+import { produce } from 'immer';
+import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { type ChangeEventHandler, type FC, Suspense, useCallback } from 'react';
 import {
   categorySortFieldsAtom,
   customViewsAtom,
@@ -10,18 +21,7 @@ import {
 } from '@/config/states/kintone';
 import { getConditionPropertyAtom } from '@/config/states/plugin';
 import { t } from '@/lib/i18n';
-import { CategorySetting, GanttScale } from '@/schema/plugin-config';
-import styled from '@emotion/styled';
-import { JotaiFieldSelect } from '@konomi-app/kintone-utilities-jotai';
-import {
-  PluginFormDescription,
-  PluginFormSection,
-  PluginFormTitle,
-} from '@konomi-app/kintone-utilities-react';
-import { MenuItem, Skeleton, TextField, Tooltip } from '@mui/material';
-import { produce } from 'immer';
-import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
-import { ChangeEventHandler, FC, Suspense, useCallback } from 'react';
+import type { CategorySetting, GanttScale } from '@/schema/plugin-config';
 import DeleteButton from './condition-delete-button';
 
 const viewIdAtom = getConditionPropertyAtom('viewId');

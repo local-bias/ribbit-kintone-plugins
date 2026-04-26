@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { FCX } from 'react';
+import type { FCX } from 'react';
 import Condition from './condition';
 
 const Component: FCX = ({ className }) => {

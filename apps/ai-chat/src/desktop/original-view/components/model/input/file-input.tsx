@@ -1,7 +1,7 @@
-import { inputFilesAtom, selectedPluginConditionAtom } from '@/desktop/original-view/states/states';
 import { PaperClipIcon } from '@heroicons/react/24/outline';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { ChangeEventHandler, useRef } from 'react';
+import { type ChangeEventHandler, useRef } from 'react';
+import { inputFilesAtom, selectedPluginConditionAtom } from '@/desktop/original-view/states/states';
 
 const FILE_ACCEPT = [
   'image/*',

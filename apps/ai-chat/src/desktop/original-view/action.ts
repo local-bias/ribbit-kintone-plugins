@@ -1,24 +1,24 @@
+import { addRecord, uploadFile } from '@konomi-app/kintone-utilities';
+import { marked } from 'marked';
+import { nanoid } from 'nanoid';
+import type { z } from 'zod';
 import { createEndpointAdapter } from '@/lib/adapters';
 import { ketch } from '@/lib/browser';
 import type { ChatCompletionRequest, StructuredAIResponse } from '@/lib/endpoint-adapter';
 import { uploadMessageBase64Attachments } from '@/lib/file-utils';
 import { isDev, isProd } from '@/lib/global';
 import {
-  AnyChatHistory,
-  ChatHistory,
-  ChatImageContentPart,
-  ChatGeneratedImageContentPart,
-  ChatMessage,
-  ChatMessageV2,
-  MessageAttachment,
+  type AnyChatHistory,
+  type ChatGeneratedImageContentPart,
+  type ChatHistory,
+  type ChatImageContentPart,
+  type ChatMessage,
+  type ChatMessageV2,
+  type MessageAttachment,
   OPENAI_MODELS,
 } from '@/lib/static';
-import { ReasoningEffortType, VerbosityType } from '@/schema/ai';
-import { AiProviderType } from '@/schema/plugin-config';
-import { addRecord, uploadFile } from '@konomi-app/kintone-utilities';
-import { marked } from 'marked';
-import { nanoid } from 'nanoid';
-import { z } from 'zod';
+import type { ReasoningEffortType, VerbosityType } from '@/schema/ai';
+import type { AiProviderType } from '@/schema/plugin-config';
 
 export const migrateChatHistory = (chatHistory: AnyChatHistory): ChatHistory => {
   switch (chatHistory.version) {
@@ -48,7 +48,7 @@ export const migrateChatHistory = (chatHistory: AnyChatHistory): ChatHistory => 
         verbosity: 'medium',
         reasoningEffort: 'low',
       });
-    case 6:
+    case 6: {
       const { aiModel, temperature, maxTokens, iconUrl, verbosity, reasoningEffort, ...rest } =
         chatHistory;
       return migrateChatHistory({
@@ -56,6 +56,7 @@ export const migrateChatHistory = (chatHistory: AnyChatHistory): ChatHistory => 
         version: 7,
         assistantId: '',
       });
+    }
     case 7:
       return migrateChatHistory({
         ...chatHistory,

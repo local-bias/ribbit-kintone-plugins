@@ -1,6 +1,6 @@
+import { css } from '@emotion/css';
 import { store } from '@repo/jotai';
 import { handleDrawerOpenAtom, previewFileKeyAtom } from './public-state';
-import { css } from '@emotion/css';
 
 export function createPreviewButton(fileKey: string) {
   const buttonElement = document.createElement('span');

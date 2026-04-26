@@ -1,18 +1,21 @@
 import styled from '@emotion/styled';
-import { FC, useState, useCallback } from 'react';
-import { useAtomValue, useSetAtom } from 'jotai';
 import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  TextField,
-  Chip,
   Box,
+  Button,
+  Chip,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  TextField,
   Typography,
 } from '@mui/material';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { type FC, useCallback, useState } from 'react';
 import { toast } from 'sonner';
+import { GUEST_SPACE_ID } from '@/lib/global';
+import { t } from '@/lib/i18n';
+import { getCategoryFieldCodes } from '@/lib/plugin';
 import {
   addTaskDialogOpenAtom,
   addTaskInitialCategoryPathAtom,
@@ -20,9 +23,6 @@ import {
   ganttAppIdAtom,
 } from '../public-state';
 import { createNewTask, refreshRecords } from '../record-operations';
-import { GUEST_SPACE_ID } from '@/lib/global';
-import { getCategoryFieldCodes } from '@/lib/plugin';
-import { t } from '@/lib/i18n';
 
 const FormField = styled.div`
   margin-bottom: 16px;

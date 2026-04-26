@@ -1,6 +1,3 @@
-import { GUEST_SPACE_ID } from '@/lib/global';
-import { t } from '@/lib/i18n';
-import { getCategoryFieldCodes } from '@/lib/plugin';
 import styled from '@emotion/styled';
 import {
   ContextMenuContent,
@@ -17,9 +14,12 @@ import {
   ContextMenuTrigger,
 } from '@repo/ui';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { FC, ReactNode, useCallback } from 'react';
+import { type FC, type ReactNode, useCallback } from 'react';
 import { toast } from 'sonner';
-import { GanttTask } from '../hooks/use-gantt-layout';
+import { GUEST_SPACE_ID } from '@/lib/global';
+import { t } from '@/lib/i18n';
+import { getCategoryFieldCodes } from '@/lib/plugin';
+import type { GanttTask } from '../hooks/use-gantt-layout';
 import { currentConditionAtom, editRecordDialogAtom, ganttAppIdAtom } from '../public-state';
 import {
   deleteTask,

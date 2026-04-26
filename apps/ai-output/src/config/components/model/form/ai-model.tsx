@@ -1,8 +1,8 @@
-import { getConditionPropertyAtom } from '@/config/states/plugin';
-import { OPENAI_MODELS } from '@/lib/constants';
 import { Autocomplete, Skeleton, TextField } from '@mui/material';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { Suspense } from 'react';
+import { getConditionPropertyAtom } from '@/config/states/plugin';
+import { OPENAI_MODELS } from '@/lib/constants';
 
 const aiModelAtom = getConditionPropertyAtom('aiModel');
 

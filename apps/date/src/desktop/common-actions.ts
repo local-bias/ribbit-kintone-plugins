@@ -1,7 +1,7 @@
+import { getFieldValueAsString, type kintoneAPI } from '@konomi-app/kintone-utilities';
+import type { DateTime } from 'luxon';
 import { t } from '@/lib/i18n';
-import { PluginCondition } from '@/schema/plugin-config';
-import { getFieldValueAsString, kintoneAPI } from '@konomi-app/kintone-utilities';
-import { DateTime } from 'luxon';
+import type { PluginCondition } from '@/schema/plugin-config';
 
 export const validateRecord = (params: {
   record: kintoneAPI.RecordData;

@@ -1,7 +1,7 @@
+import type { FC } from 'react';
 import { JotaiCheckbox } from '@/components/jotai/checkbox';
 import { idRegenerateButtonShownEventsAtom } from '@/config/states/plugin';
 import { t } from '@/lib/i18n';
-import { FC } from 'react';
 
 const Component: FC = () => {
   return (

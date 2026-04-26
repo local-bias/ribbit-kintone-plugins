@@ -1,8 +1,8 @@
-import { getConditionPropertyAtom } from '@/config/states/plugin';
-import { IMAGE_FORMAT_LIST, ImageFormat } from '@/schema/image';
 import { MenuItem, Skeleton, TextField } from '@mui/material';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
-import { FC, Suspense } from 'react';
+import { type FC, Suspense } from 'react';
+import { getConditionPropertyAtom } from '@/config/states/plugin';
+import { IMAGE_FORMAT_LIST, type ImageFormat } from '@/schema/image';
 
 const imageFormatAtom = getConditionPropertyAtom('imageFormat');
 

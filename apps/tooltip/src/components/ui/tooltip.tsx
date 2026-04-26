@@ -1,8 +1,7 @@
+import { css } from '@emotion/css';
 import * as TooltipPrimitive from '@radix-ui/react-tooltip';
 import * as React from 'react';
-
 import { cn } from '@/lib/utils';
-import { css } from '@emotion/css';
 
 const TooltipProvider = TooltipPrimitive.Provider;
 

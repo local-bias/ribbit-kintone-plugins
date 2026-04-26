@@ -1,9 +1,9 @@
-import { GUEST_SPACE_ID, isProd } from '@/lib/global';
-import { getFieldsWithoutIgnores } from '@/lib/kintone';
 import type { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { atom } from 'jotai';
 import { nanoid } from 'nanoid';
 import { clone } from 'remeda';
+import { GUEST_SPACE_ID, isProd } from '@/lib/global';
+import { getFieldsWithoutIgnores } from '@/lib/kintone';
 import { allKintoneAppsAtom, dstAppFieldsAtom } from './kintone';
 import { validJoinConditionsAtom, viewFieldsAtom } from './plugin';
 

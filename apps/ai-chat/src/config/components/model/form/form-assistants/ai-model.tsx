@@ -1,8 +1,8 @@
-import { selectableModelsAtom } from '@/config/states/ai';
-import { aiModelAtom } from '@/config/states/plugin';
 import { Autocomplete, Skeleton, TextField } from '@mui/material';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { Suspense } from 'react';
+import { selectableModelsAtom } from '@/config/states/ai';
+import { aiModelAtom } from '@/config/states/plugin';
 
 const handleModelChangeAtom = atom(null, (_, set, __: unknown, value: string | null) => {
   if (!value) {

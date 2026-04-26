@@ -1,5 +1,5 @@
 import { getTextFromMessageContent } from '@/lib/chatgpt';
-import { ChatMessage } from '@/lib/static';
+import type { ChatMessage } from '@/lib/static';
 
 const LINE_BREAK_PATTERN = /\r\n/g;
 export const COLLAPSE_VISIBLE_LINES = 3;

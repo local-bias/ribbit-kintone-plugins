@@ -1,5 +1,5 @@
-import { URL_PLUGIN_CDN } from '@repo/constants';
 import { createKetch } from '@konomi-app/ketch';
+import { URL_PLUGIN_CDN } from '@repo/constants';
 
 export async function hasNewVersion(pluginId: string, currentVersion: string) {
   try {

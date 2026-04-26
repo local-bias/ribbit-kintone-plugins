@@ -1,13 +1,13 @@
 import {
   getFieldValueAsString,
   getYuruChara,
-  kintoneAPI,
+  type kintoneAPI,
   restorePluginConfig as primitiveRestorePluginConfig,
 } from '@konomi-app/kintone-utilities';
 import { produce } from 'immer';
-import { PLUGIN_ID } from './global';
-import { z } from 'zod';
 import { nanoid } from 'nanoid';
+import { z } from 'zod';
+import { PLUGIN_ID } from './global';
 
 export function isPluginConditionMet(condition: unknown): condition is PluginCondition {
   try {
@@ -93,13 +93,14 @@ export const migrateConfig = (anyConfig: AnyPluginConfig): PluginConfig => {
     case undefined:
       //@ts-expect-error
       return migrateConfig({ version: 1, ...anyConfig });
-    case 1:
+    case 1: {
       const parsed = PluginConfigV1Schema.parse(anyConfig);
       return migrateConfig({
         version: 2,
         common: {},
         conditions: parsed.conditions.map((condition) => ({ ...condition, id: nanoid() })),
       });
+    }
     case 2:
     default:
       return anyConfig;

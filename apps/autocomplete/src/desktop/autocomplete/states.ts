@@ -1,8 +1,8 @@
-import { PluginCondition } from '@/lib/plugin';
-import { LOCAL_STORAGE_KEY } from '@/lib/static';
 import { getCurrentRecord, getYuruChara, setCurrentRecord } from '@konomi-app/kintone-utilities';
 import { atom } from 'jotai';
 import { atomEffect } from 'jotai-effect';
+import type { PluginCondition } from '@/lib/plugin';
+import { LOCAL_STORAGE_KEY } from '@/lib/static';
 
 // Basic atoms
 export const autoCompleteOptionsAtom = atom<Plugin.AutocompleteOption[]>([]);

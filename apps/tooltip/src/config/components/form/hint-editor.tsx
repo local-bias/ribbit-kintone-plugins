@@ -1,17 +1,16 @@
-import { conditionLabelAtom } from '@/config/states/plugin';
-import { normalizeTooltipHtml } from '@/lib/tooltip-html';
 import styled from '@emotion/styled';
 import FormatBoldIcon from '@mui/icons-material/FormatBold';
+import RemoveFormattingIcon from '@mui/icons-material/FormatClear';
 import FormatItalicIcon from '@mui/icons-material/FormatItalic';
 import FormatListBulletedIcon from '@mui/icons-material/FormatListBulleted';
 import FormatListNumberedIcon from '@mui/icons-material/FormatListNumbered';
 import FormatQuoteIcon from '@mui/icons-material/FormatQuote';
 import FormatUnderlinedIcon from '@mui/icons-material/FormatUnderlined';
+import HighlightOffIcon from '@mui/icons-material/HighlightOff';
 import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule';
 import ImageIcon from '@mui/icons-material/Image';
 import LinkIcon from '@mui/icons-material/Link';
 import RedoIcon from '@mui/icons-material/Redo';
-import RemoveFormattingIcon from '@mui/icons-material/FormatClear';
 import TitleIcon from '@mui/icons-material/Title';
 import UndoIcon from '@mui/icons-material/Undo';
 import {
@@ -27,15 +26,16 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import HighlightOffIcon from '@mui/icons-material/HighlightOff';
-import { EditorContent, useEditor } from '@tiptap/react';
 import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
 import Placeholder from '@tiptap/extension-placeholder';
-import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
+import { EditorContent, useEditor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
 import { useAtom } from 'jotai';
 import { useEffect, useState } from 'react';
+import { conditionLabelAtom } from '@/config/states/plugin';
+import { normalizeTooltipHtml } from '@/lib/tooltip-html';
 
 const Toolbar = styled.div`
   display: flex;

@@ -1,10 +1,4 @@
 import {
-  conditionIconColorAtom,
-  conditionIconTypeAtom,
-  conditionTypeAtom,
-} from '@/config/states/plugin';
-import { IconType } from '@/schema/plugin-config';
-import {
   CheckCircleIcon,
   ExclamationCircleIcon,
   ExclamationTriangleIcon,
@@ -17,6 +11,12 @@ import {
 } from '@konomi-app/kintone-utilities-react';
 import { MenuItem, TextField } from '@mui/material';
 import { useAtom, useAtomValue } from 'jotai';
+import {
+  conditionIconColorAtom,
+  conditionIconTypeAtom,
+  conditionTypeAtom,
+} from '@/config/states/plugin';
+import type { IconType } from '@/schema/plugin-config';
 
 function IconTypeSelect() {
   const [type, setType] = useAtom(conditionIconTypeAtom);

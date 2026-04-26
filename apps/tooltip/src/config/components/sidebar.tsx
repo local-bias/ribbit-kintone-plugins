@@ -1,12 +1,12 @@
-import { pluginConditionsAtom, selectedConditionIdAtom } from '@/config/states/plugin';
-import { TooltipIcon } from '@/lib/components/tooltip-icon';
-import { getNewCondition } from '@/lib/plugin';
-import { PluginCondition } from '@/schema/plugin-config';
 import { BundledSidebar } from '@konomi-app/kintone-utilities-react';
 import { useAtom } from 'jotai';
 import { RESET } from 'jotai/utils';
 import { useSnackbar } from 'notistack';
-import { FC, useCallback } from 'react';
+import { type FC, useCallback } from 'react';
+import { pluginConditionsAtom, selectedConditionIdAtom } from '@/config/states/plugin';
+import { TooltipIcon } from '@/lib/components/tooltip-icon';
+import { getNewCondition } from '@/lib/plugin';
+import type { PluginCondition } from '@/schema/plugin-config';
 
 const Icon = ({ condition }: { condition: PluginCondition }) => {
   const { type, emoji, iconType, iconColor } = condition;
@@ -24,7 +24,7 @@ const Sidebar: FC = () => {
   const label = useCallback((params: { condition: PluginCondition; index: number }) => {
     const { condition, index } = params;
 
-    let label = condition.fieldCode || '未設定';
+    const label = condition.fieldCode || '未設定';
 
     return (
       <div className='pl-0 bg-transparent border-0 cursor-pointer outline-none text-left text-gray-600 text-sm grid grid-cols-[auto_1fr] items-center'>

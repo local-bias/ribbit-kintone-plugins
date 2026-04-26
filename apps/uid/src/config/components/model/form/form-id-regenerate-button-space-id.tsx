@@ -1,8 +1,8 @@
-import { currentAppSpacesAtom } from '@/config/states/kintone';
-import { getConditionPropertyAtom } from '@/config/states/plugin';
 import { Autocomplete, Skeleton, TextField } from '@mui/material';
 import { useAtom, useAtomValue } from 'jotai';
-import { Suspense, type FC } from 'react';
+import { type FC, Suspense } from 'react';
+import { currentAppSpacesAtom } from '@/config/states/kintone';
+import { getConditionPropertyAtom } from '@/config/states/plugin';
 
 const fieldPropertyAtom = getConditionPropertyAtom('idRegenerateButtonSpaceId');
 

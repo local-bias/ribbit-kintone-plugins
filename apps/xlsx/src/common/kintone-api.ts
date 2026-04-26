@@ -1,4 +1,8 @@
-import { getFieldValueAsString, getFormFields, kintoneAPI } from '@konomi-app/kintone-utilities';
+import {
+  getFieldValueAsString,
+  getFormFields,
+  type kintoneAPI,
+} from '@konomi-app/kintone-utilities';
 
 /** kintoneアプリに初期状態で存在するフィールドタイプ */
 const DEFAULT_DEFINED_FIELDS: kintoneAPI.FieldPropertyType[] = [

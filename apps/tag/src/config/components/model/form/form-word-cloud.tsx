@@ -1,8 +1,8 @@
-import { customizeViewsAtom } from '@/config/states/kintone';
-import { getConditionPropertyAtom } from '@/config/states/plugin';
 import { Autocomplete, Skeleton, TextField } from '@mui/material';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { FC, memo, Suspense } from 'react';
+import { type FC, memo, Suspense } from 'react';
+import { customizeViewsAtom } from '@/config/states/kintone';
+import { getConditionPropertyAtom } from '@/config/states/plugin';
 
 const state = getConditionPropertyAtom('wordCloudViewId');
 

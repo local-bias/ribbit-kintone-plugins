@@ -1,22 +1,22 @@
+import { useDroppable } from '@dnd-kit/core';
+import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import styled from '@emotion/styled';
-import { FC, ReactNode, useCallback, useState } from 'react';
 import { useAtom, useSetAtom } from 'jotai';
+import { type FC, type ReactNode, useCallback, useState } from 'react';
+import { t } from '@/lib/i18n';
 import {
-  GanttGroup,
-  GanttTask,
+  type GanttGroup,
+  type GanttTask,
   GROUP_HEADER_HEIGHT,
   TASK_ROW_HEIGHT,
 } from '../hooks/use-gantt-layout';
-import { useDroppable } from '@dnd-kit/core';
-import { SortableContext, verticalListSortingStrategy, useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 import {
   addTaskDialogOpenAtom,
   addTaskInitialCategoryPathAtom,
   collapsedGroupsAtom,
 } from '../public-state';
 import { TaskContextMenu } from './task-context-menu';
-import { t } from '@/lib/i18n';
 
 const INDENT_PER_LEVEL = 16;
 

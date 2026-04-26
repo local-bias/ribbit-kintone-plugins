@@ -1,5 +1,5 @@
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
-import { PropsWithChildren } from 'react';
+import type { PropsWithChildren } from 'react';
 import RegenerateButton from '../input/regenerate-button';
 
 export default function ChatErrorMessage({ children }: PropsWithChildren) {

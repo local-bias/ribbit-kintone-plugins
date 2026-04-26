@@ -1,5 +1,5 @@
-import { t } from '@/lib/i18n';
 import styled from '@emotion/styled';
+import { t } from '@/lib/i18n';
 
 const EmptyStateViewStyle = styled.div`
   min-height: 400px;

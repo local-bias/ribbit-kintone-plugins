@@ -1,10 +1,10 @@
-import { assistantExamplesAtom } from '@/config/states/plugin';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton, TextField, Tooltip } from '@mui/material';
 import { produce } from 'immer';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
-import { ChangeEvent, FC } from 'react';
+import { type ChangeEvent, FC } from 'react';
+import { assistantExamplesAtom } from '@/config/states/plugin';
 
 const handleExampleChangeAtom = atom(
   null,

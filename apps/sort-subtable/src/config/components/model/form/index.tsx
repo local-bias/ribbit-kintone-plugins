@@ -1,11 +1,10 @@
-import React, { FC } from 'react';
-
-import FieldsForm from './form-fields';
 import {
+  PluginFormDescription,
   PluginFormSection,
   PluginFormTitle,
-  PluginFormDescription,
 } from '@konomi-app/kintone-utility-component';
+import React, { type FC } from 'react';
+import FieldsForm from './form-fields';
 
 const Component: FC = () => {
   return (

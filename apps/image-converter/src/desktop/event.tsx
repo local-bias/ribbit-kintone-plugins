@@ -1,9 +1,9 @@
+import { getSpaceElement, type kintoneAPI } from '@konomi-app/kintone-utilities';
+import { ComponentManager } from '@konomi-app/kintone-utilities-react';
 import { PLUGIN_NAME } from '@/lib/constants';
 import { manager } from '@/lib/event-manager';
 import { isProd } from '@/lib/global';
 import { store } from '@/lib/store';
-import { getSpaceElement, kintoneAPI } from '@konomi-app/kintone-utilities';
-import { ComponentManager } from '@konomi-app/kintone-utilities-react';
 import App from './components';
 import { currentKintoneEventTypeAtom, pluginConfigAtom } from './states';
 

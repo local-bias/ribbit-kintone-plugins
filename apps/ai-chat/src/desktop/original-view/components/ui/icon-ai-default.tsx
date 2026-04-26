@@ -1,5 +1,5 @@
-import { ComponentProps } from 'react';
 import { Bot } from 'lucide-react';
+import type { ComponentProps } from 'react';
 import { cn } from '@/lib/utils';
 
 export function IconAIDefault(props: ComponentProps<typeof Bot>) {

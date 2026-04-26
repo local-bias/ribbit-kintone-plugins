@@ -1,7 +1,7 @@
+import { useAtomValue } from 'jotai';
+import type { PropsWithChildren } from 'react';
 import { errorAtom, viewTypeAtom } from '@/desktop/states/plugin';
 import { isOriginalTableShownAtom } from '@/desktop/states/records';
-import { useAtomValue } from 'jotai';
-import { PropsWithChildren } from 'react';
 import TableView from '../table';
 import CardView from '../view-card';
 import EmptyStateView from './empty';

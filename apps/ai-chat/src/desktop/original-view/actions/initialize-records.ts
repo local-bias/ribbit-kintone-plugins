@@ -1,10 +1,10 @@
-import { pluginCommonConfigAtom } from '@/desktop/public-state';
-import { store } from '@/lib/store';
 import { getAllRecords } from '@konomi-app/kintone-utilities';
+import { pluginCommonConfigAtom } from '@/desktop/public-state';
+import { isDev } from '@/lib/global';
+import { store } from '@/lib/store';
 import { migrateChatHistory } from '../action';
 import { outputAppGuestSpaceIdAtom } from '../states/kintone';
 import { chatHistoriesAtom, historiesFetchedAtom } from '../states/states';
-import { isDev } from '@/lib/global';
 
 export const initializeRecords = async () => {
   const commonConfig = store.get(pluginCommonConfigAtom);

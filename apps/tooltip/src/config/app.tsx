@@ -1,5 +1,3 @@
-import { PluginErrorBoundary } from '@/lib/components/error-boundary';
-import { URL_BANNER, URL_PROMOTION } from '@/lib/static';
 import {
   Notification,
   PluginBanner,
@@ -13,6 +11,8 @@ import { store } from '@repo/jotai';
 import { Provider } from 'jotai';
 import { SnackbarProvider } from 'notistack';
 import { Suspense } from 'react';
+import { PluginErrorBoundary } from '@/lib/components/error-boundary';
+import { URL_BANNER, URL_PROMOTION } from '@/lib/static';
 import config from '../../plugin.config.mjs';
 import Footer from './components/footer';
 import Form from './components/form';

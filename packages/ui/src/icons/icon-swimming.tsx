@@ -1,4 +1,4 @@
-import { SVGProps, forwardRef } from 'react';
+import { forwardRef, type SVGProps } from 'react';
 
 export const SwimmingIcon = forwardRef<SVGSVGElement, SVGProps<SVGSVGElement>>((props, ref) => (
   <svg

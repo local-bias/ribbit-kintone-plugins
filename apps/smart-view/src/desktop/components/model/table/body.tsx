@@ -1,9 +1,9 @@
-import { loadingAtom } from '@/desktop/states/ui';
-import { TableRow } from '@/desktop/static';
-import { isProd } from '@/lib/global';
 import { Skeleton } from '@mui/material';
 import { useAtomValue } from 'jotai';
 import { Suspense, useDeferredValue } from 'react';
+import { loadingAtom } from '@/desktop/states/ui';
+import type { TableRow } from '@/desktop/static';
+import { isProd } from '@/lib/global';
 import { pluginConditionAtom, resolvedTableColumnsAtom } from '../../../states/plugin';
 import { areAllCurrentAppRecordsReadyAtom, displayingTableRowsAtom } from '../../../states/records';
 import { DocumentIcon } from '../../ui/document-icon';

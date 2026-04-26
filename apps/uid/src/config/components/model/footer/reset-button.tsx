@@ -1,9 +1,9 @@
-import { t } from '@/lib/i18n';
-import { createConfig } from '@/lib/plugin';
 import { PluginConfigResetButton } from '@konomi-app/kintone-utilities-react';
 import { useAtomCallback } from 'jotai/utils';
 import { useSnackbar } from 'notistack';
-import { FC, memo, useCallback } from 'react';
+import { type FC, memo, useCallback } from 'react';
+import { t } from '@/lib/i18n';
+import { createConfig } from '@/lib/plugin';
 import { pluginConfigAtom } from '../../../states/plugin';
 
 const Component: FC = () => {

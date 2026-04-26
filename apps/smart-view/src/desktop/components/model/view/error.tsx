@@ -1,7 +1,7 @@
-import { WindIcon } from '@/lib/components/wind';
 import styled from '@emotion/styled';
 import { Button } from '@mui/material';
 import { useAtomValue } from 'jotai';
+import { WindIcon } from '@/lib/components/wind';
 import { errorAtom } from '../../../states/plugin';
 
 function ErrorNotificationComponent({ className }: { className?: string }) {

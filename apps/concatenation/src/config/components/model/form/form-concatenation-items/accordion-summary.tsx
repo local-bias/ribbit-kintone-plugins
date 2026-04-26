@@ -1,6 +1,6 @@
-import { CONCATENATION_ITEM_TYPES } from '@/lib/plugin';
 import { AccordionSummary } from '@mui/material';
-import { FC } from 'react';
+import type { FC } from 'react';
+import { CONCATENATION_ITEM_TYPES } from '@/lib/plugin';
 
 type Props = { item: Plugin.Condition['concatenationItems'][number] };
 

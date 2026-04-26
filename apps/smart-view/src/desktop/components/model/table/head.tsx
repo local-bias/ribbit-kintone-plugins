@@ -20,7 +20,7 @@ function RecordTableHeaderComponent() {
 function RecordTableHeaderPlaceholder() {
   const condition = useAtomValue(pluginConditionAtom);
 
-  let colCount = condition?.viewFields.length ?? 6;
+  const colCount = condition?.viewFields.length ?? 6;
 
   return (
     <>

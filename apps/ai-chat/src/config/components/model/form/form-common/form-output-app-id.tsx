@@ -1,9 +1,9 @@
-import { allKintoneAppsState } from '@/config/states/kintone';
-import { outputAppIdAtom, outputAppSpaceIdAtom } from '@/config/states/plugin';
-import { kintoneAPI } from '@konomi-app/kintone-utilities';
+import type { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { Autocomplete, Skeleton, TextField } from '@mui/material';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { Suspense } from 'react';
+import { allKintoneAppsState } from '@/config/states/kintone';
+import { outputAppIdAtom, outputAppSpaceIdAtom } from '@/config/states/plugin';
 
 const handleAppChangeAtom = atom(null, (_, set, app: kintoneAPI.App | null) => {
   if (!app) {

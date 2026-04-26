@@ -1,9 +1,9 @@
-import { getConditionPropertyAtom } from '@/config/states/plugin';
-import { t } from '@/lib/i18n';
-import { PluginViewType } from '@/schema/plugin-config';
 import { MenuItem, TextField } from '@mui/material';
 import { useAtom } from 'jotai';
-import { ChangeEventHandler, FC } from 'react';
+import type { ChangeEventHandler, FC } from 'react';
+import { getConditionPropertyAtom } from '@/config/states/plugin';
+import { t } from '@/lib/i18n';
+import type { PluginViewType } from '@/schema/plugin-config';
 
 const VIEW_TYPES = [
   { value: 'table', label: t('config.app.form.view-type.table') },

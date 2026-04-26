@@ -1,6 +1,6 @@
-import { inputFilesAtom } from '@/desktop/original-view/states/states';
 import { Chip } from '@mui/material';
 import { useAtom } from 'jotai';
+import { inputFilesAtom } from '@/desktop/original-view/states/states';
 
 export default function InputFiles() {
   const [files, setFiles] = useAtom(inputFilesAtom);

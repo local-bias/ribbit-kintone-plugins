@@ -1,12 +1,12 @@
+import { isMobile } from '@konomi-app/kintone-utilities';
+import ViewHeadlineIcon from '@mui/icons-material/ViewHeadline';
+import { Drawer, Fab } from '@mui/material';
+import { useAtom, useAtomValue } from 'jotai';
 import {
   isHistoryDrawerOpenAtom,
   isHistoryFabShownAtom,
 } from '@/desktop/original-view/states/states';
 import { cn } from '@/lib/utils';
-import { isMobile } from '@konomi-app/kintone-utilities';
-import ViewHeadlineIcon from '@mui/icons-material/ViewHeadline';
-import { Drawer, Fab } from '@mui/material';
-import { useAtom, useAtomValue } from 'jotai';
 import NewChatButton from '../new-chat';
 import Histories from './histories';
 import Pagination from './pagination';

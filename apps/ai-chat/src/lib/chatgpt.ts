@@ -1,4 +1,4 @@
-import { ChatMessageContent } from './static';
+import type { ChatMessageContent } from './static';
 
 export const getTextFromMessageContent = (content: ChatMessageContent): string => {
   if (!content) {

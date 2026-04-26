@@ -1,4 +1,3 @@
-import { PluginCondition } from '@/schema/plugin-config';
 import { css } from '@emotion/css';
 import { Fab } from '@mui/material';
 import { store } from '@repo/jotai';
@@ -6,6 +5,7 @@ import { cn } from '@repo/utils';
 import JsonView from '@uiw/react-json-view';
 import { Provider, useAtomValue } from 'jotai';
 import { useState } from 'react';
+import type { PluginCondition } from '@/schema/plugin-config';
 import { pluginConfigAtom } from '../public-state';
 
 function Condition({ condition }: { condition: PluginCondition }) {

@@ -1,3 +1,9 @@
+import { JotaiRadio, JotaiSwitch } from '@konomi-app/kintone-utilities-jotai';
+import {
+  PluginFormDescription,
+  PluginFormSection,
+  PluginFormTitle,
+} from '@konomi-app/kintone-utilities-react';
 import {
   basisTypeAtom,
   isBulkUpdateButtonVisibleAtom,
@@ -5,12 +11,6 @@ import {
 } from '@/config/states/plugin';
 import { t } from '@/lib/i18n';
 import { BASIS_TYPES } from '@/lib/plugin';
-import { JotaiRadio, JotaiSwitch } from '@konomi-app/kintone-utilities-jotai';
-import {
-  PluginFormDescription,
-  PluginFormSection,
-  PluginFormTitle,
-} from '@konomi-app/kintone-utilities-react';
 import DeleteButton from './condition-delete-button';
 import AdjustmentsForm from './form-adjustments';
 import BasisFieldCodeForm from './form-basis-field-code';

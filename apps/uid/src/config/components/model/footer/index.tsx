@@ -1,5 +1,4 @@
-import { usePluginStorage, useSavePluginConfig } from '@/config/hooks/use-plugin-storage';
-import { t } from '@/lib/i18n';
+import styled from '@emotion/styled';
 import {
   PluginConfigExportButton,
   PluginConfigImportButton,
@@ -9,10 +8,11 @@ import SaveIcon from '@mui/icons-material/Save';
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import { Button, CircularProgress } from '@mui/material';
 import { useAtomValue } from 'jotai';
-import { FC, useCallback } from 'react';
+import { type FC, useCallback } from 'react';
+import { usePluginStorage, useSavePluginConfig } from '@/config/hooks/use-plugin-storage';
+import { t } from '@/lib/i18n';
 import { loadingAtom } from '../../../states/plugin';
 import ResetButton from './reset-button';
-import styled from '@emotion/styled';
 
 type Props = {
   backToPluginList: () => void;

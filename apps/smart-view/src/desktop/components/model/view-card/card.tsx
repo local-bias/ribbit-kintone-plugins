@@ -1,14 +1,14 @@
+import styled from '@emotion/styled';
+import { isMobile, type kintoneAPI } from '@konomi-app/kintone-utilities';
+import { Card, IconButton, Tooltip } from '@mui/material';
+import { useAtomValue } from 'jotai';
 import {
   cardImageFieldCodeAtom,
   cardViewFieldsAtom,
   pluginConditionAtom,
 } from '@/desktop/states/plugin';
-import { TableRow } from '@/desktop/static';
+import type { TableRow } from '@/desktop/static';
 import { getQueryString } from '@/lib/cybozu';
-import styled from '@emotion/styled';
-import { isMobile, kintoneAPI } from '@konomi-app/kintone-utilities';
-import { Card, IconButton, Tooltip } from '@mui/material';
-import { useAtomValue } from 'jotai';
 import { DocumentIcon } from '../../ui/document-icon';
 import ViewCardField from './field';
 import ViewCardImage from './image';

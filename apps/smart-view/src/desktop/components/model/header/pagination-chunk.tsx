@@ -1,6 +1,6 @@
 import { MenuItem, TextField } from '@mui/material';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
-import { ChangeEvent } from 'react';
+import type { ChangeEvent } from 'react';
 import { paginationChunkAtom } from '../../../states/pagination';
 import { pluginConditionAtom } from '../../../states/plugin';
 

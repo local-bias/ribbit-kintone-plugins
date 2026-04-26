@@ -1,11 +1,11 @@
-import { manager } from '@/lib/event-manager';
-import { restorePluginConfig } from '@/lib/plugin';
 import {
   getCybozuUserGroups,
   getCybozuUserOrganizations,
   getHeaderSpace,
 } from '@konomi-app/kintone-utilities';
 import { createRoot } from 'react-dom/client';
+import { manager } from '@/lib/event-manager';
+import { restorePluginConfig } from '@/lib/plugin';
 import Button from './button';
 
 let rendered = false;

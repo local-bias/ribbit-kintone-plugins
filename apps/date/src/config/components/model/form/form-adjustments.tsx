@@ -1,12 +1,3 @@
-import { basisFieldsState } from '@/config/states/kintone';
-import { adjustmentsAtom } from '@/config/states/plugin';
-import {
-  ADJUSTMENT_BASIS_TYPES,
-  ADJUSTMENT_TARGETS,
-  ADJUSTMENT_TYPES,
-  getNewAdjustment,
-} from '@/lib/plugin';
-import { Adjustment } from '@/schema/plugin-config';
 import { JotaiFieldSelect } from '@konomi-app/kintone-utilities-jotai';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -22,7 +13,16 @@ import {
   Typography,
 } from '@mui/material';
 import { useAtom } from 'jotai';
-import { FC, Fragment, Suspense } from 'react';
+import { type FC, Fragment, Suspense } from 'react';
+import { basisFieldsState } from '@/config/states/kintone';
+import { adjustmentsAtom } from '@/config/states/plugin';
+import {
+  ADJUSTMENT_BASIS_TYPES,
+  ADJUSTMENT_TARGETS,
+  ADJUSTMENT_TYPES,
+  getNewAdjustment,
+} from '@/lib/plugin';
+import type { Adjustment } from '@/schema/plugin-config';
 
 const AdjustmentForm: FC = () => {
   const [adjustments, setAdjustments] = useAtom(adjustmentsAtom);

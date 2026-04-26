@@ -1,6 +1,3 @@
-import { PluginErrorBoundary } from '@/lib/components/error-boundary';
-import { ThemeProvider } from '@/lib/components/theme-provider';
-import { URL_BANNER, URL_PROMOTION } from '@/lib/constants';
 import {
   Notification,
   PluginBanner,
@@ -10,9 +7,12 @@ import {
 } from '@konomi-app/kintone-utilities-react';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
 import { SnackbarProvider } from 'notistack';
-import config from '@/../plugin.config.mjs';
-import { FC, Suspense } from 'react';
+import { type FC, Suspense } from 'react';
 import { RecoilRoot } from 'recoil';
+import config from '@/../plugin.config.mjs';
+import { PluginErrorBoundary } from '@/lib/components/error-boundary';
+import { ThemeProvider } from '@/lib/components/theme-provider';
+import { URL_BANNER, URL_PROMOTION } from '@/lib/constants';
 import Footer from './components/model/footer';
 import ConditionForm from './components/model/form';
 import Sidebar from './components/model/sidebar';

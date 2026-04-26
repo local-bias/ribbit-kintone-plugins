@@ -1,6 +1,6 @@
-import * as React from 'react';
-import * as LabelPrimitive from '@radix-ui/react-label';
 import styled from '@emotion/styled';
+import * as LabelPrimitive from '@radix-ui/react-label';
+import type * as React from 'react';
 
 const StyledLabel = styled(LabelPrimitive.Root)`
   display: flex;

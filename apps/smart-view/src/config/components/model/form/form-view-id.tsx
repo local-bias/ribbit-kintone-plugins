@@ -1,7 +1,7 @@
-import { t } from '@/lib/i18n';
 import { MenuItem, Skeleton, TextField } from '@mui/material';
 import { useAtom, useAtomValue } from 'jotai';
-import { ChangeEventHandler, FC, Suspense } from 'react';
+import { type ChangeEventHandler, type FC, Suspense } from 'react';
+import { t } from '@/lib/i18n';
 import { customViewsAtom } from '../../../states/kintone';
 import { viewIdAtom } from '../../../states/plugin';
 

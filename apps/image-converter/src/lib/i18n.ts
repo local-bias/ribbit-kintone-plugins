@@ -1,6 +1,6 @@
-import { LANGUAGE } from './global';
 import { commonUi, useTranslations } from '@repo/utils';
 import { mergeDeep } from 'remeda';
+import { LANGUAGE } from './global';
 
 export const ui = mergeDeep(commonUi, {
   ja: {},

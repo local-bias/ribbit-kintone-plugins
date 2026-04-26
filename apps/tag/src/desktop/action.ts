@@ -18,7 +18,7 @@ export const decodeTagData = (target: string): Plugin.TagData => {
   const tagData: Plugin.TagData = migrateTagData(JSON.parse(target));
 
   return produce(tagData, (draft) => {
-    for (let index in draft.tags) {
+    for (const index in draft.tags) {
       draft.tags[index]!.value = decodeURIComponent(draft.tags[index]!.value);
     }
   });

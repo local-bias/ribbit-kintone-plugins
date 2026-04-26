@@ -1,8 +1,8 @@
-import { isFieldSettingsDialogOpenAtom } from '@/desktop/states/visible-fields';
-import { pluginConditionAtom } from '@/desktop/states/plugin';
-import { Button } from '@mui/material';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { useSetAtom, useAtomValue } from 'jotai';
+import { Button } from '@mui/material';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { pluginConditionAtom } from '@/desktop/states/plugin';
+import { isFieldSettingsDialogOpenAtom } from '@/desktop/states/visible-fields';
 
 export default function FieldSettingsButton() {
   const condition = useAtomValue(pluginConditionAtom);

@@ -1,4 +1,4 @@
-import { ImageFormat } from '@/schema/image';
+import type { ImageFormat } from '@/schema/image';
 
 /**
  * 画像ファイルを指定したフォーマットに変換する

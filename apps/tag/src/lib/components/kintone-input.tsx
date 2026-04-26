@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { ComponentProps, forwardRef, ReactNode } from 'react';
+import { type ComponentProps, forwardRef, type ReactNode } from 'react';
 
 type Props = ComponentProps<'input'> & { label?: string; icon?: ReactNode };
 

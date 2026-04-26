@@ -1,6 +1,6 @@
-import * as React from 'react';
-import * as SwitchPrimitive from '@radix-ui/react-switch';
 import styled from '@emotion/styled';
+import * as SwitchPrimitive from '@radix-ui/react-switch';
+import type * as React from 'react';
 
 const StyledSwitch = styled(SwitchPrimitive.Root)`
   display: inline-flex;

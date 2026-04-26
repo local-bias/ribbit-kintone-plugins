@@ -1,7 +1,7 @@
-import { getInitialTagData } from '@/desktop/action';
-import { TAG_CACHE_STORAGE_KEY } from '@/lib/static';
 import { getYuruChara } from '@konomi-app/kintone-utilities';
 import { atom } from 'jotai';
+import { getInitialTagData } from '@/desktop/action';
+import { TAG_CACHE_STORAGE_KEY } from '@/lib/static';
 
 export const pluginConditionAtom = atom<Plugin.Condition | null>(null);
 

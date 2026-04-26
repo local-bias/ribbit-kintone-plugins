@@ -1,8 +1,8 @@
-import { shouldCollapseUserMessage } from '@/desktop/original-view/components/model/chat-messages/utils';
-import { ChatMessage } from '@/lib/static';
 import { useAtomCallback } from 'jotai/utils';
-import React, { createContext, ReactNode, useCallback, useContext } from 'react';
+import React, { createContext, type ReactNode, useCallback, useContext } from 'react';
 import invariant from 'tiny-invariant';
+import { shouldCollapseUserMessage } from '@/desktop/original-view/components/model/chat-messages/utils';
+import type { ChatMessage } from '@/lib/static';
 import { handleSendMessageAtom } from '../states/chat-message';
 import { selectedHistoryAtom } from '../states/states';
 

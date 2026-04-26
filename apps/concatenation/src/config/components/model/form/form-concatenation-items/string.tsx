@@ -1,8 +1,8 @@
-import { concatenationItemsState } from '@/config/states/plugin';
 import { FormControlLabel, Switch, TextField } from '@mui/material';
 import { produce } from 'immer';
 import { useAtomCallback } from 'jotai/utils';
-import { FC, useCallback } from 'react';
+import { type FC, useCallback } from 'react';
+import { concatenationItemsState } from '@/config/states/plugin';
 
 type ContainerProps = { item: Plugin.Condition['concatenationItems'][number]; index: number };
 type Props = { item: Plugin.ConcatenationItem.String; index: number };
@@ -13,7 +13,7 @@ const Component: FC<Props> = ({ item, index }) => {
       (_, set, index: number, value: string) =>
         set(concatenationItemsState, (prev) =>
           produce(prev, (draft) => {
-            //@ts-ignore
+            //@ts-expect-error
             draft[index].value = value;
           })
         ),
@@ -26,7 +26,7 @@ const Component: FC<Props> = ({ item, index }) => {
       (_, set, index: number, value: boolean) =>
         set(concatenationItemsState, (prev) =>
           produce(prev, (draft) => {
-            //@ts-ignore
+            //@ts-expect-error
             draft[index].isOmittedIfPreviousEmpty = value;
           })
         ),
@@ -39,7 +39,7 @@ const Component: FC<Props> = ({ item, index }) => {
       (_, set, index: number, value: boolean) =>
         set(concatenationItemsState, (prev) =>
           produce(prev, (draft) => {
-            //@ts-ignore
+            //@ts-expect-error
             draft[index].isOmittedIfNextEmpty = value;
           })
         ),

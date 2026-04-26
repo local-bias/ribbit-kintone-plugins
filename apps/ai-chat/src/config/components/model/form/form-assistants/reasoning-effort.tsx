@@ -1,8 +1,8 @@
-import { reasoningEffortAtom } from '@/config/states/plugin';
-import { ReasoningEffortType } from '@/schema/ai';
 import { MenuItem, TextField } from '@mui/material';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
-import { ChangeEvent } from 'react';
+import type { ChangeEvent } from 'react';
+import { reasoningEffortAtom } from '@/config/states/plugin';
+import type { ReasoningEffortType } from '@/schema/ai';
 
 const REASONING_EFFORT_OPTIONS = [
   { value: 'model-default', label: 'Model Default - モデルデフォルト' },

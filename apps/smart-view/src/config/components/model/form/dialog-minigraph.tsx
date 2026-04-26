@@ -1,10 +1,4 @@
-import { appFieldsAtom } from '@/config/states/app-fields';
-import {
-  selectedConditionAtom,
-  selectedViewFieldDetailSettingIndexAtom,
-} from '@/config/states/plugin';
-import { t } from '@/lib/i18n';
-import { kintoneAPI } from '@konomi-app/kintone-utilities';
+import type { kintoneAPI } from '@konomi-app/kintone-utilities';
 import {
   PluginFormDescription,
   PluginFormSection,
@@ -15,6 +9,12 @@ import { produce } from 'immer';
 import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
 import { Suspense, useCallback } from 'react';
+import { appFieldsAtom } from '@/config/states/app-fields';
+import {
+  selectedConditionAtom,
+  selectedViewFieldDetailSettingIndexAtom,
+} from '@/config/states/plugin';
+import { t } from '@/lib/i18n';
 
 const GRAPH_TYPES = [
   { value: 'bar', label: t('config.app.form.view-fields.minigraph.graphType.bar') },

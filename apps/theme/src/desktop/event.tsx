@@ -1,6 +1,6 @@
-import { manager } from '@/lib/event-manager';
 import { getAppId, getAppSettings, getHeaderSpace } from '@konomi-app/kintone-utilities';
 import { createRoot } from 'react-dom/client';
+import { manager } from '@/lib/event-manager';
 import App from './app';
 
 const ROOT_ID = 'ribbit-kintone-plugin-theme-root';

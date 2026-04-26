@@ -1,6 +1,6 @@
-import { t } from '@/lib/i18n';
 import { useAtomValue } from 'jotai';
-import { FC } from 'react';
+import type { FC } from 'react';
+import { t } from '@/lib/i18n';
 import { allAppViewsErrorMessageAtom } from '../../../states/kintone';
 
 const ViewIdFormError: FC = () => {

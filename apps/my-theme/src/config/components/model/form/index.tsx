@@ -1,4 +1,3 @@
-import { isConditionIdUnselectedAtom, getConditionPropertyAtom } from '@/config/states/plugin';
 import { JotaiSwitch, JotaiText } from '@konomi-app/kintone-utilities-jotai';
 import {
   PluginFormDescription,
@@ -6,7 +5,8 @@ import {
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
 import { useAtomValue } from 'jotai';
-import { FC } from 'react';
+import type { FC } from 'react';
+import { getConditionPropertyAtom, isConditionIdUnselectedAtom } from '@/config/states/plugin';
 import CommonSettings from './common';
 import DeleteButton from './condition-delete-button';
 import FieldsForm from './form-fields';

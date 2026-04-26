@@ -1,4 +1,4 @@
-import { getFieldValueAsString, getAllRecords } from '@konomi-app/kintone-utilities';
+import { getAllRecords, getFieldValueAsString } from '@konomi-app/kintone-utilities';
 import { GUEST_SPACE_ID } from '@/lib/global';
 
 /**

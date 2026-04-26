@@ -1,7 +1,7 @@
-import { t } from '@/lib/i18n';
-import { toast } from '@konomi-app/ui';
 import { KintoneEventManager } from '@konomi-app/kintone-utilities';
+import { toast } from '@konomi-app/ui';
 import { isProd } from '@/lib/global';
+import { t } from '@/lib/i18n';
 
 export const manager = new KintoneEventManager({
   logDisabled: isProd,

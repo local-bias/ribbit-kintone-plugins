@@ -1,13 +1,13 @@
+import { FormControl, MenuItem, Select, type SelectChangeEvent } from '@mui/material';
+import { useAtom, useAtomValue } from 'jotai';
+import { GlobeIcon, ImageIcon, MessageSquareIcon } from 'lucide-react';
+import { useMemo } from 'react';
 import {
   allowImageGenerationAtom,
   allowWebSearchAtom,
   imageGenerationEnabledAtom,
   webSearchEnabledAtom,
 } from '@/desktop/original-view/states/states';
-import { FormControl, MenuItem, Select, type SelectChangeEvent } from '@mui/material';
-import { useAtom, useAtomValue } from 'jotai';
-import { GlobeIcon, ImageIcon, MessageSquareIcon } from 'lucide-react';
-import { useMemo } from 'react';
 
 type AIMode = 'standard' | 'web-search' | 'image-generation';
 

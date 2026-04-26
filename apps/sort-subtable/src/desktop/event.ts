@@ -1,8 +1,12 @@
+import { css } from '@emotion/css';
+import {
+  getMetaSubtable_UNSTABLE,
+  type kintoneAPI,
+  sortField,
+} from '@konomi-app/kintone-utilities';
+import { getCurrentRecord, setCurrentRecord } from '@lb-ribbit/kintone-xapp';
 import { listener } from '@/lib/listener';
 import { restorePluginConfig } from '@/lib/plugin';
-import { css } from '@emotion/css';
-import { getMetaSubtable_UNSTABLE, kintoneAPI, sortField } from '@konomi-app/kintone-utilities';
-import { getCurrentRecord, setCurrentRecord } from '@lb-ribbit/kintone-xapp';
 
 const CLASSNAME_TH = 'ribbit-sort-subtable-th';
 
@@ -120,7 +124,7 @@ const sortSubtable = (params: {
 
   subtable.value.forEach((row) => {
     Object.keys(row.value).forEach((fieldCode) => {
-      //@ts-ignore
+      //@ts-expect-error
       row.value[fieldCode].lookup = true;
     });
   });

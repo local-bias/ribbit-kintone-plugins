@@ -1,9 +1,9 @@
-import { fileUrlAtom } from '@/desktop/states/kintone';
 import styled from '@emotion/styled';
 import type { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { Skeleton } from '@mui/material';
 import { useAtomValue } from 'jotai';
 import { Suspense } from 'react';
+import { fileUrlAtom } from '@/desktop/states/kintone';
 import ViewCardNoImage from './no-image';
 
 type Props = { file: kintoneAPI.field.File['value'][number] | null; className?: string };

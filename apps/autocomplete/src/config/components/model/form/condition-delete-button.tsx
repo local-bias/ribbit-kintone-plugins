@@ -2,7 +2,7 @@ import { PluginConditionDeleteButton } from '@konomi-app/kintone-utilities-react
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { RESET } from 'jotai/utils';
 import { enqueueSnackbar } from 'notistack';
-import { FC, memo } from 'react';
+import { type FC, memo } from 'react';
 import { pluginConditionsAtom, selectedConditionIdAtom } from '../../../states/plugin';
 
 const handleConditionDeleteAtom = atom(null, (get, set) => {

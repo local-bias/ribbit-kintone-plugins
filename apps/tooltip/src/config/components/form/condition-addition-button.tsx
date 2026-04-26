@@ -1,9 +1,9 @@
-import { getNewCondition } from '@/lib/plugin';
 import AddIcon from '@mui/icons-material/Add';
 import { Button } from '@mui/material';
 import { produce } from 'immer';
 import { useAtomCallback } from 'jotai/utils';
 import { useCallback } from 'react';
+import { getNewCondition } from '@/lib/plugin';
 import { pluginConfigAtom } from '../../states/plugin';
 
 type Props = Readonly<{ addCondition: () => void }>;

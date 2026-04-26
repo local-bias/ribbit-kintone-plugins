@@ -1,5 +1,3 @@
-import { concatenationItemsState } from '@/config/states/plugin';
-import { CONCATENATION_ITEM_TYPES } from '@/lib/plugin';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
@@ -13,7 +11,9 @@ import {
 import { produce } from 'immer';
 import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
-import { FC, useCallback } from 'react';
+import { type FC, useCallback } from 'react';
+import { concatenationItemsState } from '@/config/states/plugin';
+import { CONCATENATION_ITEM_TYPES } from '@/lib/plugin';
 import Summary from './accordion-summary';
 import FieldForm from './field';
 import StringForm from './string';

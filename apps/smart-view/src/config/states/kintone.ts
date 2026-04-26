@@ -1,9 +1,9 @@
+import { getAppId, getFormFields, getViews, type kintoneAPI } from '@konomi-app/kintone-utilities';
+import { atom } from 'jotai';
+import { atomFamily, atomWithDefault, loadable } from 'jotai/utils';
+import { eagerAtom } from 'jotai-eager';
 import { GUEST_SPACE_ID, isDev, isProd } from '@/lib/global';
 import { t } from '@/lib/i18n';
-import { getAppId, getFormFields, getViews, kintoneAPI } from '@konomi-app/kintone-utilities';
-import { atom } from 'jotai';
-import { eagerAtom } from 'jotai-eager';
-import { atomFamily, atomWithDefault, loadable } from 'jotai/utils';
 import { joinConditionsAtom } from './plugin';
 
 export const currentAppIdAtom = atom(() => {

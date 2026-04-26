@@ -3,7 +3,7 @@ import {
   PluginFormSection,
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
-import { FC } from 'react';
+import type { FC } from 'react';
 
 const Component: FC = () => (
   <div className='p-4'>

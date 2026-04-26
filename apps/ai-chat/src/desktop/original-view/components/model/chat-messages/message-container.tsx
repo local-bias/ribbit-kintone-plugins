@@ -1,9 +1,9 @@
-import { ChatMessageRole } from '@/lib/static';
-import PersonIcon from '@mui/icons-material/Person';
-import { PropsWithChildren } from 'react';
-import AiIcon from './ai-icon';
 import styled from '@emotion/styled';
+import PersonIcon from '@mui/icons-material/Person';
+import type { PropsWithChildren } from 'react';
+import type { ChatMessageRole } from '@/lib/static';
 import FactCheckIndicator from '../../fact-check-indicator';
+import AiIcon from './ai-icon';
 
 type Props = { role: ChatMessageRole; messageId?: string };
 

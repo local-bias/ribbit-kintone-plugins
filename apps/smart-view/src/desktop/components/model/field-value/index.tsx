@@ -1,4 +1,4 @@
-import { getAppId, getFieldValueAsString, kintoneAPI } from '@konomi-app/kintone-utilities';
+import { getAppId, getFieldValueAsString, type kintoneAPI } from '@konomi-app/kintone-utilities';
 import Calc from './calc';
 import Category from './category';
 import Checkbox from './checkbox';

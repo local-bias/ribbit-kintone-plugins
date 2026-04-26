@@ -1,9 +1,9 @@
-import { getConditionPropertyAtom } from '@/config/states/plugin';
-import { TargetEvent } from '@/schema/plugin-config';
 import { Checkbox, FormControlLabel, FormGroup } from '@mui/material';
 import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
 import { useCallback } from 'react';
+import { getConditionPropertyAtom } from '@/config/states/plugin';
+import type { TargetEvent } from '@/schema/plugin-config';
 
 const OPTIONS: { value: TargetEvent; label: string }[] = [
   {

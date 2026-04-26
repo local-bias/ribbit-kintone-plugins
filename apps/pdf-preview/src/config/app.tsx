@@ -1,7 +1,3 @@
-import { PluginErrorBoundary } from '@/components/error-boundary';
-import { ThemeProvider } from '@/components/theme-provider';
-import { LANGUAGE } from '@/lib/global';
-import { t } from '@/lib/i18n';
 import {
   Notification,
   PluginBanner,
@@ -15,8 +11,12 @@ import { store } from '@repo/jotai';
 import { SwimmingIcon } from '@repo/ui';
 import { Provider } from 'jotai';
 import { SnackbarProvider } from 'notistack';
-import config from '@/../plugin.config.mjs';
 import { Suspense } from 'react';
+import config from '@/../plugin.config.mjs';
+import { PluginErrorBoundary } from '@/components/error-boundary';
+import { ThemeProvider } from '@/components/theme-provider';
+import { LANGUAGE } from '@/lib/global';
+import { t } from '@/lib/i18n';
 import Footer from './components/model/footer';
 
 export default function App() {

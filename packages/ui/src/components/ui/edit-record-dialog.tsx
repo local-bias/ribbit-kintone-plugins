@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { Dialog, DialogContent, DialogTitle, IconButton } from '@mui/material';
 import { X } from 'lucide-react';
-import { FC, ReactNode, useCallback, useEffect, useState } from 'react';
+import { type FC, type ReactNode, useCallback, useEffect, useState } from 'react';
 
 const StyledDialogTitle = styled(DialogTitle)`
   display: flex;

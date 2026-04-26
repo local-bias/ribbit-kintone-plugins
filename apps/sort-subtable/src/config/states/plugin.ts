@@ -1,6 +1,6 @@
-import { restorePluginConfig } from '@/lib/plugin';
 import { produce } from 'immer';
-import { DefaultValue, atom, selector } from 'recoil';
+import { atom, DefaultValue, selector } from 'recoil';
+import { restorePluginConfig } from '@/lib/plugin';
 
 const PREFIX = 'plugin';
 

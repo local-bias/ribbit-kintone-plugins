@@ -1,7 +1,3 @@
-import { PluginErrorBoundary } from '@/components/error-boundary';
-import { ThemeProvider } from '@/components/theme-provider';
-import { t } from '@/lib/i18n';
-import { store } from '@/lib/store';
 import {
   Notification,
   PluginBanner,
@@ -13,8 +9,12 @@ import { LoaderWithLabel } from '@konomi-app/ui-react';
 import { URL_BANNER, URL_PROMOTION } from '@repo/constants';
 import { Provider } from 'jotai';
 import { SnackbarProvider } from 'notistack';
+import { type FC, Suspense } from 'react';
 import config from '@/../plugin.config.mjs';
-import { FC, Suspense } from 'react';
+import { PluginErrorBoundary } from '@/components/error-boundary';
+import { ThemeProvider } from '@/components/theme-provider';
+import { t } from '@/lib/i18n';
+import { store } from '@/lib/store';
 import Debug from './components/model/debug';
 import Footer from './components/model/footer';
 import Form from './components/model/form';

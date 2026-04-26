@@ -1,19 +1,19 @@
-import { GUEST_SPACE_ID, isProd } from '@/lib/global';
-import { t } from '@/lib/i18n';
-import { getQuickSearchString } from '@/lib/kintone';
-import { store } from '@/lib/store';
-import { PluginCondition } from '@/schema/plugin-config';
 import {
   getAllRecordsWithId,
   getQuery,
   getYuruChara,
-  kintoneAPI,
+  type kintoneAPI,
 } from '@konomi-app/kintone-utilities';
+import { GUEST_SPACE_ID, isProd } from '@/lib/global';
+import { t } from '@/lib/i18n';
+import { getQuickSearchString } from '@/lib/kintone';
+import { store } from '@/lib/store';
+import type { PluginCondition } from '@/schema/plugin-config';
 import { currentAppIdAtom } from './states/kintone';
 import { errorAtom } from './states/plugin';
 import { allTableRowsAtom, areAllRecordsReadyAtom } from './states/records';
 import { loadingEndAtom, loadingStartAtom } from './states/ui';
-import { TableRow } from './static';
+import type { TableRow } from './static';
 
 export const initializeRecords = async (condition: PluginCondition) => {
   try {

@@ -1,3 +1,6 @@
+import { Autocomplete, Skeleton, TextField, Tooltip } from '@mui/material';
+import { useAtomValue, useSetAtom } from 'jotai';
+import { Suspense } from 'react';
 import { currentAppFieldPropertiesAtom } from '@/desktop/states/kintone';
 import {
   extractedSearchConditionsAtom,
@@ -7,10 +10,7 @@ import {
   pluginConditionAtom,
 } from '@/desktop/states/plugin';
 import { autocompleteValuesAtom } from '@/desktop/states/records';
-import { PluginExtractedInput } from '@/schema/plugin-config';
-import { Autocomplete, Skeleton, TextField, Tooltip } from '@mui/material';
-import { useAtomValue, useSetAtom } from 'jotai';
-import { Suspense } from 'react';
+import type { PluginExtractedInput } from '@/schema/plugin-config';
 
 type Props = { input: PluginExtractedInput; index: number };
 

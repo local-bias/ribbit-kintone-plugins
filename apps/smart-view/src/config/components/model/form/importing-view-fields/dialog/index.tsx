@@ -1,7 +1,7 @@
-import { t } from '@/lib/i18n';
 import { CircularProgress, Dialog, DialogTitle } from '@mui/material';
 import { useAtom } from 'jotai';
-import { FCX, Suspense } from 'react';
+import { type FCX, Suspense } from 'react';
+import { t } from '@/lib/i18n';
 import { listViewDialogShownAtom } from '../../../../../states/importing-view-fields';
 import Content from './content';
 

@@ -1,10 +1,10 @@
-import { ResolvedTableColumnProps } from '@/desktop/states/plugin';
-import { createChartData } from '@/lib/chart';
 import styled from '@emotion/styled';
-import { kintoneAPI } from '@konomi-app/kintone-utilities';
+import type { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { Fragment, ReactNode } from 'react';
-import { SubtableChartLabels } from './chart-labels';
+import type { ResolvedTableColumnProps } from '@/desktop/states/plugin';
+import { createChartData } from '@/lib/chart';
 import { ChartContainer } from './chart-container';
+import { SubtableChartLabels } from './chart-labels';
 
 const Total = styled.div`
   position: relative;

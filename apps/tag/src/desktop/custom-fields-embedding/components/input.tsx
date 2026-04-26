@@ -1,4 +1,3 @@
-import { KintoneInput } from '@/lib/components/kintone-input';
 import styled from '@emotion/styled';
 import AddIcon from '@mui/icons-material/Add';
 import { Button } from '@mui/material';
@@ -6,14 +5,15 @@ import { produce } from 'immer';
 import { useAtom, useSetAtom } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
 import {
-  ChangeEventHandler,
-  FC,
-  FocusEventHandler,
-  KeyboardEventHandler,
+  type ChangeEventHandler,
+  type FC,
+  type FocusEventHandler,
+  type KeyboardEventHandler,
   useCallback,
   useRef,
   useState,
 } from 'react';
+import { KintoneInput } from '@/lib/components/kintone-input';
 import {
   filteredSuggestionsAtom,
   inputValueAtom,

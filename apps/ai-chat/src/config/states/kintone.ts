@@ -1,16 +1,16 @@
-import { GUEST_SPACE_ID, isDev } from '@/lib/global';
 import {
   filterFieldProperties,
   getAllApps,
   getAppId,
   getFormFields,
   getViews,
-  kintoneAPI,
+  type kintoneAPI,
   withSpaceIdFallback,
 } from '@konomi-app/kintone-utilities';
 import { atom } from 'jotai';
-import { logAppIdAtom, logAppSpaceIdAtom, outputAppIdAtom, outputAppSpaceIdAtom } from './plugin';
 import { pickBy } from 'remeda';
+import { GUEST_SPACE_ID, isDev } from '@/lib/global';
+import { logAppIdAtom, logAppSpaceIdAtom, outputAppIdAtom, outputAppSpaceIdAtom } from './plugin';
 
 export const currentAppIdAtom = atom(() => {
   const app = getAppId();

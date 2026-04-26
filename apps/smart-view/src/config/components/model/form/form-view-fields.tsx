@@ -1,14 +1,3 @@
-import { selectableViewFieldsAtom } from '@/config/states/app-fields';
-import {
-  handleViewFieldChangeAtom,
-  handleViewFieldWidthChangeAtom,
-  selectedViewFieldDetailSettingIndexAtom,
-  viewFieldsAtom,
-} from '@/config/states/plugin';
-import { t } from '@/lib/i18n';
-import { getNewViewField } from '@/lib/plugin';
-import { cn } from '@/lib/utils';
-import { PluginViewField } from '@/schema/plugin-config';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import {
@@ -31,7 +20,18 @@ import {
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
 import { GripVertical } from 'lucide-react';
-import { FC, Suspense } from 'react';
+import { type FC, Suspense } from 'react';
+import { selectableViewFieldsAtom } from '@/config/states/app-fields';
+import {
+  handleViewFieldChangeAtom,
+  handleViewFieldWidthChangeAtom,
+  selectedViewFieldDetailSettingIndexAtom,
+  viewFieldsAtom,
+} from '@/config/states/plugin';
+import { t } from '@/lib/i18n';
+import { getNewViewField } from '@/lib/plugin';
+import { cn } from '@/lib/utils';
+import type { PluginViewField } from '@/schema/plugin-config';
 import Dialog from './dialog';
 
 const handleDialogOpenAtom = atomFamily((index: number) =>

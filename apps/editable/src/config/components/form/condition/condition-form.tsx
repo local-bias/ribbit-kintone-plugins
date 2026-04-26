@@ -1,16 +1,16 @@
-import { currentAppFormFieldsAtom } from '@/config/states/kintone';
-import { RULE_TYPES, RuleTypeKey } from '@/lib/constants';
-import { getNewRule } from '@/lib/plugin';
 import styled from '@emotion/styled';
 import { JotaiFieldSelect } from '@konomi-app/kintone-utilities-jotai';
+import { PluginFormSection, PluginFormTitle } from '@konomi-app/kintone-utilities-react';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { FormControlLabel, IconButton, MenuItem, Switch, TextField, Tooltip } from '@mui/material';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
-import { FC, FCX } from 'react';
+import type { FC, FCX } from 'react';
 import { clone } from 'remeda';
+import { currentAppFormFieldsAtom } from '@/config/states/kintone';
+import { RULE_TYPES, type RuleTypeKey } from '@/lib/constants';
+import { getNewRule } from '@/lib/plugin';
 import { handleTargetFieldChangeAtom, rulesAtom, targetFieldAtom } from '../../../states/plugin';
-import { PluginFormSection, PluginFormTitle } from '@konomi-app/kintone-utilities-react';
 import ConditionDeleteButton from '../condition-delete-button';
 
 const handleRuleTypeChangeAtom = atom(null, (_, set, i: number, value: RuleTypeKey) => {

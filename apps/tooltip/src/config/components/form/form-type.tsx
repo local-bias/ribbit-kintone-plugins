@@ -1,9 +1,9 @@
-import { conditionTypeAtom } from '@/config/states/plugin';
-import { ConditionType } from '@/schema/plugin-config';
 import { MenuItem, TextField } from '@mui/material';
 import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
 import { useCallback } from 'react';
+import { conditionTypeAtom } from '@/config/states/plugin';
+import type { ConditionType } from '@/schema/plugin-config';
 
 export default function TypeForm() {
   const type = useAtomValue(conditionTypeAtom);

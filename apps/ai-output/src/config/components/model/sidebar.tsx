@@ -1,11 +1,11 @@
-import { pluginConditionsAtom, selectedConditionIdAtom } from '@/config/states/plugin';
-import { t } from '@/lib/i18n';
-import { getNewCondition, isPluginConditionMet } from '@/lib/plugin';
-import { PluginCondition } from '@/schema/plugin-config';
 import { BundledSidebar } from '@konomi-app/kintone-utilities-react';
 import { useAtom } from 'jotai';
 import { useSnackbar } from 'notistack';
 import { useCallback } from 'react';
+import { pluginConditionsAtom, selectedConditionIdAtom } from '@/config/states/plugin';
+import { t } from '@/lib/i18n';
+import { getNewCondition, isPluginConditionMet } from '@/lib/plugin';
+import type { PluginCondition } from '@/schema/plugin-config';
 
 function Sidebar() {
   const { enqueueSnackbar } = useSnackbar();

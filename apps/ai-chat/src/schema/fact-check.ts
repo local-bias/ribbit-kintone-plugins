@@ -1,5 +1,5 @@
-import { PROMPT_FACT_CHECK_RESULT_LEVEL } from '@/prompts/ai';
 import { z } from 'zod';
+import { PROMPT_FACT_CHECK_RESULT_LEVEL } from '@/prompts/ai';
 
 /**
  * ファクトチェック詳細のスキーマ

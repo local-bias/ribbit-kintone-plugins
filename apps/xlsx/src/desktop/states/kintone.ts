@@ -1,7 +1,7 @@
-import { GUEST_SPACE_ID } from '@/common/global';
 import { getApp, getAppId, getFormFields, getViews } from '@konomi-app/kintone-utilities';
 import { atom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
+import { GUEST_SPACE_ID } from '@/common/global';
 
 export const currentAppIdAtom = atom(() => {
   const appId = getAppId();

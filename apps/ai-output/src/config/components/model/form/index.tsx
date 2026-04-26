@@ -1,5 +1,3 @@
-import { getConditionPropertyAtom, isConditionIdUnselectedAtom } from '@/config/states/plugin';
-import type { ExecutionTiming } from '@/schema/plugin-config';
 import { JotaiText } from '@konomi-app/kintone-utilities-jotai';
 import {
   PluginFormDescription,
@@ -7,6 +5,8 @@ import {
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
 import { useAtomValue } from 'jotai';
+import { getConditionPropertyAtom, isConditionIdUnselectedAtom } from '@/config/states/plugin';
+import type { ExecutionTiming } from '@/schema/plugin-config';
 import AiModelForm from './ai-model';
 import CommonSettings from './common';
 import DeleteButton from './condition-delete-button';

@@ -1,13 +1,13 @@
+import { BundledSidebar } from '@konomi-app/kintone-utilities-react';
+import { Skeleton } from '@mui/material';
+import { useAtom, useAtomValue } from 'jotai';
+import { type FC, Suspense, useCallback } from 'react';
+import { toast } from 'sonner';
+import { customViewsAtom } from '@/config/states/kintone';
 import { pluginConditionsAtom, selectedConditionIdAtom } from '@/config/states/plugin';
 import { t } from '@/lib/i18n';
 import { getNewCondition, isPluginConditionMet } from '@/lib/plugin';
-import { PluginCondition } from '@/schema/plugin-config';
-import { BundledSidebar } from '@konomi-app/kintone-utilities-react';
-import { useAtom, useAtomValue } from 'jotai';
-import { toast } from 'sonner';
-import { FC, Suspense, useCallback } from 'react';
-import { Skeleton } from '@mui/material';
-import { customViewsAtom } from '@/config/states/kintone';
+import type { PluginCondition } from '@/schema/plugin-config';
 
 const AwaitedLabel: FC<{ condition: PluginCondition }> = ({ condition }) => {
   const views = useAtomValue(customViewsAtom);

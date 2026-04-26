@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { downloadFile, kintoneAPI } from '@konomi-app/kintone-utilities';
+import { downloadFile, type kintoneAPI } from '@konomi-app/kintone-utilities';
 import { useSnackbar } from 'notistack';
 
 type Props = { files: kintoneAPI.field.File['value'] };

@@ -1,7 +1,7 @@
-import { detailFileBlobAtom, selectedFileDetailsAtom } from '@/desktop/public-state';
 import { Button } from '@mui/material';
 import { useAtomValue } from 'jotai';
 import { Suspense } from 'react';
+import { detailFileBlobAtom, selectedFileDetailsAtom } from '@/desktop/public-state';
 
 function DownloadButton() {
   const content = useAtomValue(selectedFileDetailsAtom);

@@ -1,6 +1,6 @@
-import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
-import { FC } from 'react';
+import styled from '@emotion/styled';
+import type { FC } from 'react';
 
 const shimmer = keyframes`
   0% {

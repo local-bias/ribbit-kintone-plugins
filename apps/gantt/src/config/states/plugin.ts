@@ -1,8 +1,3 @@
-import { PLUGIN_NAME } from '@/lib/constants';
-import { GUEST_SPACE_ID } from '@/lib/global';
-import { t } from '@/lib/i18n';
-import { createConfig, migrateConfig, restorePluginConfig, VIEW_ROOT_ID } from '@/lib/plugin';
-import { PluginConfig } from '@/schema/plugin-config';
 import {
   getAppId,
   getViews,
@@ -14,9 +9,14 @@ import { handleLoadingEndAtom, handleLoadingStartAtom, usePluginAtoms } from '@r
 import { saveAsJson } from '@repo/utils';
 import { produce } from 'immer';
 import { atom } from 'jotai';
+import type { ChangeEvent, ReactNode } from 'react';
 import { toast } from 'sonner';
-import { ChangeEvent, ReactNode } from 'react';
 import invariant from 'tiny-invariant';
+import { PLUGIN_NAME } from '@/lib/constants';
+import { GUEST_SPACE_ID } from '@/lib/global';
+import { t } from '@/lib/i18n';
+import { createConfig, migrateConfig, restorePluginConfig, VIEW_ROOT_ID } from '@/lib/plugin';
+import type { PluginConfig } from '@/schema/plugin-config';
 
 const { config: initialConfig, error: configError } = restorePluginConfig();
 

@@ -1,3 +1,7 @@
+import BugReportIcon from '@mui/icons-material/BugReport';
+import { Fab, Tooltip } from '@mui/material';
+import { useAtomValue } from 'jotai';
+import type { FC } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -6,10 +10,6 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { pluginConfigAtom } from '@/config/states/plugin';
-import BugReportIcon from '@mui/icons-material/BugReport';
-import { Fab, Tooltip } from '@mui/material';
-import { useAtomValue } from 'jotai';
-import { FC } from 'react';
 
 const Content: FC = () => {
   const pluginConfig = useAtomValue(pluginConfigAtom);

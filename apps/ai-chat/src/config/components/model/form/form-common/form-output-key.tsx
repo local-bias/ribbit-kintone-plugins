@@ -1,8 +1,8 @@
-import { outputAppSingleLineTextPropertiesState } from '@/config/states/kintone';
-import { outputKeyFieldCodeAtom } from '@/config/states/plugin';
 import { Skeleton } from '@mui/material';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { Suspense } from 'react';
+import { outputAppSingleLineTextPropertiesState } from '@/config/states/kintone';
+import { outputKeyFieldCodeAtom } from '@/config/states/plugin';
 import { AutocompleteFieldInput } from './autocomplete-field-input';
 
 const handleFieldChangeAtom = atom(null, (_, set, value: string) => {

@@ -1,7 +1,7 @@
-import { PluginErrorBoundary } from '@/components/error-boundary';
 import { Drawer as MuiDrawer } from '@mui/material';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@repo/ui';
 import { useAtomValue, useSetAtom } from 'jotai';
+import { PluginErrorBoundary } from '@/components/error-boundary';
 import { handleDrawerCloseAtom, showDrawerAtom } from '../states/drawer';
 import PaneDetails from './pane-details';
 import PaneMain from './pane-main';

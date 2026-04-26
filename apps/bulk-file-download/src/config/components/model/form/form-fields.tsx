@@ -1,13 +1,13 @@
-import { getConditionPropertyAtom } from '@/config/states/plugin';
-import { fileFieldPropertiesAtom } from '@/config/states/kintone';
 import { JotaiFieldSelect } from '@konomi-app/kintone-utilities-jotai';
-import { t } from '@/lib/i18n';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton, Skeleton, Tooltip } from '@mui/material';
 import { useArrayAtom } from '@repo/jotai';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { Suspense } from 'react';
+import { fileFieldPropertiesAtom } from '@/config/states/kintone';
+import { getConditionPropertyAtom } from '@/config/states/plugin';
+import { t } from '@/lib/i18n';
 
 const fieldCodesAtom = getConditionPropertyAtom('fieldCodes');
 

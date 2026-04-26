@@ -1,6 +1,6 @@
 import { createTheme } from '@mui/material';
-import { LANGUAGE } from './global';
 import { enUS, esES, jaJP, zhCN } from '@mui/material/locale';
+import { LANGUAGE } from './global';
 
 export const ui = {
   ja: {
@@ -46,7 +46,7 @@ export function useTranslations(lang: string) {
 
   return function t(key: keyof (typeof ui)[typeof defaultLang], ...args: string[]): string {
     /* eslint @typescript-eslint/ban-ts-comment: 0 */
-    // @ts-ignore デフォルト言語以外の設定が不十分な場合は、デフォルト言語の設定を使用します
+    // @ts-expect-error デフォルト言語以外の設定が不十分な場合は、デフォルト言語の設定を使用します
     let translation: string = ui[validLang][key] ?? ui[defaultLang][key];
 
     // プレースホルダーを置換

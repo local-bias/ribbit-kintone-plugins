@@ -1,5 +1,5 @@
-import { ResolvedTableColumnProps } from '@/desktop/states/plugin';
-import { kintoneAPI } from '@konomi-app/kintone-utilities';
+import type { kintoneAPI } from '@konomi-app/kintone-utilities';
+import type { ResolvedTableColumnProps } from '@/desktop/states/plugin';
 import BarChart from './chart-bar';
 import PieChart from './chart-pie';
 import StackedBarChart from './chart-stacked-bar';

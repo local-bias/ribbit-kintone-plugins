@@ -1,6 +1,6 @@
-import { AnyPluginConfig, PluginCondition, PluginConfig } from '@/schema/plugin-config';
 import { restorePluginConfig as primitiveRestore } from '@konomi-app/kintone-utilities';
 import { nanoid } from 'nanoid';
+import type { AnyPluginConfig, PluginCondition, PluginConfig } from '@/schema/plugin-config';
 import { PLUGIN_ID } from './global';
 
 export const getNewCondition = (): PluginCondition => ({

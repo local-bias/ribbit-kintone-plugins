@@ -1,5 +1,5 @@
-import { PluginCondition } from '@/schema/plugin-config';
 import styled from '@emotion/styled';
+import { PluginCondition } from '@/schema/plugin-config';
 
 const StyledComponent = styled.div`
   box-sizing: border-box;

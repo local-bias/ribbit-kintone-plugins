@@ -1,6 +1,3 @@
-import { pluginCommonConfigAtom } from '@/desktop/public-state';
-import { remapHistoryFileKeys, uploadHistoryAttachments } from '@/lib/file-utils';
-import { GUEST_SPACE_ID, isDev } from '@/lib/global';
 import {
   addRecord,
   downloadFile,
@@ -11,10 +8,13 @@ import {
   withSpaceIdFallback,
 } from '@konomi-app/kintone-utilities';
 import { atom } from 'jotai';
-import { atomFamily } from 'jotai-family';
-import { selectedHistoryAtom } from './states';
 import { eagerAtom } from 'jotai-eager';
+import { atomFamily } from 'jotai-family';
+import { pluginCommonConfigAtom } from '@/desktop/public-state';
+import { remapHistoryFileKeys, uploadHistoryAttachments } from '@/lib/file-utils';
+import { GUEST_SPACE_ID, isDev } from '@/lib/global';
 import { addChatLog } from '../action';
+import { selectedHistoryAtom } from './states';
 
 type UpdateAppParams = {
   appId: string;

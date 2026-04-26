@@ -1,23 +1,23 @@
-import { dataUrlAtom } from '@/desktop/original-view/states/kintone';
-import { ReasoningEffortType } from '@/schema/ai';
 import { zodTextFormat } from 'openai/helpers/zod';
-import {
+import type {
   EasyInputMessage,
   ResponseInputMessageContentList,
 } from 'openai/resources/responses/responses.mjs';
-import { z } from 'zod';
+import type { z } from 'zod';
+import { dataUrlAtom } from '@/desktop/original-view/states/kintone';
+import type { ReasoningEffortType } from '@/schema/ai';
 import {
-  ChatCompletionRequest,
-  EndpointAdapter,
-  GeneratedImage,
+  type ChatCompletionRequest,
+  type EndpointAdapter,
+  type GeneratedImage,
   hasFileContent,
   isO1SeriesModel,
   parseStructuredResponse,
-  StructuredAIResponse,
-  TokenUsage,
+  type StructuredAIResponse,
+  type TokenUsage,
 } from '../endpoint-adapter';
 import { getWebSearchLocation } from '../i18n';
-import { ChatMessageContent, OPENAI_ENDPOINT } from '../static';
+import { type ChatMessageContent, OPENAI_ENDPOINT } from '../static';
 import { store } from '../store';
 
 /**

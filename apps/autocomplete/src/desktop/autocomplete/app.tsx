@@ -1,9 +1,9 @@
+import { createStore, Provider } from 'jotai';
+import { type FC, useMemo } from 'react';
 import { Autocomplete } from '@/desktop/autocomplete/components/autocomplete';
 import { PluginErrorBoundary } from '@/lib/components/error-boundary';
 import { ThemeProvider } from '@/lib/components/theme-provider';
-import { PluginCondition } from '@/lib/plugin';
-import { createStore, Provider } from 'jotai';
-import { FC, useMemo } from 'react';
+import type { PluginCondition } from '@/lib/plugin';
 import { useOptionsInitializer } from './hooks/use-options-initializer';
 import { inputValueAtom, inputValueSyncEffect, pluginConditionAtom } from './states';
 

@@ -1,4 +1,8 @@
-import { getFieldValueAsString, getFormFields, kintoneAPI } from '@konomi-app/kintone-utilities';
+import {
+  getFieldValueAsString,
+  getFormFields,
+  type kintoneAPI,
+} from '@konomi-app/kintone-utilities';
 import { getAppId } from '@lb-ribbit/kintone-xapp';
 
 /** kintoneアプリに初期状態で存在するフィールドタイプ */

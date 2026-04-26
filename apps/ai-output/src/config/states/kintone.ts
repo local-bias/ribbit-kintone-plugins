@@ -1,9 +1,14 @@
-import { GUEST_SPACE_ID, isDev } from '@/lib/global';
-import { getAllApps, getAppId, getFormLayout, kintoneAPI } from '@konomi-app/kintone-utilities';
+import {
+  getAllApps,
+  getAppId,
+  getFormLayout,
+  type kintoneAPI,
+} from '@konomi-app/kintone-utilities';
 import { appFormFieldsAtom, currentAppIdAtom } from '@repo/jotai';
 import { atom } from 'jotai';
-import { atomFamily } from 'jotai-family';
 import { eagerAtom } from 'jotai-eager';
+import { atomFamily } from 'jotai-family';
+import { GUEST_SPACE_ID, isDev } from '@/lib/global';
 
 export const currentAppFieldsAtom = atom((get) => {
   const app = get(currentAppIdAtom);
@@ -43,7 +48,6 @@ export const flatLayout = (layout: kintoneAPI.Layout): kintoneAPI.LayoutField[] 
   for (const chunk of layout) {
     if (chunk.type === 'ROW') {
       results.push(...flatLayoutRow(chunk));
-      continue;
     } else if (chunk.type === 'GROUP') {
       results.push(...flatLayout(chunk.layout));
     } else if (chunk.type === 'SUBTABLE') {

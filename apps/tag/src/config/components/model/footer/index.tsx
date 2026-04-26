@@ -1,23 +1,21 @@
 import { getAppId, getViews, storeStorage, updateViews } from '@konomi-app/kintone-utilities';
+import { PluginFooter } from '@konomi-app/kintone-utilities-react';
 import SaveIcon from '@mui/icons-material/Save';
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import { Button, CircularProgress } from '@mui/material';
+import { handleLoadingEndAtom, handleLoadingStartAtom, loadingAtom } from '@repo/jotai';
+import { produce } from 'immer';
 import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
 import { useSnackbar } from 'notistack';
-import { FC, useCallback } from 'react';
-
-import { PluginFooter } from '@konomi-app/kintone-utilities-react';
-import { pluginConfigAtom } from '../../../states/plugin';
-
+import { type FC, useCallback } from 'react';
 import { GUEST_SPACE_ID } from '@/lib/global';
 import { t } from '@/lib/i18n';
 import { WORD_CLOUD_ROOT_ID } from '@/lib/static';
-import { produce } from 'immer';
+import { pluginConfigAtom } from '../../../states/plugin';
 import ExportButton from './export-button';
 import ImportButton from './import-button';
 import ResetButton from './reset-button';
-import { handleLoadingEndAtom, handleLoadingStartAtom, loadingAtom } from '@repo/jotai';
 
 type Props = {
   onSaveButtonClick: () => void;

@@ -1,5 +1,5 @@
-import { AiProviderType } from '@/schema/plugin-config';
-import { EndpointAdapter } from '../endpoint-adapter';
+import type { AiProviderType } from '@/schema/plugin-config';
+import type { EndpointAdapter } from '../endpoint-adapter';
 import { OpenAIAdapter } from './openai-adapter';
 import { OpenRouterAdapter } from './openrouter-adapter';
 

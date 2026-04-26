@@ -1,19 +1,19 @@
-import { GUEST_SPACE_ID, isProd } from '@/lib/global';
-import { t } from '@/lib/i18n';
-import { getId } from '@/lib/utils';
 import {
   getAllRecords,
   getQueryCondition,
-  kintoneAPI,
+  type kintoneAPI,
+  type UpdateAllRecordsParams,
   updateAllRecords,
-  UpdateAllRecordsParams,
 } from '@konomi-app/kintone-utilities';
 import { dialog } from '@konomi-app/ui';
 import { useAtomCallback } from 'jotai/utils';
 import { useCallback } from 'react';
+import z from 'zod';
+import { GUEST_SPACE_ID, isProd } from '@/lib/global';
+import { t } from '@/lib/i18n';
+import { getId } from '@/lib/utils';
 import { currentAppFieldsAtom, currentAppIdAtom, loadingCountAtom } from '../public-state';
 import { useCondition } from './components/condition-context';
-import z from 'zod';
 
 export const useBulkRegenerate = () => {
   const { condition } = useCondition();

@@ -1,8 +1,8 @@
-import { AiProviderType } from '@/schema/plugin-config';
-import OpenAI from 'openai';
-import { OPENAI_BASE_URL, OPENROUTER_BASE_URL } from './static';
 import { API_ROUTE_UNLIMITED, isOpenSource } from '@repo/constants';
+import OpenAI from 'openai';
+import type { AiProviderType } from '@/schema/plugin-config';
 import { ketch } from './browser';
+import { OPENAI_BASE_URL, OPENROUTER_BASE_URL } from './static';
 
 export function createOpenAIClient(providerType: AiProviderType) {
   let baseUrl = OPENAI_BASE_URL;

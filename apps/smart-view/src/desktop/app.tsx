@@ -1,12 +1,12 @@
-import { PluginErrorBoundary } from '@/lib/components/error-boundary';
-import { store } from '@/lib/store';
 import { Provider } from 'jotai';
 import { SnackbarProvider } from 'notistack';
-import { FC } from 'react';
+import type { FC } from 'react';
+import { PluginErrorBoundary } from '@/lib/components/error-boundary';
+import { store } from '@/lib/store';
+import FieldSettingsDialog from './components/model/field-settings-dialog';
 import Footer from './components/model/footer';
 import Header from './components/model/header';
 import Layout from './components/model/layout';
-import FieldSettingsDialog from './components/model/field-settings-dialog';
 import View from './components/model/view';
 import { DocumentIconSymbol } from './components/ui/document-icon';
 

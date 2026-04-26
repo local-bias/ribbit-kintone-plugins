@@ -1,8 +1,8 @@
+import { atom } from 'jotai';
+import { eagerAtom } from 'jotai-eager';
 import { isDev } from '@/lib/global';
 import { OPENAI_MODELS, OPENROUTER_ENDPOINT_MODELS } from '@/lib/static';
 import { OpenrouterAvailableModelsResponseSchema } from '@/schema/ai';
-import { atom } from 'jotai';
-import { eagerAtom } from 'jotai-eager';
 import { providerTypeAtom } from './plugin';
 
 export const openrouterListAvailableModelsAtom = atom(async () => {

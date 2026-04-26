@@ -1,10 +1,10 @@
+import { LoaderWithLabel } from '@konomi-app/ui-react';
 import { Drawer as MuiDrawer } from '@mui/material';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { handleDrawerCloseAtom, previewFileAtom, showDrawerAtom } from '../public-state';
-import { PluginErrorBoundary } from '@/components/error-boundary';
-import { Suspense } from 'react';
-import { LoaderWithLabel } from '@konomi-app/ui-react';
 import { FileX2 } from 'lucide-react';
+import { Suspense } from 'react';
+import { PluginErrorBoundary } from '@/components/error-boundary';
+import { handleDrawerCloseAtom, previewFileAtom, showDrawerAtom } from '../public-state';
 
 function Placeholder() {
   return (

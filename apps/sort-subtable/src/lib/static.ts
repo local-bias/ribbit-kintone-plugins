@@ -1,4 +1,5 @@
 import metaConfig from '@/../plugin.config.mjs';
+
 const manifest = metaConfig.manifest.base;
 
 export const PLUGIN_NAME = manifest.name.ja;

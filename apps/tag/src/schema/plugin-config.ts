@@ -1,5 +1,5 @@
-import { z } from 'zod';
 import { nanoid } from 'nanoid';
+import { z } from 'zod';
 
 /**
  * プラグイン設定の各条件（1つの設定に対する設定）- V1

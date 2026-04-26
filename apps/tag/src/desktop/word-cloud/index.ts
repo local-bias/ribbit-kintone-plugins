@@ -1,12 +1,12 @@
-import { manager } from '@/lib/event-manager';
-import { GUEST_SPACE_ID } from '@/lib/global';
-import { restorePluginConfig } from '@/lib/plugin';
-import { WORD_CLOUD_ROOT_ID } from '@/lib/static';
-import { Container, Root, color, percent } from '@amcharts/amcharts5';
+import { Container, color, percent, Root } from '@amcharts/amcharts5';
 import Animated from '@amcharts/amcharts5/themes/Animated';
 import { WordCloud } from '@amcharts/amcharts5/wc';
 import { css } from '@emotion/css';
 import { getAllRecords, getAppId } from '@konomi-app/kintone-utilities';
+import { manager } from '@/lib/event-manager';
+import { GUEST_SPACE_ID } from '@/lib/global';
+import { restorePluginConfig } from '@/lib/plugin';
+import { WORD_CLOUD_ROOT_ID } from '@/lib/static';
 
 manager.add(['app.record.index.show'], async (event) => {
   const config = restorePluginConfig();

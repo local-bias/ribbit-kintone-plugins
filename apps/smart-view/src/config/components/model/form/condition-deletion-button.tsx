@@ -3,7 +3,7 @@ import { produce } from 'immer';
 import { useAtomValue } from 'jotai';
 import { useAtomCallback, useResetAtom } from 'jotai/utils';
 import { useSnackbar } from 'notistack';
-import { FC, useCallback } from 'react';
+import { type FC, useCallback } from 'react';
 import { pluginConfigAtom, selectedConditionIdAtom } from '../../../states/plugin';
 
 const Container: FC = () => {

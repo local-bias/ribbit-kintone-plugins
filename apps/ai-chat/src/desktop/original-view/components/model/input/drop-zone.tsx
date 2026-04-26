@@ -1,10 +1,18 @@
-import { inputFilesAtom, selectedPluginConditionAtom } from '@/desktop/original-view/states/states';
-import { isConvertibleFile } from '@/lib/file-converter';
-import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
+import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { DragEvent, FC, ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  type DragEvent,
+  type FC,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { inputFilesAtom, selectedPluginConditionAtom } from '@/desktop/original-view/states/states';
+import { isConvertibleFile } from '@/lib/file-converter';
 
 type Props = {
   children: ReactNode;

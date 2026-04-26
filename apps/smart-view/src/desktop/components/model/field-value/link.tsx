@@ -1,6 +1,6 @@
-import { appFormPropertyAtom } from '@/desktop/states/kintone';
-import { type kintoneAPI } from '@konomi-app/kintone-utilities';
+import type { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { useAtomValue } from 'jotai';
+import { appFormPropertyAtom } from '@/desktop/states/kintone';
 
 type Props = {
   field: kintoneAPI.field.Link;

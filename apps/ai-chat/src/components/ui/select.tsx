@@ -1,10 +1,10 @@
 'use client';
 
-import * as React from 'react';
+import { css } from '@emotion/react';
+import styled from '@emotion/styled';
 import * as SelectPrimitive from '@radix-ui/react-select';
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon } from 'lucide-react';
-import styled from '@emotion/styled';
-import { css } from '@emotion/react';
+import type * as React from 'react';
 
 function Select({ ...props }: React.ComponentProps<typeof SelectPrimitive.Root>) {
   return <SelectPrimitive.Root data-slot='select' {...props} />;

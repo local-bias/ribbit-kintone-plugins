@@ -1,6 +1,6 @@
+import { setFieldShown } from '@konomi-app/kintone-utilities';
 import { manager } from '@/lib/event-manager';
 import { restorePluginConfig } from '@/lib/plugin';
-import { setFieldShown } from '@konomi-app/kintone-utilities';
 
 manager.add(
   ['app.record.create.show', 'app.record.edit.show', 'app.record.detail.show'],

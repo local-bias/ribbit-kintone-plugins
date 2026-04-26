@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { css, cx } from '@emotion/css';
+import * as React from 'react';
 
 const alertBaseStyles = css`
   position: relative;
@@ -82,4 +82,4 @@ const AlertDescription = React.forwardRef<
 ));
 AlertDescription.displayName = 'AlertDescription';
 
-export { Alert, AlertTitle, AlertDescription };
+export { Alert, AlertDescription, AlertTitle };

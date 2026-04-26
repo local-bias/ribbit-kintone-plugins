@@ -1,6 +1,6 @@
-import * as React from 'react';
-import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area';
 import { css, cx } from '@emotion/css';
+import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area';
+import * as React from 'react';
 
 const scrollAreaRootStyles = css`
   position: relative;

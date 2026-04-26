@@ -1,17 +1,17 @@
-import { GUEST_SPACE_ID } from '@/lib/global';
-import { t } from '@/lib/i18n';
-import { PluginCondition } from '@/schema/plugin-config';
 import {
   getAllRecords,
   getAppId,
   getQueryCondition,
-  kintoneAPI,
+  type kintoneAPI,
+  type UpdateAllRecordsParams,
   updateAllRecords,
-  UpdateAllRecordsParams,
 } from '@konomi-app/kintone-utilities';
 import { dialog } from '@konomi-app/ui';
 import { DateTime } from 'luxon';
 import { z } from 'zod';
+import { GUEST_SPACE_ID } from '@/lib/global';
+import { t } from '@/lib/i18n';
+import type { PluginCondition } from '@/schema/plugin-config';
 import { getAdjustedDate, validateRecord } from '../common-actions';
 
 export const useBulkUpdate = (params: { condition: PluginCondition }) => {

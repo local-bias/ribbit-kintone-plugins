@@ -1,8 +1,8 @@
-import ImageDropzone from '@/desktop/components/drop-zone';
-import { ThemeProvider } from '@/components/theme-provider';
-import { store } from '@/lib/store';
 import { Provider } from 'jotai';
 import { SnackbarProvider } from 'notistack';
+import { ThemeProvider } from '@/components/theme-provider';
+import ImageDropzone from '@/desktop/components/drop-zone';
+import { store } from '@/lib/store';
 import QueuedFiles from './queued-files';
 
 export default function App({ conditionId }: { conditionId: string }) {

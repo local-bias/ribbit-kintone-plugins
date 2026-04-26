@@ -1,10 +1,10 @@
-import { createConfig } from '@/lib/plugin';
-import { t } from '@/lib/i18n';
 import { storeStorage } from '@konomi-app/kintone-utilities';
 import { Alert, AlertTitle, Button, Stack } from '@mui/material';
 import { useAtom } from 'jotai';
 import { enqueueSnackbar } from 'notistack';
-import { FC } from 'react';
+import type { FC } from 'react';
+import { t } from '@/lib/i18n';
+import { createConfig } from '@/lib/plugin';
 import { configErrorAtom, pluginConfigAtom } from '../../states/plugin';
 
 /**

@@ -2134,7 +2134,7 @@ export function useTranslations(lang: string = defaultLang) {
 
   return function t(key: keyof (typeof ui)[typeof defaultLang], ...args: string[]): string {
     /* eslint @typescript-eslint/ban-ts-comment: 0 */
-    // @ts-ignore デフォルト言語以外の設定が不十分な場合は、デフォルト言語の設定を使用します
+    // @ts-expect-error デフォルト言語以外の設定が不十分な場合は、デフォルト言語の設定を使用します
     let translation: string = ui[validLang][key] ?? ui[defaultLang][key];
 
     args.forEach((arg, index) => {

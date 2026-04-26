@@ -1,12 +1,12 @@
-import { pluginConditionsAtom, selectedConditionIdAtom } from '@/config/states/plugin';
-import { t } from '@/lib/i18n';
-import { getNewCondition, validatePluginCondition } from '@/lib/plugin';
-import { PluginCondition } from '@/schema/plugin-config';
 import { BundledSidebar } from '@konomi-app/kintone-utilities-react';
 import { Skeleton } from '@mui/material';
 import { useAtom, useAtomValue } from 'jotai';
 import { useSnackbar } from 'notistack';
-import { FC, Suspense } from 'react';
+import { type FC, Suspense } from 'react';
+import { pluginConditionsAtom, selectedConditionIdAtom } from '@/config/states/plugin';
+import { t } from '@/lib/i18n';
+import { getNewCondition, validatePluginCondition } from '@/lib/plugin';
+import type { PluginCondition } from '@/schema/plugin-config';
 import { customViewsAtom } from '../states/kintone';
 
 const AwaitedLabel: FC<{ condition: PluginCondition }> = ({ condition }) => {

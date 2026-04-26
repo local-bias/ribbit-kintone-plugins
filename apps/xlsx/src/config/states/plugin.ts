@@ -1,12 +1,12 @@
-import { createConfig, migrateConfig, restorePluginConfig } from '@/lib/plugin';
-import { PluginConfig } from '@/schema/plugin-config';
 import { storePluginConfig } from '@konomi-app/kintone-utilities';
+import { toast } from '@konomi-app/ui';
 import { usePluginAtoms } from '@repo/jotai';
 import { atom } from 'jotai';
-import { t } from '@/lib/i18n';
-import { toast } from '@konomi-app/ui';
+import type { ChangeEvent } from 'react';
 import { loadingAtom, loadingEndAtom, loadingStartAtom } from '@/common/global-state';
-import { ChangeEvent } from 'react';
+import { t } from '@/lib/i18n';
+import { createConfig, migrateConfig, restorePluginConfig } from '@/lib/plugin';
+import type { PluginConfig } from '@/schema/plugin-config';
 
 export const pluginConfigAtom = atom<PluginConfig>(restorePluginConfig());
 

@@ -1,16 +1,16 @@
-import { pluginCommonConfigAtom, pluginConditionsAtom } from '@/desktop/public-state';
-import { isDev } from '@/lib/global';
-import { ChatHistory, ChatMessage, URL_QUERY_CHAT_ID } from '@/lib/static';
-import { PluginCondition } from '@/schema/plugin-config';
 import { deleteAllRecordsByQuery, isGuestSpace, isMobile } from '@konomi-app/kintone-utilities';
 import { produce } from 'immer';
 import { atom } from 'jotai';
-import { atomEffect } from 'jotai-effect';
 import { atomWithReset, RESET } from 'jotai/utils';
+import { atomEffect } from 'jotai-effect';
 import { enqueueSnackbar } from 'notistack';
+import { pluginCommonConfigAtom, pluginConditionsAtom } from '@/desktop/public-state';
+import { isDev } from '@/lib/global';
+import { type ChatHistory, type ChatMessage, URL_QUERY_CHAT_ID } from '@/lib/static';
+import type { PluginCondition } from '@/schema/plugin-config';
 import {
   extractFactCheckStateFromHistory,
-  FactCheckState,
+  type FactCheckState,
   transientFactCheckStateAtom,
 } from './fact-check';
 

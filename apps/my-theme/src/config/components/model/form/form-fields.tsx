@@ -1,4 +1,3 @@
-import { getConditionPropertyAtom } from '@/config/states/plugin';
 import { JotaiFieldSelect } from '@konomi-app/kintone-utilities-jotai';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -6,6 +5,7 @@ import { IconButton, Skeleton, Tooltip } from '@mui/material';
 import { useArrayAtom } from '@repo/jotai';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { Suspense } from 'react';
+import { getConditionPropertyAtom } from '@/config/states/plugin';
 import { currentAppFieldsAtom } from '../../../states/kintone';
 
 const fieldsAtom = getConditionPropertyAtom('fields');

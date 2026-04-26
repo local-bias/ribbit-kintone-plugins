@@ -1,9 +1,9 @@
-import { Autocomplete, IconButton, Skeleton, TextField, Tooltip } from '@mui/material';
-import React, { FC, memo, Suspense } from 'react';
-import { useRecoilCallback, useRecoilValue } from 'recoil';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { Autocomplete, IconButton, Skeleton, TextField, Tooltip } from '@mui/material';
 import { produce } from 'immer';
+import React, { type FC, memo, Suspense } from 'react';
+import { useRecoilCallback, useRecoilValue } from 'recoil';
 
 import { subtableFieldsState } from '../../../states/kintone';
 import { ignoreFieldsState } from '../../../states/plugin';

@@ -1,5 +1,5 @@
-import { selectedFileContentKeyAtom } from '@/desktop/public-state';
 import { useAtomValue } from 'jotai';
+import { selectedFileContentKeyAtom } from '@/desktop/public-state';
 
 export default function DetailHeader() {
   const key = useAtomValue(selectedFileContentKeyAtom);

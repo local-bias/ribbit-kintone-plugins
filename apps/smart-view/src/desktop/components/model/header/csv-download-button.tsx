@@ -1,7 +1,7 @@
-import { t } from '@/lib/i18n';
 import styled from '@emotion/styled';
 import GetAppIcon from '@mui/icons-material/GetApp';
 import { Button, Tooltip } from '@mui/material';
+import { t } from '@/lib/i18n';
 
 function CsvDownloadButtonComponent({ className }: { className?: string }) {
   return (

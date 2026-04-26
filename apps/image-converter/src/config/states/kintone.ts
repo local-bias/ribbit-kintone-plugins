@@ -1,9 +1,9 @@
-import { GUEST_SPACE_ID } from '@/lib/global';
-import { flatLayout } from '@/lib/kintone';
-import { kintoneAPI } from '@konomi-app/kintone-utilities';
+import type { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { appFormFieldsAtom, appFormLayoutState, currentAppIdAtom } from '@repo/jotai';
 import { atom } from 'jotai';
 import { derive } from 'jotai-derive';
+import { GUEST_SPACE_ID } from '@/lib/global';
+import { flatLayout } from '@/lib/kintone';
 
 export const currentAppFormFieldsAtom = atom((get) => {
   return get(

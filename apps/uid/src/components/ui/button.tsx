@@ -1,6 +1,6 @@
-import * as React from 'react';
-import { Slot } from '@radix-ui/react-slot';
 import { css, cx } from '@emotion/css';
+import { Slot } from '@radix-ui/react-slot';
+import * as React from 'react';
 
 const buttonBase = css`
   display: inline-flex;

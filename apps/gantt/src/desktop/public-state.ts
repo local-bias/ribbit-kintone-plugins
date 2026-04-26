@@ -1,7 +1,7 @@
-import { isUsagePluginConditionMet, restorePluginConfig } from '@/lib/plugin';
-import { GanttScale, PluginCondition, PluginConfig } from '@/schema/plugin-config';
-import { kintoneAPI } from '@konomi-app/kintone-utilities';
+import type { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { atom } from 'jotai';
+import { isUsagePluginConditionMet, restorePluginConfig } from '@/lib/plugin';
+import type { GanttScale, PluginCondition, PluginConfig } from '@/schema/plugin-config';
 import type { CategoryPathEntry } from './hooks/use-gantt-layout';
 
 const { config: initialConfig, error: configError } = restorePluginConfig();

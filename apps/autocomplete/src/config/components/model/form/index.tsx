@@ -1,12 +1,12 @@
-import { getConditionPropertyAtom } from '@/config/states/plugin';
-import { t } from '@/lib/i18n';
 import { JotaiNumber } from '@konomi-app/kintone-utilities-jotai';
 import {
   PluginFormDescription,
   PluginFormSection,
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
-import { FC } from 'react';
+import type { FC } from 'react';
+import { getConditionPropertyAtom } from '@/config/states/plugin';
+import { t } from '@/lib/i18n';
 import DeleteButton from './condition-delete-button';
 import SrcAppIdForm from './form-src-app';
 import SrcFieldCodeForm from './form-src-field';

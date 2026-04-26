@@ -1,8 +1,8 @@
 import { createTheme } from '@mui/material';
-import { LANGUAGE } from './global';
 import { enUS, esES, jaJP, zhCN } from '@mui/material/locale';
 import { commonUi, useTranslations } from '@repo/utils';
 import { mergeDeep } from 'remeda';
+import { LANGUAGE } from './global';
 
 const ui = mergeDeep(commonUi, {
   ja: {

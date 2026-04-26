@@ -1,5 +1,5 @@
 import { TooltipIcon } from '@/lib/components/tooltip-icon';
-import { PluginCondition } from '@/schema/plugin-config';
+import type { PluginCondition } from '@/schema/plugin-config';
 
 type Props = { condition: PluginCondition };
 

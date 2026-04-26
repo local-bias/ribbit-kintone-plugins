@@ -1,4 +1,4 @@
-import { kintoneAPI } from '@konomi-app/kintone-utilities';
+import type { kintoneAPI } from '@konomi-app/kintone-utilities';
 
 export const getChangeEvents = (
   fields: string[],

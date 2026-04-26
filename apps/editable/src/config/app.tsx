@@ -1,6 +1,3 @@
-import { PluginErrorBoundary } from '@/components/error-boundary';
-import { ThemeProvider } from '@/components/theme-provider';
-import { t } from '@/lib/i18n';
 import {
   PluginBanner,
   PluginConfigProvider,
@@ -12,8 +9,11 @@ import { URL_BANNER, URL_PROMOTION } from '@repo/constants';
 import { store } from '@repo/jotai';
 import { Provider } from 'jotai';
 import { SnackbarProvider } from 'notistack';
+import { type FC, Suspense } from 'react';
 import config from '@/../plugin.config.mjs';
-import { FC, Suspense } from 'react';
+import { PluginErrorBoundary } from '@/components/error-boundary';
+import { ThemeProvider } from '@/components/theme-provider';
+import { t } from '@/lib/i18n';
 import Footer from './components/footer';
 import Form from './components/form';
 import Sidebar from './components/sidebar';

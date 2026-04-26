@@ -1,15 +1,16 @@
-import { getHTMLfromMarkdown } from '@/desktop/original-view/action';
-import { useChatMessage } from '@/desktop/original-view/contexts/chat-message';
-import { handleSendMessageAtom } from '@/desktop/original-view/states/chat-message';
-import { loadingAtom, selectedHistoryAtom } from '@/desktop/original-view/states/states';
-import { getTextFromMessageContent } from '@/lib/chatgpt';
-import { ChatHistory, MessageAttachment } from '@/lib/static';
 import SendIcon from '@mui/icons-material/Send';
 import { Button, TextField } from '@mui/material';
 import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
 import { useSnackbar } from 'notistack';
-import React, { useCallback, useState } from 'react';
+import type React from 'react';
+import { useCallback, useState } from 'react';
+import { getHTMLfromMarkdown } from '@/desktop/original-view/action';
+import { useChatMessage } from '@/desktop/original-view/contexts/chat-message';
+import { handleSendMessageAtom } from '@/desktop/original-view/states/chat-message';
+import { loadingAtom, selectedHistoryAtom } from '@/desktop/original-view/states/states';
+import { getTextFromMessageContent } from '@/lib/chatgpt';
+import type { ChatHistory, MessageAttachment } from '@/lib/static';
 import AttachedFile from './file';
 import { buildCollapsedPreview } from './utils';
 
@@ -88,7 +89,7 @@ function ChatMessageComponent({ message, attachments }: Props) {
     return null;
   }
 
-  let text = message;
+  const text = message;
 
   const displayText = shouldShowCollapsed ? buildCollapsedPreview(message) : text;
 

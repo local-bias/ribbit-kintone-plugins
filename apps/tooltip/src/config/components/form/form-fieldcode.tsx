@@ -1,9 +1,9 @@
-import { appFieldsAtom } from '@/config/states/kintone';
-import { conditionFieldCodeAtom } from '@/config/states/plugin';
 import { JotaiFieldSelect } from '@konomi-app/kintone-utilities-jotai';
 import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
 import { useCallback } from 'react';
+import { appFieldsAtom } from '@/config/states/kintone';
+import { conditionFieldCodeAtom } from '@/config/states/plugin';
 
 export default function FieldCodeForm() {
   const value = useAtomValue(conditionFieldCodeAtom);

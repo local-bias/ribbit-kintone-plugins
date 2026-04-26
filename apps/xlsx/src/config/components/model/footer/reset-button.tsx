@@ -1,5 +1,3 @@
-import { t } from '@/lib/i18n';
-import { createConfig } from '@/lib/plugin';
 import { toast } from '@konomi-app/ui';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import {
@@ -13,7 +11,9 @@ import {
   Tooltip,
 } from '@mui/material';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
-import { FC } from 'react';
+import type { FC } from 'react';
+import { t } from '@/lib/i18n';
+import { createConfig } from '@/lib/plugin';
 import { pluginConfigAtom } from '../../../states/plugin';
 
 const openAtom = atom(false);

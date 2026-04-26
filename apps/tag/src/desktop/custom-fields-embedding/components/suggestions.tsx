@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { useAtomValue } from 'jotai';
-import { FC, RefObject } from 'react';
+import type { FC, RefObject } from 'react';
 import { filteredSuggestionsAtom, suggestionCursorAtom } from '../states/plugin';
 
 type Props = {

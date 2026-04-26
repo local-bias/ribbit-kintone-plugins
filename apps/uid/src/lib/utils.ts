@@ -1,8 +1,8 @@
+import { getFieldValueAsString, type kintoneAPI } from '@konomi-app/kintone-utilities';
 import { type ClassValue, clsx } from 'clsx';
 import { nanoid } from 'nanoid';
 import { v4 as uuid } from 'uuid';
-import { PluginCondition } from './plugin';
-import { getFieldValueAsString, kintoneAPI } from '@konomi-app/kintone-utilities';
+import type { PluginCondition } from './plugin';
 
 export function cn(...inputs: ClassValue[]) {
   return clsx(inputs);

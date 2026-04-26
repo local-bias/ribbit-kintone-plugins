@@ -1,5 +1,5 @@
-import { isUsagePluginConditionMet, restorePluginConfig } from '@/lib/plugin';
 import { atom } from 'jotai';
+import { isUsagePluginConditionMet, restorePluginConfig } from '@/lib/plugin';
 
 const { config } = restorePluginConfig();
 

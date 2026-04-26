@@ -1,6 +1,6 @@
-import { AnyPluginConfig, PluginCondition, PluginConfig } from '@/schema/plugin-config';
 import { restorePluginConfig as primitiveRestore } from '@konomi-app/kintone-utilities';
 import { nanoid } from 'nanoid';
+import type { AnyPluginConfig, PluginCondition, PluginConfig } from '@/schema/plugin-config';
 import { isDev, PLUGIN_ID } from './global';
 import { OPENAI_MODELS } from './static';
 
@@ -67,7 +67,7 @@ export const migrateConfig = (storage: AnyPluginConfig): PluginConfig => {
         enablesEnter: false,
         enablesShiftEnter: false,
         assistants: storage.assistants.map((assistant) => ({
-          //@ts-ignore
+          //@ts-expect-error
           maxTokens: 0,
           ...assistant,
           examples: [''],

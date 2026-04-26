@@ -1,14 +1,14 @@
-import { manager } from '@/lib/event-manager';
-import { GUEST_SPACE_ID } from '@/lib/global';
-import { getCategoryFieldCodes, VIEW_ROOT_ID } from '@/lib/plugin';
 import {
   getAllRecordsWithId,
   getFormFields,
   getQueryCondition,
-  kintoneAPI,
+  type kintoneAPI,
 } from '@konomi-app/kintone-utilities';
 import { store } from '@repo/jotai';
-import { createRoot, Root } from 'react-dom/client';
+import { createRoot, type Root } from 'react-dom/client';
+import { manager } from '@/lib/event-manager';
+import { GUEST_SPACE_ID } from '@/lib/global';
+import { getCategoryFieldCodes, VIEW_ROOT_ID } from '@/lib/plugin';
 import GanttApp from './app';
 import {
   currentConditionAtom,

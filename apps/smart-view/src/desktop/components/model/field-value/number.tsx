@@ -1,6 +1,6 @@
-import { LANGUAGE } from '@/lib/global';
 import { getNumberFieldValueAsString, type kintoneAPI } from '@konomi-app/kintone-utilities';
 import { useAtomValue } from 'jotai';
+import { LANGUAGE } from '@/lib/global';
 import { appFormPropertyAtom } from '../../../states/kintone';
 
 type Props = { field: kintoneAPI.field.Number; code: string; appId: string };

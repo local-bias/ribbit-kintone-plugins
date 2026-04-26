@@ -1,7 +1,7 @@
 import { produce } from 'immer';
 import { atom, type PrimitiveAtom } from 'jotai';
 import { atomWithDefault } from 'jotai/utils';
-import { type SetStateAction } from 'react';
+import type { SetStateAction } from 'react';
 
 export function usePluginAtoms<
   T extends {
@@ -55,7 +55,7 @@ export function usePluginAtoms<
         produce(current, (draft) => {
           const index = draft.findIndex((condition) => condition.id === selectedConditionId);
           if (index !== -1) {
-            //@ts-ignore
+            //@ts-expect-error
             draft[index] = typeof newValue === 'function' ? newValue(draft[index]!) : newValue;
           }
         })
@@ -74,7 +74,7 @@ export function usePluginAtoms<
       (_, set, newValue: SetStateAction<Condition[F]>) => {
         set(selectedConditionAtom, (condition) =>
           produce(condition, (draft) => {
-            //@ts-ignore
+            //@ts-expect-error
             draft[property] = typeof newValue === 'function' ? newValue(draft[property]) : newValue;
           })
         );

@@ -1,14 +1,14 @@
-import {
-  enablesAnimationAtom,
-  enablesEnterAtom,
-  enablesShiftEnterAtom,
-} from '@/config/states/plugin';
 import { JotaiSwitch } from '@konomi-app/kintone-utilities-jotai';
 import {
   PluginFormDescription,
   PluginFormSection,
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
+import {
+  enablesAnimationAtom,
+  enablesEnterAtom,
+  enablesShiftEnterAtom,
+} from '@/config/states/plugin';
 import ApiKeyForm from './form-api-key';
 import LogAppIdForm from './form-log-app-id';
 import FormLogFileField from './form-log-file-field';

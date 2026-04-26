@@ -1,12 +1,12 @@
-import { pluginCommonConfigAtom, pluginConditionsAtom } from '@/desktop/public-state';
-import { PLUGIN_NAME, type FactCheckMessage } from '@/lib/static';
-import { store } from '@/lib/store';
-import { PROMPT_FACT_CHECK_SYSTEM } from '@/prompts/ai';
-import { FactCheckResultSchema, type FactCheckResult } from '@/schema/fact-check';
-import { AiProviderType } from '@/schema/plugin-config';
 import { upsertRecord } from '@konomi-app/kintone-utilities';
 import { produce } from 'immer';
 import { nanoid } from 'nanoid';
+import { pluginCommonConfigAtom, pluginConditionsAtom } from '@/desktop/public-state';
+import { type FactCheckMessage, PLUGIN_NAME } from '@/lib/static';
+import { store } from '@/lib/store';
+import { PROMPT_FACT_CHECK_SYSTEM } from '@/prompts/ai';
+import { type FactCheckResult, FactCheckResultSchema } from '@/schema/fact-check';
+import type { AiProviderType } from '@/schema/plugin-config';
 import { fetchAICompletion } from '../action';
 import { transientFactCheckStateAtom } from '../states/fact-check';
 import { outputAppGuestSpaceIdAtom } from '../states/kintone';

@@ -1,12 +1,17 @@
-import { t } from '@/lib/i18n';
-import type { GanttScale } from '@/schema/plugin-config';
 import { useDndMonitor, useDraggable } from '@dnd-kit/core';
 import styled from '@emotion/styled';
 import { getFieldValueAsString } from '@konomi-app/kintone-utilities';
 import { Tooltip } from '@mui/material';
 import { useAtomValue } from 'jotai';
-import { FC, useCallback, useState } from 'react';
-import { COLOR_PALETTE, COLUMN_WIDTH, GanttTask, TASK_ROW_HEIGHT } from '../hooks/use-gantt-layout';
+import { type FC, useCallback, useState } from 'react';
+import { t } from '@/lib/i18n';
+import type { GanttScale } from '@/schema/plugin-config';
+import {
+  COLOR_PALETTE,
+  COLUMN_WIDTH,
+  type GanttTask,
+  TASK_ROW_HEIGHT,
+} from '../hooks/use-gantt-layout';
 import { currentConditionAtom, ganttFormFieldsAtom, ganttScaleAtom } from '../public-state';
 import { TaskContextMenu } from './task-context-menu';
 
