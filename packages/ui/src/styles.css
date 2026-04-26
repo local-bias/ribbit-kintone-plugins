@@ -1,9 +1,9 @@
 @layer theme, base, components, utilities;
 
 /* base, components, utilitiesはプレフィックスなし */
-@import 'tailwindcss/utilities.css' layer(utilities);
+@import "tailwindcss/utilities.css" layer(utilities);
 
-@import 'tw-animate-css';
+@import "tw-animate-css";
 
 /** 共通テーマ */
-@import '@repo/tailwindcss/theme.css';
+@import "@repo/tailwindcss/theme.css";

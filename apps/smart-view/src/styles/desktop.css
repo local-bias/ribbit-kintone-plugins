@@ -1,11 +1,11 @@
 @source not "../../.plugin";
 
 @layer theme, base, components, utilities;
-@import 'tailwindcss/theme.css' layer(theme) prefix(rad);
-@import 'tailwindcss/utilities.css' layer(utilities);
-@import 'tw-animate-css';
+@import "tailwindcss/theme.css" layer(theme) prefix(rad);
+@import "tailwindcss/utilities.css" layer(utilities);
+@import "tw-animate-css";
 
-@import './theme.css';
+@import "./theme.css";
 
 /** preflight */
 @layer base {
@@ -34,7 +34,7 @@
     list-style: none;
   }
 
-  .MuiAutocomplete-popper[role='presentation'],
+  .MuiAutocomplete-popper[role="presentation"],
   .MuiPaper-root,
   .MuiDialogContent-root {
     ::-webkit-scrollbar {
