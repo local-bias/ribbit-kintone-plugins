@@ -11,7 +11,7 @@ export default /** @type { const } */ ({
     port: 65535,
   },
   lint: {
-    build: true,
+    build: false,
   },
   manifest: {
     base: {
@@ -38,8 +38,14 @@ export default /** @type { const } */ ({
       },
       icon: 'icon.png',
       homepage_url: { ja: hp, en: hp },
-      desktop: { js: [`${cdn}/common/desktop.js`], css: [`${cdn}/common/desktop.css`] },
-      mobile: { js: [`${cdn}/common/desktop.js`], css: [`${cdn}/common/desktop.css`] },
+      desktop: {
+        js: [`${cdn}/common/desktop.js`],
+        css: [`${cdn}/common/desktop.css`],
+      },
+      mobile: {
+        js: [`${cdn}/common/desktop.js`],
+        css: [`${cdn}/common/desktop.css`],
+      },
       config: {
         html: 'config.html',
         js: [`${cdn}/common/config.js`],
@@ -48,9 +54,18 @@ export default /** @type { const } */ ({
       },
     },
     prod: {
-      desktop: { js: [`${cdn}/${key}/desktop.js`], css: [`${cdn}/${key}/desktop.css`] },
-      mobile: { js: [`${cdn}/${key}/desktop.js`], css: [`${cdn}/${key}/desktop.css`] },
-      config: { js: [`${cdn}/${key}/config.js`], css: [`${cdn}/${key}/config.css`] },
+      desktop: {
+        js: [`${cdn}/${key}/desktop.js`],
+        css: [`${cdn}/${key}/desktop.css`],
+      },
+      mobile: {
+        js: [`${cdn}/${key}/desktop.js`],
+        css: [`${cdn}/${key}/desktop.css`],
+      },
+      config: {
+        js: [`${cdn}/${key}/config.js`],
+        css: [`${cdn}/${key}/config.css`],
+      },
     },
     standalone: {
       desktop: { js: ['desktop.js'], css: ['desktop.css'] },

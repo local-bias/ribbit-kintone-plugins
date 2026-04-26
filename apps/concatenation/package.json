@@ -48,8 +48,6 @@
   "devDependencies": {
     "@kintone/dts-gen": "9.0.0",
     "@konomi-app/k2": "^4.2.0",
-    "@konomi-app/prettier-config": "^1.1.2",
-    "@repo/eslint-config": "workspace:*",
     "@repo/k2": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@types/luxon": "3.7.1",

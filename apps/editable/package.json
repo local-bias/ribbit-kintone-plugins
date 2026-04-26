@@ -50,7 +50,6 @@
   "devDependencies": {
     "@kintone/dts-gen": "9.0.0",
     "@konomi-app/k2": "^4.2.0",
-    "@repo/eslint-config": "workspace:*",
     "@repo/k2": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@tailwindcss/cli": "^4.1.18",

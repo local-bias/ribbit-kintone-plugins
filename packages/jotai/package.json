@@ -2,7 +2,6 @@
   "name": "@repo/jotai",
   "type": "module",
   "scripts": {
-    "lint": "eslint . --max-warnings 0",
     "check-types": "tsc --noEmit"
   },
   "exports": {
@@ -11,7 +10,6 @@
   "devDependencies": {
     "@konomi-app/kintone-utilities": "^6.1.0",
     "@mui/material": "^7.3.9",
-    "@repo/eslint-config": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@repo/utils": "workspace:*",
     "@types/react": "^19.2.14",

@@ -11,15 +11,9 @@ importers:
       '@biomejs/biome':
         specifier: ^2.3.10
         version: 2.4.12
-      '@konomi-app/prettier-config':
-        specifier: ^1.1.2
-        version: 1.1.2
       '@types/node':
         specifier: ^25.0.3
         version: 25.6.0
-      prettier:
-        specifier: ^3.7.4
-        version: 3.8.3
       tailwindcss:
         specifier: ^4.1.18
         version: 4.2.2
@@ -361,9 +355,6 @@ importers:
       '@konomi-app/k2':
         specifier: ^4.2.0
         version: 4.2.0(@eslint/js@9.39.4)(@tailwindcss/postcss@4.2.2)(cssnano@7.1.5(postcss@8.5.10))(dotenv@17.3.1)(eslint-plugin-react@7.37.5(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))(glob@13.0.6)(globals@17.5.0)(html-minifier@4.0.0)(postcss@8.5.10)(remeda@2.33.7)(tailwindcss@4.2.2)(typescript-eslint@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../../packages/eslint-config
       '@repo/tailwindcss':
         specifier: workspace:*
         version: link:../../packages/tailwindcss
@@ -391,15 +382,9 @@ importers:
       dotenv:
         specifier: ^17.3.1
         version: 17.3.1
-      eslint-plugin-react:
-        specifier: ^7.37.5
-        version: 7.37.5(eslint@9.39.4(jiti@2.6.1))
       glob:
         specifier: ^13.0.6
         version: 13.0.6
-      globals:
-        specifier: ^17.4.0
-        version: 17.5.0
       tailwindcss:
         specifier: ^4.2.1
         version: 4.2.2
@@ -536,9 +521,6 @@ importers:
       '@konomi-app/k2':
         specifier: ^4.2.0
         version: 4.2.0(@eslint/js@9.39.4)(@tailwindcss/postcss@4.2.2)(cssnano@7.1.5(postcss@8.5.10))(dotenv@17.2.3)(eslint-plugin-react@7.37.5(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))(glob@13.0.6)(globals@17.5.0)(html-minifier@4.0.0)(postcss@8.5.10)(remeda@2.33.7)(tailwindcss@4.2.2)(typescript-eslint@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../../packages/eslint-config
       '@repo/tailwindcss':
         specifier: workspace:*
         version: link:../../packages/tailwindcss
@@ -714,9 +696,6 @@ importers:
       '@konomi-app/k2':
         specifier: ^4.2.0
         version: 4.2.0(@eslint/js@9.39.4)(@tailwindcss/postcss@4.2.2)(cssnano@7.1.5(postcss@8.5.10))(dotenv@17.3.1)(eslint-plugin-react@7.37.5(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))(glob@13.0.6)(globals@17.5.0)(html-minifier@4.0.0)(postcss@8.5.10)(remeda@2.33.7)(tailwindcss@4.2.2)(typescript-eslint@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../../packages/eslint-config
       '@repo/tailwindcss':
         specifier: workspace:*
         version: link:../../packages/tailwindcss
@@ -744,12 +723,6 @@ importers:
       dotenv:
         specifier: ^17.3.1
         version: 17.3.1
-      eslint-plugin-react:
-        specifier: ^7.37.5
-        version: 7.37.5(eslint@9.39.4(jiti@2.6.1))
-      globals:
-        specifier: ^17.4.0
-        version: 17.5.0
       tailwindcss:
         specifier: ^4.2.1
         version: 4.2.2
@@ -850,12 +823,6 @@ importers:
       '@konomi-app/k2':
         specifier: ^4.2.0
         version: 4.2.0(@eslint/js@9.39.4)(@tailwindcss/postcss@4.2.2)(cssnano@7.1.5(postcss@8.5.10))(dotenv@17.2.3)(eslint-plugin-react@7.37.5(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))(glob@13.0.6)(globals@17.5.0)(html-minifier@4.0.0)(postcss@8.5.10)(remeda@2.33.7)(tailwindcss@4.2.2)(typescript-eslint@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))
-      '@konomi-app/prettier-config':
-        specifier: ^1.1.2
-        version: 1.1.2
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../../packages/eslint-config
       '@repo/k2':
         specifier: workspace:*
         version: link:../../packages/k2
@@ -1010,9 +977,6 @@ importers:
       '@konomi-app/k2':
         specifier: ^4.2.0
         version: 4.2.0(@eslint/js@9.39.4)(@tailwindcss/postcss@4.2.2)(cssnano@7.1.5(postcss@8.5.10))(dotenv@17.3.1)(eslint-plugin-react@7.37.5(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))(glob@13.0.6)(globals@17.5.0)(html-minifier@4.0.0)(postcss@8.5.10)(remeda@2.33.7)(tailwindcss@4.2.2)(typescript-eslint@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../../packages/eslint-config
       '@repo/tailwindcss':
         specifier: workspace:*
         version: link:../../packages/tailwindcss
@@ -1140,9 +1104,6 @@ importers:
       '@konomi-app/k2':
         specifier: ^4.2.0
         version: 4.2.0(@eslint/js@9.39.4)(@tailwindcss/postcss@4.2.2)(cssnano@7.1.5(postcss@8.5.10))(dotenv@17.4.2)(eslint-plugin-react@7.37.5(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))(glob@13.0.6)(globals@17.5.0)(html-minifier@4.0.0)(postcss@8.5.10)(remeda@2.33.7)(tailwindcss@4.2.2)(typescript-eslint@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../../packages/eslint-config
       '@repo/k2':
         specifier: workspace:*
         version: link:../../packages/k2
@@ -1309,9 +1270,6 @@ importers:
       '@konomi-app/k2':
         specifier: ^4.2.0
         version: 4.2.0(@eslint/js@9.39.4)(@tailwindcss/postcss@4.2.2)(cssnano@7.1.5(postcss@8.5.10))(dotenv@17.3.1)(eslint-plugin-react@7.37.5(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))(glob@13.0.6)(globals@17.5.0)(html-minifier@4.0.0)(postcss@8.5.10)(remeda@2.33.7)(tailwindcss@4.2.2)(typescript-eslint@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../../packages/eslint-config
       '@repo/tailwindcss':
         specifier: workspace:*
         version: link:../../packages/tailwindcss
@@ -1339,12 +1297,6 @@ importers:
       dotenv:
         specifier: ^17.3.1
         version: 17.3.1
-      eslint-plugin-react:
-        specifier: ^7.37.5
-        version: 7.37.5(eslint@9.39.4(jiti@2.6.1))
-      globals:
-        specifier: ^17.3.0
-        version: 17.5.0
       tailwindcss:
         specifier: ^4.2.0
         version: 4.2.2
@@ -1492,10 +1444,7 @@ importers:
         version: 9.0.2(@types/eslint@9.6.1)(@typescript-eslint/utils@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(jiti@2.6.1)(typescript@5.9.3)
       '@konomi-app/k2':
         specifier: ^4.2.0
-        version: 4.2.0(@eslint/js@9.39.4)(@tailwindcss/postcss@4.2.2)(cssnano@7.1.5(postcss@8.5.10))(dotenv@17.3.1)(eslint-plugin-react@7.37.5(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))(glob@13.0.6)(globals@16.5.0)(html-minifier@4.0.0)(postcss@8.5.10)(remeda@2.33.7)(tailwindcss@4.2.2)(typescript-eslint@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../../packages/eslint-config
+        version: 4.2.0(@eslint/js@9.39.4)(@tailwindcss/postcss@4.2.2)(cssnano@7.1.5(postcss@8.5.10))(dotenv@17.3.1)(eslint-plugin-react@7.37.5(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))(glob@13.0.6)(globals@17.5.0)(html-minifier@4.0.0)(postcss@8.5.10)(remeda@2.33.7)(tailwindcss@4.2.2)(typescript-eslint@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))
       '@repo/tailwindcss':
         specifier: workspace:*
         version: link:../../packages/tailwindcss
@@ -1529,9 +1478,6 @@ importers:
       dotenv:
         specifier: ^17.2.3
         version: 17.3.1
-      globals:
-        specifier: ^16.5.0
-        version: 16.5.0
       tailwindcss:
         specifier: ^4.1.18
         version: 4.2.2
@@ -1656,9 +1602,6 @@ importers:
       '@konomi-app/k2':
         specifier: ^4.2.0
         version: 4.2.0(@eslint/js@9.39.4)(@tailwindcss/postcss@4.2.2)(cssnano@7.1.5(postcss@8.5.10))(dotenv@17.3.1)(eslint-plugin-react@7.37.5(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))(glob@13.0.6)(globals@17.5.0)(html-minifier@4.0.0)(postcss@8.5.10)(remeda@2.33.7)(tailwindcss@4.2.2)(typescript-eslint@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../../packages/eslint-config
       '@repo/tailwindcss':
         specifier: workspace:*
         version: link:../../packages/tailwindcss
@@ -1683,12 +1626,6 @@ importers:
       dotenv:
         specifier: ^17.3.1
         version: 17.3.1
-      eslint-plugin-react:
-        specifier: ^7.37.5
-        version: 7.37.5(eslint@9.39.4(jiti@2.6.1))
-      globals:
-        specifier: ^17.3.0
-        version: 17.5.0
       tailwindcss:
         specifier: ^4.2.0
         version: 4.2.2
@@ -1831,10 +1768,7 @@ importers:
         version: 9.0.2(@types/eslint@9.6.1)(@typescript-eslint/utils@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(jiti@2.6.1)(typescript@5.9.3)
       '@konomi-app/k2':
         specifier: ^4.2.0
-        version: 4.2.0(@eslint/js@9.39.4)(@tailwindcss/postcss@4.2.2)(cssnano@7.1.5(postcss@8.5.10))(dotenv@17.3.1)(eslint-plugin-react@7.37.5(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))(glob@13.0.6)(globals@16.5.0)(html-minifier@4.0.0)(postcss@8.5.10)(remeda@2.33.7)(tailwindcss@4.2.2)(typescript-eslint@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../../packages/eslint-config
+        version: 4.2.0(@eslint/js@9.39.4)(@tailwindcss/postcss@4.2.2)(cssnano@7.1.5(postcss@8.5.10))(dotenv@17.3.1)(eslint-plugin-react@7.37.5(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))(glob@13.0.6)(globals@17.5.0)(html-minifier@4.0.0)(postcss@8.5.10)(remeda@2.33.7)(tailwindcss@4.2.2)(typescript-eslint@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))
       '@repo/tailwindcss':
         specifier: workspace:*
         version: link:../../packages/tailwindcss
@@ -1865,12 +1799,6 @@ importers:
       dotenv:
         specifier: ^17.2.3
         version: 17.3.1
-      eslint-plugin-react:
-        specifier: ^7.37.5
-        version: 7.37.5(eslint@9.39.4(jiti@2.6.1))
-      globals:
-        specifier: ^16.5.0
-        version: 16.5.0
       tailwindcss:
         specifier: ^4.1.18
         version: 4.2.2
@@ -2018,10 +1946,7 @@ importers:
         version: 9.0.2(@types/eslint@9.6.1)(@typescript-eslint/utils@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(jiti@2.6.1)(typescript@5.9.3)
       '@konomi-app/k2':
         specifier: ^4.2.0
-        version: 4.2.0(@eslint/js@9.39.4)(@tailwindcss/postcss@4.2.2)(cssnano@7.1.5(postcss@8.5.10))(dotenv@17.3.1)(eslint-plugin-react@7.37.5(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))(glob@13.0.6)(globals@16.5.0)(html-minifier@4.0.0)(postcss@8.5.10)(remeda@2.33.7)(tailwindcss@4.2.2)(typescript-eslint@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../../packages/eslint-config
+        version: 4.2.0(@eslint/js@9.39.4)(@tailwindcss/postcss@4.2.2)(cssnano@7.1.5(postcss@8.5.10))(dotenv@17.3.1)(eslint-plugin-react@7.37.5(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))(glob@13.0.6)(globals@17.5.0)(html-minifier@4.0.0)(postcss@8.5.10)(remeda@2.33.7)(tailwindcss@4.2.2)(typescript-eslint@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
@@ -2049,12 +1974,6 @@ importers:
       dotenv:
         specifier: ^17.2.3
         version: 17.3.1
-      eslint-plugin-react:
-        specifier: ^7.37.5
-        version: 7.37.5(eslint@9.39.4(jiti@2.6.1))
-      globals:
-        specifier: ^16.5.0
-        version: 16.5.0
       tailwindcss:
         specifier: ^4.1.18
         version: 4.2.2
@@ -2248,9 +2167,6 @@ importers:
       '@konomi-app/kintone-utility-component':
         specifier: ^1.3.1
         version: 1.3.1(@emotion/react@11.13.0(@types/react@18.3.3)(react@18.3.1))(@types/react@18.3.3)
-      '@konomi-app/prettier-config':
-        specifier: ^1.1.2
-        version: 1.1.2
       '@konomi-app/ui':
         specifier: ^3.0.0
         version: 3.0.0(@emotion/css@11.13.5)
@@ -2425,10 +2341,7 @@ importers:
     devDependencies:
       '@konomi-app/k2':
         specifier: ^4.2.0
-        version: 4.2.0(@eslint/js@9.39.4)(@tailwindcss/postcss@4.2.2)(cssnano@7.1.5(postcss@8.5.10))(dotenv@17.2.3)(eslint-plugin-react@7.37.5(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))(glob@13.0.6)(globals@16.5.0)(html-minifier@4.0.0)(postcss@8.5.10)(remeda@2.33.7)(tailwindcss@4.2.2)(typescript-eslint@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../../packages/eslint-config
+        version: 4.2.0(@eslint/js@9.39.4)(@tailwindcss/postcss@4.2.2)(cssnano@7.1.5(postcss@8.5.10))(dotenv@17.2.3)(eslint-plugin-react@7.37.5(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))(glob@13.0.6)(globals@17.5.0)(html-minifier@4.0.0)(postcss@8.5.10)(remeda@2.33.7)(tailwindcss@4.2.2)(typescript-eslint@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))
       '@repo/tailwindcss':
         specifier: workspace:*
         version: link:../../packages/tailwindcss
@@ -2453,12 +2366,6 @@ importers:
       dotenv:
         specifier: 17.2.3
         version: 17.2.3
-      eslint-plugin-react:
-        specifier: ^7.37.5
-        version: 7.37.5(eslint@9.39.4(jiti@2.6.1))
-      globals:
-        specifier: ^16.5.0
-        version: 16.5.0
       tailwind-merge:
         specifier: ^3.4.0
         version: 3.5.0
@@ -2565,9 +2472,6 @@ importers:
       '@konomi-app/k2':
         specifier: ^4.2.0
         version: 4.2.0(@eslint/js@9.39.4)(@tailwindcss/postcss@4.2.2)(cssnano@7.1.5(postcss@8.5.10))(dotenv@17.2.3)(eslint-plugin-react@7.37.5(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))(glob@13.0.6)(globals@17.5.0)(html-minifier@4.0.0)(postcss@8.5.10)(remeda@2.33.7)(tailwindcss@4.2.2)(typescript-eslint@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../../packages/eslint-config
       '@repo/tailwindcss':
         specifier: workspace:*
         version: link:../../packages/tailwindcss
@@ -2746,9 +2650,6 @@ importers:
       '@konomi-app/k2':
         specifier: ^4.2.0
         version: 4.2.0(@eslint/js@9.39.4)(@tailwindcss/postcss@4.2.2)(cssnano@7.1.5(postcss@8.5.10))(dotenv@17.3.1)(eslint-plugin-react@7.37.5(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))(glob@13.0.6)(globals@17.5.0)(html-minifier@4.0.0)(postcss@8.5.10)(remeda@2.33.7)(tailwindcss@4.2.2)(typescript-eslint@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../../packages/eslint-config
       '@repo/tailwindcss':
         specifier: workspace:*
         version: link:../../packages/tailwindcss
@@ -2776,12 +2677,6 @@ importers:
       dotenv:
         specifier: 17.3.1
         version: 17.3.1
-      eslint-plugin-react:
-        specifier: ^7.37.5
-        version: 7.37.5(eslint@9.39.4(jiti@2.6.1))
-      globals:
-        specifier: ^17.4.0
-        version: 17.5.0
       tailwindcss:
         specifier: ^4.2.1
         version: 4.2.2
@@ -2903,9 +2798,6 @@ importers:
       '@konomi-app/k2':
         specifier: ^4.2.0
         version: 4.2.0(@eslint/js@9.39.4)(@tailwindcss/postcss@4.2.2)(cssnano@7.1.5(postcss@8.5.10))(dotenv@17.4.2)(eslint-plugin-react@7.37.5(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))(glob@13.0.6)(globals@17.5.0)(html-minifier@4.0.0)(postcss@8.5.10)(remeda@2.33.7)(tailwindcss@4.2.2)(typescript-eslint@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@6.0.3))
-      '@konomi-app/prettier-config':
-        specifier: ^1.1.2
-        version: 1.1.2
       '@types/luxon':
         specifier: ^3.7.1
         version: 3.7.1
@@ -3054,9 +2946,6 @@ importers:
       '@konomi-app/k2':
         specifier: ^4.2.0
         version: 4.2.0(@eslint/js@9.39.4)(@tailwindcss/postcss@4.2.2)(cssnano@7.1.5(postcss@8.5.10))(dotenv@17.3.1)(eslint-plugin-react@7.37.5(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))(glob@13.0.6)(globals@17.5.0)(html-minifier@4.0.0)(postcss@8.5.10)(remeda@2.33.7)(tailwindcss@4.2.2)(typescript-eslint@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../../packages/eslint-config
       '@repo/tailwindcss':
         specifier: workspace:*
         version: link:../../packages/tailwindcss
@@ -3084,12 +2973,6 @@ importers:
       dotenv:
         specifier: ^17.2.4
         version: 17.3.1
-      eslint-plugin-react:
-        specifier: ^7.37.5
-        version: 7.37.5(eslint@9.39.4(jiti@2.6.1))
-      globals:
-        specifier: ^17.3.0
-        version: 17.5.0
       tailwindcss:
         specifier: ^4.1.18
         version: 4.2.2
@@ -3238,9 +3121,6 @@ importers:
       '@konomi-app/k2':
         specifier: ^4.2.0
         version: 4.2.0(@eslint/js@9.39.4)(@tailwindcss/postcss@4.2.2)(cssnano@7.1.5(postcss@8.5.10))(dotenv@17.3.1)(eslint-plugin-react@7.37.5(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))(glob@13.0.6)(globals@17.5.0)(html-minifier@4.0.0)(postcss@8.5.10)(remeda@2.33.7)(tailwindcss@4.2.2)(typescript-eslint@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@6.0.3))
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../../packages/eslint-config
       '@repo/tailwindcss':
         specifier: workspace:*
         version: link:../../packages/tailwindcss
@@ -3268,12 +3148,6 @@ importers:
       dotenv:
         specifier: ^17.3.1
         version: 17.3.1
-      eslint-plugin-react:
-        specifier: ^7.37.5
-        version: 7.37.5(eslint@9.39.4(jiti@2.6.1))
-      globals:
-        specifier: ^17.4.0
-        version: 17.5.0
       tailwindcss:
         specifier: ^4.2.2
         version: 4.2.2
@@ -3395,9 +3269,6 @@ importers:
       '@konomi-app/k2':
         specifier: ^4.2.0
         version: 4.2.0(@eslint/js@9.39.4)(@tailwindcss/postcss@4.2.2)(cssnano@7.1.5(postcss@8.5.10))(dotenv@17.3.1)(eslint-plugin-react@7.37.5(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))(glob@13.0.6)(globals@17.5.0)(html-minifier@4.0.0)(postcss@8.5.10)(remeda@2.33.7)(tailwindcss@4.2.2)(typescript-eslint@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))
-      '@konomi-app/prettier-config':
-        specifier: ^1.1.2
-        version: 1.1.2
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
@@ -3551,10 +3422,7 @@ importers:
         version: 9.0.2(@types/eslint@9.6.1)(@typescript-eslint/utils@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(jiti@2.6.1)(typescript@5.9.3)
       '@konomi-app/k2':
         specifier: ^4.2.0
-        version: 4.2.0(@eslint/js@9.39.4)(@tailwindcss/postcss@4.2.2)(cssnano@7.1.5(postcss@8.5.10))(dotenv@17.3.1)(eslint-plugin-react@7.37.5(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))(glob@13.0.6)(globals@16.5.0)(html-minifier@4.0.0)(postcss@8.5.10)(remeda@2.33.7)(tailwindcss@4.2.2)(typescript-eslint@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../../packages/eslint-config
+        version: 4.2.0(@eslint/js@9.39.4)(@tailwindcss/postcss@4.2.2)(cssnano@7.1.5(postcss@8.5.10))(dotenv@17.3.1)(eslint-plugin-react@7.37.5(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))(glob@13.0.6)(globals@17.5.0)(html-minifier@4.0.0)(postcss@8.5.10)(remeda@2.33.7)(tailwindcss@4.2.2)(typescript-eslint@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))
       '@repo/tailwindcss':
         specifier: workspace:*
         version: link:../../packages/tailwindcss
@@ -3585,12 +3453,6 @@ importers:
       dotenv:
         specifier: ^17.2.3
         version: 17.3.1
-      eslint-plugin-react:
-        specifier: ^7.37.5
-        version: 7.37.5(eslint@9.39.4(jiti@2.6.1))
-      globals:
-        specifier: ^16.5.0
-        version: 16.5.0
       tailwindcss:
         specifier: ^4.1.18
         version: 4.2.2
@@ -3606,54 +3468,12 @@ importers:
 
   packages/constants:
     devDependencies:
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
-      eslint:
-        specifier: ^9.39.2
-        version: 9.39.4(jiti@2.6.1)
       typescript:
         specifier: latest
         version: 6.0.3
-
-  packages/eslint-config:
-    devDependencies:
-      '@eslint/js':
-        specifier: ^9.39.2
-        version: 9.39.4
-      '@next/eslint-plugin-next':
-        specifier: ^16.1.1
-        version: 16.2.4
-      eslint:
-        specifier: ^9.39.2
-        version: 9.39.4(jiti@2.6.1)
-      eslint-config-prettier:
-        specifier: ^10.1.8
-        version: 10.1.8(eslint@9.39.4(jiti@2.6.1))
-      eslint-plugin-only-warn:
-        specifier: ^1.1.0
-        version: 1.2.1
-      eslint-plugin-react:
-        specifier: ^7.37.5
-        version: 7.37.5(eslint@9.39.4(jiti@2.6.1))
-      eslint-plugin-react-hooks:
-        specifier: ^7.0.1
-        version: 7.1.1(eslint@9.39.4(jiti@2.6.1))
-      eslint-plugin-turbo:
-        specifier: ^2.7.2
-        version: 2.9.6(eslint@9.39.4(jiti@2.6.1))(turbo@2.9.6)
-      globals:
-        specifier: ^16.5.0
-        version: 16.5.0
-      typescript:
-        specifier: ^5.9.3
-        version: 5.9.3
-      typescript-eslint:
-        specifier: ^8.50.1
-        version: 8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
 
   packages/jotai:
     devDependencies:
@@ -3663,9 +3483,6 @@ importers:
       '@mui/material':
         specifier: ^7.3.9
         version: 7.3.9(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react@19.2.4))(@types/react@19.2.14)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -3788,9 +3605,6 @@ importers:
       '@repo/constants':
         specifier: workspace:*
         version: link:../constants
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -3806,9 +3620,6 @@ importers:
       dompurify:
         specifier: ^3.3.1
         version: 3.4.0
-      eslint:
-        specifier: ^9.39.2
-        version: 9.39.4(jiti@1.21.7)
       lucide-react:
         specifier: ^0.562.0
         version: 0.562.0(react@19.2.4)
@@ -3837,9 +3648,6 @@ importers:
       '@repo/constants':
         specifier: workspace:*
         version: link:../constants
-      '@repo/eslint-config':
-        specifier: workspace:*
-        version: link:../eslint-config
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -3849,9 +3657,6 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
-      eslint:
-        specifier: ^9.39.2
-        version: 9.39.4(jiti@2.6.1)
       file-saver:
         specifier: ^2.0.5
         version: 2.0.5
@@ -4826,9 +4631,6 @@ packages:
   '@konomi-app/kintone-utility-component@1.3.1':
     resolution: {integrity: sha512-DUYpzzZ8WkS3uO6JNaFtuouRrACmBkACqLpb2xI1omvs8Mgh2h64LdBXiSiQoW+z1tqOxRT9PHJsbP5GiC4Nhg==}
 
-  '@konomi-app/prettier-config@1.1.2':
-    resolution: {integrity: sha512-iVLA2EsavD2QU2+z6VNHh1/3R8UgqP8e7tP1EiDlk8SL51kpV3z0x2+p4oLInMME7cvLpalB03ZKIrE12R8HNg==}
-
   '@konomi-app/ui-react@3.0.1':
     resolution: {integrity: sha512-CCbqiCiTknJYz/0fsJc18j0DwF6qUQ2A3xX7B6iPgFk6d+gNKzYxcc11JOFPSLMkQtaka6TgyGRfoy+sMaDbqw==}
     peerDependencies:
@@ -5172,9 +4974,6 @@ packages:
     peerDependencies:
       '@emnapi/core': ^1.7.1
       '@emnapi/runtime': ^1.7.1
-
-  '@next/eslint-plugin-next@16.2.4':
-    resolution: {integrity: sha512-tOX826JJ96gYK/go18sPUgMq9FK1tqxBFfUCEufJb5XIkWFFmpgU7mahJANKGkHs7F41ir3tReJ3Lv5La0RvhA==}
 
   '@nodelib/fs.scandir@2.1.5':
     resolution: {integrity: sha512-vq24Bq3ym5HEQm2NKCr3yXDwjc7vTsEThRDnkp2DK9p1uqLR+DHurm/NOTo0KG7HYHU7eppKZj3MyqYuMBf62g==}
@@ -7944,10 +7743,6 @@ packages:
   domutils@3.2.2:
     resolution: {integrity: sha512-6kZKyUajlDuqlHKVX1w7gyslj9MPIXzIFiz/rGu35uC1wMi+kMhQwGhl4lt9unC9Vb9INnY9Z3/ZA3+FhASLaw==}
 
-  dotenv@16.0.3:
-    resolution: {integrity: sha512-7GO6HghkA5fYG9TYnNxi14/7K9f5occMlp3zXAuSxn7CKCxt9xbNWG7yF8hTCSUchlfWSe3uLmlPfigevRItzQ==}
-    engines: {node: '>=12'}
-
   dotenv@16.4.5:
     resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
     engines: {node: '>=12'}
@@ -8163,9 +7958,6 @@ packages:
     peerDependencies:
       eslint: '>=5.16.0'
 
-  eslint-plugin-only-warn@1.2.1:
-    resolution: {integrity: sha512-j37hwfaQDEOfkZ1Dpvu/HnWLavlzQxQxfbrU/9Jb4R9qzrE1eTYuRJyrxq7LzLRI8miG5FOV6veoUVhx7AI84w==}
-
   eslint-plugin-prettier@4.2.5:
     resolution: {integrity: sha512-9Ni+xgemM2IWLq6aXEpP2+V/V30GeA/46Ar629vcMqVPodFFWC9skHu/D1phvuqtS8bJCFnNf01/qcmqYEwNfg==}
     engines: {node: '>=12.0.0'}
@@ -8203,23 +7995,11 @@ packages:
     peerDependencies:
       eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0 || ^9.0.0
 
-  eslint-plugin-react-hooks@7.1.1:
-    resolution: {integrity: sha512-f2I7Gw6JbvCexzIInuSbZpfdQ44D7iqdWX01FKLvrPgqxoE7oMj8clOfto8U6vYiz4yd5oKu39rRSVOe1zRu0g==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0 || ^9.0.0 || ^10.0.0
-
   eslint-plugin-react@7.37.5:
     resolution: {integrity: sha512-Qteup0SqU15kdocexFNAJMvCJEfa2xUKNV4CC1xsVMrIIqEy3SQ/rqyxCWNzfrd3/ldy6HMlD2e0JDVpDg2qIA==}
     engines: {node: '>=4'}
     peerDependencies:
       eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8 || ^9.7
-
-  eslint-plugin-turbo@2.9.6:
-    resolution: {integrity: sha512-mntEkRe71izva2mJHZGxH2ccOdySqXiNJf5tdzRabaxhudLCeonPUdTE6aNGOhgVeL1lclxg5/ibp3C/cpe+kQ==}
-    peerDependencies:
-      eslint: '>6.6.0'
-      turbo: '>2.0.0'
 
   eslint-scope@5.1.1:
     resolution: {integrity: sha512-2NxwbF/hZ0KpepYN0cNbo+FN6XoK7GaHlQhgx/hIZl6Va0bF45RQOOwhLIy8lQDbuCiadSLCBnH2CFYquit5bw==}
@@ -8341,10 +8121,6 @@ packages:
 
   fast-fifo@1.3.2:
     resolution: {integrity: sha512-/d9sfos4yxzpwkDkuN7k2SqFKtYNmCTzgfEpz82x34IM9/zc8KGxQoXg1liNC/izpRM/MBdt44Nmx41ZWqk+FQ==}
-
-  fast-glob@3.3.1:
-    resolution: {integrity: sha512-kNFPyjhh5cKjrUltxs+wFx+ZkbRaxxmZ+X0ZU31SOsxCEtP9VPgtq2teZw1DebupL5GmDaNQ6yKMMVcM41iqDg==}
-    engines: {node: '>=8.6.0'}
 
   fast-glob@3.3.3:
     resolution: {integrity: sha512-7MptL8U0cqcFdzIzwOTHoilX9x5BrNqye7Z/LuC7kCMRio1EMSyqRK3BEAUD7sXRq4iT4AzTVuZdhgQ2TCvYLg==}
@@ -8617,12 +8393,6 @@ packages:
   he@1.2.0:
     resolution: {integrity: sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==}
     hasBin: true
-
-  hermes-estree@0.25.1:
-    resolution: {integrity: sha512-0wUoCcLp+5Ev5pDW2OriHC2MJCbwLwuRx+gAqMTOkGKJJiBCLjtrvy4PWUGn6MIVefecRpzoOZ/UV6iGdOr+Cw==}
-
-  hermes-parser@0.25.1:
-    resolution: {integrity: sha512-6pEjquH3rqaI6cYAXYPcz9MS4rY6R4ngRgrgfDshRptUZIc3lw0MCIJIGDj9++mfySOuPTHB4nrSW99BCvOPIA==}
 
   hmac-drbg@1.0.1:
     resolution: {integrity: sha512-Tti3gMqLdZfhOQY1Mzf/AanLiqh1WTiJgEj26ZuYQ9fbkLomzGchCws4FyrSd4VkpBfiNhaE1On+lOz894jvXg==}
@@ -11054,12 +10824,6 @@ packages:
     resolution: {integrity: sha512-zK7YHHz4ZXpW89AHXUPbQVGKI7uvkd3hzusTdotCg1UxyaVtg0zFJSTfW/Dq5f7OBBVnq6cZIaC8Ti4hb6dtCA==}
     engines: {node: '>= 14'}
 
-  zod-validation-error@4.0.2:
-    resolution: {integrity: sha512-Q6/nZLe6jxuU80qb/4uJ4t5v2VEZ44lzQjPDhYJNztRQ4wyWc6VF3D3Kb/fAuPetZQnhS3hnajCf9CsWesghLQ==}
-    engines: {node: '>=18.0.0'}
-    peerDependencies:
-      zod: ^3.25.0 || ^4.0.0
-
   zod@4.3.6:
     resolution: {integrity: sha512-rftlrkhHZOcjDwkGlnUtZZkvaPHCsDATp4pGpuOOMDaTdDDXF91wuVDJoWoPsKX/3YPQ5fHuF3STjcYyKr+Qhg==}
 
@@ -11125,7 +10889,8 @@ snapshots:
       js-tokens: 4.0.0
       picocolors: 1.1.1
 
-  '@babel/compat-data@7.29.0': {}
+  '@babel/compat-data@7.29.0':
+    optional: true
 
   '@babel/core@7.29.0':
     dependencies:
@@ -11146,6 +10911,7 @@ snapshots:
       semver: 6.3.1
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   '@babel/generator@7.29.1':
     dependencies:
@@ -11162,6 +10928,7 @@ snapshots:
       browserslist: 4.28.2
       lru-cache: 5.1.1
       semver: 6.3.1
+    optional: true
 
   '@babel/helper-globals@7.28.0': {}
 
@@ -11180,17 +10947,20 @@ snapshots:
       '@babel/traverse': 7.29.0
     transitivePeerDependencies:
       - supports-color
+    optional: true
 
   '@babel/helper-string-parser@7.27.1': {}
 
   '@babel/helper-validator-identifier@7.28.5': {}
 
-  '@babel/helper-validator-option@7.27.1': {}
+  '@babel/helper-validator-option@7.27.1':
+    optional: true
 
   '@babel/helpers@7.29.2':
     dependencies:
       '@babel/template': 7.28.6
       '@babel/types': 7.29.0
+    optional: true
 
   '@babel/parser@7.29.2':
     dependencies:
@@ -12365,36 +12135,6 @@ snapshots:
       - debug
       - webpack-hot-middleware
 
-  '@konomi-app/k2@4.2.0(@eslint/js@9.39.4)(@tailwindcss/postcss@4.2.2)(cssnano@7.1.5(postcss@8.5.10))(dotenv@17.2.3)(eslint-plugin-react@7.37.5(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))(glob@13.0.6)(globals@16.5.0)(html-minifier@4.0.0)(postcss@8.5.10)(remeda@2.33.7)(tailwindcss@4.2.2)(typescript-eslint@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))':
-    dependencies:
-      '@eslint/js': 9.39.4
-      '@kintone/rest-api-client': 5.7.5
-      '@rsbuild/core': 1.7.5
-      '@rsbuild/plugin-react': 1.4.6(@rsbuild/core@1.7.5)
-      '@tailwindcss/postcss': 4.2.2
-      chalk: 5.6.2
-      chokidar: 4.0.3
-      commander: 14.0.3
-      cssnano: 7.1.5(postcss@8.5.10)
-      deepmerge: 4.3.1
-      dotenv: 17.2.3
-      eslint: 9.39.4(jiti@2.6.1)
-      eslint-plugin-react: 7.37.5(eslint@9.39.4(jiti@2.6.1))
-      fflate: 0.8.2
-      fs-extra: 11.3.4
-      glob: 13.0.6
-      globals: 16.5.0
-      html-minifier: 4.0.0
-      node-forge: 1.4.0
-      postcss: 8.5.10
-      remeda: 2.33.7
-      tailwindcss: 4.2.2
-      tiny-invariant: 1.3.3
-      typescript-eslint: 8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
-    transitivePeerDependencies:
-      - debug
-      - webpack-hot-middleware
-
   '@konomi-app/k2@4.2.0(@eslint/js@9.39.4)(@tailwindcss/postcss@4.2.2)(cssnano@7.1.5(postcss@8.5.10))(dotenv@17.2.3)(eslint-plugin-react@7.37.5(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))(glob@13.0.6)(globals@17.5.0)(html-minifier@4.0.0)(postcss@8.5.10)(remeda@2.33.7)(tailwindcss@4.2.2)(typescript-eslint@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))':
     dependencies:
       '@eslint/js': 9.39.4
@@ -12414,36 +12154,6 @@ snapshots:
       fs-extra: 11.3.4
       glob: 13.0.6
       globals: 17.5.0
-      html-minifier: 4.0.0
-      node-forge: 1.4.0
-      postcss: 8.5.10
-      remeda: 2.33.7
-      tailwindcss: 4.2.2
-      tiny-invariant: 1.3.3
-      typescript-eslint: 8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
-    transitivePeerDependencies:
-      - debug
-      - webpack-hot-middleware
-
-  '@konomi-app/k2@4.2.0(@eslint/js@9.39.4)(@tailwindcss/postcss@4.2.2)(cssnano@7.1.5(postcss@8.5.10))(dotenv@17.3.1)(eslint-plugin-react@7.37.5(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))(glob@13.0.6)(globals@16.5.0)(html-minifier@4.0.0)(postcss@8.5.10)(remeda@2.33.7)(tailwindcss@4.2.2)(typescript-eslint@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))':
-    dependencies:
-      '@eslint/js': 9.39.4
-      '@kintone/rest-api-client': 5.7.5
-      '@rsbuild/core': 1.7.5
-      '@rsbuild/plugin-react': 1.4.6(@rsbuild/core@1.7.5)
-      '@tailwindcss/postcss': 4.2.2
-      chalk: 5.6.2
-      chokidar: 4.0.3
-      commander: 14.0.3
-      cssnano: 7.1.5(postcss@8.5.10)
-      deepmerge: 4.3.1
-      dotenv: 17.3.1
-      eslint: 9.39.4(jiti@2.6.1)
-      eslint-plugin-react: 7.37.5(eslint@9.39.4(jiti@2.6.1))
-      fflate: 0.8.2
-      fs-extra: 11.3.4
-      glob: 13.0.6
-      globals: 16.5.0
       html-minifier: 4.0.0
       node-forge: 1.4.0
       postcss: 8.5.10
@@ -12961,8 +12671,6 @@ snapshots:
       - '@emotion/react'
       - '@types/react'
       - supports-color
-
-  '@konomi-app/prettier-config@1.1.2': {}
 
   '@konomi-app/ui-react@3.0.1(@emotion/react@11.13.0(@types/react@18.3.3)(react@18.3.1))(@emotion/styled@11.13.0(@emotion/react@11.13.0(@types/react@18.3.3)(react@18.3.1))(@types/react@18.3.3)(react@18.3.1))(react@18.3.1)':
     dependencies:
@@ -13601,10 +13309,6 @@ snapshots:
       '@emnapi/runtime': 1.9.2
       '@tybys/wasm-util': 0.10.1
     optional: true
-
-  '@next/eslint-plugin-next@16.2.4':
-    dependencies:
-      fast-glob: 3.3.1
 
   '@nodelib/fs.scandir@2.1.5':
     dependencies:
@@ -17261,8 +16965,6 @@ snapshots:
       domelementtype: 2.3.0
       domhandler: 5.0.3
 
-  dotenv@16.0.3: {}
-
   dotenv@16.4.5: {}
 
   dotenv@17.2.3: {}
@@ -17786,8 +17488,6 @@ snapshots:
       resolve: 1.22.12
       semver: 6.3.1
 
-  eslint-plugin-only-warn@1.2.1: {}
-
   eslint-plugin-prettier@4.2.5(eslint-config-prettier@8.10.2(eslint@8.57.1))(eslint@8.57.1)(prettier@2.8.8):
     dependencies:
       eslint: 8.57.1
@@ -17833,17 +17533,6 @@ snapshots:
   eslint-plugin-react-hooks@5.2.0(eslint@9.39.4(jiti@2.6.1)):
     dependencies:
       eslint: 9.39.4(jiti@2.6.1)
-
-  eslint-plugin-react-hooks@7.1.1(eslint@9.39.4(jiti@2.6.1)):
-    dependencies:
-      '@babel/core': 7.29.0
-      '@babel/parser': 7.29.2
-      eslint: 9.39.4(jiti@2.6.1)
-      hermes-parser: 0.25.1
-      zod: 4.3.6
-      zod-validation-error: 4.0.2(zod@4.3.6)
-    transitivePeerDependencies:
-      - supports-color
 
   eslint-plugin-react@7.37.5(eslint@8.57.1):
     dependencies:
@@ -17910,12 +17599,6 @@ snapshots:
       semver: 6.3.1
       string.prototype.matchall: 4.0.12
       string.prototype.repeat: 1.0.0
-
-  eslint-plugin-turbo@2.9.6(eslint@9.39.4(jiti@2.6.1))(turbo@2.9.6):
-    dependencies:
-      dotenv: 16.0.3
-      eslint: 9.39.4(jiti@2.6.1)
-      turbo: 2.9.6
 
   eslint-scope@5.1.1:
     dependencies:
@@ -18130,14 +17813,6 @@ snapshots:
 
   fast-fifo@1.3.2: {}
 
-  fast-glob@3.3.1:
-    dependencies:
-      '@nodelib/fs.stat': 2.0.5
-      '@nodelib/fs.walk': 1.2.8
-      glob-parent: 5.1.2
-      merge2: 1.4.1
-      micromatch: 4.0.8
-
   fast-glob@3.3.3:
     dependencies:
       '@nodelib/fs.stat': 2.0.5
@@ -18256,7 +17931,8 @@ snapshots:
 
   generator-function@2.0.1: {}
 
-  gensync@1.0.0-beta.2: {}
+  gensync@1.0.0-beta.2:
+    optional: true
 
   get-caller-file@2.0.5: {}
 
@@ -18406,12 +18082,6 @@ snapshots:
       function-bind: 1.1.2
 
   he@1.2.0: {}
-
-  hermes-estree@0.25.1: {}
-
-  hermes-parser@0.25.1:
-    dependencies:
-      hermes-estree: 0.25.1
 
   hmac-drbg@1.0.1:
     dependencies:
@@ -18905,6 +18575,7 @@ snapshots:
   lru-cache@5.1.1:
     dependencies:
       yallist: 3.1.1
+    optional: true
 
   lru-cache@6.0.0:
     dependencies:
@@ -21253,7 +20924,8 @@ snapshots:
 
   y18n@5.0.8: {}
 
-  yallist@3.1.1: {}
+  yallist@3.1.1:
+    optional: true
 
   yallist@4.0.0: {}
 
@@ -21289,9 +20961,5 @@ snapshots:
       archiver-utils: 5.0.2
       compress-commons: 6.0.2
       readable-stream: 4.7.0
-
-  zod-validation-error@4.0.2(zod@4.3.6):
-    dependencies:
-      zod: 4.3.6
 
   zod@4.3.6: {}

@@ -49,7 +49,6 @@
   "devDependencies": {
     "@kintone/dts-gen": "9.0.0",
     "@konomi-app/k2": "^4.2.0",
-    "@repo/eslint-config": "workspace:*",
     "@repo/tailwindcss": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@types/luxon": "3.7.1",

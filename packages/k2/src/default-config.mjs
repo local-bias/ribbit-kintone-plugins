@@ -9,9 +9,23 @@ export const manifestBase = /** @type { const } */ ({
   manifest_version: 1,
   type: 'APP',
   icon: 'icon.png',
-  homepage_url: { ja: hp, en: hp, zh: hp, 'zh-TW': hp, es: hp, 'pt-BR': hp, th: hp },
-  desktop: { js: [`${cdn}/common/desktop.js`], css: [`${cdn}/common/desktop.css`] },
-  mobile: { js: [`${cdn}/common/desktop.js`], css: [`${cdn}/common/desktop.css`] },
+  homepage_url: {
+    ja: hp,
+    en: hp,
+    zh: hp,
+    'zh-TW': hp,
+    es: hp,
+    'pt-BR': hp,
+    th: hp,
+  },
+  desktop: {
+    js: [`${cdn}/common/desktop.js`],
+    css: [`${cdn}/common/desktop.css`],
+  },
+  mobile: {
+    js: [`${cdn}/common/desktop.js`],
+    css: [`${cdn}/common/desktop.css`],
+  },
   config: {
     html: 'config.html',
     js: [`${cdn}/common/config.js`],
@@ -34,9 +48,18 @@ export const defaultStandalone = {
  */
 export function createProdManifest(key) {
   return {
-    desktop: { js: [`${cdn}/${key}/desktop.js`], css: [`${cdn}/${key}/desktop.css`] },
-    mobile: { js: [`${cdn}/${key}/desktop.js`], css: [`${cdn}/${key}/desktop.css`] },
-    config: { js: [`${cdn}/${key}/config.js`], css: [`${cdn}/${key}/config.css`] },
+    desktop: {
+      js: [`${cdn}/${key}/desktop.js`],
+      css: [`${cdn}/${key}/desktop.css`],
+    },
+    mobile: {
+      js: [`${cdn}/${key}/desktop.js`],
+      css: [`${cdn}/${key}/desktop.css`],
+    },
+    config: {
+      js: [`${cdn}/${key}/config.js`],
+      css: [`${cdn}/${key}/config.css`],
+    },
   };
 }
 
@@ -49,16 +72,30 @@ export function defineConfig(key) {
     id: `ribbit-kintone-plugin-${key}`,
     pluginReleasePageUrl,
     lint: {
-      build: true,
+      build: false,
     },
     manifest: {
       base: /** @satisfies { Partial<Plugin.Meta.Config["manifest"]["base"]> } */ ({
         manifest_version: 1,
         type: 'APP',
         icon: 'icon.png',
-        homepage_url: { ja: hp, en: hp, zh: hp, 'zh-TW': hp, es: hp, 'pt-BR': hp, th: hp },
-        desktop: { js: [`${cdn}/common/desktop.js`], css: [`${cdn}/common/desktop.css`] },
-        mobile: { js: [`${cdn}/common/desktop.js`], css: [`${cdn}/common/desktop.css`] },
+        homepage_url: {
+          ja: hp,
+          en: hp,
+          zh: hp,
+          'zh-TW': hp,
+          es: hp,
+          'pt-BR': hp,
+          th: hp,
+        },
+        desktop: {
+          js: [`${cdn}/common/desktop.js`],
+          css: [`${cdn}/common/desktop.css`],
+        },
+        mobile: {
+          js: [`${cdn}/common/desktop.js`],
+          css: [`${cdn}/common/desktop.css`],
+        },
         config: {
           html: 'config.html',
           js: [`${cdn}/common/config.js`],
@@ -67,9 +104,18 @@ export function defineConfig(key) {
         },
       }),
       prod: {
-        desktop: { js: [`${cdn}/${key}/desktop.js`], css: [`${cdn}/${key}/desktop.css`] },
-        mobile: { js: [`${cdn}/${key}/desktop.js`], css: [`${cdn}/${key}/desktop.css`] },
-        config: { js: [`${cdn}/${key}/config.js`], css: [`${cdn}/${key}/config.css`] },
+        desktop: {
+          js: [`${cdn}/${key}/desktop.js`],
+          css: [`${cdn}/${key}/desktop.css`],
+        },
+        mobile: {
+          js: [`${cdn}/${key}/desktop.js`],
+          css: [`${cdn}/${key}/desktop.css`],
+        },
+        config: {
+          js: [`${cdn}/${key}/config.js`],
+          css: [`${cdn}/${key}/config.css`],
+        },
       },
       standalone: {
         desktop: { js: ['desktop.js'], css: ['desktop.css'] },

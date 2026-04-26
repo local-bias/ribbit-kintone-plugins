@@ -11,7 +11,7 @@ export default /** @type { const } */ ({
     port: 16802,
   },
   lint: {
-    build: true,
+    build: false,
   },
   manifest: {
     base: {

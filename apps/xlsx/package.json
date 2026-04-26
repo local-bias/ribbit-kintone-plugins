@@ -49,7 +49,6 @@
   "devDependencies": {
     "@kintone/dts-gen": "9.0.2",
     "@konomi-app/k2": "^4.2.0",
-    "@konomi-app/prettier-config": "^1.1.2",
     "@repo/typescript-config": "workspace:*",
     "@types/luxon": "3.7.1",
     "@types/node": "^25.5.0",
@@ -58,6 +57,5 @@
     "dotenv": "17.3.1",
     "ts-loader": "^9.5.4",
     "typescript": "5.9.3"
-  },
-  "prettier": "@konomi-app/prettier-config"
+  }
 }

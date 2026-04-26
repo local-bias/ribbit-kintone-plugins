@@ -11,7 +11,7 @@ export default /** @type { const } */ ({
     port: 26560,
   },
   lint: {
-    build: true,
+    build: false,
   },
   manifest: {
     base: {
@@ -38,9 +38,23 @@ export default /** @type { const } */ ({
         th: 'ปลั๊กอินนี้ช่วยให้คุณสามารถดูตัวอย่างและพิมพ์ไฟล์ PDF ที่แนบมากับฟิลด์ไฟล์ได้โดยไม่ต้องดาวน์โหลด',
       },
       icon: 'icon.png',
-      homepage_url: { ja: hp, en: hp, zh: hp, 'zh-TW': hp, es: hp, 'pt-BR': hp, th: hp },
-      desktop: { js: [`${cdn}/common/desktop.js`], css: [`${cdn}/common/desktop.css`] },
-      mobile: { js: [`${cdn}/common/desktop.js`], css: [`${cdn}/common/desktop.css`] },
+      homepage_url: {
+        ja: hp,
+        en: hp,
+        zh: hp,
+        'zh-TW': hp,
+        es: hp,
+        'pt-BR': hp,
+        th: hp,
+      },
+      desktop: {
+        js: [`${cdn}/common/desktop.js`],
+        css: [`${cdn}/common/desktop.css`],
+      },
+      mobile: {
+        js: [`${cdn}/common/desktop.js`],
+        css: [`${cdn}/common/desktop.css`],
+      },
       config: {
         html: 'config.html',
         js: [`${cdn}/common/config.js`],
@@ -49,9 +63,18 @@ export default /** @type { const } */ ({
       },
     },
     prod: {
-      desktop: { js: [`${cdn}/${key}/desktop.js`], css: [`${cdn}/${key}/desktop.css`] },
-      mobile: { js: [`${cdn}/${key}/desktop.js`], css: [`${cdn}/${key}/desktop.css`] },
-      config: { js: [`${cdn}/${key}/config.js`], css: [`${cdn}/${key}/config.css`] },
+      desktop: {
+        js: [`${cdn}/${key}/desktop.js`],
+        css: [`${cdn}/${key}/desktop.css`],
+      },
+      mobile: {
+        js: [`${cdn}/${key}/desktop.js`],
+        css: [`${cdn}/${key}/desktop.css`],
+      },
+      config: {
+        js: [`${cdn}/${key}/config.js`],
+        css: [`${cdn}/${key}/config.css`],
+      },
     },
     standalone: {
       desktop: { js: ['desktop.js'], css: ['desktop.css'] },

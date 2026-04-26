@@ -56,7 +56,6 @@
   },
   "devDependencies": {
     "@konomi-app/k2": "^4.2.0",
-    "@repo/eslint-config": "workspace:*",
     "@repo/tailwindcss": "workspace:*",
     "@repo/typescript-config": "workspace:*",
     "@types/luxon": "3.7.1",
@@ -65,8 +64,6 @@
     "@types/react-dom": "^19.2.3",
     "concurrently": "^9.2.1",
     "dotenv": "17.2.3",
-    "eslint-plugin-react": "^7.37.5",
-    "globals": "^16.5.0",
     "tailwind-merge": "^3.4.0",
     "tailwindcss": "^4.1.18",
     "tailwindcss-animate": "^1.0.7",
