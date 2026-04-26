@@ -1,6 +1,6 @@
 import PreviewIcon from '@mui/icons-material/Preview';
 import { Fab, Tooltip } from '@mui/material';
-import { Provider, useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { Provider, useAtom, useAtomValue } from 'jotai';
 import { SnackbarProvider } from 'notistack';
 import type { FC } from 'react';
 import { PluginErrorBoundary } from '@/lib/components/error-boundary';

@@ -3,7 +3,7 @@ import { toast } from '@konomi-app/ui';
 import { usePluginAtoms } from '@repo/jotai';
 import { atom } from 'jotai';
 import type { ChangeEvent } from 'react';
-import { loadingAtom, loadingEndAtom, loadingStartAtom } from '@/common/global-state';
+import { loadingEndAtom, loadingStartAtom } from '@/common/global-state';
 import { t } from '@/lib/i18n';
 import { createConfig, migrateConfig, restorePluginConfig } from '@/lib/plugin';
 import type { PluginConfig } from '@/schema/plugin-config';

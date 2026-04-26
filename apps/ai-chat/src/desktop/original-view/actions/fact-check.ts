@@ -2,7 +2,7 @@ import { upsertRecord } from '@konomi-app/kintone-utilities';
 import { produce } from 'immer';
 import { nanoid } from 'nanoid';
 import { pluginCommonConfigAtom, pluginConditionsAtom } from '@/desktop/public-state';
-import { type FactCheckMessage, PLUGIN_NAME } from '@/lib/static';
+import { PLUGIN_NAME } from '@/lib/static';
 import { store } from '@/lib/store';
 import { PROMPT_FACT_CHECK_SYSTEM } from '@/prompts/ai';
 import { type FactCheckResult, FactCheckResultSchema } from '@/schema/fact-check';

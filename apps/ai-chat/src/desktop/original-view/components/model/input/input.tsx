@@ -16,20 +16,23 @@ export default function ChatInput() {
   };
 
   const onKeyDown: KeyboardEventHandler<HTMLTextAreaElement> = useAtomCallback(
-    useCallback(async (get, set, event) => {
-      const loading = get(loadingAtom);
-      if (loading) {
-        return;
-      }
-      const isEnter = event.key === 'Enter';
-      const isShift = event.shiftKey;
+    useCallback(
+      async (get, set, event) => {
+        const loading = get(loadingAtom);
+        if (loading) {
+          return;
+        }
+        const isEnter = event.key === 'Enter';
+        const isShift = event.shiftKey;
 
-      if ((enablesEnter && isEnter && !isShift) || (enablesShiftEnter && isEnter && isShift)) {
-        event.preventDefault();
-        await set(handlePushUserMessageAtom);
-        await set(handleSendMessageAtom);
-      }
-    }, [])
+        if ((enablesEnter && isEnter && !isShift) || (enablesShiftEnter && isEnter && isShift)) {
+          event.preventDefault();
+          await set(handlePushUserMessageAtom);
+          await set(handleSendMessageAtom);
+        }
+      },
+      [enablesShiftEnter, enablesEnter]
+    )
   );
 
   const presumedRows = Math.max(input.split('\n').length, Math.ceil(input.length / 84));

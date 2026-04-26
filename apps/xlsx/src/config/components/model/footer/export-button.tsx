@@ -2,7 +2,6 @@ import { PluginConfigExportButton } from '@konomi-app/kintone-utilities-react';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { type FC, memo } from 'react';
 import { loadingAtom } from '@/common/global-state';
-import { t } from '@/lib/i18n';
 import { handlePluginConfigExportAtom } from '../../../states/plugin';
 
 const Component: FC = () => {

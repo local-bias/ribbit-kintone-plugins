@@ -1,4 +1,3 @@
-import React from 'react';
 import { createRoot } from 'react-dom/client';
 import invariant from 'tiny-invariant';
 import App from './app';

@@ -70,7 +70,7 @@ export const outputAppPropertiesState = atom<Promise<kintoneAPI.FieldProperty[]>
     );
 
     return Object.values(filtered).sort((a, b) => a.label.localeCompare(b.label, 'ja'));
-  } catch (error) {
+  } catch (_error) {
     return [];
   }
 });
@@ -126,7 +126,7 @@ export const logAppPropertiesState = atom<Promise<kintoneAPI.FieldProperty[]>>(a
     );
 
     return Object.values(filtered).sort((a, b) => a.label.localeCompare(b.label, 'ja'));
-  } catch (error) {
+  } catch (_error) {
     return [];
   }
 });

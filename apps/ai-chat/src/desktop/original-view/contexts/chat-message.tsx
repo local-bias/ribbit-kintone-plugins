@@ -39,7 +39,7 @@ export const ChatMessageProvider: React.FC<ChatMessageProviderProps> = ({ childr
 
   React.useEffect(() => {
     setIsCollapsed(isCollapsible);
-  }, [isCollapsible, message.id]);
+  }, [isCollapsible]);
 
   return (
     <ChatMessageContext.Provider

@@ -59,7 +59,7 @@ function EditMode() {
 
         toggleIsEditing();
       },
-      [text, toggleIsEditing, message]
+      [text, toggleIsEditing, message, enqueueSnackbar]
     )
   );
 

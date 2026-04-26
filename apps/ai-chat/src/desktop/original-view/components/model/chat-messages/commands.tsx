@@ -1,6 +1,6 @@
 import { Tooltip } from '@mui/material';
 import { Check, ChevronDown, ChevronUp, Clipboard, Pencil, RotateCw, X } from 'lucide-react';
-import React, { type FC, forwardRef, type HTMLAttributes, useEffect } from 'react';
+import React, { forwardRef, type HTMLAttributes, useEffect } from 'react';
 import {
   useChatMessage,
   useRegenerateChatMessage,
@@ -46,17 +46,11 @@ function Copy() {
   }, [copied]);
 
   return (
-    <>
-      <Tooltip title={copied ? 'コピーしました！' : 'クリップボードにコピー'}>
-        <IconWrapper onClick={onCopyButtonClick}>
-          {copied ? (
-            <Check className='rad:w-4 rad:h-4' />
-          ) : (
-            <Clipboard className='rad:w-4 rad:h-4' />
-          )}
-        </IconWrapper>
-      </Tooltip>
-    </>
+    <Tooltip title={copied ? 'コピーしました！' : 'クリップボードにコピー'}>
+      <IconWrapper onClick={onCopyButtonClick}>
+        {copied ? <Check className='rad:w-4 rad:h-4' /> : <Clipboard className='rad:w-4 rad:h-4' />}
+      </IconWrapper>
+    </Tooltip>
   );
 }
 
@@ -68,13 +62,11 @@ function Edit() {
   }
 
   return (
-    <>
-      <Tooltip title={isEditing ? '編集を中断する' : 'このメッセージからやり直す'}>
-        <IconWrapper onClick={toggleIsEditing}>
-          {isEditing ? <X className='rad:w-4 rad:h-4' /> : <Pencil className='rad:w-4 rad:h-4' />}
-        </IconWrapper>
-      </Tooltip>
-    </>
+    <Tooltip title={isEditing ? '編集を中断する' : 'このメッセージからやり直す'}>
+      <IconWrapper onClick={toggleIsEditing}>
+        {isEditing ? <X className='rad:w-4 rad:h-4' /> : <Pencil className='rad:w-4 rad:h-4' />}
+      </IconWrapper>
+    </Tooltip>
   );
 }
 
@@ -87,13 +79,11 @@ function Regenerate() {
   }
 
   return (
-    <>
-      <Tooltip title='このメッセージを再生成'>
-        <IconWrapper onClick={regenerate}>
-          <RotateCw className='rad:w-4 rad:h-4' />
-        </IconWrapper>
-      </Tooltip>
-    </>
+    <Tooltip title='このメッセージを再生成'>
+      <IconWrapper onClick={regenerate}>
+        <RotateCw className='rad:w-4 rad:h-4' />
+      </IconWrapper>
+    </Tooltip>
   );
 }
 

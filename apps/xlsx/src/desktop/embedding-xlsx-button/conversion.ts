@@ -375,14 +375,14 @@ const getFieldValue = (field: kintoneAPI.Field, dateAsExcel = false): CellValue 
     case 'NUMBER':
     case 'CALC': {
       const num = Number(field.value);
-      return isNaN(num) ? (field.value ?? '') : num;
+      return Number.isNaN(num) ? (field.value ?? '') : num;
     }
 
     case 'DATE':
       if (dateAsExcel && field.value) {
         return {
           __isDate: true,
-          serial: toExcelSerial(new Date(field.value + 'T00:00:00Z')),
+          serial: toExcelSerial(new Date(`${field.value}T00:00:00Z`)),
           format: 'yyyy/mm/dd',
         };
       }

@@ -8,7 +8,7 @@ export async function hasNewVersion(pluginId: string, currentVersion: string) {
     const response = await ketch(url);
     const version = await response.text();
     return version !== currentVersion;
-  } catch (error) {
+  } catch (_error) {
     return false;
   }
 }

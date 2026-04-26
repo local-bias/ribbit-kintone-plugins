@@ -1,5 +1,4 @@
 import {
-  addRecord,
   downloadFile,
   getAllRecords,
   getSpace,
@@ -8,7 +7,6 @@ import {
   withSpaceIdFallback,
 } from '@konomi-app/kintone-utilities';
 import { atom } from 'jotai';
-import { eagerAtom } from 'jotai-eager';
 import { atomFamily } from 'jotai-family';
 import { pluginCommonConfigAtom } from '@/desktop/public-state';
 import { remapHistoryFileKeys, uploadHistoryAttachments } from '@/lib/file-utils';
