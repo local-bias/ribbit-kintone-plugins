@@ -13,7 +13,6 @@ const getMUILang = () => {
     case 'es': {
       return esES;
     }
-    case 'ja':
     default: {
       return jaJP;
     }

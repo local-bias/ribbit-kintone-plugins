@@ -7,7 +7,7 @@
   },
   "files": {
     "ignoreUnknown": false,
-    "includes": ["**", "!node_modules", "!apps/*/.plugin", "!public"]
+    "includes": ["**", "!**/node_modules", "!**/.plugin", "!**/dist", "!public"]
   },
   "formatter": {
     "enabled": true,
@@ -25,7 +25,29 @@
   "linter": {
     "enabled": true,
     "rules": {
-      "recommended": true
+      "recommended": true,
+      "a11y": {
+        "useAltText": "warn",
+        "noStaticElementInteractions": "warn",
+        "useKeyWithClickEvents": "warn",
+        "noSvgWithoutTitle": "warn",
+        "useIframeTitle": "warn",
+        "useValidAnchor": "warn",
+        "useButtonType": "warn",
+        "useValidAriaRole": "warn"
+      },
+      "correctness": {
+        "useHookAtTopLevel": "warn"
+      },
+      "security": {
+        "noDangerouslySetInnerHtml": "warn"
+      },
+      "suspicious": {
+        "noArrayIndexKey": "warn"
+      },
+      "style": {
+        "noNonNullAssertion": "warn"
+      }
     }
   },
   "javascript": {
@@ -51,6 +73,21 @@
       "tailwindDirectives": true
     }
   },
+  "overrides": [
+    {
+      "includes": ["**/*.css"],
+      "linter": {
+        "rules": {
+          "correctness": {
+            "noInvalidPositionAtImportRule": "warn"
+          },
+          "suspicious": {
+            "noUnknownAtRules": "warn"
+          }
+        }
+      }
+    }
+  ],
   "assist": {
     "enabled": true,
     "actions": {

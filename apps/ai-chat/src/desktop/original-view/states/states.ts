@@ -233,7 +233,7 @@ export const autoSelectAssistantEffect = atomEffect((get, set) => {
 
 export const apiErrorMessageAtom = atomWithReset<string | null>(null);
 
-export const handleHistoryIdSelectAtom = atom(null, (get, set, historyId: string) => {
+export const handleHistoryIdSelectAtom = atom(null, (_get, set, historyId: string) => {
   set(selectedHistoryIdAtom, historyId);
   set(apiErrorMessageAtom, RESET);
   set(quickRepliesAtom, null);
@@ -290,7 +290,7 @@ export const selectedHistoryAtom = atom<ChatHistory | null, ChatHistory[], void>
     const selectedHistory = chatHistory.find((history) => history.id === selectedHistoryId);
     return selectedHistory ?? null;
   },
-  (get, set, newValue) => {
+  (_get, set, newValue) => {
     if (!newValue) {
       return;
     }

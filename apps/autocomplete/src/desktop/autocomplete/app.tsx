@@ -25,7 +25,7 @@ const Container: FC<ContainerProps> = ({ condition, initValue }) => {
     // Subscribe to the effect for syncing input value to kintone record
     s.sub(inputValueSyncEffect, () => {});
     return s;
-  }, []);
+  }, [initValue, condition]);
 
   return (
     <Provider store={store}>

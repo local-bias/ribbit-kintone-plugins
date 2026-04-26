@@ -1,6 +1,6 @@
 import type { z } from 'zod';
 import type { ReasoningEffortType, VerbosityType } from '@/schema/ai';
-import { type ChatMessage, ChatMessageContentPart } from './static';
+import type { ChatMessage } from './static';
 
 /**
  * AI生成画像
@@ -175,15 +175,15 @@ const extractJsonFromText = (text: string): string | null => {
   if (firstBrace !== -1) {
     let depth = 0;
     let inString = false;
-    let escape = false;
+    let isEscape = false;
     for (let i = firstBrace; i < text.length; i++) {
       const ch = text[i];
-      if (escape) {
-        escape = false;
+      if (isEscape) {
+        isEscape = false;
         continue;
       }
       if (ch === '\\' && inString) {
-        escape = true;
+        isEscape = true;
         continue;
       }
       if (ch === '"') {

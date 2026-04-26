@@ -73,9 +73,9 @@ const Component: FC = () => {
   return (
     <div className='grid gap-2'>
       {items.map((item, index) => (
-        <div className='flex items-center gap-4'>
+        <div key={index} className='flex items-center gap-4'>
           <div className='flex-1'>
-            <Accordion key={index}>
+            <Accordion>
               <Summary item={item} />
               <AccordionDetails>
                 <div className='flex-1 grid grid-cols-10 gap-4'>

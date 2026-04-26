@@ -70,7 +70,7 @@ const Sidebar: FC = () => {
         onPasteValidation: (condition) => {
           try {
             validatePluginCondition(condition);
-          } catch (error) {
+          } catch (_error) {
             return false;
           }
           return true;

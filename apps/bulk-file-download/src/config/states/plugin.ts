@@ -3,7 +3,6 @@ import { toast } from '@konomi-app/ui';
 import { handleLoadingEndAtom, handleLoadingStartAtom, usePluginAtoms } from '@repo/jotai';
 import { saveAsJson } from '@repo/utils';
 import { atom } from 'jotai';
-import { enqueueSnackbar } from 'notistack';
 import type { ChangeEvent, ReactNode } from 'react';
 import invariant from 'tiny-invariant';
 import { PLUGIN_NAME } from '@/lib/constants';
@@ -41,7 +40,7 @@ export const handlePluginConditionDeleteAtom = atom(null, (get, set) => {
   toast.success(t('common.config.toast.onConditionDelete'));
 });
 
-export const updatePluginConfig = atom(null, (get, set, actionComponent: ReactNode) => {
+export const updatePluginConfig = atom(null, (get, set, _actionComponent: ReactNode) => {
   try {
     set(handleLoadingStartAtom);
     const pluginConfig = get(pluginConfigAtom);

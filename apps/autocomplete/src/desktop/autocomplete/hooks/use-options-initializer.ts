@@ -51,7 +51,7 @@ export const useOptionsInitializer = () => {
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(cache));
       process.env.NODE_ENV === 'development' && console.info('キャッシュを更新しました');
     })();
-  }, [condition, cachedOptions]);
+  }, [condition, cachedOptions, setOptions, options.length]);
 
   return null;
 };

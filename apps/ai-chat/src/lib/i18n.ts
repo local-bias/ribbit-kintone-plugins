@@ -103,7 +103,6 @@ export function getWebSearchLocation(): WebSearchTool['user_location'] {
         city: 'Beijing',
         region: 'Beijing',
       };
-    case 'ja':
     default:
       return {
         type: 'approximate',
