@@ -1,0 +1,653 @@
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme) prefix(rad);
+@import "tailwindcss/utilities.css" layer(utilities);
+@import "tw-animate-css";
+
+@import "@repo/tailwindcss/desktop.css";
+
+/* 生成物をTailwindの探索対象から外し、.plugin配下の出力を再スキャンしないようにする。 */
+@source not "../../.plugin";
+
+@layer base {
+  .MuiAutocomplete-popper[role="presentation"] {
+    ::-webkit-scrollbar {
+      @apply rad:w-1 rad:h-1 rad:md:w-2 rad:md:h-2;
+    }
+    ::-webkit-scrollbar-thumb {
+      @apply rad:rounded-full rad:bg-foreground/30;
+    }
+    ::-webkit-scrollbar-track {
+      @apply rad:bg-transparent;
+    }
+  }
+}
+
+@layer components {
+  .ribbit-related-subtable {
+    color: #1e293b;
+    font-size: 14px;
+    line-height: 1.6;
+    margin: 12px 0 24px;
+    max-width: 100%;
+  }
+
+  .ribbit-related-subtable__inner {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .ribbit-related-subtable__visually-hidden {
+    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+  }
+
+  .ribbit-related-subtable__header {
+    align-items: center;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    justify-content: space-between;
+    padding: 14px 18px;
+  }
+
+  .ribbit-related-subtable__heading {
+    display: grid;
+    gap: 3px;
+    min-width: min(320px, 100%);
+  }
+
+  .ribbit-related-subtable__title {
+    color: #0f172a;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin: 0;
+  }
+
+  .ribbit-related-subtable__count {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 400;
+  }
+
+  .ribbit-related-subtable__search {
+    align-items: center;
+    display: flex;
+    gap: 8px;
+    margin-left: auto;
+    min-width: min(280px, 100%);
+  }
+
+  .ribbit-related-subtable__search-label {
+    color: #64748b;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .ribbit-related-subtable__search-input {
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    box-sizing: border-box;
+    color: #1e293b;
+    font: inherit;
+    height: 34px;
+    min-width: 0;
+    outline: none;
+    padding: 6px 12px;
+    transition:
+      border-color 0.15s ease,
+      box-shadow 0.15s ease;
+    width: 100%;
+  }
+
+  .ribbit-related-subtable__search-input:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+  }
+
+  .ribbit-related-subtable__table-wrapper {
+    max-height: min(480px, 50vh);
+    overflow: auto;
+    width: 100%;
+  }
+
+  .ribbit-related-subtable__aggregation {
+    align-items: flex-start;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    display: none;
+    gap: 10px;
+    padding: 10px 18px;
+  }
+
+  .ribbit-related-subtable__aggregation-title {
+    color: #475569;
+    flex: 0 0 auto;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 28px;
+  }
+
+  .ribbit-related-subtable__aggregation-list {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0;
+    min-width: 0;
+  }
+
+  .ribbit-related-subtable__aggregation-item {
+    display: flex;
+    min-width: 0;
+  }
+
+  .ribbit-related-subtable__aggregation-label,
+  .ribbit-related-subtable__aggregation-value {
+    margin: 0;
+  }
+
+  .ribbit-related-subtable__aggregation-label {
+    background: #eef2ff;
+    border: 1px solid #c7d2fe;
+    border-radius: 6px 0 0 6px;
+    color: #4338ca;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+    max-width: 220px;
+    overflow-wrap: anywhere;
+    padding: 6px 8px;
+  }
+
+  .ribbit-related-subtable__aggregation-value {
+    background: #fff;
+    border: 1px solid #c7d2fe;
+    border-left: 0;
+    border-radius: 0 6px 6px 0;
+    color: #0f172a;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+    line-height: 1.2;
+    min-width: 84px;
+    padding: 6px 8px;
+    text-align: right;
+  }
+
+  .ribbit-related-subtable__empty,
+  .ribbit-related-subtable__message {
+    color: #64748b;
+    font-size: 13px;
+    padding: 20px 18px;
+  }
+
+  .ribbit-related-subtable__message {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    font-size: 13px;
+  }
+
+  .ribbit-related-subtable__message--error {
+    background: #fff1f2;
+    border-color: #fecdd3;
+    color: #be123c;
+  }
+}
+
+/*
+ * kintone 標準スタイル (argo.css) は @layer なしで td/th/table に直接スタイルを適用する。
+ * CSS 仕様では「非レイヤースタイル > @layer スタイル」のため、
+ * テーブル要素のスタイルはここで非レイヤーとして定義し、詳細度で勝つ。
+ * (.ribbit-related-subtable__table th = 詳細度 0-1-1 > th = 0-0-1)
+ */
+.ribbit-related-subtable__table {
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 720px;
+  width: 100%;
+}
+
+.ribbit-related-subtable__table th {
+  background: #f1f5f9;
+  border-bottom: 1px solid #e2e8f0;
+  border-left: 0;
+  border-right: 1px solid #e8edf4;
+  border-top: 0;
+  box-sizing: border-box;
+  color: #475569;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  padding: 10px 16px;
+  position: sticky;
+  text-align: left;
+  text-transform: uppercase;
+  top: 0;
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.ribbit-related-subtable__table td {
+  background: #fff;
+  border-bottom: 1px solid #f1f5f9;
+  border-left: 0;
+  border-right: 1px solid #f1f5f9;
+  border-top: 0;
+  box-sizing: border-box;
+  color: #334155;
+  font-size: 13.5px;
+  font-weight: 400;
+  overflow-wrap: anywhere;
+  padding: 11px 16px;
+  transition: background 0.1s ease;
+}
+
+.ribbit-related-subtable__table th:last-child,
+.ribbit-related-subtable__table td:last-child {
+  border-right: 0;
+}
+
+.ribbit-related-subtable__table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.ribbit-related-subtable__table th .ribbit-related-subtable__heading-cell {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+  min-width: 0;
+}
+
+.ribbit-related-subtable__heading-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ribbit-related-subtable__filter-button {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  color: #64748b;
+  cursor: pointer;
+  display: inline-flex;
+  flex: 0 0 auto;
+  height: 24px;
+  justify-content: center;
+  opacity: 0;
+  padding: 0;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    opacity 0.15s ease;
+  width: 24px;
+}
+
+.ribbit-related-subtable__filter-button svg {
+  height: 15px;
+  width: 15px;
+}
+
+.ribbit-related-subtable__table th:hover .ribbit-related-subtable__filter-button,
+.ribbit-related-subtable__filter-button:focus-visible,
+.ribbit-related-subtable__filter-button[data-active="true"] {
+  opacity: 1;
+}
+
+.ribbit-related-subtable__filter-button:hover,
+.ribbit-related-subtable__filter-button:focus-visible,
+.ribbit-related-subtable__filter-button[data-active="true"] {
+  background: #dbeafe;
+  color: #2563eb;
+}
+
+.ribbit-related-subtable__filter-button:focus-visible {
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+  outline: none;
+}
+.ribbit-related-subtable__table tbody tr:hover td {
+  background: #f0f7ff;
+}
+
+.ribbit-related-subtable__table .ribbit-related-subtable__record-heading {
+  background: #eef2ff;
+  border-right: 1px solid #c7d2fe;
+  color: #4338ca;
+}
+
+.ribbit-related-subtable__table .ribbit-related-subtable__record-cell {
+  background: #fafaff;
+  border-right: 1px solid #dde3f8;
+  color: #1e293b;
+  font-weight: 400;
+  min-width: 160px;
+}
+
+.ribbit-related-subtable__table .ribbit-related-subtable__detail-heading,
+.ribbit-related-subtable__table .ribbit-related-subtable__detail-cell,
+.ribbit-related-subtable__table .ribbit-related-subtable__aggregation-control-cell {
+  min-width: 88px;
+  padding-left: 10px;
+  padding-right: 10px;
+  text-align: center;
+  width: 88px;
+}
+
+.ribbit-related-subtable__table .ribbit-related-subtable__detail-heading {
+  background: #f8fafc;
+}
+
+.ribbit-related-subtable__table .ribbit-related-subtable__detail-cell {
+  color: #64748b;
+  vertical-align: middle;
+}
+
+.ribbit-related-subtable__record-link {
+  color: var(--component-color-link-text-default, #0064c8);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ribbit-related-subtable__record-link svg {
+  height: 24px;
+  width: 24px;
+}
+
+.ribbit-related-subtable__record-link:focus-visible {
+  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.18);
+}
+
+.ribbit-related-subtable__table .ribbit-related-subtable__aggregation-row td {
+  background: #fff7ed;
+  border-bottom: 1px solid #fed7aa;
+  color: #7c2d12;
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+.ribbit-related-subtable__table .ribbit-related-subtable__aggregation-row:hover td,
+.ribbit-related-subtable__table
+  .ribbit-related-subtable__aggregation-row:hover
+  .ribbit-related-subtable__record-cell {
+  background: #ffedd5;
+}
+
+.ribbit-related-subtable__table .ribbit-related-subtable__aggregation-cell {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.ribbit-related-subtable__table .ribbit-related-subtable__numeric-cell {
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.ribbit-related-subtable__table .ribbit-related-subtable__aggregation-cell[data-empty="true"] {
+  color: #c2410c;
+  font-weight: 500;
+  text-align: center;
+}
+
+.ribbit-related-subtable__aggregation-select {
+  appearance: auto;
+  background: #fff;
+  border: 1px solid #fdba74;
+  border-radius: 6px;
+  box-sizing: border-box;
+  color: #7c2d12;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  height: 30px;
+  max-width: 100%;
+  min-width: 68px;
+  outline: none;
+  padding: 3px 6px;
+}
+
+.ribbit-related-subtable__aggregation-select:focus {
+  border-color: #f97316;
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.16);
+}
+
+.ribbit-related-subtable__filter-popover {
+  --filter-popover-max-height-offset: 96px;
+
+  background: #fff;
+  border: 1px solid #dbe3ef;
+  border-radius: 8px;
+  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+  box-sizing: border-box;
+  color: #1e293b;
+  display: grid;
+  gap: 10px;
+  max-height: calc(100vh - var(--filter-popover-max-height-offset));
+  overflow: hidden;
+  padding: 0;
+  position: fixed;
+  width: 320px;
+  z-index: 2147483000;
+}
+
+.ribbit-related-subtable__filter-popover-content {
+  box-sizing: border-box;
+  display: grid;
+  gap: 10px;
+  grid-template-rows: auto auto auto minmax(0, 1fr) auto;
+  max-height: inherit;
+  min-width: 0;
+  overflow: hidden;
+  padding: 12px;
+  width: 100%;
+}
+
+.ribbit-related-subtable__filter-title {
+  box-sizing: border-box;
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 700;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+input.ribbit-related-subtable__filter-search {
+  background: #fff;
+  border: 1px solid #dbe3ef;
+  border-radius: 7px;
+  box-sizing: border-box;
+  color: #1e293b;
+  font: inherit;
+  font-size: 13px;
+  height: 34px;
+  outline: none;
+  padding: 6px 10px;
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+}
+
+.ribbit-related-subtable__filter-search:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+}
+
+.ribbit-related-subtable__filter-quick-actions,
+.ribbit-related-subtable__filter-actions {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+}
+
+.ribbit-related-subtable__filter-quick-actions {
+  justify-content: flex-start;
+}
+
+.ribbit-related-subtable__filter-actions {
+  border-top: 1px solid #eef2f7;
+  justify-content: flex-end;
+  padding-top: 10px;
+}
+
+.ribbit-related-subtable__filter-text-button,
+.ribbit-related-subtable__filter-clear-button,
+.ribbit-related-subtable__filter-secondary-button,
+.ribbit-related-subtable__filter-apply-button {
+  border-radius: 6px;
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  min-height: 28px;
+  padding: 4px 9px;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.ribbit-related-subtable__filter-text-button,
+.ribbit-related-subtable__filter-clear-button,
+.ribbit-related-subtable__filter-secondary-button {
+  background: #fff;
+  border: 1px solid #dbe3ef;
+  color: #475569;
+}
+
+.ribbit-related-subtable__filter-text-button:hover,
+.ribbit-related-subtable__filter-clear-button:hover,
+.ribbit-related-subtable__filter-secondary-button:hover {
+  background: #f8fafc;
+  border-color: #93c5fd;
+  color: #1d4ed8;
+}
+
+.ribbit-related-subtable__filter-apply-button {
+  background: #2563eb;
+  border: 1px solid #2563eb;
+  color: #fff;
+}
+
+.ribbit-related-subtable__filter-apply-button:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+}
+
+.ribbit-related-subtable__filter-options {
+  border: 1px solid #eef2f7;
+  border-radius: 7px;
+  max-height: 220px;
+  overflow: auto;
+  padding: 4px;
+}
+
+.ribbit-related-subtable__filter-option {
+  align-items: center;
+  border-radius: 6px;
+  cursor: pointer;
+  display: grid;
+  gap: 8px;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  min-height: 30px;
+  padding: 4px 6px;
+}
+
+.ribbit-related-subtable__filter-option:hover {
+  background: #f1f5f9;
+}
+
+.ribbit-related-subtable__filter-option input {
+  margin: 0;
+}
+
+.ribbit-related-subtable__filter-option-label {
+  color: #334155;
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.ribbit-related-subtable__filter-option-count {
+  color: #94a3b8;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+
+.ribbit-related-subtable__filter-empty {
+  color: #94a3b8;
+  font-size: 13px;
+  padding: 16px 8px;
+  text-align: center;
+}
+
+.ribbit-related-subtable__table tbody tr:hover .ribbit-related-subtable__record-cell {
+  background: #eaedff;
+}
+
+.ribbit-related-subtable__table td.ribbit-related-subtable__table-empty {
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 400;
+  padding: 36px 16px;
+  text-align: center;
+}
+.ribbit-related-subtable__footer {
+  align-items: center;
+  background: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  padding: 10px 18px;
+}
+
+.ribbit-related-subtable__pagination-btn {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  color: #374151;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  height: 32px;
+  line-height: 1;
+  min-width: 64px;
+  padding: 0 12px;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.ribbit-related-subtable__pagination-btn:hover:not(:disabled) {
+  background: #f0f7ff;
+  border-color: #6366f1;
+}
+
+.ribbit-related-subtable__pagination-btn:disabled {
+  color: #94a3b8;
+  cursor: default;
+  opacity: 0.6;
+}
+
+.ribbit-related-subtable__pagination-info {
+  color: #64748b;
+  font-size: 13px;
+  min-width: 80px;
+  text-align: center;
+}
