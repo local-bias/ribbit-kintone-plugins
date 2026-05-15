@@ -18,6 +18,7 @@ import { store } from '@/lib/store';
 import type { PluginCondition } from '@/schema/plugin-config';
 import {
   currentAppFormFieldsAtom,
+  currentAppFormLayoutAtom,
   currentAppPropertyAtom,
   currentAppViewsAtom,
 } from '../states/kintone';
@@ -99,10 +100,11 @@ export async function download(event: kintoneAPI.js.Event, condition: PluginCond
     return;
   }
 
-  const [app, { views }, { properties }] = await Promise.all([
+  const [app, { views }, { properties }, { layout }] = await Promise.all([
     store.get(currentAppPropertyAtom),
     store.get(currentAppViewsAtom),
     store.get(currentAppFormFieldsAtom),
+    store.get(currentAppFormLayoutAtom),
   ]);
 
   const merges: Range[] = [];
@@ -139,17 +141,20 @@ export async function download(event: kintoneAPI.js.Event, condition: PluginCond
     if (field.type === 'SUBTABLE') {
       tableFields.push(field as kintoneAPI.property.Subtable);
 
-      Object.keys(field.fields).map((key, j) => {
+      const orderedKeys = getSubtableFieldCodesFromLayout(layout, field.code);
+      const subtableFieldCodes = orderedKeys.length > 0 ? orderedKeys : Object.keys(field.fields);
+
+      subtableFieldCodes.forEach((key, j) => {
         setCell(sheet, row + 1, col + j, field.fields[key].label);
         trackWidth(col + j, field.fields[key].label);
       });
 
       merges.push({
         s: { r: row, c: col },
-        e: { r: row, c: col + Object.keys(field.fields).length - 1 },
+        e: { r: row, c: col + subtableFieldCodes.length - 1 },
       });
 
-      col += Object.keys(field.fields).length;
+      col += subtableFieldCodes.length;
     } else {
       if (includesSubtable) {
         merges.push({
@@ -185,16 +190,21 @@ export async function download(event: kintoneAPI.js.Event, condition: PluginCond
 
       if (targetField.type === 'SUBTABLE') {
         const subValue = targetField as any as kintoneAPI.field.Subtable;
+        const orderedKeys = getSubtableFieldCodesFromLayout(layout, field.code);
+        const subtableFieldCodes =
+          orderedKeys.length > 0
+            ? orderedKeys
+            : Object.keys((field as kintoneAPI.property.Subtable).fields);
 
-        subValue.value.map((tableRow, j) => {
-          Object.keys((field as any).fields).map((key, k) => {
+        subValue.value.forEach((tableRow, j) => {
+          subtableFieldCodes.forEach((key, k) => {
             const value = getFieldValue(tableRow.value[key], condition.dateAsExcel);
             setCell(sheet, row + j, col + k, value);
             trackWidth(col + k, value);
           });
         });
 
-        col += Object.keys((field as any).fields).length;
+        col += subtableFieldCodes.length;
       } else {
         const value = getFieldValue(targetField, condition.dateAsExcel);
         setCell(sheet, row, col, value);
@@ -291,6 +301,34 @@ function buildSheetName(template: string, appName: string, appId: string | numbe
 }
 
 /* ---- フィールド一覧取得 --------------------------------------------------- */
+
+/**
+ * フォームレイアウトから指定したサブテーブルのフィールドコードを表示順で返します。
+ * グループ内にサブテーブルが配置されている場合も考慮します。
+ */
+function getSubtableFieldCodesFromLayout(
+  layout: kintoneAPI.Layout,
+  subtableCode: string
+): string[] {
+  for (const section of layout) {
+    if (section.type === 'SUBTABLE' && section.code === subtableCode) {
+      return section.fields.map((f) => f.code);
+    }
+    if (section.type === 'GROUP') {
+      for (const item of section.layout) {
+        const asSubtable = item as unknown as {
+          type: string;
+          code: string;
+          fields: Array<{ code: string }>;
+        };
+        if (asSubtable.type === 'SUBTABLE' && asSubtable.code === subtableCode) {
+          return asSubtable.fields.map((f) => f.code);
+        }
+      }
+    }
+  }
+  return [];
+}
 
 /**
  * 出力するフィールド情報を返却します

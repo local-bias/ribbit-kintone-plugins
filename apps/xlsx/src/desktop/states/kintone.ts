@@ -1,4 +1,10 @@
-import { getApp, getAppId, getFormFields, getViews } from '@konomi-app/kintone-utilities';
+import {
+  getApp,
+  getAppId,
+  getFormFields,
+  getFormLayout,
+  getViews,
+} from '@konomi-app/kintone-utilities';
 import { atom } from 'jotai';
 import { atomFamily } from 'jotai/utils';
 import { GUEST_SPACE_ID } from '@/common/global';
@@ -54,4 +60,19 @@ export const kintoneAppFormFieldsAtom = atomFamily((appId: string | number) =>
 export const currentAppFormFieldsAtom = atom((get) => {
   const appId = get(currentAppIdAtom);
   return get(kintoneAppFormFieldsAtom(appId));
+});
+
+export const kintoneAppFormLayoutAtom = atomFamily((appId: string | number) =>
+  atom(async () => {
+    return getFormLayout({
+      app: appId,
+      guestSpaceId: GUEST_SPACE_ID,
+      debug: process.env.NODE_ENV === 'development',
+    });
+  })
+);
+
+export const currentAppFormLayoutAtom = atom((get) => {
+  const appId = get(currentAppIdAtom);
+  return get(kintoneAppFormLayoutAtom(appId));
 });
