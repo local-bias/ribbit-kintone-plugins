@@ -60,6 +60,13 @@ export type ColumnFilterOption = {
   count: number;
 };
 
+export type SortDirection = 'asc' | 'desc';
+
+export type ColumnSortState = {
+  key: TableColumnKey;
+  direction: SortDirection;
+};
+
 export type FieldAggregation = {
   key: string;
   fieldCode: string;
@@ -601,6 +608,42 @@ export const filterFlatTableRows = (
       words.every((word) => row.searchText.includes(word)) &&
       matchesColumnFilters(row, columnFilters)
   );
+};
+
+export const sortFlatTableRows = (
+  rows: FlatTableRow[],
+  sort: ColumnSortState | null
+): FlatTableRow[] => {
+  if (!sort) return rows;
+
+  const column = parseTableColumnKey(sort.key);
+  if (!column) return rows;
+
+  // グループごとに行を収集し、グループ内の順序を維持する
+  const groupRowsMap = new Map<string, FlatTableRow[]>();
+  const groupOrder: string[] = [];
+  for (const row of rows) {
+    if (!groupRowsMap.has(row.groupKey)) {
+      groupRowsMap.set(row.groupKey, []);
+      groupOrder.push(row.groupKey);
+    }
+    const group = groupRowsMap.get(row.groupKey);
+    if (group) {
+      group.push(row);
+    }
+  }
+
+  // 各グループの先頭行の表示値でグループをソート
+  const sortedGroupOrder = [...groupOrder].sort((a, b) => {
+    const rowA = groupRowsMap.get(a)?.[0];
+    const rowB = groupRowsMap.get(b)?.[0];
+    const valueA = rowA ? getFlatTableRowDisplayValue(rowA, column) : '';
+    const valueB = rowB ? getFlatTableRowDisplayValue(rowB, column) : '';
+    const comparison = valueA.localeCompare(valueB, 'ja', { numeric: true });
+    return sort.direction === 'asc' ? comparison : -comparison;
+  });
+
+  return sortedGroupOrder.flatMap((groupKey) => groupRowsMap.get(groupKey) ?? []);
 };
 
 export const extractColumnFilterOptions = (

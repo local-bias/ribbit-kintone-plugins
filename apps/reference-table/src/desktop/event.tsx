@@ -19,6 +19,7 @@ import {
   MIN_RECORDS_PER_PAGE,
   type PluginCondition,
 } from '@/schema/plugin-config';
+import { type FileLoadRequest, loadFilesBatch } from './file-loader';
 import {
   createColumnFilterPopover,
   positionFilterPopover,
@@ -28,6 +29,7 @@ import { validPluginConditionsAtom } from './public-state';
 import {
   buildFlatTableRows,
   type ColumnFilterState,
+  type ColumnSortState,
   calculateFieldAggregations,
   createSubtableRelatedQueryConditionsRowFilter,
   type FieldAggregationOperation,
@@ -39,8 +41,10 @@ import {
   type RelatedRecord,
   resolveRelatedRecordFields,
   resolveSubtableFields,
+  type SortDirection,
   type SubtableRowFilter,
   shouldMergeRelatedRecordFields,
+  sortFlatTableRows,
   type TableColumnKey,
   type TableFieldColumn,
 } from './table';
@@ -351,17 +355,37 @@ const renderRecords = (params: {
   let currentFilteredRows = rows;
   let currentSearchText = '';
   let currentColumnFilters = new Map<TableColumnKey, ColumnFilterState>();
+  let currentSort: ColumnSortState | null = null;
   let aggregationOperation: FieldAggregationOperation = 'sum';
   let filterPopover: HTMLElement | null = null;
   let filterFocusReturnTarget: HTMLElement | null = null;
   let disposeFilterPopoverListeners: (() => void) | undefined;
+  let fileLoadVersion = 0;
   let isComplete = false;
 
   const hasActiveColumnFilters = () =>
     Array.from(currentColumnFilters.values()).some(isColumnFilterActive);
 
   const applyCurrentFilters = () => {
-    currentFilteredRows = filterFlatTableRows(rows, currentSearchText, currentColumnFilters);
+    const filtered = filterFlatTableRows(rows, currentSearchText, currentColumnFilters);
+    currentFilteredRows = sortFlatTableRows(filtered, currentSort);
+  };
+
+  const setColumnSort = (key: TableColumnKey, direction: SortDirection | null) => {
+    currentSort = direction ? { key, direction } : null;
+    currentPage = 1;
+    applyCurrentFilters();
+    render();
+  };
+
+  const handleSortClick = (column: TableFieldColumn) => {
+    if (currentSort?.key !== column.key) {
+      setColumnSort(column.key, 'asc');
+    } else if (currentSort.direction === 'asc') {
+      setColumnSort(column.key, 'desc');
+    } else {
+      setColumnSort(column.key, null);
+    }
   };
 
   const closeFilterPopover = (restoreFocus = true) => {
@@ -377,7 +401,10 @@ const renderRecords = (params: {
     }
   };
 
-  disposeConditionUiById.set(condition.id, () => closeFilterPopover(false));
+  disposeConditionUiById.set(condition.id, () => {
+    closeFilterPopover(false);
+    fileLoadVersion++;
+  });
 
   const setColumnFilter = (columnKey: TableColumnKey, filter: ColumnFilterState | undefined) => {
     const nextFilters =
@@ -476,6 +503,10 @@ const renderRecords = (params: {
   render = () => {
     const totalPages = getTotalPages();
     currentPage = Math.min(Math.max(1, currentPage), totalPages);
+
+    // ページ変更や再レンダリング時に進行中のファイル取得をキャンセルする
+    fileLoadVersion++;
+
     renderTableHead({
       thead,
       relatedRecordFields,
@@ -483,6 +514,9 @@ const renderRecords = (params: {
       isColumnFilterActive: (columnKey) =>
         isColumnFilterActive(currentColumnFilters.get(columnKey)),
       onFilterClick: openColumnFilterPopover,
+      getColumnSortDirection: (columnKey) =>
+        currentSort?.key === columnKey ? currentSort.direction : null,
+      onSortClick: handleSortClick,
     });
     updateCount({
       count,
@@ -531,6 +565,7 @@ const renderRecords = (params: {
       : [];
 
     pagination.update(currentPage, totalPages);
+    const fileLoadRequests: FileLoadRequest[] = [];
     renderTableBody({
       tbody,
       rows: pageRows,
@@ -544,7 +579,16 @@ const renderRecords = (params: {
         aggregationOperation = operation;
         render();
       },
+      onFileLoad: (request) => fileLoadRequests.push(request),
     });
+
+    // レコード取得よりも優先度を下げ、現在のページのファイルのみ非同期で取得する
+    if (fileLoadRequests.length) {
+      const versionAtStart = fileLoadVersion;
+      setTimeout(() => {
+        loadFilesBatch(fileLoadRequests, GUEST_SPACE_ID, () => fileLoadVersion !== versionAtStart);
+      }, 0);
+    }
   };
 
   const applySearch = (searchText: string) => {

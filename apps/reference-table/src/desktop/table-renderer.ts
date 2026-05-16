@@ -1,6 +1,14 @@
 import type { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { getRecordUrl } from '@/lib/kintone';
-import { createDocumentIconElement, createFilterIconElement } from './icons';
+import type { FileLoadRequest } from './file-loader';
+import {
+  createDocumentIconElement,
+  createDownloadIconElement,
+  createFilterIconElement,
+  createSortAscIconElement,
+  createSortDescIconElement,
+  createSortNoneIconElement,
+} from './icons';
 import {
   createTableColumnKey,
   createTableFieldColumns,
@@ -13,6 +21,7 @@ import {
   getRowSpanByGroup,
   isAggregatableField,
   isFirstVisibleRowInGroup,
+  type SortDirection,
   type TableColumnKey,
   type TableFieldColumn,
 } from './table';
@@ -57,6 +66,42 @@ const createFilterButton = (params: {
   return button;
 };
 
+const createSortButton = (params: {
+  column: TableFieldColumn;
+  sortDirection: SortDirection | null;
+  onClick: (column: TableFieldColumn) => void;
+}) => {
+  const { column, sortDirection } = params;
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = `${ROOT_CLASS}__sort-button`;
+  button.dataset.active = sortDirection ? 'true' : 'false';
+  button.dataset.direction = sortDirection ?? '';
+
+  const label =
+    sortDirection === 'asc'
+      ? `${column.label}を降順でソート`
+      : sortDirection === 'desc'
+        ? `${column.label}のソートを解除`
+        : `${column.label}を昇順でソート`;
+  button.title = label;
+  button.setAttribute('aria-label', label);
+
+  if (sortDirection === 'asc') {
+    button.append(createSortAscIconElement());
+  } else if (sortDirection === 'desc') {
+    button.append(createSortDescIconElement());
+  } else {
+    button.append(createSortNoneIconElement());
+  }
+
+  button.addEventListener('click', (event) => {
+    event.stopPropagation();
+    params.onClick(column);
+  });
+  return button;
+};
+
 const createTableDataCell = (params: {
   field: kintoneAPI.FieldProperty | kintoneAPI.property.InSubtable;
   className?: string;
@@ -66,10 +111,23 @@ const createTableDataCell = (params: {
     params.className,
     isAggregatableField(params.field) ? `${ROOT_CLASS}__numeric-cell` : undefined,
   ].filter(Boolean);
-  return createElement('td', {
-    className: classNames.join(' ') || undefined,
-    text: params.text,
-  });
+
+  const cell = document.createElement('td');
+  const joinedClass = classNames.join(' ');
+  if (joinedClass) {
+    cell.className = joinedClass;
+  }
+
+  if (params.field.type === 'RICH_TEXT') {
+    const wrapper = document.createElement('div');
+    wrapper.className = `${ROOT_CLASS}__rich-text`;
+    wrapper.innerHTML = params.text;
+    cell.append(wrapper);
+  } else {
+    cell.textContent = params.text;
+  }
+
+  return cell;
 };
 
 export const renderTableHead = (params: {
@@ -78,6 +136,8 @@ export const renderTableHead = (params: {
   subtableFields: kintoneAPI.property.InSubtable[];
   isColumnFilterActive: (columnKey: TableColumnKey) => boolean;
   onFilterClick: (column: TableFieldColumn, anchor: HTMLButtonElement) => void;
+  getColumnSortDirection: (columnKey: TableColumnKey) => SortDirection | null;
+  onSortClick: (column: TableFieldColumn) => void;
 }) => {
   const { thead, relatedRecordFields, subtableFields } = params;
   const columns = createTableFieldColumns({ relatedRecordFields, subtableFields });
@@ -100,6 +160,11 @@ export const renderTableHead = (params: {
     });
     content.append(
       label,
+      createSortButton({
+        column,
+        sortDirection: params.getColumnSortDirection(column.key),
+        onClick: params.onSortClick,
+      }),
       createFilterButton({
         column,
         isActive: params.isColumnFilterActive(column.key),
@@ -204,6 +269,89 @@ const createAggregationTableRow = (params: {
   return row;
 };
 
+type KintoneFileItem = { fileKey: string; name: string; contentType: string };
+
+const getFileItems = (fieldValue: kintoneAPI.Field | undefined): KintoneFileItem[] => {
+  if (!fieldValue || fieldValue.type !== 'FILE') return [];
+  const value = (fieldValue as { type: 'FILE'; value: KintoneFileItem[] }).value;
+  return Array.isArray(value) ? value : [];
+};
+
+const createFileCell = (params: {
+  files: KintoneFileItem[];
+  className?: string;
+  onFileLoad?: (request: FileLoadRequest) => void;
+}) => {
+  const { files, className, onFileLoad } = params;
+  const cell = document.createElement('td');
+  if (className) cell.className = className;
+
+  if (!files.length) {
+    cell.textContent = '-';
+    return cell;
+  }
+
+  const list = document.createElement('ul');
+  list.className = `${ROOT_CLASS}__file-list`;
+
+  for (const file of files) {
+    const item = document.createElement('li');
+    item.className = `${ROOT_CLASS}__file-item`;
+
+    const isImage = /^image\//i.test(file.contentType);
+
+    // ダウンロードリンク（blob URL が確定してから href を設定する）
+    const downloadLink = document.createElement('a');
+    downloadLink.className = `${ROOT_CLASS}__file-download-link`;
+    downloadLink.setAttribute('aria-label', `${file.name}をダウンロード`);
+    downloadLink.append(createDownloadIconElement());
+    const nameSpan = document.createElement('span');
+    nameSpan.className = `${ROOT_CLASS}__file-name`;
+    nameSpan.textContent = file.name;
+    downloadLink.append(nameSpan);
+
+    if (isImage && onFileLoad) {
+      const previewLink = document.createElement('a');
+      previewLink.className = `${ROOT_CLASS}__file-preview-link`;
+      previewLink.setAttribute('aria-label', `${file.name}をダウンロード`);
+
+      const img = document.createElement('img');
+      img.className = `${ROOT_CLASS}__file-preview-img`;
+      img.alt = file.name;
+      img.hidden = true;
+
+      onFileLoad({
+        fileKey: file.fileKey,
+        onLoad: (blobUrl) => {
+          img.src = blobUrl;
+          img.hidden = false;
+          previewLink.href = blobUrl;
+          previewLink.download = file.name;
+          downloadLink.href = blobUrl;
+          downloadLink.download = file.name;
+        },
+      });
+
+      previewLink.append(img);
+      item.append(previewLink);
+    } else if (onFileLoad) {
+      onFileLoad({
+        fileKey: file.fileKey,
+        onLoad: (blobUrl) => {
+          downloadLink.href = blobUrl;
+          downloadLink.download = file.name;
+        },
+      });
+    }
+
+    item.append(downloadLink);
+    list.append(item);
+  }
+
+  cell.append(list);
+  return cell;
+};
+
 export const renderTableBody = (params: {
   tbody: HTMLTableSectionElement;
   rows: FlatTableRow[];
@@ -214,6 +362,7 @@ export const renderTableBody = (params: {
   aggregations: FieldAggregation[];
   aggregationOperation: FieldAggregationOperation;
   onAggregationOperationChange: (operation: FieldAggregationOperation) => void;
+  onFileLoad?: (request: FileLoadRequest) => void;
 }) => {
   const {
     tbody,
@@ -225,6 +374,7 @@ export const renderTableBody = (params: {
     aggregations,
     aggregationOperation,
     onAggregationOperationChange,
+    onFileLoad,
   } = params;
   const columnLength = DETAIL_COLUMN_LENGTH + relatedRecordFields.length + subtableFields.length;
 
@@ -252,11 +402,20 @@ export const renderTableBody = (params: {
 
     if (relatedRecordFields.length && isFirstRowInGroup) {
       for (const field of relatedRecordFields) {
-        const cell = createTableDataCell({
-          field,
-          className: `${ROOT_CLASS}__record-cell`,
-          text: formatTableField(row.record[field.code]) || '-',
-        });
+        let cell: HTMLTableCellElement;
+        if (field.type === 'FILE') {
+          cell = createFileCell({
+            files: getFileItems(row.record[field.code]),
+            className: `${ROOT_CLASS}__record-cell`,
+            onFileLoad,
+          });
+        } else {
+          cell = createTableDataCell({
+            field,
+            className: `${ROOT_CLASS}__record-cell`,
+            text: formatTableField(row.record[field.code]) || '-',
+          });
+        }
         if (mergeRelatedRecordFields) {
           cell.rowSpan = rowSpanByGroup.get(row.groupKey) ?? 1;
         }
@@ -265,12 +424,21 @@ export const renderTableBody = (params: {
     }
 
     for (const field of subtableFields) {
-      tableRow.append(
-        createTableDataCell({
-          field,
-          text: formatTableField(row.subtableRow?.value[field.code]) || '-',
-        })
-      );
+      if (field.type === 'FILE') {
+        tableRow.append(
+          createFileCell({
+            files: getFileItems(row.subtableRow?.value[field.code]),
+            onFileLoad,
+          })
+        );
+      } else {
+        tableRow.append(
+          createTableDataCell({
+            field,
+            text: formatTableField(row.subtableRow?.value[field.code]) || '-',
+          })
+        );
+      }
     }
 
     return tableRow;
