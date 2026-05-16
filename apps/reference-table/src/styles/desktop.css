@@ -28,7 +28,7 @@
     font-size: 14px;
     line-height: 1.6;
     margin: 12px 0 24px;
-    max-width: 100%;
+    max-width: min(1600px, 80vw);
   }
 
   .ribbit-related-subtable__inner {
@@ -186,6 +186,79 @@
     text-align: right;
   }
 
+  .ribbit-related-subtable__rich-text {
+    line-height: 1.6;
+    max-width: 480px;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  .ribbit-related-subtable__rich-text p {
+    margin: 0 0 0.4em;
+  }
+
+  .ribbit-related-subtable__rich-text p:last-child {
+    margin-bottom: 0;
+  }
+
+  .ribbit-related-subtable__file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .ribbit-related-subtable__file-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .ribbit-related-subtable__file-preview-link {
+    border-radius: 4px;
+    display: inline-block;
+    overflow: hidden;
+  }
+
+  .ribbit-related-subtable__file-preview-img {
+    border: 1px solid #e2e8f0;
+    border-radius: 4px;
+    display: block;
+    max-height: 80px;
+    max-width: 120px;
+    object-fit: contain;
+  }
+
+  .ribbit-related-subtable__file-download-link {
+    align-items: center;
+    color: #2563eb;
+    display: inline-flex;
+    font-size: 12px;
+    gap: 4px;
+    max-width: 200px;
+    overflow: hidden;
+    text-decoration: none;
+  }
+
+  .ribbit-related-subtable__file-download-link:hover {
+    color: #1d4ed8;
+    text-decoration: underline;
+  }
+
+  .ribbit-related-subtable__file-download-link svg {
+    flex: 0 0 auto;
+    height: 14px;
+    width: 14px;
+  }
+
+  .ribbit-related-subtable__file-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   .ribbit-related-subtable__empty,
   .ribbit-related-subtable__message {
     color: #64748b;
@@ -320,6 +393,58 @@
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
   outline: none;
 }
+
+.ribbit-related-subtable__sort-button {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-radius: 6px;
+  color: #64748b;
+  cursor: pointer;
+  display: inline-flex;
+  flex: 0 0 auto;
+  height: 24px;
+  justify-content: center;
+  opacity: 0;
+  padding: 0;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    opacity 0.15s ease;
+  width: 24px;
+}
+
+.ribbit-related-subtable__sort-button svg {
+  height: 14px;
+  width: 14px;
+}
+
+.ribbit-related-subtable__table th:hover .ribbit-related-subtable__sort-button,
+.ribbit-related-subtable__sort-button:focus-visible,
+.ribbit-related-subtable__sort-button[data-active="true"] {
+  opacity: 1;
+}
+
+.ribbit-related-subtable__sort-button:hover,
+.ribbit-related-subtable__sort-button:focus-visible {
+  background: #f1f5f9;
+  color: #334155;
+}
+
+.ribbit-related-subtable__sort-button[data-active="true"] {
+  background: #e0e7ff;
+  color: #4338ca;
+}
+
+.ribbit-related-subtable__sort-button[data-active="true"]:hover {
+  background: #c7d2fe;
+}
+
+.ribbit-related-subtable__sort-button:focus-visible {
+  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  outline: none;
+}
+
 .ribbit-related-subtable__table tbody tr:hover td {
   background: #f0f7ff;
 }
