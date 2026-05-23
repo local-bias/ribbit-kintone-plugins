@@ -1,4 +1,6 @@
 import styled from '@emotion/styled';
+import CodeIcon from '@mui/icons-material/Code';
+import EditIcon from '@mui/icons-material/Edit';
 import FormatBoldIcon from '@mui/icons-material/FormatBold';
 import RemoveFormattingIcon from '@mui/icons-material/FormatClear';
 import FormatItalicIcon from '@mui/icons-material/FormatItalic';
@@ -23,6 +25,8 @@ import {
   IconButton,
   Paper,
   TextField,
+  ToggleButton,
+  ToggleButtonGroup,
   Tooltip,
   Typography,
 } from '@mui/material';
@@ -34,8 +38,13 @@ import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useAtom } from 'jotai';
 import { useEffect, useState } from 'react';
-import { conditionLabelAtom } from '@/config/states/plugin';
+import {
+  conditionContentModeAtom,
+  conditionHtmlAtom,
+  conditionLabelAtom,
+} from '@/config/states/plugin';
 import { normalizeTooltipHtml } from '@/lib/tooltip-html';
+import type { TooltipContentMode } from '@/schema/plugin-config';
 
 const Toolbar = styled.div`
   display: flex;
@@ -135,6 +144,28 @@ const EditorArea = styled.div`
   }
 `;
 
+const ModeSelector = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+`;
+
+const ModeButtonContent = styled.span`
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+`;
+
+const HtmlTextField = styled(TextField)`
+  textarea {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+`;
+
 const ToolbarGroup = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -155,6 +186,58 @@ type UrlDialogState = {
   open: boolean;
   mode: UrlDialogMode;
 };
+
+type HtmlHintEditorProps = {
+  value: string;
+  onChange: (value: string) => void;
+};
+
+const LINK_URL_PROTOCOLS = new Set(['http:', 'https:', 'mailto:', 'tel:']);
+const IMAGE_URL_PROTOCOLS = new Set(['http:', 'https:']);
+const MAX_DATA_IMAGE_URL_LENGTH = 700_000;
+const DATA_IMAGE_PATTERN = /^data:image\/(?:png|jpe?g|gif|webp);base64,[a-z0-9+/=]+$/i;
+
+const HTML_ESCAPE_ENTITIES: Record<string, string> = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+};
+
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, (character) => HTML_ESCAPE_ENTITIES[character] ?? character);
+}
+
+function getUrlValidationMessage(mode: UrlDialogMode): string {
+  return mode === 'image'
+    ? '画像URLは http(s)、または500KB程度までの png/jpeg/gif/webp の data:image を指定してください。'
+    : 'リンクURLは http(s)、mailto、tel を指定してください。';
+}
+
+function getSafeUrl(value: string, mode: UrlDialogMode): string | null {
+  const trimmed = value.trim();
+  if (!trimmed) {
+    return null;
+  }
+  if (mode === 'image' && DATA_IMAGE_PATTERN.test(trimmed)) {
+    if (trimmed.length > MAX_DATA_IMAGE_URL_LENGTH) {
+      return null;
+    }
+    return trimmed;
+  }
+
+  try {
+    const parsedUrl = new URL(trimmed, window.location.origin);
+    const allowedProtocols = mode === 'image' ? IMAGE_URL_PROTOCOLS : LINK_URL_PROTOCOLS;
+    if (!allowedProtocols.has(parsedUrl.protocol)) {
+      return null;
+    }
+    return parsedUrl.href;
+  } catch {
+    return null;
+  }
+}
 
 function ToolbarButton(props: {
   title: string;
@@ -180,10 +263,27 @@ function ToolbarButton(props: {
   );
 }
 
-export function HintEditor() {
+function HtmlHintEditor(props: HtmlHintEditorProps) {
+  return (
+    <HtmlTextField
+      fullWidth
+      multiline
+      minRows={12}
+      maxRows={24}
+      label='HTML'
+      value={props.value}
+      onChange={(event) => props.onChange(event.target.value)}
+      placeholder='<p>ここにヒントを入力してください。</p>'
+      helperText='入力されたHTMLは表示時にサニタイズされます。'
+    />
+  );
+}
+
+function RichTextHintEditor() {
   const [value, setValue] = useAtom(conditionLabelAtom);
   const [dialogState, setDialogState] = useState<UrlDialogState>({ open: false, mode: 'link' });
   const [url, setUrl] = useState('');
+  const [urlError, setUrlError] = useState('');
   const [label, setLabel] = useState('');
   const [alt, setAlt] = useState('');
 
@@ -231,6 +331,7 @@ export function HintEditor() {
   const openDialog = (mode: UrlDialogMode) => {
     setDialogState({ open: true, mode });
     setUrl('');
+    setUrlError('');
     setAlt('');
     setLabel(
       editor?.state.doc.textBetween(editor.state.selection.from, editor.state.selection.to) ?? ''
@@ -240,6 +341,7 @@ export function HintEditor() {
   const closeDialog = () => {
     setDialogState((current) => ({ ...current, open: false }));
     setUrl('');
+    setUrlError('');
     setAlt('');
     setLabel('');
   };
@@ -248,24 +350,30 @@ export function HintEditor() {
     if (!editor || !url.trim()) {
       return;
     }
+    const safeUrl = getSafeUrl(url, dialogState.mode);
+    if (!safeUrl) {
+      setUrlError(getUrlValidationMessage(dialogState.mode));
+      return;
+    }
+    const escapedUrl = escapeHtml(safeUrl);
     if (dialogState.mode === 'image') {
-      const escapedAlt = alt.replace(/"/g, '&quot;');
-      editor.chain().focus().insertContent(`<img src="${url.trim()}" alt="${escapedAlt}" />`).run();
+      const escapedAlt = escapeHtml(alt);
+      editor.chain().focus().insertContent(`<img src="${escapedUrl}" alt="${escapedAlt}" />`).run();
       closeDialog();
       return;
     }
 
     if (editor.state.selection.empty) {
-      const linkText = label.trim() || url.trim();
+      const linkText = escapeHtml(label.trim() || safeUrl);
       editor
         .chain()
         .focus()
         .insertContent(
-          `<a href="${url.trim()}" target="_blank" rel="noopener noreferrer">${linkText}</a>`
+          `<a href="${escapedUrl}" target="_blank" rel="noopener noreferrer">${linkText}</a>`
         )
         .run();
     } else {
-      editor.chain().focus().extendMarkRange('link').setLink({ href: url.trim() }).run();
+      editor.chain().focus().extendMarkRange('link').setLink({ href: safeUrl }).run();
     }
     closeDialog();
   };
@@ -360,7 +468,7 @@ export function HintEditor() {
             </ToolbarButton>
             <ToolbarButton
               title='リンクを削除'
-              disabled={!editor || !editor.isActive('link')}
+              disabled={!editor?.isActive('link')}
               onClick={() => editor?.chain().focus().unsetLink().run()}
             >
               <HighlightOffIcon fontSize='small' />
@@ -407,8 +515,13 @@ export function HintEditor() {
             margin='dense'
             label={dialogState.mode === 'image' ? '画像URL' : 'リンクURL'}
             value={url}
-            onChange={(event) => setUrl(event.target.value)}
+            onChange={(event) => {
+              setUrl(event.target.value);
+              setUrlError('');
+            }}
             placeholder='https://example.com/...'
+            error={Boolean(urlError)}
+            helperText={urlError || getUrlValidationMessage(dialogState.mode)}
           />
           {dialogState.mode === 'image' ? (
             <TextField
@@ -436,6 +549,60 @@ export function HintEditor() {
           </Button>
         </DialogActions>
       </Dialog>
+    </div>
+  );
+}
+
+export function HintEditor() {
+  const [contentMode, setContentMode] = useAtom(conditionContentModeAtom);
+  const [html, setHtml] = useAtom(conditionHtmlAtom);
+  const [richText] = useAtom(conditionLabelAtom);
+
+  const onContentModeChange = (
+    _: React.MouseEvent<HTMLElement>,
+    nextMode: TooltipContentMode | null
+  ) => {
+    if (!nextMode) {
+      return;
+    }
+    if (nextMode === 'html' && !html.trim() && richText.trim()) {
+      setHtml(richText);
+    }
+    setContentMode(nextMode);
+  };
+
+  return (
+    <div>
+      <ModeSelector>
+        <Typography variant='body2' color='text.secondary'>
+          入力モード
+        </Typography>
+        <ToggleButtonGroup
+          exclusive
+          size='small'
+          color='primary'
+          value={contentMode}
+          onChange={onContentModeChange}
+        >
+          <ToggleButton value='richText' aria-label='リッチエディタ'>
+            <ModeButtonContent>
+              <EditIcon fontSize='small' />
+              リッチエディタ
+            </ModeButtonContent>
+          </ToggleButton>
+          <ToggleButton value='html' aria-label='HTML'>
+            <ModeButtonContent>
+              <CodeIcon fontSize='small' />
+              HTML
+            </ModeButtonContent>
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </ModeSelector>
+      {contentMode === 'html' ? (
+        <HtmlHintEditor value={html} onChange={setHtml} />
+      ) : (
+        <RichTextHintEditor />
+      )}
     </div>
   );
 }

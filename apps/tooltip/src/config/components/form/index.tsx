@@ -31,7 +31,7 @@ export default function ConfigForm() {
           フィールドに表示されたアイコンにカーソルを合わせると表示されるヒントの内容を入力してください。
         </PluginFormDescription>
         <PluginFormDescription last>
-          ツールバーから文字装飾やリンク、画像を追加できます。
+          リッチエディタ、またはHTMLの直接入力から編集方法を選択できます。
         </PluginFormDescription>
         <HintEditor />
       </PluginFormSection>

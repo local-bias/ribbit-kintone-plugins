@@ -2,6 +2,17 @@ import { restorePluginConfig as primitiveRestore } from '@konomi-app/kintone-uti
 import { nanoid } from 'nanoid';
 import type { AnyPluginConfig, PluginCondition, PluginConfig } from '@/schema/plugin-config';
 import { PLUGIN_ID } from './global';
+import { sanitizeTooltipHtml } from './tooltip-html';
+
+const DEFAULT_ICON_COLOR = '#9ca3af';
+const DEFAULT_BACKGROUND_COLOR = '#4b5563';
+const DEFAULT_FOREGROUND_COLOR = '#f9fafb';
+const HEX_COLOR_PATTERN = /^#(?:[0-9a-f]{3}|[0-9a-f]{4}|[0-9a-f]{6}|[0-9a-f]{8})$/i;
+
+function sanitizeColor(value: string, fallback: string): string {
+  const trimmed = value.trim();
+  return HEX_COLOR_PATTERN.test(trimmed) ? trimmed : fallback;
+}
 
 export const getNewCondition = (): PluginCondition => ({
   id: nanoid(),
@@ -9,18 +20,32 @@ export const getNewCondition = (): PluginCondition => ({
   label: '',
   type: 'icon',
   iconType: 'info',
-  iconColor: '#9ca3af',
+  iconColor: DEFAULT_ICON_COLOR,
   emoji: '😀',
   targetEvents: ['create', 'edit', 'index', 'detail'],
-  backgroundColor: '#4b5563',
-  foregroundColor: '#f9fafb',
+  backgroundColor: DEFAULT_BACKGROUND_COLOR,
+  foregroundColor: DEFAULT_FOREGROUND_COLOR,
+  contentMode: 'richText',
+  html: '',
+});
+
+export const sanitizePluginConfig = (config: PluginConfig): PluginConfig => ({
+  ...config,
+  conditions: config.conditions.map((condition) => ({
+    ...condition,
+    label: sanitizeTooltipHtml(condition.label),
+    html: sanitizeTooltipHtml(condition.html),
+    iconColor: sanitizeColor(condition.iconColor, DEFAULT_ICON_COLOR),
+    backgroundColor: sanitizeColor(condition.backgroundColor, DEFAULT_BACKGROUND_COLOR),
+    foregroundColor: sanitizeColor(condition.foregroundColor, DEFAULT_FOREGROUND_COLOR),
+  })),
 });
 
 /**
  * プラグインの設定情報のひな形を返却します
  */
 export const createConfig = (): PluginConfig => ({
-  version: 4,
+  version: 5,
   conditions: [getNewCondition()],
 });
 
@@ -41,7 +66,7 @@ export const migrateConfig = (anyConfig: AnyPluginConfig): PluginConfig => {
           label: condition.label,
           type: 'icon',
           iconType: 'info',
-          iconColor: '#9ca3af',
+          iconColor: DEFAULT_ICON_COLOR,
           emoji: '😀',
         })),
       });
@@ -60,11 +85,19 @@ export const migrateConfig = (anyConfig: AnyPluginConfig): PluginConfig => {
           ...condition,
           label: condition.label.split(/\n/).join('<br>'),
           targetEvents: ['create', 'edit', 'index', 'detail'],
-          backgroundColor: '#4b5563',
-          foregroundColor: '#f9fafb',
+          backgroundColor: DEFAULT_BACKGROUND_COLOR,
+          foregroundColor: DEFAULT_FOREGROUND_COLOR,
         })),
       });
     case 4:
+      return migrateConfig({
+        version: 5,
+        conditions: anyConfig.conditions.map((condition) => ({
+          ...condition,
+          contentMode: 'richText',
+          html: '',
+        })),
+      });
     default:
       return anyConfig;
   }
@@ -75,5 +108,5 @@ export const migrateConfig = (anyConfig: AnyPluginConfig): PluginConfig => {
  */
 export const restorePluginConfig = (): PluginConfig => {
   const config = primitiveRestore(PLUGIN_ID) ?? createConfig();
-  return migrateConfig(config);
+  return sanitizePluginConfig(migrateConfig(config));
 };

@@ -100,10 +100,29 @@ const PluginConfigV4Schema = z.object({
 });
 type PluginConfigV4 = z.infer<typeof PluginConfigV4Schema>;
 
-export type PluginConfig = PluginConfigV4;
+const PluginConditionV5Schema = PluginConditionV4Schema.extend({
+  // - 追加 ---------------
+  /**
+   * ツールチップに表示する内容の入力モード
+   * - richText: リッチエディタで入力した内容
+   * - html: HTMLとして直接入力した内容
+   */
+  contentMode: z.union([z.literal('richText'), z.literal('html')]),
+  /**
+   * HTML入力モードで表示する内容
+   */
+  html: z.string(),
+});
+const PluginConfigV5Schema = z.object({
+  version: z.literal(5),
+  conditions: z.array(PluginConditionV5Schema),
+});
+type PluginConfigV5 = z.infer<typeof PluginConfigV5Schema>;
+
+export type PluginConfig = PluginConfigV5;
 export type PluginCondition = PluginConfig['conditions'][number];
 
-export const LatestPluginConditionSchema = PluginConditionV4Schema;
+export const LatestPluginConditionSchema = PluginConditionV5Schema;
 
 /**
  * 🔌 過去全てのバージョンを含むプラグインの設定情報
@@ -111,7 +130,13 @@ export const LatestPluginConditionSchema = PluginConditionV4Schema;
  * 設定情報は各ユーザーのkintoneに格納されるため、必ずしも最新バージョンの設定情報が格納されているとは限りません。
  * そのため、設定情報を復元する際には、全てのバージョンに対応した型を使用する必要があります。
  */
-export type AnyPluginConfig = PluginConfigV1 | PluginConfigV2 | PluginConfigV3 | PluginConfigV4;
+export type AnyPluginConfig =
+  | PluginConfigV1
+  | PluginConfigV2
+  | PluginConfigV3
+  | PluginConfigV4
+  | PluginConfigV5;
 
 export type IconType = PluginCondition['iconType'];
 export type ConditionType = PluginCondition['type'];
+export type TooltipContentMode = PluginCondition['contentMode'];

@@ -55,6 +55,7 @@ manager.add(
       const detailLabelSelector = `${commonSelector} .control-label-text-gaia`;
       /** モバイル版のレコード一覧画面のラベルの最小セレクター */
       const mobileIndexLabelSelector = `${commonSelector} .gaia-mobile-v2-app-index-recordlist-table-headercell-label`;
+
       const target =
         document.querySelector(indexLabelSelector) ||
         document.querySelector(detailLabelSelector) ||

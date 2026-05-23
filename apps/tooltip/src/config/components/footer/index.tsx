@@ -7,6 +7,7 @@ import { useAtomValue } from 'jotai';
 import { useAtomCallback } from 'jotai/utils';
 import { useSnackbar } from 'notistack';
 import { useCallback } from 'react';
+import { sanitizePluginConfig } from '@/lib/plugin';
 import { loadingAtom, pluginConfigAtom } from '../../states/plugin';
 import ExportButton from './export-button';
 import ImportButton from './import-button';
@@ -59,24 +60,28 @@ export default function Footer() {
   const onBackButtonClick = useCallback(() => history.back(), []);
 
   const onSaveButtonClick = useAtomCallback(
-    useCallback(async (get, set) => {
-      set(loadingAtom, true);
-      try {
-        const storage = get(pluginConfigAtom);
+    useCallback(
+      async (get, set) => {
+        set(loadingAtom, true);
+        try {
+          const storage = sanitizePluginConfig(get(pluginConfigAtom));
 
-        storeStorage(storage, () => true);
-        enqueueSnackbar('設定を保存しました', {
-          variant: 'success',
-          action: (
-            <Button color='inherit' size='small' variant='outlined' onClick={onBackButtonClick}>
-              プラグイン一覧に戻る
-            </Button>
-          ),
-        });
-      } finally {
-        set(loadingAtom, false);
-      }
-    }, [])
+          set(pluginConfigAtom, storage);
+          storeStorage(storage, () => true);
+          enqueueSnackbar('設定を保存しました', {
+            variant: 'success',
+            action: (
+              <Button color='inherit' size='small' variant='outlined' onClick={onBackButtonClick}>
+                プラグイン一覧に戻る
+              </Button>
+            ),
+          });
+        } finally {
+          set(loadingAtom, false);
+        }
+      },
+      [enqueueSnackbar, onBackButtonClick]
+    )
   );
 
   return <FooterContent {...{ onSaveButtonClick, onBackButtonClick }} />;

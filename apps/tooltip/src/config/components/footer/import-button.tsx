@@ -3,32 +3,38 @@ import { PluginConfigImportButton } from '@konomi-app/kintone-utilities-react';
 import { useAtomCallback } from 'jotai/utils';
 import { useSnackbar } from 'notistack';
 import { type ChangeEventHandler, useCallback } from 'react';
-import { migrateConfig } from '@/lib/plugin';
+import { migrateConfig, sanitizePluginConfig } from '@/lib/plugin';
 import { pluginConfigAtom } from '../../states/plugin';
 
 export default function ImportButton() {
   const { enqueueSnackbar } = useSnackbar();
 
   const onChange: ChangeEventHandler<HTMLInputElement> = useAtomCallback(
-    useCallback(async (_, set, event) => {
-      try {
-        const { files } = event.target;
-        if (!files?.length) {
-          return;
+    useCallback(
+      async (_, set, event) => {
+        try {
+          const { files } = event.target;
+          if (!files?.length) {
+            return;
+          }
+          const file = files.item(0);
+          if (!file) {
+            return;
+          }
+          const fileEvent = await onFileLoad(file);
+          const text = (fileEvent.target?.result ?? '') as string;
+          set(pluginConfigAtom, sanitizePluginConfig(migrateConfig(JSON.parse(text))));
+          enqueueSnackbar('設定情報をインポートしました', { variant: 'success' });
+        } catch (error) {
+          enqueueSnackbar(
+            '設定情報のインポートに失敗しました、ファイルに誤りがないか確認してください',
+            { variant: 'error' }
+          );
+          throw error;
         }
-        const [file] = Array.from(files);
-        const fileEvent = await onFileLoad(file!);
-        const text = (fileEvent.target?.result ?? '') as string;
-        set(pluginConfigAtom, migrateConfig(JSON.parse(text)));
-        enqueueSnackbar('設定情報をインポートしました', { variant: 'success' });
-      } catch (error) {
-        enqueueSnackbar(
-          '設定情報のインポートに失敗しました、ファイルに誤りがないか確認してください',
-          { variant: 'error' }
-        );
-        throw error;
-      }
-    }, [])
+      },
+      [enqueueSnackbar]
+    )
   );
 
   return <PluginConfigImportButton onImportButtonClick={onChange} loading={false} />;

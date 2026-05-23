@@ -3,6 +3,7 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/comp
 import { selectedConditionAtom } from '@/config/states/plugin';
 import { TooltipHtmlContent } from '@/lib/components/tooltip-html-content';
 import { TooltipIcon } from '@/lib/components/tooltip-icon';
+import { getTooltipContentHtml } from '@/lib/tooltip-content';
 
 function PreviewEmoji() {
   const condition = useAtomValue(selectedConditionAtom);
@@ -22,6 +23,7 @@ function PreviewIcon() {
 
 export default function Preview() {
   const condition = useAtomValue(selectedConditionAtom);
+  const tooltipHtml = getTooltipContentHtml(condition);
 
   return (
     <div className='w-24 h-24 grid place-items-center border rounded-sm'>
@@ -37,7 +39,7 @@ export default function Preview() {
               color: condition.foregroundColor,
             }}
           >
-            <TooltipHtmlContent html={condition.label} />
+            <TooltipHtmlContent html={tooltipHtml} />
           </TooltipContent>
         </Tooltip>
       </TooltipProvider>

@@ -22,7 +22,7 @@ export const pluginConditionsAtom = atom(
 
 export const selectedConditionIdAtom = atomWithDefault<string>((get) => {
   const config = get(pluginConfigAtom);
-  return config.conditions[0]!.id;
+  return config.conditions[0]?.id;
 });
 
 export const selectedConditionAtom = atom(
@@ -72,3 +72,5 @@ export const conditionTypeAtom = getConditionPropertyAtom('type');
 export const conditionIconTypeAtom = getConditionPropertyAtom('iconType');
 export const conditionIconColorAtom = getConditionPropertyAtom('iconColor');
 export const conditionEmojiAtom = getConditionPropertyAtom('emoji');
+export const conditionContentModeAtom = getConditionPropertyAtom('contentMode');
+export const conditionHtmlAtom = getConditionPropertyAtom('html');

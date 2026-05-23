@@ -12,6 +12,7 @@ import {
 } from '@repo/ui';
 import type { FC } from 'react';
 import { TooltipHtmlContent } from '@/lib/components/tooltip-html-content';
+import { getTooltipContentHtml } from '@/lib/tooltip-content';
 import type { PluginCondition } from '@/schema/plugin-config';
 import TooltipEmojiContainer from './emoji';
 import TooltipIconContainer from './icon';
@@ -48,10 +49,12 @@ const StyledTooltipTrigger = styled(TooltipTrigger)`
 `;
 
 const MobileTooltipContainer: FC<Props> = ({ condition }) => {
+  const tooltipHtml = getTooltipContentHtml(condition);
+
   return (
     <TriggerContainer>
       <Popover>
-        <StyledPopoverTrigger>
+        <StyledPopoverTrigger tabIndex={-1}>
           <TooltipIconContainer condition={condition} />
           <TooltipEmojiContainer condition={condition} />
         </StyledPopoverTrigger>
@@ -61,7 +64,7 @@ const MobileTooltipContainer: FC<Props> = ({ condition }) => {
             color: condition.foregroundColor,
           }}
         >
-          <TooltipHtmlContent html={condition.label} />
+          <TooltipHtmlContent html={tooltipHtml} />
         </PopoverContent>
       </Popover>
     </TriggerContainer>
@@ -69,11 +72,13 @@ const MobileTooltipContainer: FC<Props> = ({ condition }) => {
 };
 
 const DesktopTooltipContainer: FC<Props> = ({ condition }) => {
+  const tooltipHtml = getTooltipContentHtml(condition);
+
   return (
     <TooltipProvider>
       <TriggerContainer>
         <Tooltip delayDuration={0}>
-          <StyledTooltipTrigger>
+          <StyledTooltipTrigger tabIndex={-1}>
             <TooltipIconContainer condition={condition} />
             <TooltipEmojiContainer condition={condition} />
           </StyledTooltipTrigger>
@@ -92,7 +97,7 @@ const DesktopTooltipContainer: FC<Props> = ({ condition }) => {
               }
             `}
           >
-            <TooltipHtmlContent html={condition.label} />
+            <TooltipHtmlContent html={tooltipHtml} />
           </TooltipContent>
         </Tooltip>
       </TriggerContainer>
