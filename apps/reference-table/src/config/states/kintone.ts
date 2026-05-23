@@ -204,3 +204,18 @@ export const relatedAppMatchingSubtableAtom = atom(async (get) => {
 export const isRelatedAppMatchingFieldInSubtableAtom = atom(async (get) => {
   return !!(await get(relatedAppMatchingSubtableAtom));
 });
+
+/**
+ * 関連先アプリの絞り込み条件用フィールド一覧。
+ * SUBTABLE は FieldConditionInput が内部的に展開するため含める。
+ * GROUP / REFERENCE_TABLE / CATEGORY / RELATED_RECORDS は除外する。
+ */
+const UNSELECTABLE_FOR_FILTER_TYPES = new Set<kintoneAPI.FieldPropertyType>([
+  'GROUP',
+  'REFERENCE_TABLE',
+  'CATEGORY',
+]);
+export const relatedAppFilterableFieldsAtom = atom(async (get) => {
+  const fields = await get(relatedAppFieldsAtom);
+  return fields.filter((field) => !UNSELECTABLE_FOR_FILTER_TYPES.has(field.type));
+});

@@ -5,6 +5,7 @@ import {
   useArray,
 } from '@konomi-app/kintone-utilities-jotai';
 import {
+  FieldConditionInput,
   PluginFormDescription,
   PluginFormSection,
   PluginFormTitle,
@@ -32,6 +33,7 @@ import {
   kintoneAppsAtom,
   type RelatedAppQueryField,
   relatedAppDynamicQueryFieldsAtom,
+  relatedAppFilterableFieldsAtom,
   relatedAppSelectableFieldsAtom,
   relatedAppSortableFieldsAtom,
   relatedAppSubtableFieldsAtom,
@@ -47,6 +49,7 @@ import {
   mergeRelatedRecordFieldsAtom,
   recordsPerPageAtom,
   relatedAppIdAtom,
+  relatedFilterConditionsAtom,
   relatedQueryConditionsAtom,
   relatedRecordFieldCodesAtom,
   relatedSubtableCodeAtom,
@@ -65,6 +68,7 @@ import {
 } from '@/lib/related-query-condition';
 import {
   AggregationRoundingModeSchema,
+  type FieldConditionValue,
   MAX_AGGREGATION_DECIMAL_DIGITS,
   MAX_RECORDS_PER_PAGE,
   MIN_AGGREGATION_DECIMAL_DIGITS,
@@ -369,6 +373,83 @@ function RelatedQueryConditionsForm() {
   );
 }
 
+const getNewRelatedFilterCondition = (): FieldConditionValue => ({
+  fieldCode: '',
+  conditionType: 'always',
+});
+
+function RelatedFilterConditionsFormComponent() {
+  const relatedAppId = useAtomValue(relatedAppIdAtom);
+  const conditions = useAtomValue(relatedFilterConditionsAtom);
+  const fields = useAtomValue(relatedAppFilterableFieldsAtom);
+  const { addItem, updateItem, deleteItem } = useArray(relatedFilterConditionsAtom);
+
+  if (!conditions.length) {
+    return (
+      <Tooltip title='絞り込み条件を追加する'>
+        <span>
+          <IconButton
+            type='button'
+            size='small'
+            disabled={!relatedAppId}
+            aria-label='絞り込み条件を追加'
+            onClick={() => addItem({ index: 0, newItem: getNewRelatedFilterCondition() })}
+          >
+            <PlusIcon size={18} />
+          </IconButton>
+        </span>
+      </Tooltip>
+    );
+  }
+
+  return (
+    <div className='grid gap-3'>
+      {conditions.map((condition, index) => (
+        <div key={index} className='flex flex-wrap items-start gap-3'>
+          <FieldConditionInput
+            fields={fields}
+            value={condition}
+            onChange={(newCondition) => updateItem({ index, newItem: newCondition })}
+            lang='ja'
+          />
+          <div className='flex items-center gap-1 pt-1'>
+            <Tooltip title='絞り込み条件を追加する'>
+              <IconButton
+                type='button'
+                size='small'
+                onClick={() =>
+                  addItem({ index: index + 1, newItem: getNewRelatedFilterCondition() })
+                }
+              >
+                <PlusIcon size={18} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title='この絞り込み条件を削除する'>
+              <IconButton type='button' size='small' onClick={() => deleteItem(index)}>
+                <Trash2Icon size={18} />
+              </IconButton>
+            </Tooltip>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function RelatedFilterConditionsForm() {
+  return (
+    <ErrorBoundary
+      FallbackComponent={({ error }) => (
+        <FormError label='関連レコードの絞り込み条件' error={error} />
+      )}
+    >
+      <Suspense fallback={<LoadingField width={720} />}>
+        <RelatedFilterConditionsFormComponent />
+      </Suspense>
+    </ErrorBoundary>
+  );
+}
+
 function MergeRelatedRecordFieldsSwitch() {
   const [checked, setChecked] = useAtom(mergeRelatedRecordFieldsAtom);
 
@@ -623,6 +704,13 @@ function FormContent() {
           <RelatedAppSelect />
           <RelatedQueryConditionsForm />
         </div>
+      </PluginFormSection>
+      <PluginFormSection>
+        <PluginFormTitle>絞り込み条件</PluginFormTitle>
+        <PluginFormDescription last>
+          関連先レコードをさらに絞り込む条件を設定します。条件はすべてANDで結合されます。
+        </PluginFormDescription>
+        <RelatedFilterConditionsForm />
       </PluginFormSection>
       <PluginFormSection>
         <PluginFormTitle>テーブル表示</PluginFormTitle>

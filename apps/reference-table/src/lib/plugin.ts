@@ -67,6 +67,7 @@ export const getNewCondition = (): PluginCondition => ({
   currentAppFieldCode: '',
   relatedAppFieldCode: '',
   relatedQueryConditions: [getNewRelatedQueryCondition()],
+  relatedFilterConditions: [],
   relatedSubtableCode: '',
   relatedRecordFieldCodes: [],
   subtableFieldCodes: [],
@@ -190,6 +191,9 @@ const normalizeCondition = (condition: unknown): PluginCondition => {
       currentAppFieldCode: source.currentAppFieldCode,
       relatedAppFieldCode: source.relatedAppFieldCode,
     }),
+    relatedFilterConditions: Array.isArray(source.relatedFilterConditions)
+      ? source.relatedFilterConditions
+      : [],
     relatedSubtableCode:
       typeof source.relatedSubtableCode === 'string' ? source.relatedSubtableCode : '',
     relatedRecordFieldCodes: toStringArray(source.relatedRecordFieldCodes),

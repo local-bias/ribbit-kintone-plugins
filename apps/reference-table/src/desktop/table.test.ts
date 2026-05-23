@@ -47,6 +47,7 @@ const condition: PluginCondition = {
       relatedAppFieldCode: 'relatedKey',
     },
   ],
+  relatedFilterConditions: [],
   relatedSubtableCode: 'items',
   relatedRecordFieldCodes: ['customer', 'status'],
   subtableFieldCodes: ['product', 'amount'],

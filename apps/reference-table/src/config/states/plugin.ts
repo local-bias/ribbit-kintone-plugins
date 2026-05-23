@@ -52,6 +52,7 @@ export const showFieldAggregationsAtom = getConditionPropertyAtom('showFieldAggr
 export const recordsPerPageAtom = getConditionPropertyAtom('recordsPerPage');
 export const aggregationRoundingModeAtom = getConditionPropertyAtom('aggregationRoundingMode');
 export const aggregationDecimalDigitsAtom = getConditionPropertyAtom('aggregationDecimalDigits');
+export const relatedFilterConditionsAtom = getConditionPropertyAtom('relatedFilterConditions');
 export const sortFieldCodeAtom = getConditionPropertyAtom('sortFieldCode');
 export const sortOrderAtom = getConditionPropertyAtom('sortOrder');
 

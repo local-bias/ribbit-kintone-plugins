@@ -192,15 +192,19 @@ export const createRelatedRecordsQueryFromConditions = (params: {
   conditions: RelatedRecordsQueryConditionInput[];
   sortFieldCode: string;
   sortOrder: SortOrder;
+  extraConditions?: string[];
 }) => {
-  const conditions = params.conditions
+  const resolvedConditions = params.conditions
     .map(createRelatedRecordQueryCondition)
     .filter((condition): condition is string => !!condition);
-  if (!conditions.length) {
+
+  const allConditions = [...resolvedConditions, ...(params.extraConditions ?? [])];
+
+  if (!allConditions.length) {
     return null;
   }
 
-  return `${conditions.join(' and ')} order by ${quoteFieldCode(params.sortFieldCode || '$id')} ${normalizeSortOrder(params.sortOrder)}`;
+  return `${allConditions.join(' and ')} order by ${quoteFieldCode(params.sortFieldCode || '$id')} ${normalizeSortOrder(params.sortOrder)}`;
 };
 
 export const createRelatedRecordsQuery = (params: {

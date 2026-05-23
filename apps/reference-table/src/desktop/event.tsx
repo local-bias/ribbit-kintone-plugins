@@ -5,6 +5,7 @@ import {
   getSpaceElement,
   type kintoneAPI,
 } from '@konomi-app/kintone-utilities';
+import { buildConditionQuery } from '@konomi-app/kintone-utilities-react';
 import { manager } from '@/lib/event-manager';
 import { GUEST_SPACE_ID, isDev } from '@/lib/global';
 import { store } from '@/lib/jotai';
@@ -710,6 +711,7 @@ const renderCondition = async (condition: PluginCondition, record: kintoneAPI.Re
       })),
       sortFieldCode: condition.sortFieldCode,
       sortOrder: condition.sortOrder,
+      extraConditions: condition.relatedFilterConditions.map(buildConditionQuery).filter(Boolean),
     });
     if (!query) {
       renderMessage(

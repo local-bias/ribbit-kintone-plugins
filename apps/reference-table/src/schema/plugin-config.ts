@@ -1,4 +1,10 @@
+import type { FieldConditionValue } from '@konomi-app/kintone-utilities-react';
 import { z } from 'zod';
+
+export type { FieldConditionValue };
+
+/** FieldConditionValue を Zod スキーマとして扱うためのラッパー */
+const FieldConditionValueSchema = z.unknown() as z.ZodType<FieldConditionValue>;
 
 export const DEFAULT_RECORDS_PER_PAGE = 20;
 export const MIN_RECORDS_PER_PAGE = 1;
@@ -51,6 +57,8 @@ export const PluginConditionV1Schema = z.object({
   relatedAppFieldCode: z.string(),
   /** 関連レコードを取得するための動的な複数条件 */
   relatedQueryConditions: z.array(RelatedQueryConditionSchema),
+  /** 関連先レコードをさらに絞り込むための固定条件 */
+  relatedFilterConditions: z.array(FieldConditionValueSchema).default([]),
   /** 関連先アプリのサブテーブルを表示する場合のサブテーブルコード */
   relatedSubtableCode: z.string(),
   /** 表示する関連先レコードのフィールドコード */
