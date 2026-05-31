@@ -11,7 +11,7 @@ import { entries } from 'remeda';
 import config from '@/../plugin.config.mjs';
 import { manager } from '@/lib/event-manager';
 import { GUEST_SPACE_ID, isDev } from '@/lib/global';
-import { createPreviewButton } from './actions';
+import { createPreviewButton, registerZipPreviewIntegration } from './actions';
 import App from './components';
 import { fileFieldsWithZipAtom, targetRecordAtom } from './public-state';
 
@@ -23,6 +23,7 @@ componentManager.renderComponent({
   component: <App />,
   parentElement: document.body,
 });
+registerZipPreviewIntegration();
 
 manager.add(['app.record.index.show'], async (event) => {
   const { records } = await getRecords({
