@@ -2,6 +2,49 @@ import { css } from '@emotion/css';
 import { store } from '@repo/jotai';
 import { handleDrawerOpenAtom, previewFileKeyAtom } from './public-state';
 
+const PDF_PREVIEW_OPEN_EVENT = 'ribbit-kintone-plugin-pdf-preview:open';
+
+type PdfPreviewOpenEvent = CustomEvent<{
+  fileKey?: unknown;
+  onHandled?: unknown;
+}>;
+
+type PdfPreviewWindow = Window &
+  typeof globalThis & {
+    ribbitKintonePdfPreview?: {
+      open: (fileKey: string) => void;
+    };
+  };
+
+let isIntegrationRegistered = false;
+
+export function openPreview(fileKey: string) {
+  store.set(previewFileKeyAtom, fileKey);
+  store.set(handleDrawerOpenAtom);
+}
+
+export function registerPdfPreviewIntegration() {
+  if (isIntegrationRegistered) {
+    return;
+  }
+
+  const previewWindow = window as PdfPreviewWindow;
+  previewWindow.ribbitKintonePdfPreview = { open: openPreview };
+  previewWindow.addEventListener(PDF_PREVIEW_OPEN_EVENT, (event) => {
+    const detail = (event as PdfPreviewOpenEvent).detail;
+    const fileKey = detail?.fileKey;
+    if (typeof fileKey !== 'string' || !fileKey) {
+      return;
+    }
+
+    if (typeof detail.onHandled === 'function') {
+      detail.onHandled();
+    }
+    openPreview(fileKey);
+  });
+  isIntegrationRegistered = true;
+}
+
 export function createPreviewButton(fileKey: string) {
   const buttonElement = document.createElement('span');
   buttonElement.classList.add(css`
@@ -22,8 +65,7 @@ export function createPreviewButton(fileKey: string) {
   buttonElement.addEventListener('click', (e) => {
     e.stopPropagation();
     e.preventDefault();
-    store.set(previewFileKeyAtom, fileKey);
-    store.set(handleDrawerOpenAtom);
+    openPreview(fileKey);
   });
   return buttonElement;
 }

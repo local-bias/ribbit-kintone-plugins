@@ -11,7 +11,7 @@ import { clone, entries } from 'remeda';
 import config from '@/../plugin.config.mjs';
 import { manager } from '@/lib/event-manager';
 import { GUEST_SPACE_ID, isDev } from '@/lib/global';
-import { createPreviewButton } from './actions';
+import { createPreviewButton, registerPdfPreviewIntegration } from './actions';
 import App from './components';
 import { fileFieldsWithPDFAtom, targetRecordAtom } from './public-state';
 
@@ -23,6 +23,7 @@ componentManager.renderComponent({
   component: <App />,
   parentElement: document.body,
 });
+registerPdfPreviewIntegration();
 
 manager.add(['app.record.index.show'], async (event) => {
   const { records } = await getRecords({
@@ -67,8 +68,10 @@ manager.add(['app.record.index.show'], async (event) => {
 
         const targetFileIndex = field.value.findIndex((file) => file.name === anchorText);
         if (targetFileIndex === -1) continue;
+        const targetFile = field.value[targetFileIndex];
+        if (!targetFile) continue;
 
-        listItem.append(createPreviewButton(field.value[targetFileIndex]!.fileKey));
+        listItem.append(createPreviewButton(targetFile.fileKey));
         field.value = field.value.toSpliced(targetFileIndex, 1);
       }
     }
@@ -94,8 +97,10 @@ manager.add(['app.record.detail.show', 'app.record.edit.show'], async (event) =>
 
         const targetFileIndex = field.value.findIndex((file) => file.name === anchorText);
         if (targetFileIndex === -1) continue;
+        const targetFile = field.value[targetFileIndex];
+        if (!targetFile) continue;
 
-        listItem.append(createPreviewButton(field.value[targetFileIndex]!.fileKey));
+        listItem.append(createPreviewButton(targetFile.fileKey));
         field.value = field.value.toSpliced(targetFileIndex, 1);
       }
     } else {
@@ -107,8 +112,10 @@ manager.add(['app.record.detail.show', 'app.record.edit.show'], async (event) =>
 
         const targetFileIndex = field.value.findIndex((file) => file.name === anchorText);
         if (targetFileIndex === -1) continue;
+        const targetFile = field.value[targetFileIndex];
+        if (!targetFile) continue;
 
-        anchorElement.append(createPreviewButton(field.value[targetFileIndex]!.fileKey));
+        anchorElement.append(createPreviewButton(targetFile.fileKey));
         field.value = field.value.toSpliced(targetFileIndex, 1);
       }
     }
