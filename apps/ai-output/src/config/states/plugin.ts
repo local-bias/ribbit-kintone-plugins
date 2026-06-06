@@ -1,7 +1,6 @@
 import { onFileLoad, setPluginProxyConfig, storePluginConfig } from '@konomi-app/kintone-utilities';
-import { handleLoadingEndAtom, handleLoadingStartAtom, usePluginAtoms } from '@repo/jotai';
+import { atom, handleLoadingEndAtom, handleLoadingStartAtom, usePluginAtoms } from '@repo/jotai';
 import { saveAsJson } from '@repo/utils';
-import { atom } from 'jotai';
 import { atomWithDefault } from 'jotai/utils';
 import { enqueueSnackbar } from 'notistack';
 import type { ChangeEvent, ReactNode } from 'react';
