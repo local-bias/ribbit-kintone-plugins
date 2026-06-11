@@ -1,6 +1,6 @@
 import { PluginFormDescription, PluginFormTitle } from '@konomi-app/kintone-utilities-react';
 import { Switch } from '@mui/material';
-import { useAtom } from 'jotai';
+import { useAtom } from '@repo/jotai';
 import { conditionAllowHtmlOutputAtom } from '@/config/states/plugin';
 import { t } from '@/lib/i18n';
 

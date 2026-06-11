@@ -1,6 +1,6 @@
+import { store } from '@repo/jotai';
 import { pluginCommonConfigAtom } from '@/desktop/public-state';
 import { isDev } from '@/lib/global';
-import { store } from '@/lib/store';
 import type { FactCheckResult } from '@/schema/fact-check';
 import { addChatLog } from '../action';
 import { logAppGuestSpaceIdAtom } from '../states/kintone';

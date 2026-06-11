@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { isMobile } from '@konomi-app/kintone-utilities';
 import { Loader } from '@konomi-app/ui-react';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import type { PropsWithChildren } from 'react';
 import { ChatMessageProvider } from '@/desktop/original-view/contexts/chat-message';
 import {

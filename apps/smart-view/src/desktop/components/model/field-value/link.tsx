@@ -1,5 +1,5 @@
 import type { kintoneAPI } from '@konomi-app/kintone-utilities';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { appFormPropertyAtom } from '@/desktop/states/kintone';
 
 type Props = {

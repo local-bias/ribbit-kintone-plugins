@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { pluginCommonConfigAtom } from '@/desktop/public-state';
 
 export default function SendingOption() {

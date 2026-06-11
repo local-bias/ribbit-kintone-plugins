@@ -1,4 +1,4 @@
-import { atom } from 'jotai';
+import { atom } from '@repo/jotai';
 import { isUsagePluginConditionMet, restorePluginConfig } from '@/lib/plugin';
 
 const { config } = restorePluginConfig();

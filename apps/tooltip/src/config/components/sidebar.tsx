@@ -1,6 +1,6 @@
 import { BundledSidebar } from '@konomi-app/kintone-utilities-react';
-import { useAtom } from 'jotai';
-import { RESET } from 'jotai/utils';
+import { useAtom } from '@repo/jotai';
+import { RESET } from '@repo/jotai/utils';
 import { useSnackbar } from 'notistack';
 import { type FC, useCallback } from 'react';
 import { pluginConditionsAtom, selectedConditionIdAtom } from '@/config/states/plugin';

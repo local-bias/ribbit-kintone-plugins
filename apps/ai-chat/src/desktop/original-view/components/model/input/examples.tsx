@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from '@repo/jotai';
 import {
   chatMessagesAtom,
   inputTextAtom,

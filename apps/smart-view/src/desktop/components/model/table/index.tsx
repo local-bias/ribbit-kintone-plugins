@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { pluginConditionAtom, resolvedTableColumnsAtom } from '../../../states/plugin';
 import RecordTableBody from './body';
 import RecordTableHead from './head';

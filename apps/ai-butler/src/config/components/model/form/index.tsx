@@ -5,7 +5,7 @@ import {
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from '@repo/jotai';
 import { getConditionPropertyAtom, isConditionIdUnselectedAtom } from '@/config/states/plugin';
 
 import { TRIGGER_LABELS } from '@/lib/static';

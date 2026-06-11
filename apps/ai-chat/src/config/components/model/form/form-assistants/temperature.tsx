@@ -1,5 +1,5 @@
 import { Slider } from '@mui/material';
-import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { atom, useAtomValue, useSetAtom } from '@repo/jotai';
 import { temperatureAtom } from '@/config/states/plugin';
 
 const marks = [

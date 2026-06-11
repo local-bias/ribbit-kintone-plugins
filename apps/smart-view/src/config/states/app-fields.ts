@@ -1,5 +1,5 @@
 import type { kintoneAPI } from '@konomi-app/kintone-utilities';
-import { atom } from 'jotai';
+import { atom } from '@repo/jotai';
 import { nanoid } from 'nanoid';
 import { clone } from 'remeda';
 import { GUEST_SPACE_ID, isProd } from '@/lib/global';

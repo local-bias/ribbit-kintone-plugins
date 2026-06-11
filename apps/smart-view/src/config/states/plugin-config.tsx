@@ -6,8 +6,8 @@ import {
   updateViews,
 } from '@konomi-app/kintone-utilities';
 import { Button } from '@mui/material';
+import { atom } from '@repo/jotai';
 import { produce } from 'immer';
-import { atom } from 'jotai';
 import { enqueueSnackbar } from 'notistack';
 import type { ChangeEvent } from 'react';
 import invariant from 'tiny-invariant';

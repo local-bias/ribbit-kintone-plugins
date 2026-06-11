@@ -3,7 +3,7 @@ import {
   PluginFormSection,
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { conditionIconColorAtom, conditionTypeAtom } from '@/config/states/plugin';
 import { JotaiColorPicker } from '@/lib/components/jotai-color-picker';
 

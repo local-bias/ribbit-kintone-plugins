@@ -30,13 +30,13 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import { useAtom } from '@repo/jotai';
 import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
 import Placeholder from '@tiptap/extension-placeholder';
 import Underline from '@tiptap/extension-underline';
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import { useAtom } from 'jotai';
 import { useEffect, useState } from 'react';
 import {
   conditionContentModeAtom,

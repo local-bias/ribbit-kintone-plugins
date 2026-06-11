@@ -5,10 +5,9 @@ import {
   storePluginConfig,
   updateViews,
 } from '@konomi-app/kintone-utilities';
-import { handleLoadingEndAtom, handleLoadingStartAtom, usePluginAtoms } from '@repo/jotai';
+import { atom, handleLoadingEndAtom, handleLoadingStartAtom, usePluginAtoms } from '@repo/jotai';
 import { saveAsJson } from '@repo/utils';
 import { produce } from 'immer';
-import { atom } from 'jotai';
 import type { ChangeEvent, ReactNode } from 'react';
 import { toast } from 'sonner';
 import invariant from 'tiny-invariant';

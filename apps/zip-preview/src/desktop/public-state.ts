@@ -1,7 +1,6 @@
 import { downloadFile, type kintoneAPI } from '@konomi-app/kintone-utilities';
-import { appFormFieldsAtom, currentAppIdAtom } from '@repo/jotai';
-import { atom } from 'jotai';
-import { atomFamily, atomWithReset } from 'jotai/utils';
+import { appFormFieldsAtom, atom, currentAppIdAtom } from '@repo/jotai';
+import { atomFamily, atomWithReset } from '@repo/jotai/utils';
 import zip from 'jszip';
 import { entries } from 'remeda';
 import { type FileContent, getUncompressedSize, sortFileContents } from '@/lib/files';

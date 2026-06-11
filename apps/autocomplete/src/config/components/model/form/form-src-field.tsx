@@ -1,6 +1,6 @@
 import { JotaiFieldSelect } from '@konomi-app/kintone-utilities-jotai';
 import { Skeleton, TextField } from '@mui/material';
-import { useAtom } from 'jotai';
+import { useAtom } from '@repo/jotai';
 import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { srcAppFieldsState } from '../../../states/kintone';

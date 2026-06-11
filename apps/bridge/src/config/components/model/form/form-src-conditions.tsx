@@ -1,15 +1,15 @@
-import { currentAppFieldsAtom } from '@/config/states/kintone';
-import { srcConditionsAtom } from '@/config/states/plugin';
-import { LANGUAGE } from '@/lib/global';
-import { t } from '@/lib/i18n';
-import { FieldConditionInput, FieldConditionValue } from '@konomi-app/kintone-utilities-react';
+import { FieldConditionInput, type FieldConditionValue } from '@konomi-app/kintone-utilities-react';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Skeleton } from '@mui/material';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from '@repo/jotai';
 import { Suspense } from 'react';
+import { currentAppFieldsAtom } from '@/config/states/kintone';
+import { srcConditionsAtom } from '@/config/states/plugin';
+import { LANGUAGE } from '@/lib/global';
+import { t } from '@/lib/i18n';
 
 const defaultCondition = (): FieldConditionValue => ({
   fieldCode: '',

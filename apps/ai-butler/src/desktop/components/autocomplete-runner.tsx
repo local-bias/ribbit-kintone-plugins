@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { pluginConfigAtom, validPluginConditionsAtom } from '@/desktop/public-state';
 import { chatComplete } from '@/lib/ai';

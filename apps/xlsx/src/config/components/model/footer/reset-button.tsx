@@ -10,7 +10,7 @@ import {
   IconButton,
   Tooltip,
 } from '@mui/material';
-import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { atom, useAtomValue, useSetAtom } from '@repo/jotai';
 import type { FC } from 'react';
 import { t } from '@/lib/i18n';
 import { createConfig } from '@/lib/plugin';

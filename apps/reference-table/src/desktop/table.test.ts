@@ -37,6 +37,7 @@ const condition: PluginCondition = {
   memo: '',
   targetSpaceId: 'space',
   relatedAppId: '10',
+  relatedAppGuestSpaceId: '',
   currentAppFieldCode: 'currentKey',
   relatedAppFieldCode: 'relatedKey',
   relatedQueryConditions: [

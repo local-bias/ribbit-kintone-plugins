@@ -1,4 +1,4 @@
-import { createStore, Provider } from 'jotai';
+import { createStore, Provider } from '@repo/jotai';
 import { type FC, useMemo } from 'react';
 
 import Input from './components/input';

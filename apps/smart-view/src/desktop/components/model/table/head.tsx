@@ -1,5 +1,5 @@
 import { Skeleton } from '@mui/material';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { Suspense } from 'react';
 import { headerCellsAtom } from '../../../states/header-cells';
 import { errorAtom, pluginConditionAtom } from '../../../states/plugin';

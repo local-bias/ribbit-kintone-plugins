@@ -1,5 +1,5 @@
 import { Skeleton } from '@mui/material';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { Suspense, useDeferredValue } from 'react';
 import { loadingAtom } from '@/desktop/states/ui';
 import type { TableRow } from '@/desktop/static';

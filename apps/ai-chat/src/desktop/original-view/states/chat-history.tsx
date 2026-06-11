@@ -1,5 +1,5 @@
+import { atom } from '@repo/jotai';
 import { produce } from 'immer';
-import { atom } from 'jotai';
 import { nanoid } from 'nanoid';
 import { convertFileToAttachment, isConvertibleFile } from '@/lib/file-converter';
 import { getBase64EncodedFile } from '@/lib/image';

@@ -16,8 +16,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { appFormFieldsAtom, currentAppIdAtom } from '@repo/jotai';
-import { atom, useAtom, useAtomValue } from 'jotai';
+import { appFormFieldsAtom, atom, currentAppIdAtom, useAtom, useAtomValue } from '@repo/jotai';
 import { Suspense, useCallback, useRef, useState } from 'react';
 import { PluginErrorBoundary } from '@/components/error-boundary';
 import { JotaiFieldMultiSelect } from '@/components/field-multi-select';

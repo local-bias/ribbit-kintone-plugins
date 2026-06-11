@@ -1,5 +1,5 @@
 import { getFormFields, type kintoneAPI } from '@konomi-app/kintone-utilities';
-import { atom } from 'jotai';
+import { atom } from '@repo/jotai';
 import { GUEST_SPACE_ID } from '@/lib/global';
 import { getAppId } from '@/lib/kintone';
 

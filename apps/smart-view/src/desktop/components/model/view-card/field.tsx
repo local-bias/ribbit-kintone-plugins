@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import type { kintoneAPI } from '@konomi-app/kintone-utilities';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { Suspense } from 'react';
 import { currentAppFieldPropertiesAtom } from '@/desktop/states/kintone';
 import { FieldValue } from '../field-value';

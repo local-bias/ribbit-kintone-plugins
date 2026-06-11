@@ -6,8 +6,8 @@ import {
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
 import { MenuItem, Skeleton, TextField, Tooltip } from '@mui/material';
+import { atom, useAtom, useAtomValue, useSetAtom } from '@repo/jotai';
 import { produce } from 'immer';
-import { atom, useAtom, useAtomValue, useSetAtom } from 'jotai';
 import { type ChangeEventHandler, type FC, Suspense, useCallback } from 'react';
 import {
   categorySortFieldsAtom,

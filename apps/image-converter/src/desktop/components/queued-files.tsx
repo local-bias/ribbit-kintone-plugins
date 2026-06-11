@@ -1,6 +1,6 @@
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { currentAppFileFieldsAtom, queuedFilesAtom } from '../states';
 
 export default function QueuedFiles() {

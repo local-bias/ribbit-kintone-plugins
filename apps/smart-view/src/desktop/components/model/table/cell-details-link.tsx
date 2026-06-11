@@ -1,5 +1,5 @@
 import { isMobile } from '@konomi-app/kintone-utilities';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { pluginConditionAtom } from '@/desktop/states/plugin';
 import { getQueryString } from '@/lib/cybozu';
 import { DocumentIcon } from '../../ui/document-icon';

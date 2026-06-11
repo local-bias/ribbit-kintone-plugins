@@ -1,6 +1,6 @@
+import { atom } from '@repo/jotai';
+import { atomWithDefault } from '@repo/jotai/utils';
 import { produce } from 'immer';
-import { atom } from 'jotai';
-import { atomWithDefault } from 'jotai/utils';
 import type { SetStateAction } from 'react';
 import { restorePluginConfig } from '@/lib/plugin';
 import type { PluginCondition, PluginConfig } from '@/schema/plugin-config';

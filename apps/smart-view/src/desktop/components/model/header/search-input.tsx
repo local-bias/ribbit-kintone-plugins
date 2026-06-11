@@ -1,6 +1,6 @@
 import SearchIcon from '@mui/icons-material/Search';
 import { InputAdornment, TextField } from '@mui/material';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from '@repo/jotai';
 import { handleSearchInputChangeAtom, searchTextAtom } from '../../../states/search-text';
 
 export default function SearchInput() {

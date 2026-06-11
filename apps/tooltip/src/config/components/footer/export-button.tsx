@@ -1,5 +1,5 @@
 import { PluginConfigExportButton } from '@konomi-app/kintone-utilities-react';
-import { useAtomCallback } from 'jotai/utils';
+import { useAtomCallback } from '@repo/jotai/utils';
 import { useSnackbar } from 'notistack';
 import { useCallback, useState } from 'react';
 import { sanitizePluginConfig } from '@/lib/plugin';

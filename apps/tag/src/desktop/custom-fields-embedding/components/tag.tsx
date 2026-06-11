@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { Chip } from '@mui/material';
+import { useAtom } from '@repo/jotai';
 import { produce } from 'immer';
-import { useAtom } from 'jotai';
 import type { FC } from 'react';
 import { tagDataAtom } from '../states/plugin';
 

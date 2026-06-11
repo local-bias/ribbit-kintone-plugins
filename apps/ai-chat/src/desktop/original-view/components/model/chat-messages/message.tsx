@@ -1,7 +1,7 @@
 import SendIcon from '@mui/icons-material/Send';
 import { Button, TextField } from '@mui/material';
-import { useAtomValue } from 'jotai';
-import { useAtomCallback } from 'jotai/utils';
+import { useAtomValue } from '@repo/jotai';
+import { useAtomCallback } from '@repo/jotai/utils';
 import { useSnackbar } from 'notistack';
 import type React from 'react';
 import { useCallback, useState } from 'react';

@@ -1,7 +1,7 @@
 import { keyframes } from '@emotion/react';
 import styled from '@emotion/styled';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from '@repo/jotai';
 import {
   type DragEvent,
   type FC,

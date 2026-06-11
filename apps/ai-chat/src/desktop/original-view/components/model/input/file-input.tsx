@@ -1,5 +1,5 @@
 import { PaperClipIcon } from '@heroicons/react/24/outline';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from '@repo/jotai';
 import { type ChangeEventHandler, useRef } from 'react';
 import { inputFilesAtom, selectedPluginConditionAtom } from '@/desktop/original-view/states/states';
 

@@ -1,5 +1,5 @@
 import { getYuruChara } from '@konomi-app/kintone-utilities';
-import { atom } from 'jotai';
+import { atom } from '@repo/jotai';
 import { getInitialTagData } from '@/desktop/action';
 import { TAG_CACHE_STORAGE_KEY } from '@/lib/static';
 

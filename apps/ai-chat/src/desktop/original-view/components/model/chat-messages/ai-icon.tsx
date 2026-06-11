@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { selectedPluginConditionAtom } from '@/desktop/original-view/states/states';
 import { IconAIDefault } from '../../ui/icon-ai-default';
 

@@ -1,5 +1,5 @@
+import { useAtomValue } from '@repo/jotai';
 import { cn } from '@repo/utils';
-import { useAtomValue } from 'jotai';
 import { formatSupportListAtom } from '@/lib/global-states';
 
 export default function FormatSupportList() {

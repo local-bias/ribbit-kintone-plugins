@@ -1,6 +1,5 @@
 import type { kintoneAPI } from '@konomi-app/kintone-utilities';
-import { appFormFieldsAtom, appFormLayoutState, currentAppIdAtom } from '@repo/jotai';
-import { atom } from 'jotai';
+import { appFormFieldsAtom, appFormLayoutState, atom, currentAppIdAtom } from '@repo/jotai';
 import { derive } from 'jotai-derive';
 import { GUEST_SPACE_ID } from '@/lib/global';
 import { flatLayout } from '@/lib/kintone';

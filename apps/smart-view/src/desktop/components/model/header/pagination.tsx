@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { isMobile } from '@konomi-app/kintone-utilities';
 import { Pagination } from '@mui/material';
-import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { atom, useAtomValue, useSetAtom } from '@repo/jotai';
 import {
   handlePaginationIndexChangeAtom,
   paginationChunkAtom,

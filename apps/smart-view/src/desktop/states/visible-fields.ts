@@ -1,5 +1,5 @@
-import { atom } from 'jotai';
-import { atomWithDefault } from 'jotai/utils';
+import { atom } from '@repo/jotai';
+import { atomWithDefault } from '@repo/jotai/utils';
 import type { PluginViewField } from '@/schema/plugin-config';
 import { pluginConditionAtom } from './plugin';
 

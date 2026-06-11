@@ -239,4 +239,12 @@ describe('createRelatedRecordsQuery', () => {
       'https://example.cybozu.com/k/10%2F..%2F20/show#record=101%23bad'
     );
   });
+
+  test('ゲストスペースIDを指定したレコードURLを生成する', () => {
+    vi.stubGlobal('location', { origin: 'https://example.cybozu.com' });
+
+    expect(getRecordUrl('10', '101', '5')).toBe(
+      'https://example.cybozu.com/k/guest/5/10/show#record=101'
+    );
+  });
 });

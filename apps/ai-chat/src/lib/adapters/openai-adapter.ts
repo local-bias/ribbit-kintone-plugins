@@ -18,7 +18,7 @@ import {
 } from '../endpoint-adapter';
 import { getWebSearchLocation } from '../i18n';
 import { type ChatMessageContent, OPENAI_ENDPOINT } from '../static';
-import { store } from '../store';
+import { store } from '@repo/jotai';
 
 /**
  * Response API用のコンテンツパート型定義

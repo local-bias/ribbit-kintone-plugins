@@ -1,5 +1,5 @@
 import { getAllRecords, getAppId } from '@konomi-app/kintone-utilities';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from '@repo/jotai';
 import { useEffect } from 'react';
 import { GUEST_SPACE_ID } from '@/lib/global';
 import { TAG_CACHE_STORAGE_KEY } from '@/lib/static';

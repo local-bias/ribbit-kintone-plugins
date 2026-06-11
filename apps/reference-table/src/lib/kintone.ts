@@ -5,7 +5,6 @@ import {
   type SortOrder,
 } from '../schema/plugin-config';
 import { extractComparableValues } from './field';
-import { GUEST_SPACE_ID } from './global';
 import { isRelatedQueryConditionTypeAllowedForField } from './related-query-condition';
 
 export { extractComparableValues } from './field';
@@ -234,11 +233,14 @@ export const createSortQuery = (params: { sortFieldCode: string; sortOrder: Sort
   return `order by ${quoteFieldCode(params.sortFieldCode || '$id')} ${normalizeSortOrder(params.sortOrder)}`;
 };
 
-export const getRecordUrl = (appId: string, recordId: string) => {
+export const getRecordUrl = (appId: string, recordId: string, guestSpaceId?: string) => {
   const encodedAppId = encodeURIComponent(appId);
   const encodedRecordId = encodeURIComponent(recordId);
-  const encodedGuestSpaceId = GUEST_SPACE_ID ? encodeURIComponent(String(GUEST_SPACE_ID)) : null;
-  const path = GUEST_SPACE_ID
+  const resolvedGuestSpaceId = guestSpaceId;
+  const encodedGuestSpaceId = resolvedGuestSpaceId
+    ? encodeURIComponent(String(resolvedGuestSpaceId))
+    : null;
+  const path = resolvedGuestSpaceId
     ? `/k/guest/${encodedGuestSpaceId}/${encodedAppId}/show#record=${encodedRecordId}`
     : `/k/${encodedAppId}/show#record=${encodedRecordId}`;
   return `${location.origin}${path}`;

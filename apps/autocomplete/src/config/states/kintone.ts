@@ -1,7 +1,6 @@
 import { getAllApps, getFormFields, type kintoneAPI } from '@konomi-app/kintone-utilities';
-import { currentAppIdAtom } from '@repo/jotai';
-import { atom } from 'jotai';
-import { atomFamily } from 'jotai/utils';
+import { atom, currentAppIdAtom } from '@repo/jotai';
+import { atomFamily } from '@repo/jotai/utils';
 import { eagerAtom } from 'jotai-eager';
 import { GUEST_SPACE_ID, isDev } from '@/lib/global';
 import { getConditionPropertyAtom } from './plugin';

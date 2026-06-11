@@ -3,7 +3,7 @@ import { PluginFooter } from '@konomi-app/kintone-utilities-react';
 import SaveIcon from '@mui/icons-material/Save';
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import { Button, CircularProgress } from '@mui/material';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from '@repo/jotai';
 import { type FC, useCallback } from 'react';
 import { loadingAtom } from '@/common/global-state';
 import { t } from '@/lib/i18n';

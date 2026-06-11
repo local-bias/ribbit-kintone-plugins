@@ -1,5 +1,5 @@
 import { Fab } from '@mui/material';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { Bug } from 'lucide-react';
 import { useState } from 'react';
 import {

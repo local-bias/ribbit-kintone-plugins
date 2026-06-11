@@ -1,14 +1,3 @@
-import { FC, useState } from 'react';
-
-import { bindableAppFieldsAtom, dstAppFieldsState } from '@/config/states/kintone';
-import {
-  deleteRelatedRecordsAtom,
-  dstQueryAtom,
-  isConditionIdUnselectedAtom,
-  srcQueryAtom,
-} from '@/config/states/plugin';
-import { LANGUAGE } from '@/lib/global';
-import { t } from '@/lib/i18n';
 import { JotaiSwitch, QueryBuilder } from '@konomi-app/kintone-utilities-jotai';
 import {
   PluginFormDescription,
@@ -18,7 +7,17 @@ import {
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import Tooltip from '@mui/material/Tooltip';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
+import { type FC, useState } from 'react';
+import { bindableAppFieldsAtom, dstAppFieldsState } from '@/config/states/kintone';
+import {
+  deleteRelatedRecordsAtom,
+  dstQueryAtom,
+  isConditionIdUnselectedAtom,
+  srcQueryAtom,
+} from '@/config/states/plugin';
+import { LANGUAGE } from '@/lib/global';
+import { t } from '@/lib/i18n';
 import CommonSettings from './common';
 import DeleteButton from './condition-delete-button';
 import FormBindings from './form-bindings';

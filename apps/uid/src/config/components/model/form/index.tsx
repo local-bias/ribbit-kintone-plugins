@@ -5,7 +5,7 @@ import {
   PluginFormSection,
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import type { FC } from 'react';
 import { JotaiSwitch, JotaiText } from '@/components/jotai';
 import { JotaiSelect } from '@/components/jotai/select';

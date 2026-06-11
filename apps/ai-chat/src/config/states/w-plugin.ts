@@ -1,6 +1,6 @@
+import { atom, type PrimitiveAtom } from '@repo/jotai';
+import { atomWithDefault } from '@repo/jotai/utils';
 import { produce } from 'immer';
-import { atom, type PrimitiveAtom } from 'jotai';
-import { atomWithDefault } from 'jotai/utils';
 import type { SetStateAction } from 'react';
 
 export function usePluginAtoms<

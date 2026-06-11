@@ -1,7 +1,6 @@
 import { downloadFile, type kintoneAPI } from '@konomi-app/kintone-utilities';
-import { appFormFieldsAtom, appViewsAtom, currentAppIdAtom } from '@repo/jotai';
-import { atom } from 'jotai';
-import { atomFamily } from 'jotai/utils';
+import { appFormFieldsAtom, appViewsAtom, atom, currentAppIdAtom } from '@repo/jotai';
+import { atomFamily } from '@repo/jotai/utils';
 import { entries } from 'remeda';
 import { GUEST_SPACE_ID, isDev, LANGUAGE } from '@/lib/global';
 import { isUsagePluginConditionMet, restorePluginConfig } from '@/lib/plugin';

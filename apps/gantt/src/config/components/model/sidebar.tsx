@@ -1,6 +1,6 @@
 import { BundledSidebar } from '@konomi-app/kintone-utilities-react';
 import { Skeleton } from '@mui/material';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from '@repo/jotai';
 import { type FC, Suspense, useCallback } from 'react';
 import { toast } from 'sonner';
 import { customViewsAtom } from '@/config/states/kintone';

@@ -1,6 +1,6 @@
 import SendIcon from '@mui/icons-material/Send';
 import { Button } from '@mui/material';
-import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { atom, useAtomValue, useSetAtom } from '@repo/jotai';
 import { handlePushUserMessageAtom } from '@/desktop/original-view/states/chat-history';
 import { handleSendMessageAtom } from '@/desktop/original-view/states/chat-message';
 import { isSendButtonDisabledAtom } from '@/desktop/original-view/states/states';

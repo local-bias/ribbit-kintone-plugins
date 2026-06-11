@@ -30,7 +30,7 @@ import {
   Paper,
   Typography,
 } from '@mui/material';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from '@repo/jotai';
 import { nanoid } from 'nanoid';
 import { type FC, memo, useCallback, useMemo } from 'react';
 import { currentAppFieldPropertiesAtom } from '@/desktop/states/kintone';

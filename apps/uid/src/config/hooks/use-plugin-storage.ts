@@ -1,5 +1,5 @@
 import { onFileLoad, storePluginConfig } from '@konomi-app/kintone-utilities';
-import { useAtomCallback } from 'jotai/utils';
+import { useAtomCallback } from '@repo/jotai/utils';
 import { useSnackbar } from 'notistack';
 import { type ChangeEventHandler, type ReactNode, useCallback } from 'react';
 import invariant from 'tiny-invariant';

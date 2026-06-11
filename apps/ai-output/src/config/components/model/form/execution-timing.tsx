@@ -7,7 +7,7 @@ import {
   Skeleton,
   TextField,
 } from '@mui/material';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from '@repo/jotai';
 import { Suspense } from 'react';
 import { appSpacesState } from '@/config/states/kintone';
 import { getConditionPropertyAtom } from '@/config/states/plugin';

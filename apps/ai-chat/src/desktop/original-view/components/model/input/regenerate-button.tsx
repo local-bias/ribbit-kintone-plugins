@@ -1,5 +1,5 @@
 import { Button } from '@mui/material';
-import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { atom, useAtomValue, useSetAtom } from '@repo/jotai';
 import { RotateCw } from 'lucide-react';
 import { handleSendMessageAtom } from '@/desktop/original-view/states/chat-message';
 import {

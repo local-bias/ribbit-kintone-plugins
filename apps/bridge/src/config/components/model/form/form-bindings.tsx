@@ -1,8 +1,3 @@
-import { bindingsAtom } from '@/config/states/plugin';
-import { isValidCalcExpression } from '@/lib/calc-parser';
-import { t } from '@/lib/i18n';
-import { getNewBinding } from '@/lib/plugin';
-import { Binding, BindingType } from '@/schema/plugin-config';
 import { JotaiFieldSelect } from '@konomi-app/kintone-utilities-jotai';
 import { EmbeddableInput as PrimitiveEmbeddableInput } from '@konomi-app/kintone-utilities-react';
 import AddIcon from '@mui/icons-material/Add';
@@ -18,10 +13,15 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import { useAtomValue, useSetAtom } from '@repo/jotai';
 import { produce } from 'immer';
-import { useAtomValue, useSetAtom } from 'jotai';
 import { ArrowRightIcon, Link2Icon } from 'lucide-react';
-import { FC, Suspense, useState } from 'react';
+import { type FC, Suspense, useState } from 'react';
+import { bindingsAtom } from '@/config/states/plugin';
+import { isValidCalcExpression } from '@/lib/calc-parser';
+import { t } from '@/lib/i18n';
+import { getNewBinding } from '@/lib/plugin';
+import type { Binding, BindingType } from '@/schema/plugin-config';
 import {
   bindableAppFieldsAtom,
   currentAppDateFieldsAtom,

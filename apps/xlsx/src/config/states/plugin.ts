@@ -1,7 +1,6 @@
 import { storePluginConfig } from '@konomi-app/kintone-utilities';
 import { toast } from '@konomi-app/ui';
-import { usePluginAtoms } from '@repo/jotai';
-import { atom } from 'jotai';
+import { atom, usePluginAtoms } from '@repo/jotai';
 import type { ChangeEvent } from 'react';
 import { loadingEndAtom, loadingStartAtom } from '@/common/global-state';
 import { t } from '@/lib/i18n';

@@ -1,6 +1,6 @@
 import { Checkbox, FormControlLabel, FormGroup } from '@mui/material';
-import { useAtomValue } from 'jotai';
-import { useAtomCallback } from 'jotai/utils';
+import { useAtomValue } from '@repo/jotai';
+import { useAtomCallback } from '@repo/jotai/utils';
 import { useCallback } from 'react';
 import { getConditionPropertyAtom } from '@/config/states/plugin';
 import type { PluginCondition } from '@/schema/plugin-config';

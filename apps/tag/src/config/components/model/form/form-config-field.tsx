@@ -1,5 +1,5 @@
 import { JotaiFieldSelect } from '@konomi-app/kintone-utilities-jotai';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from '@repo/jotai';
 import { type FC, Suspense } from 'react';
 import { textFieldsAtom } from '../../../states/kintone';
 import { getConditionPropertyAtom } from '../../../states/plugin';

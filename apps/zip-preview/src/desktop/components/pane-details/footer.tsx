@@ -1,5 +1,5 @@
 import { Button } from '@mui/material';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { Suspense } from 'react';
 import { detailFileBlobAtom, selectedFileDetailsAtom } from '@/desktop/public-state';
 

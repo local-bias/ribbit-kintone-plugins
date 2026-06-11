@@ -4,7 +4,7 @@ import {
   PluginFormSection,
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { getConditionPropertyAtom, isConditionIdUnselectedAtom } from '@/config/states/plugin';
 import type { ExecutionTiming } from '@/schema/plugin-config';
 import AiModelForm from './ai-model';

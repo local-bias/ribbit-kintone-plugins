@@ -1,7 +1,7 @@
 import TableRowsIcon from '@mui/icons-material/TableRows';
 import ViewModuleIcon from '@mui/icons-material/ViewModule';
 import { Button, ButtonGroup } from '@mui/material';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from '@repo/jotai';
 import type { ReactNode } from 'react';
 import {
   handleViewTypeChangeAtom,

@@ -1,7 +1,7 @@
 import { isMobile } from '@konomi-app/kintone-utilities';
 import ViewHeadlineIcon from '@mui/icons-material/ViewHeadline';
 import { Drawer, Fab } from '@mui/material';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from '@repo/jotai';
 import {
   isHistoryDrawerOpenAtom,
   isHistoryFabShownAtom,

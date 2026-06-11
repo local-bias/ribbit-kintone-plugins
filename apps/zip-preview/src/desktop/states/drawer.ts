@@ -1,5 +1,5 @@
-import { atom } from 'jotai';
-import { RESET } from 'jotai/utils';
+import { atom } from '@repo/jotai';
+import { RESET } from '@repo/jotai/utils';
 import {
   previewZipFileKeyAtom,
   previewZipFileNameAtom,

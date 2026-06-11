@@ -1,6 +1,5 @@
 import { getViews, type kintoneAPI } from '@konomi-app/kintone-utilities';
-import { appFormFieldsAtom, currentAppIdAtom } from '@repo/jotai';
-import { type Atom, atom } from 'jotai';
+import { type Atom, appFormFieldsAtom, atom, currentAppIdAtom } from '@repo/jotai';
 import { GUEST_SPACE_ID } from '@/lib/global';
 
 export const currentAppFieldsAtom: Atom<Promise<kintoneAPI.FieldProperty[]>> = atom((get) => {

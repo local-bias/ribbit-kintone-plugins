@@ -1,5 +1,4 @@
-import { store } from '@repo/jotai';
-import { Provider } from 'jotai';
+import { Provider, store } from '@repo/jotai';
 import { Toaster } from 'sonner';
 import { PluginErrorBoundary } from '@/components/error-boundary';
 import { ThemeProvider } from '@/components/theme-provider';

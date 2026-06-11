@@ -1,3 +1,4 @@
+import { isGuestSpace } from '@konomi-app/kintone-utilities';
 import {
   JotaiAppSelect,
   JotaiFieldMultiSelect,
@@ -22,7 +23,7 @@ import {
   TextField,
   Tooltip,
 } from '@mui/material';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from '@repo/jotai';
 import { Link2Icon, PlusIcon, Trash2Icon } from 'lucide-react';
 import { type ReactNode, Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -59,6 +60,7 @@ import {
   subtableFieldCodesAtom,
   targetSpaceIdAtom,
 } from '@/config/states/plugin';
+import { isDev } from '@/lib/global';
 import { getNewRelatedQueryCondition } from '@/lib/plugin';
 import {
   getFallbackRelatedQueryConditionType,
@@ -173,13 +175,30 @@ function TargetSpaceSelect() {
 
 function RelatedAppSelectComponent() {
   const relatedAppId = useAtomValue(relatedAppIdAtom);
+  const apps = useAtomValue(kintoneAppsAtom);
   const onChange = useSetAtom(handleRelatedAppChangeAtom);
+
+  const handleChange = async (appId: string) => {
+    const app = apps.find((candidate) => candidate.appId === appId);
+    let isGuestSpaceApp = false;
+    try {
+      isGuestSpaceApp = app?.spaceId ? await isGuestSpace(appId) : false;
+    } catch (error) {
+      if (isDev) {
+        console.warn('Failed to detect related app guest space:', error);
+      }
+    }
+    onChange({
+      relatedAppId: appId,
+      relatedAppGuestSpaceId: isGuestSpaceApp ? (app?.spaceId ?? '') : '',
+    });
+  };
 
   return (
     <JotaiAppSelect
       appsAtom={kintoneAppsAtom}
       appId={relatedAppId}
-      onChange={onChange}
+      onChange={(appId) => void handleChange(appId)}
       label='関連先アプリ'
       placeholder='アプリ名またはIDで検索'
       sx={{ width: 420, maxWidth: '100%' }}

@@ -1,5 +1,5 @@
+import { useAtomValue, useSetAtom } from '@repo/jotai';
 import { EditRecordDialog as SharedEditRecordDialog } from '@repo/ui';
-import { useAtomValue, useSetAtom } from 'jotai';
 import { type FC, useCallback, useMemo } from 'react';
 import { toast } from 'sonner';
 import { GUEST_SPACE_ID } from '@/lib/global';

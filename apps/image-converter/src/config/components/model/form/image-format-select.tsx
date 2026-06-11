@@ -1,5 +1,5 @@
 import { MenuItem, Skeleton, TextField } from '@mui/material';
-import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { atom, useAtomValue, useSetAtom } from '@repo/jotai';
 import { type FC, Suspense } from 'react';
 import { getConditionPropertyAtom } from '@/config/states/plugin';
 import { IMAGE_FORMAT_LIST, type ImageFormat } from '@/schema/image';

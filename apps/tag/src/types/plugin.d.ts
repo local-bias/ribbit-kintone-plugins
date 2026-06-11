@@ -1,4 +1,4 @@
-import type { PluginConfig, PluginCondition, AnyPluginConfig } from '@/schema/plugin-config';
+import type { AnyPluginConfig, PluginCondition, PluginConfig } from '@/schema/plugin-config';
 
 declare global {
   namespace Plugin {

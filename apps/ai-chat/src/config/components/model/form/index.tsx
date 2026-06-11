@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { isConditionIdUnselectedAtom } from '@/config/states/plugin';
 import AssistantForm from './form-assistants';
 import CommonForm from './form-common';

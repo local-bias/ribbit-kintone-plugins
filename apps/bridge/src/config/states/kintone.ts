@@ -1,16 +1,16 @@
-import { GUEST_SPACE_ID, isDev } from '@/lib/global';
 import {
   getAllApps,
   getAppId,
   getAppStatus,
   getFormFields,
   getSpace,
-  kintoneAPI,
+  type kintoneAPI,
   withSpaceIdFallback,
 } from '@konomi-app/kintone-utilities';
-import { atom } from 'jotai';
-import { dstAppIdAtom, dstSpaceIdAtom, isDstAppGuestSpaceAtom } from './plugin';
+import { atom } from '@repo/jotai';
 import { eagerAtom } from 'jotai-eager';
+import { GUEST_SPACE_ID, isDev } from '@/lib/global';
+import { dstAppIdAtom, dstSpaceIdAtom, isDstAppGuestSpaceAtom } from './plugin';
 
 const DISALLOWED_FIELD_TYPES: kintoneAPI.FieldPropertyType[] = [
   'SUBTABLE',
@@ -35,7 +35,7 @@ export const kintoneSpacesState = atom<Promise<kintoneAPI.rest.space.GetSpaceRes
       ...new Set(apps.filter((app) => app.spaceId).map<string>((app) => app.spaceId as string)),
     ];
 
-    let spaces: kintoneAPI.rest.space.GetSpaceResponse[] = [];
+    const spaces: kintoneAPI.rest.space.GetSpaceResponse[] = [];
     for (const id of spaceIds) {
       const space = await withSpaceIdFallback({
         spaceId: id,

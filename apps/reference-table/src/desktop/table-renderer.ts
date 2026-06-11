@@ -189,6 +189,7 @@ export const createEmptyTableRow = (columnLength: number, message: string) => {
 const createRecordLinkCell = (params: {
   row: FlatTableRow;
   relatedAppId: string;
+  relatedAppGuestSpaceId?: string;
   rowSpan?: number;
 }) => {
   const cell = createElement('td', { className: `${ROOT_CLASS}__detail-cell` });
@@ -204,7 +205,7 @@ const createRecordLinkCell = (params: {
 
   const link = document.createElement('a');
   link.className = `${ROOT_CLASS}__record-link`;
-  link.href = getRecordUrl(params.relatedAppId, recordId);
+  link.href = getRecordUrl(params.relatedAppId, recordId, params.relatedAppGuestSpaceId);
   link.title = 'レコード詳細';
   link.setAttribute('aria-label', `レコード詳細を開く（レコードID: ${recordId}）`);
   link.append(createDocumentIconElement());
@@ -356,6 +357,7 @@ export const renderTableBody = (params: {
   tbody: HTMLTableSectionElement;
   rows: FlatTableRow[];
   relatedAppId: string;
+  relatedAppGuestSpaceId?: string;
   relatedRecordFields: kintoneAPI.FieldProperty[];
   subtableFields: kintoneAPI.property.InSubtable[];
   mergeRelatedRecordFields: boolean;
@@ -368,6 +370,7 @@ export const renderTableBody = (params: {
     tbody,
     rows,
     relatedAppId,
+    relatedAppGuestSpaceId,
     relatedRecordFields,
     subtableFields,
     mergeRelatedRecordFields,
@@ -395,6 +398,7 @@ export const renderTableBody = (params: {
         createRecordLinkCell({
           row,
           relatedAppId,
+          relatedAppGuestSpaceId,
           rowSpan: mergeRelatedRecordFields ? (rowSpanByGroup.get(row.groupKey) ?? 1) : undefined,
         })
       );

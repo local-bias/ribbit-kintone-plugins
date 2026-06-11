@@ -9,9 +9,9 @@ import {
   TextField,
   Tooltip,
 } from '@mui/material';
+import { useAtomValue } from '@repo/jotai';
+import { useAtomCallback } from '@repo/jotai/utils';
 import { produce } from 'immer';
-import { useAtomValue } from 'jotai';
-import { useAtomCallback } from 'jotai/utils';
 import { type FC, Suspense, useCallback } from 'react';
 import { t } from '@/lib/i18n';
 import type { PluginExtractedInputType } from '@/schema/plugin-config';

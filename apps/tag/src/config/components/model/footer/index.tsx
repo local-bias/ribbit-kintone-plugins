@@ -3,10 +3,14 @@ import { PluginFooter } from '@konomi-app/kintone-utilities-react';
 import SaveIcon from '@mui/icons-material/Save';
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import { Button, CircularProgress } from '@mui/material';
-import { handleLoadingEndAtom, handleLoadingStartAtom, loadingAtom } from '@repo/jotai';
+import {
+  handleLoadingEndAtom,
+  handleLoadingStartAtom,
+  loadingAtom,
+  useAtomValue,
+} from '@repo/jotai';
+import { useAtomCallback } from '@repo/jotai/utils';
 import { produce } from 'immer';
-import { useAtomValue } from 'jotai';
-import { useAtomCallback } from 'jotai/utils';
 import { useSnackbar } from 'notistack';
 import { type FC, useCallback } from 'react';
 import { GUEST_SPACE_ID } from '@/lib/global';

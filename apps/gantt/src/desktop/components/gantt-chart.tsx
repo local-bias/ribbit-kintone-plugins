@@ -12,8 +12,7 @@ import {
   useSensors,
 } from '@dnd-kit/core';
 import styled from '@emotion/styled';
-import { store } from '@repo/jotai';
-import { useAtomValue } from 'jotai';
+import { store, useAtomValue } from '@repo/jotai';
 import { type FC, useCallback, useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 import { GUEST_SPACE_ID } from '@/lib/global';

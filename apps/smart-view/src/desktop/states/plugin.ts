@@ -3,8 +3,8 @@ import type {
   getSortFromQuery,
   kintoneAPI,
 } from '@konomi-app/kintone-utilities';
-import { atom } from 'jotai';
-import { atomFamily } from 'jotai/utils';
+import { atom } from '@repo/jotai';
+import { atomFamily } from '@repo/jotai/utils';
 import type { ChangeEvent } from 'react';
 import { groupBy } from 'remeda';
 import type {

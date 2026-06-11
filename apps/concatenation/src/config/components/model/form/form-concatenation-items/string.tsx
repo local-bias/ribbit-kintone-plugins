@@ -1,6 +1,6 @@
 import { FormControlLabel, Switch, TextField } from '@mui/material';
+import { useAtomCallback } from '@repo/jotai/utils';
 import { produce } from 'immer';
-import { useAtomCallback } from 'jotai/utils';
 import { type FC, useCallback } from 'react';
 import { concatenationItemsState } from '@/config/states/plugin';
 

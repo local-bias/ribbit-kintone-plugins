@@ -1,7 +1,7 @@
 import { getAllRecords } from '@konomi-app/kintone-utilities';
+import { store } from '@repo/jotai';
 import { pluginCommonConfigAtom } from '@/desktop/public-state';
 import { isDev } from '@/lib/global';
-import { store } from '@/lib/store';
 import { migrateChatHistory } from '../action';
 import { outputAppGuestSpaceIdAtom } from '../states/kintone';
 import { chatHistoriesAtom, historiesFetchedAtom } from '../states/states';

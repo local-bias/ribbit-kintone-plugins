@@ -1,7 +1,7 @@
 {
   "extends": "@repo/typescript-config/kintone.json",
   "compilerOptions": {
-    "baseUrl": ".",
+    "rootDir": ".",
     "typeRoots": ["src/types", "node_modules/@types"],
     "types": ["dompurify", "node"],
     "paths": { "@/*": ["./src/*"] }

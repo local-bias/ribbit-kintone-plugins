@@ -3,7 +3,7 @@ import {
   PluginFormSection,
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import type { FC } from 'react';
 import { isConditionIdUnselectedAtom } from '@/config/states/plugin';
 import CommonSettings from './common';

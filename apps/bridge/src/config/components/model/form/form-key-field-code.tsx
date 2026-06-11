@@ -1,8 +1,8 @@
-import { t } from '@/lib/i18n';
 import { JotaiFieldSelect } from '@konomi-app/kintone-utilities-jotai';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from '@repo/jotai';
 import { Link2Icon } from 'lucide-react';
-import { FC } from 'react';
+import type { FC } from 'react';
+import { t } from '@/lib/i18n';
 import { bindableAppFieldsAtom, dstAppFieldsState } from '../../../states/kintone';
 import { dstKeyFieldCodeAtom, srcKeyFieldCodeAtom } from '../../../states/plugin';
 

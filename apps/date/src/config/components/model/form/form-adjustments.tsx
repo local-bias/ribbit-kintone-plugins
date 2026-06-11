@@ -12,7 +12,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import { useAtom } from 'jotai';
+import { useAtom } from '@repo/jotai';
 import { type FC, Fragment, Suspense } from 'react';
 import { basisFieldsState } from '@/config/states/kintone';
 import { adjustmentsAtom } from '@/config/states/plugin';

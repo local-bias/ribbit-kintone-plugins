@@ -4,7 +4,7 @@ import {
   PluginFormSection,
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
-import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { atom, useAtomValue, useSetAtom } from '@repo/jotai';
 import { targetFieldsAtom } from '@/config/states/kintone';
 import { basisFieldCodeAtom, basisTypeAtom } from '@/config/states/plugin';
 import { t } from '@/lib/i18n';

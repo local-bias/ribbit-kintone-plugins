@@ -51,6 +51,8 @@ export const PluginConditionV1Schema = z.object({
   targetSpaceId: z.string(),
   /** 関連レコードを取得するアプリID */
   relatedAppId: z.string(),
+  /** 関連先アプリがゲストスペース内にある場合のゲストスペースID */
+  relatedAppGuestSpaceId: z.string().default(''),
   /** このアプリ側で照合に使うフィールドコード */
   currentAppFieldCode: z.string(),
   /** 関連先アプリ側で照合に使うフィールドコード */

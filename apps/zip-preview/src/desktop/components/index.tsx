@@ -1,5 +1,4 @@
-import { store } from '@repo/jotai';
-import { Provider } from 'jotai';
+import { Provider, store } from '@repo/jotai';
 import Drawer from './drawer';
 
 export default function App() {

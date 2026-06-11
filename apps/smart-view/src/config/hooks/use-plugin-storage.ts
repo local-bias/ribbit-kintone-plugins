@@ -1,5 +1,5 @@
 import { storePluginConfig } from '@konomi-app/kintone-utilities';
-import { useAtomCallback } from 'jotai/utils';
+import { useAtomCallback } from '@repo/jotai/utils';
 import { useSnackbar } from 'notistack';
 import { useCallback } from 'react';
 import { t } from '@/lib/i18n';

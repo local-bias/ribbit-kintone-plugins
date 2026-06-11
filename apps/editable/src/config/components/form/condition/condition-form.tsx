@@ -4,7 +4,7 @@ import { PluginFormSection, PluginFormTitle } from '@konomi-app/kintone-utilitie
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { FormControlLabel, IconButton, MenuItem, Switch, TextField, Tooltip } from '@mui/material';
-import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { atom, useAtomValue, useSetAtom } from '@repo/jotai';
 import type { FC, FCX } from 'react';
 import { clone } from 'remeda';
 import { currentAppFormFieldsAtom } from '@/config/states/kintone';

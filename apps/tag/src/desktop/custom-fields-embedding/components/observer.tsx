@@ -1,5 +1,5 @@
 import { getCurrentRecord, setCurrentRecord } from '@konomi-app/kintone-utilities';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { type FC, useEffect } from 'react';
 import { pluginConditionAtom, tagDataAtom } from '../states/plugin';
 

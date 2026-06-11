@@ -1,5 +1,5 @@
 import { Autocomplete, Skeleton, TextField } from '@mui/material';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from '@repo/jotai';
 import { type FC, memo, Suspense } from 'react';
 import { customizeViewsAtom } from '@/config/states/kintone';
 import { getConditionPropertyAtom } from '@/config/states/plugin';

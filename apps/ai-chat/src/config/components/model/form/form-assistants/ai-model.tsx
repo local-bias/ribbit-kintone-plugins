@@ -1,5 +1,5 @@
 import { Autocomplete, Skeleton, TextField } from '@mui/material';
-import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { atom, useAtomValue, useSetAtom } from '@repo/jotai';
 import { Suspense } from 'react';
 import { selectableModelsAtom } from '@/config/states/ai';
 import { aiModelAtom } from '@/config/states/plugin';

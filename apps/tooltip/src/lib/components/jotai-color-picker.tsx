@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { TextField, type TextFieldProps } from '@mui/material';
-import { type PrimitiveAtom, useAtomValue } from 'jotai';
-import { useAtomCallback } from 'jotai/utils';
+import { type PrimitiveAtom, useAtomValue } from '@repo/jotai';
+import { useAtomCallback } from '@repo/jotai/utils';
 import { type ChangeEventHandler, type ComponentType, Suspense, useCallback } from 'react';
 
 type Props = {

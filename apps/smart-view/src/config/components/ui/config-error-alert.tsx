@@ -1,6 +1,6 @@
 import { storeStorage } from '@konomi-app/kintone-utilities';
 import { Alert, AlertTitle, Button, Stack } from '@mui/material';
-import { useAtom } from 'jotai';
+import { useAtom } from '@repo/jotai';
 import { enqueueSnackbar } from 'notistack';
 import type { FC } from 'react';
 import { t } from '@/lib/i18n';

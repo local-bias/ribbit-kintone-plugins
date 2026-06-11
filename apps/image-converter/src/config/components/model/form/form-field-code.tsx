@@ -1,5 +1,5 @@
 import { JotaiFieldSelect } from '@konomi-app/kintone-utilities-jotai';
-import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { atom, useAtomValue, useSetAtom } from '@repo/jotai';
 import { currentAppFileFieldsAtom } from '@/config/states/kintone';
 import { getConditionPropertyAtom } from '@/config/states/plugin';
 

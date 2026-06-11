@@ -1,10 +1,10 @@
 import { css } from '@emotion/css';
 import { getQuery, getSortFromQuery } from '@konomi-app/kintone-utilities';
+import { store } from '@repo/jotai';
 import { createRoot, type Root } from 'react-dom/client';
 import { listener } from '@/lib/listener';
 import { restorePluginConfig } from '@/lib/plugin';
 import { VIEW_ROOT_ID } from '@/lib/statics';
-import { store } from '@/lib/store';
 import { showNotification } from '@/lib/utilities';
 import App from './app';
 import { initializeAppFormLayout } from './initialize-app-form-layout';

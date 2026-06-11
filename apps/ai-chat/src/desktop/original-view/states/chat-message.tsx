@@ -1,4 +1,4 @@
-import { atom } from 'jotai';
+import { atom } from '@repo/jotai';
 import { fetchAICompletion } from '@/desktop/original-view/action';
 import {
   aiStateAtom,

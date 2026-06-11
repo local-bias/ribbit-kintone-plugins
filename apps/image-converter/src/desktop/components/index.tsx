@@ -1,8 +1,7 @@
-import { Provider } from 'jotai';
+import { Provider, store } from '@repo/jotai';
 import { SnackbarProvider } from 'notistack';
 import { ThemeProvider } from '@/components/theme-provider';
 import ImageDropzone from '@/desktop/components/drop-zone';
-import { store } from '@/lib/store';
 import QueuedFiles from './queued-files';
 
 export default function App({ conditionId }: { conditionId: string }) {

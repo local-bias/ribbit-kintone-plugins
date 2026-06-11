@@ -1,8 +1,3 @@
-import { FC, Suspense } from 'react';
-
-import { srcAppStatusState } from '@/config/states/kintone';
-import { processActionsAtom, processStatusesAtom, triggerEventsAtom } from '@/config/states/plugin';
-import { t } from '@/lib/i18n';
 import {
   JotaiActionMultiSelect,
   JotaiStatusMultiSelect,
@@ -17,7 +12,11 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
 import Skeleton from '@mui/material/Skeleton';
 import Tooltip from '@mui/material/Tooltip';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from '@repo/jotai';
+import { type FC, Suspense } from 'react';
+import { srcAppStatusState } from '@/config/states/kintone';
+import { processActionsAtom, processStatusesAtom, triggerEventsAtom } from '@/config/states/plugin';
+import { t } from '@/lib/i18n';
 
 const PREMIUM_ONLY_TOOLTIP = 'この機能はアプリ間連携プラグイン プラスでのみ利用可能です';
 const PREMIUM_ONLY_EVENTS = new Set(['delete', 'process']);

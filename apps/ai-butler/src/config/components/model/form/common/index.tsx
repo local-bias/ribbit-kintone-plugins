@@ -5,7 +5,7 @@ import {
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
 import { Autocomplete, FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from '@repo/jotai';
 import { getCommonPropertyAtom } from '@/config/states/plugin';
 import { DEFAULT_BASE_URLS, DEFAULT_MODELS, PROVIDER_LABELS } from '@/lib/static';
 import { AI_PROVIDER_TYPES } from '@/schema/plugin-config';

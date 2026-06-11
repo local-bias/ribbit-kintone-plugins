@@ -1,5 +1,5 @@
 import { PluginConfigImportButton } from '@konomi-app/kintone-utilities-react';
-import { useSetAtom } from 'jotai';
+import { useSetAtom } from '@repo/jotai';
 import { type FC, memo } from 'react';
 import { handlePluginConfigImportAtom } from '../../../states/plugin';
 

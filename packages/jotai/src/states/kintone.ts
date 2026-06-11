@@ -1,12 +1,15 @@
 import {
+  getAllApps,
   getAppId,
   getFormFields,
   getFormLayout,
+  getSpace,
   getViews,
   type kintoneAPI,
+  withSpaceIdFallback,
 } from '@konomi-app/kintone-utilities';
 import { atom } from 'jotai';
-import { atomFamily } from 'jotai/utils';
+import { atomFamily } from 'jotai-family';
 import { isDeepEqual } from 'remeda';
 import invariant from 'tiny-invariant';
 
@@ -54,4 +57,29 @@ export const appViewsAtom = atomFamily(
       { ...a, preview: !!a.preview, debug: !!a.debug },
       { ...b, preview: !!b.preview, debug: !!b.debug }
     )
+);
+
+export const allKintoneAppsAtom = atom<Promise<kintoneAPI.App[]>>(async () => {
+  return getAllApps();
+});
+
+export const appWithSpaceAtom = atomFamily((appId: string) =>
+  atom<Promise<(kintoneAPI.App & { space: kintoneAPI.rest.space.GetSpaceResponse | null }) | null>>(
+    async (get) => {
+      const apps = await get(allKintoneAppsAtom);
+      const app = apps.find((a) => a.appId === appId);
+      if (!app) return null;
+
+      if (!app.spaceId) {
+        return { ...app, space: null };
+      }
+
+      const space = await withSpaceIdFallback({
+        spaceId: app.spaceId,
+        func: getSpace,
+        funcParams: { id: app.spaceId },
+      });
+      return { ...app, space };
+    }
+  )
 );

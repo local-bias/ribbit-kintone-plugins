@@ -1,9 +1,9 @@
 import { PluginConditionDeleteButton } from '@konomi-app/kintone-utilities-react';
 import { toast } from '@konomi-app/ui';
+import { useAtomValue, useSetAtom } from '@repo/jotai';
 import { produce } from 'immer';
-import { useAtomValue, useSetAtom } from 'jotai';
-import { FC, memo } from 'react';
-import { selectedConditionIdState, pluginConfigAtom } from '../../../states/plugin';
+import { type FC, memo } from 'react';
+import { pluginConfigAtom, selectedConditionIdState } from '../../../states/plugin';
 
 const Container: FC = () => {
   const storage = useAtomValue(pluginConfigAtom);

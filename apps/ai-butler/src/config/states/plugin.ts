@@ -1,8 +1,7 @@
 import { onFileLoad, storePluginConfig } from '@konomi-app/kintone-utilities';
 import { toast } from '@konomi-app/ui';
-import { handleLoadingEndAtom, handleLoadingStartAtom, usePluginAtoms } from '@repo/jotai';
+import { atom, handleLoadingEndAtom, handleLoadingStartAtom, usePluginAtoms } from '@repo/jotai';
 import { saveAsJson } from '@repo/utils';
-import { atom } from 'jotai';
 import type { ChangeEvent, ReactNode } from 'react';
 import invariant from 'tiny-invariant';
 import { PLUGIN_NAME } from '@/lib/constants';

@@ -5,8 +5,7 @@ import {
   updateAllRecords,
   updateRecord,
 } from '@konomi-app/kintone-utilities';
-import { currentAppIdAtom } from '@repo/jotai';
-import { atom, type Getter, type Setter } from 'jotai';
+import { atom, currentAppIdAtom, type Getter, type Setter } from '@repo/jotai';
 import { nanoid } from 'nanoid';
 import type { AIChatMessage } from '@/lib/ai';
 import { chatComplete } from '@/lib/ai';

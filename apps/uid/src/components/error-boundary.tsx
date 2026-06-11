@@ -1,10 +1,10 @@
 import styled from '@emotion/styled';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
 import { Alert, AlertTitle, Button } from '@mui/material';
-import config from 'plugin.config.mjs';
 import type React from 'react';
 import { type FC, useState } from 'react';
 import { ErrorBoundary, type FallbackProps } from 'react-error-boundary';
+import config from '@/../plugin.config.mjs';
 import { URL_INQUIRY } from '@/lib/constants';
 
 const ErrorFallbackComponent: FC<FallbackProps & { className?: string }> = ({

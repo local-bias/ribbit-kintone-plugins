@@ -6,8 +6,8 @@ import {
   PluginFormSection,
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
-import { useAtomValue } from 'jotai';
-import { useAtomCallback } from 'jotai/utils';
+import { useAtomValue } from '@repo/jotai';
+import { useAtomCallback } from '@repo/jotai/utils';
 import { useCallback } from 'react';
 import { conditionEmojiAtom, conditionTypeAtom } from '@/config/states/plugin';
 

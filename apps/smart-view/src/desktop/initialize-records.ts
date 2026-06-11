@@ -4,10 +4,10 @@ import {
   getYuruChara,
   type kintoneAPI,
 } from '@konomi-app/kintone-utilities';
+import { store } from '@repo/jotai';
 import { GUEST_SPACE_ID, isProd } from '@/lib/global';
 import { t } from '@/lib/i18n';
 import { getQuickSearchString } from '@/lib/kintone';
-import { store } from '@/lib/store';
 import type { PluginCondition } from '@/schema/plugin-config';
 import { currentAppIdAtom } from './states/kintone';
 import { errorAtom } from './states/plugin';

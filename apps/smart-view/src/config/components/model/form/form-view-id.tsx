@@ -1,5 +1,5 @@
 import { MenuItem, Skeleton, TextField } from '@mui/material';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from '@repo/jotai';
 import { type ChangeEventHandler, type FC, Suspense } from 'react';
 import { t } from '@/lib/i18n';
 import { customViewsAtom } from '../../../states/kintone';

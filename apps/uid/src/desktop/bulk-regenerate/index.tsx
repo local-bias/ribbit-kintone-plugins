@@ -1,9 +1,9 @@
 import { css } from '@emotion/css';
 import { getHeaderSpace } from '@konomi-app/kintone-utilities';
 import { ComponentManager } from '@konomi-app/kintone-utilities-react';
+import { store } from '@repo/jotai';
 import { manager } from '@/lib/event-manager';
 import { isProd } from '@/lib/global';
-import { store } from '@/lib/store';
 import { validPluginConditionsAtom } from '../public-state';
 import App from './components';
 

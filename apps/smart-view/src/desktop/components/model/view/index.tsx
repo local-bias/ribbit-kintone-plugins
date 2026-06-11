@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import type { PropsWithChildren } from 'react';
 import { errorAtom, viewTypeAtom } from '@/desktop/states/plugin';
 import { isOriginalTableShownAtom } from '@/desktop/states/records';

@@ -1,4 +1,4 @@
-import { createStore, Provider } from 'jotai';
+import { createStore, Provider } from '@repo/jotai';
 import { type FC, useMemo } from 'react';
 import { Autocomplete } from '@/desktop/autocomplete/components/autocomplete';
 import { PluginErrorBoundary } from '@/lib/components/error-boundary';

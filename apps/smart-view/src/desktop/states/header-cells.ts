@@ -1,5 +1,5 @@
 import type { kintoneAPI } from '@konomi-app/kintone-utilities';
-import { atom } from 'jotai';
+import { atom } from '@repo/jotai';
 import { fieldPropertiesAtom, propertiesReadyAtom } from './kintone';
 import { resolvedTableColumnsAtom } from './plugin';
 

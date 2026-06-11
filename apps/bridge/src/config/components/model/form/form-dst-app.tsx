@@ -1,8 +1,8 @@
-import { dstAppIdAtom, dstSpaceIdAtom, isDstAppGuestSpaceAtom } from '@/config/states/plugin';
 import { JotaiAppSelect } from '@konomi-app/kintone-utilities-jotai';
 import { Skeleton } from '@mui/material';
-import { useAtomValue, useSetAtom } from 'jotai';
-import { FC, Suspense } from 'react';
+import { useAtomValue, useSetAtom } from '@repo/jotai';
+import { type FC, Suspense } from 'react';
+import { dstAppIdAtom, dstSpaceIdAtom, isDstAppGuestSpaceAtom } from '@/config/states/plugin';
 import { kintoneAppsState, kintoneSpacesState } from '../../../states/kintone';
 
 const Component: FC = () => {

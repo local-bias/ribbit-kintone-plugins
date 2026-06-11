@@ -10,7 +10,7 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from '@repo/jotai';
 import { type FC, useCallback, useState } from 'react';
 import { toast } from 'sonner';
 import { GUEST_SPACE_ID } from '@/lib/global';

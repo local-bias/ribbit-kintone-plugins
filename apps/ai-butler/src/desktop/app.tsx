@@ -1,5 +1,4 @@
-import { store } from '@repo/jotai';
-import { Provider, useAtomValue } from 'jotai';
+import { Provider, store, useAtomValue } from '@repo/jotai';
 import { Toaster } from 'sonner';
 import { ThemeProvider } from '@/components/theme-provider';
 import { pluginConfigAtom } from '@/desktop/public-state';

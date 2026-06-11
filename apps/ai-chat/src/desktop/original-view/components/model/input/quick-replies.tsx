@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { Button, Tooltip } from '@mui/material';
-import { useAtomValue, useSetAtom } from 'jotai';
-import { useAtomCallback } from 'jotai/utils';
+import { useAtomValue, useSetAtom } from '@repo/jotai';
+import { useAtomCallback } from '@repo/jotai/utils';
 import { nanoid } from 'nanoid';
 import { useCallback } from 'react';
 import { handleSendMessageAtom } from '@/desktop/original-view/states/chat-message';

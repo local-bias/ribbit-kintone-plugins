@@ -1,7 +1,7 @@
+import { JotaiSwitch } from '@konomi-app/kintone-utilities-jotai';
+import { useAtomValue } from '@repo/jotai';
 import { createIfNotExistsAtom, deleteRelatedRecordsAtom } from '@/config/states/plugin';
 import { t } from '@/lib/i18n';
-import { JotaiSwitch } from '@konomi-app/kintone-utilities-jotai';
-import { useAtomValue } from 'jotai';
 
 export default function FormCreateIfNotExists() {
   const deleteRelatedRecords = useAtomValue(deleteRelatedRecordsAtom);

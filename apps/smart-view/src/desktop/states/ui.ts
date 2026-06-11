@@ -1,4 +1,4 @@
-import { atom } from 'jotai';
+import { atom } from '@repo/jotai';
 
 /**
  * ローディングカウンターを管理する内部atom

@@ -1,8 +1,13 @@
 import { onFileLoad, storePluginConfig } from '@konomi-app/kintone-utilities';
 import { toast } from '@konomi-app/ui';
-import { handleLoadingEndAtom, handleLoadingStartAtom, usePluginAtoms } from '@repo/jotai';
+import {
+  atom,
+  handleLoadingEndAtom,
+  handleLoadingStartAtom,
+  usePluginAtoms,
+  type WritableAtom,
+} from '@repo/jotai';
 import { saveAsJson } from '@repo/utils';
-import { atom, type WritableAtom } from 'jotai';
 import type { ChangeEvent, ReactNode } from 'react';
 import invariant from 'tiny-invariant';
 import { PLUGIN_NAME } from '@/lib/constants';
@@ -38,6 +43,7 @@ export const {
 
 export const targetSpaceIdAtom = getConditionPropertyAtom('targetSpaceId');
 export const relatedAppIdAtom = getConditionPropertyAtom('relatedAppId');
+export const relatedAppGuestSpaceIdAtom = getConditionPropertyAtom('relatedAppGuestSpaceId');
 export const currentAppFieldCodeAtom = getConditionPropertyAtom('currentAppFieldCode');
 export const relatedAppFieldCodeAtom = getConditionPropertyAtom('relatedAppFieldCode');
 export const relatedQueryConditionsAtom = getConditionPropertyAtom('relatedQueryConditions');
@@ -87,27 +93,31 @@ const updateFirstRelatedQueryCondition = (
   ];
 };
 
-export const handleRelatedAppChangeAtom = atom(null, (get, set, relatedAppId: string) => {
-  const selectedConditionId = get(selectedConditionIdAtom);
-  set(pluginConfigAtom, (prev) => ({
-    ...prev,
-    conditions: prev.conditions.map((condition) =>
-      condition.id === selectedConditionId
-        ? {
-            ...condition,
-            relatedAppId,
-            relatedAppFieldCode: '',
-            relatedQueryConditions: [getNewRelatedQueryCondition()],
-            relatedSubtableCode: '',
-            relatedRecordFieldCodes: [],
-            subtableFieldCodes: [],
-            filterSubtableRowsByMatchingField: false,
-            sortFieldCode: '$id',
-          }
-        : condition
-    ),
-  }));
-});
+export const handleRelatedAppChangeAtom = atom(
+  null,
+  (get, set, params: { relatedAppId: string; relatedAppGuestSpaceId: string }) => {
+    const selectedConditionId = get(selectedConditionIdAtom);
+    set(pluginConfigAtom, (prev) => ({
+      ...prev,
+      conditions: prev.conditions.map((condition) =>
+        condition.id === selectedConditionId
+          ? {
+              ...condition,
+              relatedAppId: params.relatedAppId,
+              relatedAppGuestSpaceId: params.relatedAppGuestSpaceId,
+              relatedAppFieldCode: '',
+              relatedQueryConditions: [getNewRelatedQueryCondition()],
+              relatedSubtableCode: '',
+              relatedRecordFieldCodes: [],
+              subtableFieldCodes: [],
+              filterSubtableRowsByMatchingField: false,
+              sortFieldCode: '$id',
+            }
+          : condition
+      ),
+    }));
+  }
+);
 
 export const handleRelatedAppFieldChangeAtom = atom(null, (get, set, fieldCode: string) => {
   const selectedConditionId = get(selectedConditionIdAtom);

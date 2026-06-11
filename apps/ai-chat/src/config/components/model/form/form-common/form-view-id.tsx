@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { MenuItem, Skeleton, TextField } from '@mui/material';
-import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { atom, useAtomValue, useSetAtom } from '@repo/jotai';
 import { type ChangeEvent, Suspense } from 'react';
 import { customViewsState } from '@/config/states/kintone';
 import { viewIdAtom } from '@/config/states/plugin';

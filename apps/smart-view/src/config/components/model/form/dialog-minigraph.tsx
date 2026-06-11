@@ -5,9 +5,9 @@ import {
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
 import { FormControlLabel, MenuItem, Switch, TextField } from '@mui/material';
+import { useAtomValue } from '@repo/jotai';
+import { useAtomCallback } from '@repo/jotai/utils';
 import { produce } from 'immer';
-import { useAtomValue } from 'jotai';
-import { useAtomCallback } from 'jotai/utils';
 import { Suspense, useCallback } from 'react';
 import { appFieldsAtom } from '@/config/states/app-fields';
 import {

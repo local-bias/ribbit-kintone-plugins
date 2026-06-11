@@ -1,6 +1,6 @@
 import BugReportIcon from '@mui/icons-material/BugReport';
 import { Fab, Tooltip } from '@mui/material';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import type { FC } from 'react';
 import {
   Dialog,

@@ -1,7 +1,7 @@
+import { store } from '@repo/jotai';
 import { GUEST_SPACE_ID, isProd } from '@/lib/global';
 import { getFieldsWithoutIgnores } from '@/lib/kintone';
 import { PLUGIN_NAME } from '@/lib/statics';
-import { store } from '@/lib/store';
 import { currentAppIdAtom, fieldPropertiesAtom, propertiesReadyAtom } from './states/kintone';
 
 export const initializeAppProperties = async () => {

@@ -11,8 +11,8 @@ import {
   TextField,
   Tooltip,
 } from '@mui/material';
-import { useAtomValue } from 'jotai';
-import { useAtomCallback } from 'jotai/utils';
+import { useAtomValue } from '@repo/jotai';
+import { useAtomCallback } from '@repo/jotai/utils';
 import { useCallback } from 'react';
 import { getConditionPropertyAtom } from '@/config/states/plugin';
 import { getNewRule } from '@/lib/plugin';

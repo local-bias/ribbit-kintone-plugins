@@ -1,7 +1,7 @@
 import { getAppId, getViews, type kintoneAPI, updateViews } from '@konomi-app/kintone-utilities';
 import { Button } from '@mui/material';
-import { useAtomValue } from 'jotai';
-import { useAtomCallback } from 'jotai/utils';
+import { useAtomValue } from '@repo/jotai';
+import { useAtomCallback } from '@repo/jotai/utils';
 import { useSnackbar } from 'notistack';
 import { type FC, useCallback } from 'react';
 import invariant from 'tiny-invariant';

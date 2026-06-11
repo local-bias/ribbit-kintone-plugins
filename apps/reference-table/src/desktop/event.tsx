@@ -1,14 +1,16 @@
 import {
+  getAllApps,
   getAllRecords,
   getApp,
   getFormFields,
   getSpaceElement,
+  isGuestSpace,
   type kintoneAPI,
 } from '@konomi-app/kintone-utilities';
 import { buildConditionQuery } from '@konomi-app/kintone-utilities-react';
+import { store } from '@repo/jotai';
 import { manager } from '@/lib/event-manager';
-import { GUEST_SPACE_ID, isDev } from '@/lib/global';
-import { store } from '@/lib/jotai';
+import { isDev } from '@/lib/global';
 import { createRelatedRecordsQueryFromConditions, extractComparableValues } from '@/lib/kintone';
 import {
   getFallbackRelatedQueryConditionType,
@@ -319,9 +321,11 @@ const renderRecords = (params: {
   condition: PluginCondition;
   relatedFields: kintoneAPI.FieldProperties;
   appName: string;
+  relatedAppGuestSpaceId?: string;
   subtableRowFilter?: SubtableRowFilter;
 }) => {
-  const { root, condition, relatedFields, appName, subtableRowFilter } = params;
+  const { root, condition, relatedFields, appName, relatedAppGuestSpaceId, subtableRowFilter } =
+    params;
   const relatedRecordFields = resolveRelatedRecordFields(relatedFields, condition);
   const subtableFields = resolveSubtableFields(relatedFields, condition);
 
@@ -571,6 +575,7 @@ const renderRecords = (params: {
       tbody,
       rows: pageRows,
       relatedAppId: condition.relatedAppId,
+      relatedAppGuestSpaceId,
       relatedRecordFields,
       subtableFields,
       mergeRelatedRecordFields,
@@ -587,7 +592,11 @@ const renderRecords = (params: {
     if (fileLoadRequests.length) {
       const versionAtStart = fileLoadVersion;
       setTimeout(() => {
-        loadFilesBatch(fileLoadRequests, GUEST_SPACE_ID, () => fileLoadVersion !== versionAtStart);
+        loadFilesBatch(
+          fileLoadRequests,
+          relatedAppGuestSpaceId,
+          () => fileLoadVersion !== versionAtStart
+        );
       }, 0);
     }
   };
@@ -646,6 +655,48 @@ const getFetchFields = (condition: PluginCondition) => {
   );
 };
 
+const getRelatedAppGuestSpaceId = (condition: PluginCondition) => {
+  return condition.relatedAppGuestSpaceId || undefined;
+};
+
+const resolveRelatedApp = async (condition: PluginCondition) => {
+  const fallbackGuestSpaceId = getRelatedAppGuestSpaceId(condition);
+  let app: kintoneAPI.App;
+
+  try {
+    app = await getApp({ id: condition.relatedAppId, debug: isDev });
+  } catch (error) {
+    const apps = await getAllApps({ debug: isDev }).catch(() => []);
+    const foundApp = apps.find((candidate) => candidate.appId === condition.relatedAppId);
+    if (foundApp) {
+      app = foundApp;
+    } else if (fallbackGuestSpaceId) {
+      app = await getApp({
+        id: condition.relatedAppId,
+        guestSpaceId: fallbackGuestSpaceId,
+        debug: isDev,
+      });
+    } else {
+      throw new Error(`Related app not found: ${condition.relatedAppId}`, { cause: error });
+    }
+  }
+
+  let isGuestSpaceApp = false;
+  try {
+    isGuestSpaceApp = app.spaceId ? await isGuestSpace(condition.relatedAppId) : false;
+  } catch (error) {
+    if (isDev) {
+      console.warn('Failed to detect related app guest space:', error);
+    }
+    isGuestSpaceApp = false;
+  }
+
+  return {
+    app,
+    guestSpaceId: isGuestSpaceApp ? (app.spaceId ?? undefined) : undefined,
+  };
+};
+
 const renderCondition = async (condition: PluginCondition, record: kintoneAPI.RecordData) => {
   const spaceElement = getSpaceElement(condition.targetSpaceId);
   if (!spaceElement) {
@@ -661,18 +712,12 @@ const renderCondition = async (condition: PluginCondition, record: kintoneAPI.Re
   const requestScope = createConditionRequestScope(condition.id);
 
   try {
-    const [{ properties: relatedFields }, { name: appName }] = await Promise.all([
-      getFormFields({
-        app: condition.relatedAppId,
-        guestSpaceId: GUEST_SPACE_ID,
-        debug: isDev,
-      }),
-      getApp({
-        id: condition.relatedAppId,
-        guestSpaceId: GUEST_SPACE_ID,
-        debug: isDev,
-      }),
-    ]);
+    const { app, guestSpaceId: relatedAppGuestSpaceId } = await resolveRelatedApp(condition);
+    const { properties: relatedFields } = await getFormFields({
+      app: condition.relatedAppId,
+      guestSpaceId: relatedAppGuestSpaceId,
+      debug: isDev,
+    });
 
     const { conditions: resolvedConditions, missingFieldCode } = resolveRelatedQueryConditions({
       condition,
@@ -737,7 +782,8 @@ const renderCondition = async (condition: PluginCondition, record: kintoneAPI.Re
       root,
       condition,
       relatedFields,
-      appName,
+      appName: app.name,
+      relatedAppGuestSpaceId,
       subtableRowFilter,
     });
     if (!renderer) {
@@ -748,7 +794,7 @@ const renderCondition = async (condition: PluginCondition, record: kintoneAPI.Re
       app: condition.relatedAppId,
       fields: fetchFields,
       query,
-      guestSpaceId: GUEST_SPACE_ID,
+      guestSpaceId: relatedAppGuestSpaceId,
       debug: isDev,
       onStep: ({ incremental }) => {
         if (!requestScope.isCurrent()) {

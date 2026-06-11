@@ -109,6 +109,7 @@ describe('reference table plugin config helpers', () => {
     });
 
     expect(migrated.conditions[0]).toMatchObject({
+      relatedAppGuestSpaceId: '',
       relatedQueryConditions: [
         {
           id: expect.any(String),

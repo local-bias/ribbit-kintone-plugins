@@ -5,9 +5,8 @@ import {
   updateRecord,
   uploadFile,
 } from '@konomi-app/kintone-utilities';
-import { currentAppIdAtom, handleLoadingEndAtom, handleLoadingStartAtom } from '@repo/jotai';
-import { atom } from 'jotai';
-import { atomFamily } from 'jotai/utils';
+import { atom, currentAppIdAtom, handleLoadingEndAtom, handleLoadingStartAtom } from '@repo/jotai';
+import { atomFamily } from '@repo/jotai/utils';
 import { enqueueSnackbar } from 'notistack';
 import {
   currentKintoneEventTypeAtom,

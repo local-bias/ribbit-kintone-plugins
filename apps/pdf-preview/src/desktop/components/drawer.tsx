@@ -1,6 +1,6 @@
 import { LoaderWithLabel } from '@konomi-app/ui-react';
 import { Drawer as MuiDrawer } from '@mui/material';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from '@repo/jotai';
 import { FileX2 } from 'lucide-react';
 import { Suspense } from 'react';
 import { PluginErrorBoundary } from '@/components/error-boundary';

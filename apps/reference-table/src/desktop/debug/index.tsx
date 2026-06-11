@@ -1,7 +1,7 @@
-import { manager } from '@/lib/event-manager';
-import { isProd } from '@/lib/global';
 import { ComponentManager } from '@konomi-app/kintone-utilities-react';
 import { nanoid } from 'nanoid';
+import { manager } from '@/lib/event-manager';
+import { isProd } from '@/lib/global';
 import App from './app';
 
 const ROOT_ID = nanoid();

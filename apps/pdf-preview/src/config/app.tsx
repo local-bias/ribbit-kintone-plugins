@@ -7,9 +7,8 @@ import {
 } from '@konomi-app/kintone-utilities-react';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
 import { URL_BANNER, URL_PROMOTION } from '@repo/constants';
-import { store } from '@repo/jotai';
+import { Provider, store } from '@repo/jotai';
 import { SwimmingIcon } from '@repo/ui';
-import { Provider } from 'jotai';
 import { SnackbarProvider } from 'notistack';
 import { Suspense } from 'react';
 import config from '@/../plugin.config.mjs';

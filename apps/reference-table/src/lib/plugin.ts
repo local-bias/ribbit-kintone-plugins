@@ -64,6 +64,7 @@ export const getNewCondition = (): PluginCondition => ({
   memo: '',
   targetSpaceId: '',
   relatedAppId: '',
+  relatedAppGuestSpaceId: '',
   currentAppFieldCode: '',
   relatedAppFieldCode: '',
   relatedQueryConditions: [getNewRelatedQueryCondition()],
@@ -182,6 +183,8 @@ const normalizeCondition = (condition: unknown): PluginCondition => {
     memo: typeof source.memo === 'string' ? source.memo : '',
     targetSpaceId: typeof source.targetSpaceId === 'string' ? source.targetSpaceId : '',
     relatedAppId: typeof source.relatedAppId === 'string' ? source.relatedAppId : '',
+    relatedAppGuestSpaceId:
+      typeof source.relatedAppGuestSpaceId === 'string' ? source.relatedAppGuestSpaceId : '',
     currentAppFieldCode:
       typeof source.currentAppFieldCode === 'string' ? source.currentAppFieldCode : '',
     relatedAppFieldCode:

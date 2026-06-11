@@ -1,6 +1,6 @@
 import { PluginFormDescription } from '@konomi-app/kintone-utilities-react';
 import { Skeleton } from '@mui/material';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from '@repo/jotai';
 import { Suspense } from 'react';
 import { logAppTextPropertiesState } from '@/config/states/kintone';
 import {

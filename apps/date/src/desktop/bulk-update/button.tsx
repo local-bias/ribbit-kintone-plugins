@@ -1,6 +1,5 @@
 import styled from '@emotion/styled';
-import { store } from '@repo/jotai';
-import { Provider, useAtomValue } from 'jotai';
+import { Provider, store, useAtomValue } from '@repo/jotai';
 import { type FC, Suspense } from 'react';
 import type { PluginCondition } from '@/schema/plugin-config';
 import { currentAppFormFieldsAtom } from './state';

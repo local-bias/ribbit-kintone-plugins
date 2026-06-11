@@ -10,7 +10,7 @@ import {
   ListItemText,
   Skeleton,
 } from '@mui/material';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from '@repo/jotai';
 import {
   displayChatHistoriesAtom,
   handleChatHistoryDeleteAtom,

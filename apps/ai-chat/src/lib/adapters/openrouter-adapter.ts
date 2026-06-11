@@ -12,7 +12,7 @@ import {
   type TokenUsage,
 } from '../endpoint-adapter';
 import { OPENROUTER_CHAT_COMPLETION_ENDPOINT } from '../static';
-import { store } from '../store';
+import { store } from '@repo/jotai';
 
 /**
  * OpenRouter ChatCompletionのレスポンスボディ型

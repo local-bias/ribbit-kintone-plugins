@@ -1,7 +1,7 @@
 import { getAllApps, getFormFields, type kintoneAPI } from '@konomi-app/kintone-utilities';
-import { appFormFieldsAtom, appFormLayoutState, currentAppIdAtom } from '@repo/jotai';
-import { atom } from 'jotai';
+import { appFormFieldsAtom, appFormLayoutState, atom, currentAppIdAtom } from '@repo/jotai';
 import {
+  relatedAppGuestSpaceIdAtom,
   relatedAppIdAtom,
   relatedQueryConditionsAtom,
   relatedSubtableCodeAtom,
@@ -97,6 +97,7 @@ export const currentAppSpaceFieldsAtom = atom(async (get) => {
 
 export const relatedAppFieldsAtom = atom<Promise<kintoneAPI.FieldProperty[]>>(async (get) => {
   const relatedAppId = get(relatedAppIdAtom);
+  const relatedAppGuestSpaceId = get(relatedAppGuestSpaceIdAtom) || undefined;
   if (!relatedAppId) {
     return [];
   }
@@ -104,7 +105,7 @@ export const relatedAppFieldsAtom = atom<Promise<kintoneAPI.FieldProperty[]>>(as
   const { properties } = await getFormFields({
     app: relatedAppId,
     preview: true,
-    guestSpaceId: GUEST_SPACE_ID,
+    guestSpaceId: relatedAppGuestSpaceId,
     debug: isDev,
   });
 

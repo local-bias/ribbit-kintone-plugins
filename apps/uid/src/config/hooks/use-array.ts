@@ -1,5 +1,5 @@
-import type { PrimitiveAtom } from 'jotai';
-import { useAtomCallback } from 'jotai/utils';
+import type { PrimitiveAtom } from '@repo/jotai';
+import { useAtomCallback } from '@repo/jotai/utils';
 import { useCallback } from 'react';
 
 const INVALID_INDEX_ERROR = 'Invalid index';

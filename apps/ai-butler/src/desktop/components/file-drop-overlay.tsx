@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from '@repo/jotai';
 import { useCallback, useEffect, useRef } from 'react';
 import { toast } from 'sonner';
 import { pluginConfigAtom, validPluginConditionsAtom } from '@/desktop/public-state';

@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { JotaiFieldSelect } from '@konomi-app/kintone-utilities-jotai';
 import { Skeleton } from '@mui/material';
-import { useAtom } from 'jotai';
+import { useAtom } from '@repo/jotai';
 import { type FC, memo, Suspense } from 'react';
 import { getConditionPropertyAtom } from '@/config/states/plugin';
 import { t } from '@/lib/i18n';

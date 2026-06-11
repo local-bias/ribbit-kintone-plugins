@@ -1,6 +1,6 @@
 import { downloadFile, getAppId, type kintoneAPI } from '@konomi-app/kintone-utilities';
-import { atom } from 'jotai';
-import { atomFamily } from 'jotai/utils';
+import { atom } from '@repo/jotai';
+import { atomFamily } from '@repo/jotai/utils';
 import { GUEST_SPACE_ID } from '@/lib/global';
 import { t } from '@/lib/i18n';
 import { resolvedTableColumnsAtom } from './plugin';

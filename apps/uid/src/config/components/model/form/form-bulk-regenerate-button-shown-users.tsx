@@ -3,7 +3,7 @@ import { useArray } from '@konomi-app/kintone-utilities-jotai';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton, MenuItem, Skeleton, TextField, Tooltip } from '@mui/material';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { type FC, Suspense } from 'react';
 import { cybozuGroupsAtom, cybozuOrganizationsAtom, cybozuUsersAtom } from '@/config/states/cybozu';
 import type { PluginCondition } from '@/lib/plugin';

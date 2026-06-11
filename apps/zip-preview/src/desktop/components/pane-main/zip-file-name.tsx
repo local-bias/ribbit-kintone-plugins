@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { FolderArchive } from 'lucide-react';
 import { previewZipFileNameAtom } from '../../public-state';
 

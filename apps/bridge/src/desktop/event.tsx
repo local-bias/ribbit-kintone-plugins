@@ -10,11 +10,10 @@ import {
 } from '@konomi-app/kintone-utilities';
 import type { FieldConditionValue } from '@konomi-app/kintone-utilities-react';
 import { dialog } from '@konomi-app/ui';
-import { allKintoneAppsAtom } from '@repo/jotai';
+import { allKintoneAppsAtom, store } from '@repo/jotai';
 import { manager } from '@/lib/event-manager';
 import { isDev } from '@/lib/global';
 import { t } from '@/lib/i18n';
-import { store } from '@/lib/jotai';
 import { isUsagePluginConditionMet, restorePluginConfig } from '@/lib/plugin';
 import {
   canExecuteAction,

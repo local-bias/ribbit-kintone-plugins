@@ -1,5 +1,5 @@
 import { getNumberFieldValueAsString, type kintoneAPI } from '@konomi-app/kintone-utilities';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { LANGUAGE } from '@/lib/global';
 import { appFormPropertyAtom } from '../../../states/kintone';
 

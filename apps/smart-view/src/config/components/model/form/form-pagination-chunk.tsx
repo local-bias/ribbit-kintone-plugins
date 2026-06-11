@@ -1,5 +1,5 @@
 import { MenuItem, TextField } from '@mui/material';
-import { useAtom } from 'jotai';
+import { useAtom } from '@repo/jotai';
 import type { ChangeEventHandler, FC } from 'react';
 import { t } from '@/lib/i18n';
 import { paginationChunkAtom } from '../../../states/plugin';

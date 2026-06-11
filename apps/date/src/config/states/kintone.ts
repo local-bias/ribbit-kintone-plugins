@@ -1,5 +1,4 @@
-import { appFormFieldsAtom, currentAppIdAtom } from '@repo/jotai';
-import { atom } from 'jotai';
+import { appFormFieldsAtom, atom, currentAppIdAtom } from '@repo/jotai';
 import { eagerAtom } from 'jotai-eager';
 import { GUEST_SPACE_ID } from '@/lib/global';
 

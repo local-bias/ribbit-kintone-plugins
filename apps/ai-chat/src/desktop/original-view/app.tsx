@@ -1,11 +1,10 @@
 import PreviewIcon from '@mui/icons-material/Preview';
 import { Fab, Tooltip } from '@mui/material';
-import { Provider, useAtom, useAtomValue } from 'jotai';
+import { Provider, store, useAtom, useAtomValue } from '@repo/jotai';
 import { SnackbarProvider } from 'notistack';
 import type { FC } from 'react';
 import { PluginErrorBoundary } from '@/lib/components/error-boundary';
 import { t } from '@/lib/i18n';
-import { store } from '@/lib/store';
 import { Debug } from './components/debug';
 import Layout from './components/layout';
 import ChatMessages from './components/model/chat-messages';

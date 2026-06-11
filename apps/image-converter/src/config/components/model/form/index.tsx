@@ -4,7 +4,7 @@ import {
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
 import { Accordion, AccordionDetails, AccordionSummary } from '@mui/material';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import type { FC } from 'react';
 import { JotaiSwitch, JotaiText } from '@/components/jotai';
 import {

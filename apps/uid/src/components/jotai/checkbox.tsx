@@ -5,7 +5,7 @@ import {
   type FormGroupProps,
   MenuItem,
 } from '@mui/material';
-import { type PrimitiveAtom, useAtom } from 'jotai';
+import { type PrimitiveAtom, useAtom } from '@repo/jotai';
 import { type ChangeEventHandler, type FC, forwardRef, Suspense } from 'react';
 
 type Props = {

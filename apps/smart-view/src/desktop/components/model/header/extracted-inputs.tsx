@@ -1,5 +1,5 @@
 import { Autocomplete, Skeleton, TextField, Tooltip } from '@mui/material';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from '@repo/jotai';
 import { Suspense } from 'react';
 import { currentAppFieldPropertiesAtom } from '@/desktop/states/kintone';
 import {

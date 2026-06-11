@@ -15,8 +15,13 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { FormControlLabel, IconButton, Switch, TextField, Tooltip } from '@mui/material';
-import { appFormFieldsAtom, appViewsAtom, currentAppIdAtom } from '@repo/jotai';
-import { useAtomValue, useSetAtom } from 'jotai';
+import {
+  appFormFieldsAtom,
+  appViewsAtom,
+  currentAppIdAtom,
+  useAtomValue,
+  useSetAtom,
+} from '@repo/jotai';
 import { GripVertical } from 'lucide-react';
 import { nanoid } from 'nanoid';
 import { type FC, Suspense } from 'react';

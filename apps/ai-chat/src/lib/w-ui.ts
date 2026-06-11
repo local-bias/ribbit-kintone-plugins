@@ -1,4 +1,4 @@
-import { atom } from 'jotai';
+import { atom } from '@repo/jotai';
 
 /**
  * 現在実行中の処理の数を管理するatom

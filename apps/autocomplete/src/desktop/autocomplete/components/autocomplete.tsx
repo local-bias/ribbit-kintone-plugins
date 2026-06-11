@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
-import { useAtomValue, useSetAtom } from 'jotai';
-import { useAtomCallback } from 'jotai/utils';
+import { useAtomValue, useSetAtom } from '@repo/jotai';
+import { useAtomCallback } from '@repo/jotai/utils';
 import type React from 'react';
 import { type ChangeEventHandler, type FC, type FocusEventHandler, useRef, useState } from 'react';
 import {

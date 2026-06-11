@@ -1,6 +1,6 @@
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import { Button } from '@mui/material';
-import { useSetAtom } from 'jotai';
+import { useSetAtom } from '@repo/jotai';
 import type { FC } from 'react';
 import { t } from '@/lib/i18n';
 import { listViewDialogShownAtom } from '../../../../states/importing-view-fields';

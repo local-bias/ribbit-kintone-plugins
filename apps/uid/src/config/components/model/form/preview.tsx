@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import CasinoIcon from '@mui/icons-material/Casino';
 import { Button, IconButton, TextField } from '@mui/material';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { type FC, useEffect, useState } from 'react';
 import { selectedConditionAtom } from '@/config/states/plugin';
 import { t } from '@/lib/i18n';

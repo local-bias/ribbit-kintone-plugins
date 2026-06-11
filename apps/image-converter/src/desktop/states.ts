@@ -1,7 +1,6 @@
 import type { kintoneAPI } from '@konomi-app/kintone-utilities';
-import { appFormFieldsAtom, currentAppIdAtom } from '@repo/jotai';
-import { atom } from 'jotai';
-import { atomFamily } from 'jotai/utils';
+import { appFormFieldsAtom, atom, currentAppIdAtom } from '@repo/jotai';
+import { atomFamily } from '@repo/jotai/utils';
 import { derive } from 'jotai-derive';
 import { enqueueSnackbar } from 'notistack';
 import { GUEST_SPACE_ID } from '@/lib/global';

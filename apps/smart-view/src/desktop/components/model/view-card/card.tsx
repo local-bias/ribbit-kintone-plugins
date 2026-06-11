@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import { isMobile, type kintoneAPI } from '@konomi-app/kintone-utilities';
 import { Card, IconButton, Tooltip } from '@mui/material';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import {
   cardImageFieldCodeAtom,
   cardViewFieldsAtom,

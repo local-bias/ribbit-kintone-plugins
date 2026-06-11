@@ -1,6 +1,6 @@
 import type { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { Autocomplete, Skeleton, TextField } from '@mui/material';
-import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { atom, useAtomValue, useSetAtom } from '@repo/jotai';
 import { Suspense } from 'react';
 import { allKintoneAppsState } from '@/config/states/kintone';
 import { logAppIdAtom, logAppSpaceIdAtom } from '@/config/states/plugin';

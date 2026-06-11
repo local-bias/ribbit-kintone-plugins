@@ -1,12 +1,12 @@
-import { getCommonPropertyState } from '@/config/states/plugin';
-import { t } from '@/lib/i18n';
+import { JotaiSwitch } from '@konomi-app/kintone-utilities-jotai';
 import {
   PluginFormDescription,
   PluginFormSection,
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
-import { JotaiSwitch } from '@konomi-app/kintone-utilities-jotai';
-import React, { FC } from 'react';
+import React, { type FC } from 'react';
+import { getCommonPropertyState } from '@/config/states/plugin';
+import { t } from '@/lib/i18n';
 
 const Component: FC = () => (
   <div className='p-4'>

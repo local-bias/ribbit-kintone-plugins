@@ -1,5 +1,5 @@
 import { LoaderWithLabel } from '@konomi-app/ui-react';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { FileX2 } from 'lucide-react';
 import { Suspense } from 'react';
 import { previewFileAtom } from '../../public-state';

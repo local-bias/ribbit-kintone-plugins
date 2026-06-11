@@ -3,7 +3,7 @@ import { JotaiFieldSelect } from '@konomi-app/kintone-utilities-jotai';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { IconButton, Skeleton, TextField, Tooltip } from '@mui/material';
-import { useAtom } from 'jotai';
+import { useAtom } from '@repo/jotai';
 import { Suspense, useCallback } from 'react';
 import { currentAppFieldsAtom } from '@/config/states/kintone';
 import { getConditionPropertyAtom } from '@/config/states/plugin';

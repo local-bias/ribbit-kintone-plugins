@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
 import ChatIcon from '@mui/icons-material/Chat';
 import { Tooltip } from '@mui/material';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from '@repo/jotai';
 import { useEffect } from 'react';
 import { attachedFilesAtom, chatOpenAtom, fileAttachOpenAtom } from '@/desktop/states/chat';
 

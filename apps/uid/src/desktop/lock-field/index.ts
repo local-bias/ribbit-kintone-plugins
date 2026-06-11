@@ -1,5 +1,5 @@
+import { store } from '@repo/jotai';
 import { manager } from '@/lib/event-manager';
-import { store } from '@/lib/store';
 import { validPluginConditionsAtom } from '../public-state';
 
 manager.add(

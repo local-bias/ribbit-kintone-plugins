@@ -1,11 +1,10 @@
 import { css } from '@emotion/css';
 import { Button } from '@mui/material';
+import { Provider, store, useAtomValue } from '@repo/jotai';
 import { cn } from '@repo/utils';
 import JsonView from '@uiw/react-json-view';
-import { Provider, useAtomValue } from 'jotai';
 import { type FC, useState } from 'react';
 import { PLUGIN_NAME } from '@/lib/constants';
-import { store } from '@/lib/store';
 import type { PluginCondition } from '@/schema/plugin-config';
 import { pluginConfigAtom } from '../public-state';
 

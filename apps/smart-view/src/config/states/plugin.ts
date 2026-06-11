@@ -1,6 +1,6 @@
+import { atom, type SetStateAction } from '@repo/jotai';
+import { atomWithDefault } from '@repo/jotai/utils';
 import { produce } from 'immer';
-import { atom, type SetStateAction } from 'jotai';
-import { atomWithDefault } from 'jotai/utils';
 import { restorePluginConfig } from '@/lib/plugin';
 import type { PluginCondition, PluginConfig } from '@/schema/plugin-config';
 import type { ViewFieldProperty } from './app-fields';

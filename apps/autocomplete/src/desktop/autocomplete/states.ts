@@ -1,5 +1,5 @@
 import { getCurrentRecord, getYuruChara, setCurrentRecord } from '@konomi-app/kintone-utilities';
-import { atom } from 'jotai';
+import { atom } from '@repo/jotai';
 import { atomEffect } from 'jotai-effect';
 import type { PluginCondition } from '@/lib/plugin';
 import { LOCAL_STORAGE_KEY } from '@/lib/static';

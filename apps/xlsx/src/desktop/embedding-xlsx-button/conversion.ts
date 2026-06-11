@@ -5,6 +5,7 @@ import {
   getQueryCondition,
   type kintoneAPI,
 } from '@konomi-app/kintone-utilities';
+import { store } from '@repo/jotai';
 import {
   type CellStyle,
   type Range,
@@ -14,7 +15,6 @@ import {
   writeFile,
 } from 'xlsx-js-style';
 import { GUEST_SPACE_ID } from '@/common/global';
-import { store } from '@/lib/store';
 import type { PluginCondition } from '@/schema/plugin-config';
 import {
   currentAppFormFieldsAtom,

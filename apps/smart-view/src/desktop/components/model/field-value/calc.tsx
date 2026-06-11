@@ -1,5 +1,5 @@
 import { getCalcFieldValueAsString, type kintoneAPI } from '@konomi-app/kintone-utilities';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { appFormPropertyAtom } from '../../../states/kintone';
 
 type Props = { field: kintoneAPI.field.Calc; code: string; appId: string };

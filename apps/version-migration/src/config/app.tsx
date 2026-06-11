@@ -3,8 +3,7 @@ import { PluginBanner, PluginContent, PluginLayout } from '@konomi-app/kintone-u
 import { LoaderWithLabel } from '@konomi-app/ui-react';
 import { Alert, AlertTitle, Button } from '@mui/material';
 import { URL_BANNER, URL_PROMOTION } from '@repo/constants';
-import { store } from '@repo/jotai';
-import { Provider } from 'jotai';
+import { Provider, store } from '@repo/jotai';
 import { Suspense } from 'react';
 import config from '@/../plugin.config.mjs';
 import { PluginErrorBoundary } from '@/components/error-boundary';

@@ -1,5 +1,5 @@
 import type { kintoneAPI } from '@konomi-app/kintone-utilities';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { SubtableDetails } from '@/desktop/components/ui/subtable-details';
 import { appFormLayoutAtom, currentAppFieldPropertiesAtom } from '@/desktop/states/kintone';
 import type { ResolvedTableColumnProps } from '@/desktop/states/plugin';

@@ -1,5 +1,5 @@
 import { FormControlLabel, Switch, type SwitchProps } from '@mui/material';
-import { type PrimitiveAtom, useAtom } from 'jotai';
+import { type PrimitiveAtom, useAtom } from '@repo/jotai';
 import { type FC, Suspense } from 'react';
 
 type Props = {

@@ -1,8 +1,7 @@
-import { atom } from 'jotai';
+import { atom, store } from '@repo/jotai';
 import { observe } from 'jotai-effect';
 import type { ChangeEvent } from 'react';
 import { URL_SEARCH_PARAMS_TEXT } from '@/lib/statics';
-import { store } from '@/lib/store';
 import { paginationIndexAtom } from './pagination';
 
 export const searchTextAtom = atom(

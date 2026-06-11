@@ -17,8 +17,8 @@ import {
   TextField,
   Tooltip,
 } from '@mui/material';
-import { atom, useAtomValue, useSetAtom } from 'jotai';
-import { atomFamily } from 'jotai/utils';
+import { atom, useAtomValue, useSetAtom } from '@repo/jotai';
+import { atomFamily } from '@repo/jotai/utils';
 import { GripVertical } from 'lucide-react';
 import { type FC, Suspense } from 'react';
 import { selectableViewFieldsAtom } from '@/config/states/app-fields';

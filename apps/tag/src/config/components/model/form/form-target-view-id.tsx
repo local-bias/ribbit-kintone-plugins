@@ -1,5 +1,5 @@
 import { MenuItem, Skeleton, TextField } from '@mui/material';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from '@repo/jotai';
 import { type ChangeEventHandler, type FC, memo, Suspense } from 'react';
 import { allViewsAtom } from '@/config/states/kintone';
 import { getConditionPropertyAtom } from '@/config/states/plugin';

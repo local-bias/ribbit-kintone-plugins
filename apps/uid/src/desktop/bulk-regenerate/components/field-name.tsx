@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { type FC, Suspense } from 'react';
 import { currentAppFieldsAtom } from '@/desktop/public-state';
 import { useCondition } from './condition-context';

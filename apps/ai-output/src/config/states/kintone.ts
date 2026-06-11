@@ -4,8 +4,7 @@ import {
   getFormLayout,
   type kintoneAPI,
 } from '@konomi-app/kintone-utilities';
-import { appFormFieldsAtom, currentAppIdAtom } from '@repo/jotai';
-import { atom } from 'jotai';
+import { appFormFieldsAtom, atom, currentAppIdAtom } from '@repo/jotai';
 import { eagerAtom } from 'jotai-eager';
 import { atomFamily } from 'jotai-family';
 import { GUEST_SPACE_ID, isDev } from '@/lib/global';

@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import type { FC } from 'react';
 import { t } from '@/lib/i18n';
 import { allAppViewsErrorMessageAtom } from '../../../states/kintone';

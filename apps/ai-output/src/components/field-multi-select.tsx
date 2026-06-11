@@ -1,6 +1,6 @@
 import type { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { Autocomplete, Box, TextField } from '@mui/material';
-import { type Atom, useAtomValue } from 'jotai';
+import { type Atom, useAtomValue } from '@repo/jotai';
 import { type ComponentProps, Suspense, useCallback } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 

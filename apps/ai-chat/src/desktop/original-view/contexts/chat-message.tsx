@@ -1,4 +1,4 @@
-import { useAtomCallback } from 'jotai/utils';
+import { useAtomCallback } from '@repo/jotai/utils';
 import React, { createContext, type ReactNode, useCallback, useContext } from 'react';
 import invariant from 'tiny-invariant';
 import { shouldCollapseUserMessage } from '@/desktop/original-view/components/model/chat-messages/utils';

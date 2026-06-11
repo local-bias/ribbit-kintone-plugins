@@ -4,8 +4,8 @@ import {
   type kintoneAPI,
   sortField,
 } from '@konomi-app/kintone-utilities';
-import { atom } from 'jotai';
-import { atomFamily } from 'jotai/utils';
+import { atom } from '@repo/jotai';
+import { atomFamily } from '@repo/jotai/utils';
 import { isDev } from '@/lib/global';
 import { getQuickSearchString } from '@/lib/kintone';
 import type { PluginExtractedSearchCondition } from '@/schema/plugin-config';

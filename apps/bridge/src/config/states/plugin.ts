@@ -1,7 +1,7 @@
+import { atom, type PrimitiveAtom, type WritableAtom } from '@repo/jotai';
 import { restorePluginConfig } from '@/lib/plugin';
 import { usePluginAtoms } from '@/lib/w-plugin';
-import { PluginConfig } from '@/schema/plugin-config';
-import { atom, PrimitiveAtom, WritableAtom } from 'jotai';
+import type { PluginConfig } from '@/schema/plugin-config';
 
 const { config: initialConfig, error: configError } = restorePluginConfig();
 

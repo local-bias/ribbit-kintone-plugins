@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { BundledSidebar } from '@konomi-app/kintone-utilities-react';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from '@repo/jotai';
 import { useSnackbar } from 'notistack';
 import { type FC, Suspense } from 'react';
 import { appFieldsAtom } from '@/config/states/kintone';

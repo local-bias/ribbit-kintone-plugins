@@ -2,7 +2,7 @@ import { useDroppable } from '@dnd-kit/core';
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import styled from '@emotion/styled';
-import { useAtom, useSetAtom } from 'jotai';
+import { useAtom, useSetAtom } from '@repo/jotai';
 import { type FC, type ReactNode, useCallback, useState } from 'react';
 import { t } from '@/lib/i18n';
 import {

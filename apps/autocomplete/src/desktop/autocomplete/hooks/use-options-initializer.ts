@@ -1,5 +1,5 @@
 import { getAllRecordsWithId } from '@konomi-app/kintone-utilities';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from '@repo/jotai';
 import { useEffect } from 'react';
 import { GUEST_SPACE_ID } from '@/lib/global';
 import { getAutocompleteOptions, getAutocompleteValues } from '@/lib/plugin';

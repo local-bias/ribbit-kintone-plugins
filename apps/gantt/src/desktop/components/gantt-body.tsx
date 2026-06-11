@@ -1,6 +1,6 @@
 import { useDroppable } from '@dnd-kit/core';
 import styled from '@emotion/styled';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { type FC, Fragment, useCallback } from 'react';
 import {
   type DateColumn,

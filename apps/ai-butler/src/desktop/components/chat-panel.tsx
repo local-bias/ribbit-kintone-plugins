@@ -12,7 +12,7 @@ import {
   TextField,
   Tooltip,
 } from '@mui/material';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { useAtom, useAtomValue, useSetAtom } from '@repo/jotai';
 import { Fragment, useEffect, useRef } from 'react';
 import { validPluginConditionsAtom } from '@/desktop/public-state';
 import {

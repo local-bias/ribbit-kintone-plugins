@@ -9,7 +9,7 @@ import {
   IconButton,
   Tooltip,
 } from '@mui/material';
-import { RESET, useAtomCallback } from 'jotai/utils';
+import { RESET, useAtomCallback } from '@repo/jotai/utils';
 import { useSnackbar } from 'notistack';
 import { type FC, memo, useCallback, useState } from 'react';
 import { createConfig } from '@/lib/plugin';

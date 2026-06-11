@@ -10,7 +10,7 @@ import {
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
 import { MenuItem, TextField } from '@mui/material';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from '@repo/jotai';
 import {
   conditionIconColorAtom,
   conditionIconTypeAtom,

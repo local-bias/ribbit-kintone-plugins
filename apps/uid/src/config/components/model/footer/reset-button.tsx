@@ -1,5 +1,5 @@
 import { PluginConfigResetButton } from '@konomi-app/kintone-utilities-react';
-import { useAtomCallback } from 'jotai/utils';
+import { useAtomCallback } from '@repo/jotai/utils';
 import { useSnackbar } from 'notistack';
 import { type FC, memo, useCallback } from 'react';
 import { t } from '@/lib/i18n';

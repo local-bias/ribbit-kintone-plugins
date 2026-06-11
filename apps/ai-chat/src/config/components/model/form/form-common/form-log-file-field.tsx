@@ -1,5 +1,5 @@
 import { Skeleton } from '@mui/material';
-import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { atom, useAtomValue, useSetAtom } from '@repo/jotai';
 import { Suspense } from 'react';
 import { logAppFilePropertiesState } from '@/config/states/kintone';
 import { logAppFileFieldCodeAtom } from '@/config/states/plugin';

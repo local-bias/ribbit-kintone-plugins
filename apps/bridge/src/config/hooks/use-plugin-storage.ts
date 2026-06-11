@@ -1,10 +1,10 @@
+import { onFileLoad } from '@konomi-app/kintone-utilities';
+import { toast } from '@konomi-app/ui';
+import { useAtomValue, useSetAtom } from '@repo/jotai';
+import { type ChangeEventHandler, useCallback } from 'react';
 import { t } from '@/lib/i18n';
 import { migrateConfig } from '@/lib/plugin';
 import { PLUGIN_NAME } from '@/lib/static';
-import { onFileLoad } from '@konomi-app/kintone-utilities';
-import { toast } from '@konomi-app/ui';
-import { useAtomValue, useSetAtom } from 'jotai';
-import { ChangeEventHandler, useCallback } from 'react';
 import { loadingState, pluginConfigAtom } from '../states/plugin';
 
 export const usePluginStorage = () => {

@@ -3,7 +3,7 @@ import {
   getCybozuOrganizations,
   getCybozuUsers,
 } from '@konomi-app/kintone-utilities';
-import { atom } from 'jotai';
+import { atom } from '@repo/jotai';
 
 export const cybozuUsersAtom = atom<Promise<cybozu.api.User[]>>(async () => {
   const { users } = await getCybozuUsers();

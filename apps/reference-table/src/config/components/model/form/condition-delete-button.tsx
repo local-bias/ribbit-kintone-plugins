@@ -1,5 +1,5 @@
 import { PluginConditionDeleteButton } from '@konomi-app/kintone-utilities-react';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from '@repo/jotai';
 import { handlePluginConditionDeleteAtom, hasMultipleConditionsAtom } from '../../../states/plugin';
 
 function ConditionDeleteButtonContent() {

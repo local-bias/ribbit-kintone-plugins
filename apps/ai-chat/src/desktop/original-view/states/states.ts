@@ -1,7 +1,7 @@
 import { deleteAllRecordsByQuery, isGuestSpace, isMobile } from '@konomi-app/kintone-utilities';
+import { atom } from '@repo/jotai';
+import { atomWithReset, RESET } from '@repo/jotai/utils';
 import { produce } from 'immer';
-import { atom } from 'jotai';
-import { atomWithReset, RESET } from 'jotai/utils';
 import { atomEffect } from 'jotai-effect';
 import { enqueueSnackbar } from 'notistack';
 import { pluginCommonConfigAtom, pluginConditionsAtom } from '@/desktop/public-state';

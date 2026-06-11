@@ -5,9 +5,9 @@ import {
   storePluginConfig,
   updateViews,
 } from '@konomi-app/kintone-utilities';
+import { atom } from '@repo/jotai';
+import { atomWithDefault } from '@repo/jotai/utils';
 import { produce } from 'immer';
-import { atom } from 'jotai';
-import { atomWithDefault } from 'jotai/utils';
 import { enqueueSnackbar } from 'notistack';
 import type { ChangeEvent, ReactNode, SetStateAction } from 'react';
 import invariant from 'tiny-invariant';

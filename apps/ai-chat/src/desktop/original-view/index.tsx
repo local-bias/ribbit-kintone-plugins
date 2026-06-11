@@ -1,8 +1,8 @@
 import { ComponentManager } from '@konomi-app/kintone-utilities-react';
+import { store } from '@repo/jotai';
 import { nanoid } from 'nanoid';
 import { listener } from '@/lib/listener';
 import { URL_QUERY_CHAT_ID, VIEW_ROOT_ID } from '@/lib/static';
-import { store } from '@/lib/store';
 import { pluginConfigAtom } from '../public-state';
 import { initializeRecords } from './actions/initialize-records';
 import App from './app';

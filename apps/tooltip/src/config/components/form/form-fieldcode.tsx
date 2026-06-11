@@ -1,6 +1,6 @@
 import { JotaiFieldSelect } from '@konomi-app/kintone-utilities-jotai';
-import { useAtomValue } from 'jotai';
-import { useAtomCallback } from 'jotai/utils';
+import { useAtomValue } from '@repo/jotai';
+import { useAtomCallback } from '@repo/jotai/utils';
 import { useCallback } from 'react';
 import { appFieldsAtom } from '@/config/states/kintone';
 import { conditionFieldCodeAtom } from '@/config/states/plugin';

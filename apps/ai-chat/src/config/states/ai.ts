@@ -1,4 +1,4 @@
-import { atom } from 'jotai';
+import { atom } from '@repo/jotai';
 import { eagerAtom } from 'jotai-eager';
 import { isDev } from '@/lib/global';
 import { OPENAI_MODELS, OPENROUTER_ENDPOINT_MODELS } from '@/lib/static';

@@ -1,8 +1,7 @@
 import { type kintoneAPI, updateRecord } from '@konomi-app/kintone-utilities';
-import { currentAppIdAtom } from '@repo/jotai';
+import { currentAppIdAtom, store } from '@repo/jotai';
 import { manager } from '@/lib/event-manager';
 import { GUEST_SPACE_ID, isProd } from '@/lib/global';
-import { store } from '@/lib/store';
 import { queuedFilesAtom } from './states';
 
 manager.add(

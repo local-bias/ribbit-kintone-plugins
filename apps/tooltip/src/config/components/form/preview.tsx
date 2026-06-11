@@ -1,4 +1,4 @@
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { selectedConditionAtom } from '@/config/states/plugin';
 import { TooltipHtmlContent } from '@/lib/components/tooltip-html-content';

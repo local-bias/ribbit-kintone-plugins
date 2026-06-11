@@ -2,7 +2,7 @@ import { useDndMonitor, useDraggable } from '@dnd-kit/core';
 import styled from '@emotion/styled';
 import { getFieldValueAsString } from '@konomi-app/kintone-utilities';
 import { Tooltip } from '@mui/material';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { type FC, useCallback, useState } from 'react';
 import { t } from '@/lib/i18n';
 import type { GanttScale } from '@/schema/plugin-config';

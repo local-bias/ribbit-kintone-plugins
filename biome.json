@@ -1,4 +1,28 @@
 {
   "$schema": "https://biomejs.dev/schemas/2.4.13/schema.json",
-  "extends": ["@konomi-app/biome-config/base"]
+  "extends": ["@konomi-app/biome-config/base"],
+  "overrides": [
+    {
+      "includes": ["apps/**"],
+      "linter": {
+        "rules": {
+          "style": {
+            "noRestrictedImports": {
+              "level": "error",
+              "options": {
+                "paths": {
+                  "jotai": {
+                    "message": "jotaiを直接importせず、@repo/jotai を使用してください(複数インスタンス防止)"
+                  },
+                  "jotai/utils": {
+                    "message": "jotai/utilsを直接importせず、@repo/jotai/utils を使用してください(複数インスタンス防止)"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
 }

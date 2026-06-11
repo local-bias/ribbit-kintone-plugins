@@ -1,7 +1,7 @@
 import { LoaderWithLabel } from '@konomi-app/ui-react';
 import { DialogContent, List, ListItem, ListItemButton, Skeleton } from '@mui/material';
-import { useAtomValue } from 'jotai';
-import { useAtomCallback } from 'jotai/utils';
+import { useAtomValue } from '@repo/jotai';
+import { useAtomCallback } from '@repo/jotai/utils';
 import { useSnackbar } from 'notistack';
 import { type FC, type FCX, Suspense, useCallback } from 'react';
 import type { DeepReadonly } from 'utility-types';

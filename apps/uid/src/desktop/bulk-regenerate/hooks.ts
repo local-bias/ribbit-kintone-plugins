@@ -6,7 +6,7 @@ import {
   updateAllRecords,
 } from '@konomi-app/kintone-utilities';
 import { dialog } from '@konomi-app/ui';
-import { useAtomCallback } from 'jotai/utils';
+import { useAtomCallback } from '@repo/jotai/utils';
 import { useCallback } from 'react';
 import z from 'zod';
 import { GUEST_SPACE_ID, isProd } from '@/lib/global';

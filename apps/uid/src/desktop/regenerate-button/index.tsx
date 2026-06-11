@@ -7,10 +7,10 @@ import {
 } from '@konomi-app/kintone-utilities';
 import { ComponentManager } from '@konomi-app/kintone-utilities-react';
 import { Button } from '@mui/material';
+import { store } from '@repo/jotai';
 import { ThemeProvider } from '@/components/theme-provider';
 import { manager } from '@/lib/event-manager';
 import { isProd } from '@/lib/global';
-import { store } from '@/lib/store';
 import { getId } from '@/lib/utils';
 import { validPluginConditionsAtom } from '../public-state';
 

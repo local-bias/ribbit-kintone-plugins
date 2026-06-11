@@ -7,7 +7,7 @@ import {
 import SaveIcon from '@mui/icons-material/Save';
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import { Button, CircularProgress } from '@mui/material';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { type FC, useCallback } from 'react';
 import { usePluginStorage, useSavePluginConfig } from '@/config/hooks/use-plugin-storage';
 import { t } from '@/lib/i18n';

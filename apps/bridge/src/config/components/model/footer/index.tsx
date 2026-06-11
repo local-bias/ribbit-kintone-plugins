@@ -1,5 +1,3 @@
-import { usePluginStorage } from '@/config/hooks/use-plugin-storage';
-import { t } from '@/lib/i18n';
 import { storePluginConfig } from '@konomi-app/kintone-utilities';
 import {
   PluginConfigExportButton,
@@ -10,8 +8,10 @@ import { toast } from '@konomi-app/ui';
 import SaveIcon from '@mui/icons-material/Save';
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import { Button, CircularProgress } from '@mui/material';
-import { useAtomValue, useSetAtom } from 'jotai';
-import { FC, useCallback } from 'react';
+import { useAtomValue, useSetAtom } from '@repo/jotai';
+import { type FC, useCallback } from 'react';
+import { usePluginStorage } from '@/config/hooks/use-plugin-storage';
+import { t } from '@/lib/i18n';
 import { loadingState, pluginConfigAtom } from '../../../states/plugin';
 import ResetButton from './reset-button';
 

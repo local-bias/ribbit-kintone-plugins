@@ -1,5 +1,5 @@
 import { FormControlLabel, Skeleton, Switch } from '@mui/material';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from '@repo/jotai';
 import { type FC, memo, Suspense } from 'react';
 import { getConditionPropertyAtom } from '../../../states/plugin';
 

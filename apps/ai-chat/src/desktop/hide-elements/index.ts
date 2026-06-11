@@ -1,6 +1,6 @@
 import { css } from '@emotion/css';
+import { store } from '@repo/jotai';
 import { listener } from '@/lib/listener';
-import { store } from '@/lib/store';
 import { pluginConfigAtom } from '../public-state';
 
 listener.add(['app.record.index.show'], (event) => {

@@ -1,5 +1,5 @@
 import { FormControl, MenuItem, Select, type SelectChangeEvent } from '@mui/material';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from '@repo/jotai';
 import { GlobeIcon, ImageIcon, MessageSquareIcon } from 'lucide-react';
 import { useMemo } from 'react';
 import {

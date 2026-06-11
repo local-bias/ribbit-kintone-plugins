@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import type { FC, RefObject } from 'react';
 import { filteredSuggestionsAtom, suggestionCursorAtom } from '../states/plugin';
 

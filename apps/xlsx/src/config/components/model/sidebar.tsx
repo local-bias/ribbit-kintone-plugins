@@ -1,5 +1,5 @@
 import { BundledSidebar } from '@konomi-app/kintone-utilities-react';
-import { useAtom } from 'jotai';
+import { useAtom } from '@repo/jotai';
 import { type FC, useCallback } from 'react';
 import { pluginConditionsAtom, selectedConditionIdAtom } from '@/config/states/plugin';
 import { t } from '@/lib/i18n';

@@ -8,9 +8,9 @@ import {
   TextField,
   Tooltip,
 } from '@mui/material';
+import { useAtomValue } from '@repo/jotai';
+import { useAtomCallback } from '@repo/jotai/utils';
 import { produce } from 'immer';
-import { useAtomValue } from 'jotai';
-import { useAtomCallback } from 'jotai/utils';
 import { type FC, useCallback } from 'react';
 import { concatenationItemsState } from '@/config/states/plugin';
 import { CONCATENATION_ITEM_TYPES } from '@/lib/plugin';

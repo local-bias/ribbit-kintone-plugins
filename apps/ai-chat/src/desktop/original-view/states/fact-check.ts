@@ -1,4 +1,4 @@
-import { atom } from 'jotai';
+import { atom } from '@repo/jotai';
 import type { ChatHistory } from '@/lib/static';
 import type { FactCheckResult, FactCheckStatus } from '@/schema/fact-check';
 

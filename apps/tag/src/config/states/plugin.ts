@@ -1,5 +1,4 @@
-import { handleLoadingEndAtom, handleLoadingStartAtom, usePluginAtoms } from '@repo/jotai';
-import { atom } from 'jotai';
+import { atom, handleLoadingEndAtom, handleLoadingStartAtom, usePluginAtoms } from '@repo/jotai';
 import { enqueueSnackbar } from 'notistack';
 import { t } from '@/lib/i18n';
 import { createConfig, restorePluginConfig } from '@/lib/plugin';

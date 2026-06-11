@@ -1,11 +1,10 @@
 import { css } from '@emotion/css';
 import styled from '@emotion/styled';
 import { Fab } from '@mui/material';
+import { Provider, store, useAtomValue } from '@repo/jotai';
 import JsonView from '@uiw/react-json-view';
-import { Provider, useAtomValue } from 'jotai';
 import { type FC, memo, useState } from 'react';
 import type { PluginCondition } from '@/lib/plugin';
-import { store } from '@/lib/store';
 import { pluginConfigAtom } from '../public-state';
 
 const ConditionId = styled.div`

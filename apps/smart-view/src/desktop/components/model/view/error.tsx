@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { Button } from '@mui/material';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { WindIcon } from '@/lib/components/wind';
 import { errorAtom } from '../../../states/plugin';
 

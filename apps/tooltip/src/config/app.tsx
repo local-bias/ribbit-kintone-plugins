@@ -7,8 +7,7 @@ import {
 } from '@konomi-app/kintone-utilities-react';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
 import { ThemeProvider } from '@mui/material';
-import { store } from '@repo/jotai';
-import { Provider } from 'jotai';
+import { Provider, store } from '@repo/jotai';
 import { SnackbarProvider } from 'notistack';
 import { Suspense } from 'react';
 import { PluginErrorBoundary } from '@/lib/components/error-boundary';

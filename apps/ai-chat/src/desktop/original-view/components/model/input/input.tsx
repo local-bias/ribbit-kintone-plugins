@@ -1,5 +1,5 @@
-import { useAtom, useAtomValue } from 'jotai';
-import { useAtomCallback } from 'jotai/utils';
+import { useAtom, useAtomValue } from '@repo/jotai';
+import { useAtomCallback } from '@repo/jotai/utils';
 import { type ChangeEventHandler, type KeyboardEventHandler, useCallback } from 'react';
 import { handlePushUserMessageAtom } from '@/desktop/original-view/states/chat-history';
 import { handleSendMessageAtom } from '@/desktop/original-view/states/chat-message';

@@ -1,5 +1,5 @@
+import { useSetAtom } from '@repo/jotai';
 import { cn } from '@repo/utils';
-import { useSetAtom } from 'jotai';
 import { ChevronRight, File, Folder } from 'lucide-react';
 import { useState } from 'react';
 import { type FileContent, formatFileSize } from '@/lib/files';

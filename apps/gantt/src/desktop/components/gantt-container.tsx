@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
+import { useAtomValue } from '@repo/jotai';
 import { EmptyState } from '@repo/ui';
-import { useAtomValue } from 'jotai';
 import type { FC } from 'react';
 import { t } from '@/lib/i18n';
 import { currentConditionAtom, ganttLoadingAtom, ganttRecordsAtom } from '../public-state';

@@ -1,11 +1,11 @@
+import { BundledSidebar } from '@konomi-app/kintone-utilities-react';
+import { toast } from '@konomi-app/ui';
+import { useAtom, useAtomValue } from '@repo/jotai';
+import { useCallback } from 'react';
 import { pluginConditionsAtom, selectedConditionIdAtom } from '@/config/states/plugin';
 import { t } from '@/lib/i18n';
 import { getNewCondition } from '@/lib/plugin';
-import { PluginCondition } from '@/schema/plugin-config';
-import { BundledSidebar } from '@konomi-app/kintone-utilities-react';
-import { toast } from '@konomi-app/ui';
-import { useAtom, useAtomValue } from 'jotai';
-import { useCallback } from 'react';
+import type { PluginCondition } from '@/schema/plugin-config';
 import { kintoneAppsState } from '../states/kintone';
 
 function Sidebar() {

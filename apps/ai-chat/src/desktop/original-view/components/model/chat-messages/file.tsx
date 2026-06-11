@@ -1,5 +1,5 @@
 import { DocumentIcon } from '@heroicons/react/24/outline';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { dataUrlAtom } from '@/desktop/original-view/states/kintone';
 import type { FileAttachment, FileBase64Attachment, MessageAttachment } from '@/lib/static';
 

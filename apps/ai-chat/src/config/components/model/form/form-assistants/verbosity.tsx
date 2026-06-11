@@ -1,5 +1,5 @@
 import { MenuItem, TextField } from '@mui/material';
-import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { atom, useAtomValue, useSetAtom } from '@repo/jotai';
 import type { ChangeEvent } from 'react';
 import { verbosityAtom } from '@/config/states/plugin';
 import type { VerbosityType } from '@/schema/ai';

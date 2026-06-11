@@ -1,6 +1,6 @@
 import { PluginConditionAppendButton } from '@konomi-app/kintone-utilities-react';
+import { useSetAtom } from '@repo/jotai';
 import { produce } from 'immer';
-import { useSetAtom } from 'jotai';
 import { type FC, memo } from 'react';
 import { getNewCondition } from '@/lib/plugin';
 import { pluginConfigAtom } from '../../../states/plugin';

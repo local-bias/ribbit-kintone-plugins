@@ -1,5 +1,5 @@
 import { Pagination } from '@mui/material';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from '@repo/jotai';
 import {
   chatHistoriesPaginationIndexAtom,
   chatHistoriesPaginationMaxAtom,

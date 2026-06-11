@@ -8,7 +8,7 @@ import {
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Autocomplete, IconButton, MenuItem, TextField, Tooltip } from '@mui/material';
-import { useAtomValue } from 'jotai';
+import { useAtomValue } from '@repo/jotai';
 import { nanoid } from 'nanoid';
 import type { FC } from 'react';
 import { getConditionPropertyAtom } from '@/config/states/plugin';

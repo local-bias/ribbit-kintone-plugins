@@ -6,8 +6,7 @@ import {
   PluginLayout,
 } from '@konomi-app/kintone-utilities-react';
 import { LoaderWithLabel } from '@konomi-app/ui-react';
-import { store } from '@repo/jotai';
-import { Provider } from 'jotai';
+import { Provider, store } from '@repo/jotai';
 import { SnackbarProvider } from 'notistack';
 import { type FC, Suspense } from 'react';
 import config from '@/../plugin.config.mjs';

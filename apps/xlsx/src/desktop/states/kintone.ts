@@ -5,8 +5,8 @@ import {
   getFormLayout,
   getViews,
 } from '@konomi-app/kintone-utilities';
-import { atom } from 'jotai';
-import { atomFamily } from 'jotai/utils';
+import { atom } from '@repo/jotai';
+import { atomFamily } from '@repo/jotai/utils';
 import { GUEST_SPACE_ID } from '@/common/global';
 
 export const currentAppIdAtom = atom(() => {

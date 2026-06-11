@@ -1,4 +1,4 @@
-import { atom } from 'jotai';
+import { atom } from '@repo/jotai';
 
 export const paginationIndexAtom = atom(1);
 

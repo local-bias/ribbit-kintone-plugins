@@ -1,9 +1,8 @@
 import { css } from '@emotion/css';
-import { Provider, useAtomValue } from 'jotai';
+import { Provider, store, useAtomValue } from '@repo/jotai';
 import { type FC, Suspense } from 'react';
 import { isProd } from '@/lib/global';
 import type { PluginCondition } from '@/lib/plugin';
-import { store } from '@/lib/store';
 import { cn } from '@/lib/utils';
 import { useBulkRegenerate } from '../hooks';
 import { isButtonShownAtom } from '../states';

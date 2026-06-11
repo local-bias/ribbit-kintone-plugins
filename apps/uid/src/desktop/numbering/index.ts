@@ -1,6 +1,6 @@
+import { store } from '@repo/jotai';
 import { manager } from '@/lib/event-manager';
 import { isProd } from '@/lib/global';
-import { store } from '@/lib/store';
 import { getId } from '@/lib/utils';
 import { validPluginConditionsAtom } from '../public-state';
 

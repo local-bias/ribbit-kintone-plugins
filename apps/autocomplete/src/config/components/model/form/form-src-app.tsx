@@ -1,5 +1,5 @@
 import { Autocomplete, Box, Skeleton, TextField } from '@mui/material';
-import { useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from '@repo/jotai';
 import { Suspense } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { t } from '@/lib/i18n';

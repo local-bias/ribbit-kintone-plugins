@@ -1,8 +1,7 @@
-import { Provider } from 'jotai';
+import { Provider, store } from '@repo/jotai';
 import { SnackbarProvider } from 'notistack';
 import type { FC } from 'react';
 import { PluginErrorBoundary } from '@/lib/components/error-boundary';
-import { store } from '@/lib/store';
 import FieldSettingsDialog from './components/model/field-settings-dialog';
 import Footer from './components/model/footer';
 import Header from './components/model/header';
