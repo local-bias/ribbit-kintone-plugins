@@ -624,6 +624,172 @@ importers:
         specifier: ^4.0.18
         version: 4.1.5(@opentelemetry/api@1.9.0)(@types/node@25.6.0)(vite@8.0.10(@types/node@25.6.0)(esbuild@0.27.7)(jiti@2.6.1)(sass@1.99.0)(terser@5.46.2)(tsx@4.21.0))
 
+  apps/attachment-preview:
+    dependencies:
+      '@emotion/css':
+        specifier: ^11.13.5
+        version: 11.13.5
+      '@emotion/react':
+        specifier: ^11.14.0
+        version: 11.14.0(@types/react@19.2.14)(react@19.2.5)
+      '@emotion/styled':
+        specifier: ^11.14.1
+        version: 11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react@19.2.5)
+      '@konomi-app/kintone-utilities':
+        specifier: ^6.1.0
+        version: 6.3.0(@emotion/css@11.13.5)(zod@4.4.1)
+      '@konomi-app/kintone-utilities-jotai':
+        specifier: ^2.2.1
+        version: 2.6.0(4e5c84dcd529950418d08e6b7b188ad4)
+      '@konomi-app/kintone-utilities-react':
+        specifier: ^3.0.2
+        version: 3.5.3(df5b230ba36ab754a7d39e39768d002e)
+      '@konomi-app/ui':
+        specifier: ^3.0.0
+        version: 3.0.0(@emotion/css@11.13.5)
+      '@konomi-app/ui-react':
+        specifier: ^3.0.1
+        version: 3.0.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react@19.2.5))(react@19.2.5)
+      '@mui/icons-material':
+        specifier: ^7.3.6
+        version: 7.3.9(@mui/material@7.3.9(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(@types/react@19.2.14)(react@19.2.5)
+      '@mui/material':
+        specifier: ^7.3.6
+        version: 7.3.9(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react@19.2.5))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      '@radix-ui/react-scroll-area':
+        specifier: ^1.2.10
+        version: 1.2.10(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      '@radix-ui/react-slot':
+        specifier: ^1.2.4
+        version: 1.2.4(@types/react@19.2.14)(react@19.2.5)
+      '@repo/constants':
+        specifier: workspace:*
+        version: link:../../packages/constants
+      '@repo/jotai':
+        specifier: workspace:*
+        version: link:../../packages/jotai
+      '@repo/ui':
+        specifier: workspace:*
+        version: link:../../packages/ui
+      '@repo/utils':
+        specifier: workspace:*
+        version: link:../../packages/utils
+      class-variance-authority:
+        specifier: ^0.7.1
+        version: 0.7.1
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
+      docx-preview:
+        specifier: ^0.3.6
+        version: 0.3.7
+      dompurify:
+        specifier: ^3.3.2
+        version: 3.4.1
+      immer:
+        specifier: ^11.1.0
+        version: 11.1.4
+      jotai:
+        specifier: 'catalog:'
+        version: 2.19.1(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.5)
+      jotai-derive:
+        specifier: 'catalog:'
+        version: 0.1.3(jotai@2.19.1(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.5))
+      jotai-optics:
+        specifier: 'catalog:'
+        version: 0.4.0(jotai@2.19.1(@babel/template@7.28.6)(@types/react@19.2.14)(react@19.2.5))(optics-ts@2.4.1)
+      jszip:
+        specifier: ^3.10.1
+        version: 3.10.1
+      lucide-react:
+        specifier: ^0.562.0
+        version: 0.562.0(react@19.2.5)
+      luxon:
+        specifier: ^3.7.2
+        version: 3.7.2
+      marked:
+        specifier: ^17.0.6
+        version: 17.0.6
+      nanoid:
+        specifier: ^5.1.6
+        version: 5.1.9
+      notistack:
+        specifier: ^3.0.2
+        version: 3.0.2(csstype@3.2.3)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      react:
+        specifier: 'catalog:'
+        version: 19.2.5
+      react-dom:
+        specifier: 'catalog:'
+        version: 19.2.5(react@19.2.5)
+      react-error-boundary:
+        specifier: ^6.0.0
+        version: 6.1.1(react@19.2.5)
+      remeda:
+        specifier: ^2.32.0
+        version: 2.34.0
+      tiny-invariant:
+        specifier: ^1.3.3
+        version: 1.3.3
+      xlsx:
+        specifier: ^0.18.5
+        version: 0.18.5
+      zod:
+        specifier: ^4.2.1
+        version: 4.4.1
+    devDependencies:
+      '@kintone/dts-gen':
+        specifier: ^9.0.0
+        version: 9.0.5(@types/eslint@9.6.1)(@typescript-eslint/utils@8.59.1(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint-import-resolver-node@0.3.10)(jiti@2.6.1)(typescript@5.9.3)
+      '@konomi-app/k2':
+        specifier: ^4.2.0
+        version: 4.2.0(@eslint/js@9.39.4)(@tailwindcss/postcss@4.2.4)(cssnano@7.1.7(postcss@8.5.12))(dotenv@17.4.2)(eslint-plugin-react@7.37.5(eslint@9.39.4(jiti@2.6.1)))(eslint@9.39.4(jiti@2.6.1))(glob@13.0.6)(globals@17.5.0)(html-minifier@4.0.0)(postcss@8.5.12)(remeda@2.34.0)(tailwindcss@4.2.4)(typescript-eslint@8.59.1(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))
+      '@repo/tailwindcss':
+        specifier: workspace:*
+        version: link:../../packages/tailwindcss
+      '@repo/typescript-config':
+        specifier: workspace:*
+        version: link:../../packages/typescript-config
+      '@tailwindcss/cli':
+        specifier: ^4.1.18
+        version: 4.2.4
+      '@types/dompurify':
+        specifier: ^3.2.0
+        version: 3.2.0
+      '@types/luxon':
+        specifier: ^3.7.1
+        version: 3.7.1
+      '@types/node':
+        specifier: ^25.0.3
+        version: 25.6.0
+      '@types/react':
+        specifier: 'catalog:'
+        version: 19.2.14
+      '@types/react-dom':
+        specifier: 'catalog:'
+        version: 19.2.3(@types/react@19.2.14)
+      '@uiw/react-json-view':
+        specifier: 2.0.0-alpha.39
+        version: 2.0.0-alpha.39(@babel/runtime@7.29.2)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      concurrently:
+        specifier: ^9.2.1
+        version: 9.2.1
+      dotenv:
+        specifier: ^17.2.3
+        version: 17.4.2
+      tailwindcss:
+        specifier: ^4.1.18
+        version: 4.2.4
+      ts-loader:
+        specifier: ^9.5.4
+        version: 9.5.7(typescript@5.9.3)(webpack@5.106.2)
+      tw-animate-css:
+        specifier: ^1.4.0
+        version: 1.4.0
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
   apps/autocomplete:
     dependencies:
       '@emotion/react':
@@ -3633,6 +3799,9 @@ importers:
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
+      encoding-japanese:
+        specifier: ^2.2.0
+        version: 2.2.0
       immer:
         specifier: ^11.1.3
         version: 11.1.4
@@ -3691,6 +3860,9 @@ importers:
       '@tailwindcss/cli':
         specifier: ^4.1.18
         version: 4.2.4
+      '@types/encoding-japanese':
+        specifier: ^2.2.1
+        version: 2.2.1
       '@types/node':
         specifier: ^25.2.1
         version: 25.6.0
@@ -7036,6 +7208,9 @@ packages:
     resolution: {integrity: sha512-Fgg31wv9QbLDA0SpTOXO3MaxySc4DKGLi8sna4/Utjo4r3ZRPdCt4UQee8BWr+Q5z21yifghREPJGYaEOEIACg==}
     deprecated: This is a stub types definition. dompurify provides its own type definitions, so you do not need this installed.
 
+  '@types/encoding-japanese@2.2.1':
+    resolution: {integrity: sha512-6jjepuTusvySxMLP7W6usamlbgf0F4sIDvm7EzYePjLHY7zWUv4yz2PLUnu0vuNVtXOTLu2cRdFcDg40J5Owsw==}
+
   '@types/eslint-scope@3.7.7':
     resolution: {integrity: sha512-MzMFlSLBqNF2gcHWO0G1vP/YQyfvrxZ0bF+u7mzUdZ1/xK4A4sru+nraZz5i3iEIk1l1uyicaDVTB4QbbEkAYg==}
 
@@ -7100,9 +7275,6 @@ packages:
     resolution: {integrity: sha512-8TV6R3h2j7a91c+1DXdJi3Syo69zzIZbz7Lg5tORM5LEJG7X/E6a1V3drRyBRZq7/utz7A+c4OgYLiLcYGHG6w==}
     peerDependencies:
       '@types/react': '*'
-
-  '@types/react@18.3.11':
-    resolution: {integrity: sha512-r6QZ069rFTjrEYgFdOck1gK7FLVsgJE7tTz0pQBczlBNUhBNk0MQH4UbnFSwjpQLMkLzgqvBBa+qGpLje16eTQ==}
 
   '@types/react@18.3.3':
     resolution: {integrity: sha512-hti/R0pS0q1/xx+TsI73XIqk26eBsISZ2R0wUijXIngRK9R/e7Xw/cXVxQK7R5JjW+SV4zGcn5hXjudkN/pLIw==}
@@ -8424,6 +8596,9 @@ packages:
     resolution: {integrity: sha512-yS+Q5i3hBf7GBkd4KG8a7eBNNWNGLTaEwwYWUijIYM7zrlYDM0BFXHjjPWlWZ1Rg7UaddZeIDmi9jF3HmqiQ2w==}
     engines: {node: '>=6.0.0'}
 
+  docx-preview@0.3.7:
+    resolution: {integrity: sha512-Lav69CTA/IYZPJTsKH7oYeoZjyg96N0wEJMNslGJnZJ+dMUZK85Lt5ASC79yUlD48ecWjuv+rkcmFt6EVPV0Xg==}
+
   dom-helpers@5.2.1:
     resolution: {integrity: sha512-nRCa7CK3VTrM2NmGkIy4cbK7IZlgBE/PYMn55rrXefr5xXDP0LdtfPnblFDoVdcAfslJ7or6iqAUnx0CCGIWQA==}
 
@@ -8484,6 +8659,10 @@ packages:
 
   emoji-regex@9.2.2:
     resolution: {integrity: sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==}
+
+  encoding-japanese@2.2.0:
+    resolution: {integrity: sha512-EuJWwlHPZ1LbADuKTClvHtwbaFn4rOD+dRAbWysqEOXRc2Uui0hJInNJrsdH0c+OhJA4nrCBdSkW4DD5YxAo6A==}
+    engines: {node: '>=8.10.0'}
 
   enhanced-resolve@5.21.0:
     resolution: {integrity: sha512-otxSQPw4lkOZWkHpB3zaEQs6gWYEsmX4xQF68ElXC/TWvGxGMSGOvoNbaLXm6/cS/fSfHtsEdw90y20PCd+sCA==}
@@ -14792,6 +14971,8 @@ snapshots:
     dependencies:
       dompurify: 3.4.1
 
+  '@types/encoding-japanese@2.2.1': {}
+
   '@types/eslint-scope@3.7.7':
     dependencies:
       '@types/eslint': 9.6.1
@@ -14840,7 +15021,7 @@ snapshots:
 
   '@types/react-dom@18.3.0':
     dependencies:
-      '@types/react': 18.3.11
+      '@types/react': 18.3.3
 
   '@types/react-dom@19.2.3(@types/react@19.2.14)':
     dependencies:
@@ -14853,11 +15034,6 @@ snapshots:
   '@types/react-transition-group@4.4.12(@types/react@19.2.14)':
     dependencies:
       '@types/react': 19.2.14
-
-  '@types/react@18.3.11':
-    dependencies:
-      '@types/prop-types': 15.7.15
-      csstype: 3.2.3
 
   '@types/react@18.3.3':
     dependencies:
@@ -16584,6 +16760,10 @@ snapshots:
     dependencies:
       esutils: 2.0.3
 
+  docx-preview@0.3.7:
+    dependencies:
+      jszip: 3.10.1
+
   dom-helpers@5.2.1:
     dependencies:
       '@babel/runtime': 7.29.2
@@ -16646,6 +16826,8 @@ snapshots:
   emoji-regex@8.0.0: {}
 
   emoji-regex@9.2.2: {}
+
+  encoding-japanese@2.2.0: {}
 
   enhanced-resolve@5.21.0:
     dependencies:

@@ -4,9 +4,12 @@ import {
   PluginFormSection,
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
+import { useAtomValue } from '@repo/jotai';
 import type { FC } from 'react';
-import { getConditionPropertyAtom } from '@/config/states/plugin';
+import { getConditionPropertyAtom, isConditionIdUnselectedAtom } from '@/config/states/plugin';
+import CommonSettings from './common';
 import DeleteButton from './condition-delete-button';
+import FormApplyConditions from './form-apply-conditions';
 import FieldCodeForm from './form-fieldcode';
 import ValidationRulesForm from './form-rules';
 import TargetEventsForm from './form-target-events';
@@ -27,6 +30,15 @@ const FormContent: FC = () => {
           入力チェックを適用する画面を選択してください。
         </PluginFormDescription>
         <TargetEventsForm />
+      </PluginFormSection>
+      <PluginFormSection>
+        <PluginFormTitle>適用条件</PluginFormTitle>
+        <PluginFormDescription last>
+          バリデーションを適用する条件を設定してください。
+          指定したすべての条件を満たすレコードのみ入力チェックを行います。
+          条件を設定しない場合は常に適用されます。
+        </PluginFormDescription>
+        <FormApplyConditions />
       </PluginFormSection>
       <PluginFormSection>
         <PluginFormTitle>フィールド変更時にエラーを表示</PluginFormTitle>
@@ -51,4 +63,9 @@ const FormContent: FC = () => {
   );
 };
 
-export default FormContent;
+const FormContainer: FC = () => {
+  const commonSettingsShown = useAtomValue(isConditionIdUnselectedAtom);
+  return commonSettingsShown ? <CommonSettings /> : <FormContent />;
+};
+
+export default FormContainer;

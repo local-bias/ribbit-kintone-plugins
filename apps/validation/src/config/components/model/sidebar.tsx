@@ -1,5 +1,5 @@
 import { BundledSidebar } from '@konomi-app/kintone-utilities-react';
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from '@repo/jotai';
 import { useSnackbar } from 'notistack';
 import { type FC, Suspense, useCallback } from 'react';
 import { currentAppFieldsAtom } from '@/config/states/kintone';
@@ -63,6 +63,7 @@ const Sidebar: FC = () => {
       labelComponent={label}
       onSelectedConditionChange={onSelectedConditionChange}
       selectedConditionId={selectedConditionId}
+      commonTab
       onConditionDelete={onConditionDelete}
       context={{
         onCopy: () => {

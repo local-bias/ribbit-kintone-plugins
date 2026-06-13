@@ -57,7 +57,19 @@ export const ValidationRuleV1Schema = z.object({
 export type ValidationRule = z.infer<typeof ValidationRuleV1Schema>;
 
 /**
- * プラグイン設定の各条件（1つのフィールドに対する設定）
+ * FieldConditionValue の Zod スキーマ。
+ * 外部ライブラリ (@konomi-app/kintone-utilities-react) の型と対応する。
+ * loose により conditionType ごとの追加フィールドを保持する。
+ */
+export const FieldConditionValueSchema = z
+  .object({
+    fieldCode: z.string(),
+    conditionType: z.string(),
+  })
+  .loose();
+
+/**
+ * プラグイン設定の各条件（1つのフィールドに対する設定）V1
  */
 export const PluginConditionV1Schema = z.object({
   /**
@@ -76,21 +88,66 @@ export const PluginConditionV1Schema = z.object({
 });
 
 /**
+ * プラグイン設定の各条件（1つのフィールドに対する設定）V2
+ *
+ * V1 に適用条件（applyConditions）を追加したもの。
+ */
+export const PluginConditionV2Schema = PluginConditionV1Schema.extend({
+  /**
+   * バリデーションの適用条件（フィールド条件）。
+   * 指定された場合、すべての条件を満たすレコードのみバリデーションを適用する。
+   * 空配列の場合は常に適用する。
+   */
+  applyConditions: z.array(FieldConditionValueSchema),
+});
+
+/**
+ * プラグインの共通設定（全条件に適用される設定）
+ */
+export const PluginCommonConfigV1Schema = z.object({
+  /** CSVインポート機能の設定 */
+  csvImport: z.object({
+    /** CSVインポート機能を有効にするか */
+    enabled: z.boolean(),
+    /** 一覧画面に表示するインポートボタンのラベル */
+    buttonLabel: z.string(),
+  }),
+});
+
+/**
  * プラグイン設定V1
  */
 export const PluginConfigV1Schema = z.object({
   version: z.literal(1),
+  common: PluginCommonConfigV1Schema,
   conditions: z.array(PluginConditionV1Schema),
 });
-type PluginConfigV1 = z.infer<typeof PluginConfigV1Schema>;
+
+/**
+ * プラグイン設定V2
+ *
+ * 共通設定は V1 から変更なし。各条件に適用条件（applyConditions）を追加。
+ */
+export const PluginConfigV2Schema = z.object({
+  version: z.literal(2),
+  common: PluginCommonConfigV1Schema,
+  conditions: z.array(PluginConditionV2Schema),
+});
+type PluginConfigV2 = z.infer<typeof PluginConfigV2Schema>;
 
 /** 🔌 過去全てのバージョンを含むプラグインの設定情報 */
-export const AnyPluginConfigSchema = z.discriminatedUnion('version', [PluginConfigV1Schema]);
+export const AnyPluginConfigSchema = z.discriminatedUnion('version', [
+  PluginConfigV1Schema,
+  PluginConfigV2Schema,
+]);
 
-export const LatestPluginConditionSchema = PluginConditionV1Schema;
+export const LatestPluginConditionSchema = PluginConditionV2Schema;
 
 /** 🔌 プラグインがアプリ単位で保存する設定情報 */
-export type PluginConfig = PluginConfigV1;
+export type PluginConfig = PluginConfigV2;
+
+/** 🔌 プラグインの共通設定 */
+export type PluginCommonConfig = PluginConfig['common'];
 
 /** 🔌 プラグインの詳細設定 */
 export type PluginCondition = PluginConfig['conditions'][number];

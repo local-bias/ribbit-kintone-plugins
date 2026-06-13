@@ -1,7 +1,7 @@
 import { onFileLoad, storePluginConfig } from '@konomi-app/kintone-utilities';
-import { handleLoadingEndAtom, handleLoadingStartAtom, usePluginAtoms } from '@repo/jotai';
+import { atom, handleLoadingEndAtom, handleLoadingStartAtom, usePluginAtoms } from '@repo/jotai';
 import { saveAsJson } from '@repo/utils';
-import { atom } from 'jotai';
+import { focusAtom } from 'jotai-optics';
 import { enqueueSnackbar } from 'notistack';
 import type { ChangeEvent, ReactNode } from 'react';
 import invariant from 'tiny-invariant';
@@ -24,9 +24,19 @@ export const {
   selectedConditionIdAtom,
   selectedConditionAtom,
   getConditionPropertyAtom,
+  commonConfigAtom,
+  isConditionIdUnselectedAtom,
+  getCommonPropertyAtom,
 } = usePluginAtoms(pluginConfigAtom, {
-  enableCommonCondition: false,
+  enableCommonCondition: true,
 });
+
+/** CSVインポート共通設定 */
+const csvImportConfigAtom = getCommonPropertyAtom('csvImport');
+export const csvImportEnabledAtom = focusAtom(csvImportConfigAtom, (o) => o.prop('enabled'));
+export const csvImportButtonLabelAtom = focusAtom(csvImportConfigAtom, (o) =>
+  o.prop('buttonLabel')
+);
 
 export const handlePluginConditionDeleteAtom = atom(null, (get, set) => {
   const selectedConditionId = get(selectedConditionIdAtom);

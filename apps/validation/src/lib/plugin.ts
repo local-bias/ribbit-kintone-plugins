@@ -3,6 +3,7 @@ import { nanoid } from 'nanoid';
 import {
   type AnyPluginConfig,
   LatestPluginConditionSchema,
+  type PluginCommonConfig,
   type PluginCondition,
   type PluginConfig,
   type ValidationRule,
@@ -49,14 +50,26 @@ export const getNewCondition = (): PluginCondition => ({
   fieldCode: '',
   targetEvents: ['create', 'edit'],
   showErrorOnChange: true,
+  applyConditions: [],
   rules: [getNewRule()],
+});
+
+/**
+ * プラグインの共通設定の初期値を返却します
+ */
+export const getNewCommonConfig = (): PluginCommonConfig => ({
+  csvImport: {
+    enabled: false,
+    buttonLabel: 'CSVインポート（入力チェック付き）',
+  },
 });
 
 /**
  * プラグインの設定情報のひな形を返却します
  */
 export const createConfig = (): PluginConfig => ({
-  version: 1,
+  version: 2,
+  common: getNewCommonConfig(),
   conditions: [getNewCondition()],
 });
 
@@ -73,12 +86,31 @@ export const migrateConfig = (anyConfig: AnyPluginConfig): PluginConfig => {
     case undefined: {
       return migrateConfig({ ...anyConfig, version: 1 });
     }
-    case 1:
+    case 1: {
+      // V1 -> V2: 各条件に適用条件 `applyConditions` を追加する。
+      // 旧バージョンには `common` が存在しない場合があるため、初期値で補完する。
+      return migrateConfig({
+        version: 2,
+        common: { ...getNewCommonConfig(), ...anyConfig.common },
+        conditions: anyConfig.conditions.map((condition) => ({
+          ...condition,
+          applyConditions: [],
+        })),
+      });
+    }
+    case 2:
     default: {
       // `default` -> `config.js`と`desktop.js`のバージョンが一致していない場合に通る可能性があるため必要
       // もし新しいバージョンを追加したらここに追加する
-      // return migrateConfig({ version: 2, ...anyConfig });
-      return anyConfig;
+      // 後方互換のため、`applyConditions` が欠落している場合は初期値で補完する。
+      return {
+        ...anyConfig,
+        common: { ...getNewCommonConfig(), ...anyConfig.common },
+        conditions: anyConfig.conditions.map((condition) => ({
+          ...condition,
+          applyConditions: condition.applyConditions ?? [],
+        })),
+      };
     }
   }
 };
