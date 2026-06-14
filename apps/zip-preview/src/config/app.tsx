@@ -8,12 +8,12 @@ import {
 import { LoaderWithLabel } from '@konomi-app/ui-react';
 import { URL_BANNER, URL_PROMOTION } from '@repo/constants';
 import { Provider, store } from '@repo/jotai';
+import { PluginThemeProvider } from '@repo/plugin/react';
 import { SwimmingIcon } from '@repo/ui';
 import { SnackbarProvider } from 'notistack';
 import { Suspense } from 'react';
 import config from '@/../plugin.config.mjs';
 import { PluginErrorBoundary } from '@/components/error-boundary';
-import { ThemeProvider } from '@/components/theme-provider';
 import { LANGUAGE } from '@/lib/global';
 import { t } from '@/lib/i18n';
 import Footer from './components/model/footer';
@@ -22,7 +22,7 @@ export default function App() {
   return (
     <Suspense fallback={<LoaderWithLabel label={t('common.config.rootIsLoading')} />}>
       <Provider store={store}>
-        <ThemeProvider>
+        <PluginThemeProvider>
           <PluginErrorBoundary>
             <PluginConfigProvider config={config}>
               <Notification />
@@ -55,7 +55,7 @@ export default function App() {
               </SnackbarProvider>
             </PluginConfigProvider>
           </PluginErrorBoundary>
-        </ThemeProvider>
+        </PluginThemeProvider>
       </Provider>
       <iframe
         title='promotion'
