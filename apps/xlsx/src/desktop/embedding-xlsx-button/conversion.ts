@@ -258,7 +258,11 @@ function applyStyles(sheet: WorkSheet, lastRow: number, lastCol: number, headerR
     for (let c = 0; c < lastCol; c++) {
       const addr = utils.encode_cell({ r, c });
       if (sheet[addr]) {
-        sheet[addr].s = r < headerRows ? HEADER_STYLE : DATA_STYLE;
+        // セルごとにスタイルを複製して割り当てます。
+        // xlsx-js-style はシリアライズ時にセルの `z` (日付フォーマット) を
+        // `cell.s.numFmt` へ書き込むため、共有オブジェクトを使い回すと
+        // 日付セルのフォーマットが数値・計算フィールドのセルにまで伝播してしまいます。
+        sheet[addr].s = { ...(r < headerRows ? HEADER_STYLE : DATA_STYLE) };
       }
     }
   }
