@@ -13,9 +13,13 @@ export const FORMATTABLE_FIELD_TYPES: kintoneAPI.FieldPropertyType[] = [
   'UPDATED_TIME',
 ];
 
+/** 数値フォーマットを適用できるフィールドタイプ */
+export const NUMBER_FORMATTABLE_FIELD_TYPES: kintoneAPI.FieldPropertyType[] = ['NUMBER', 'CALC'];
+
 export const CONCATENATION_ITEM_TYPES = [
   { label: '任意の文字列', value: 'string' },
   { label: 'フィールド', value: 'field' },
+  { label: 'テーブルの列', value: 'subtable' },
   // { label: 'アプリID', value: 'appId' },
   // { label: 'アプリ名', value: 'appName' },
 ] as const;

@@ -21,6 +21,10 @@ export const stringFieldsAtom = derive([currentAppFormFieldsAtom], (fields) => {
   );
 });
 
+export const subtableFieldsAtom = derive([currentAppFormFieldsAtom], (fields) => {
+  return fields.filter((field) => field.type === 'SUBTABLE');
+});
+
 export const flatFieldsState = derive([currentAppFormFieldsAtom], (fields) => {
   return fields.flatMap((field) => {
     if (field.type === 'SUBTABLE') {

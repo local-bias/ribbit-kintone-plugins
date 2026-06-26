@@ -17,6 +17,7 @@ import { CONCATENATION_ITEM_TYPES } from '@/lib/plugin';
 import Summary from './accordion-summary';
 import FieldForm from './field';
 import StringForm from './string';
+import SubtableForm from './subtable';
 
 const Component: FC = () => {
   const items = useAtomValue(concatenationItemsState);
@@ -64,6 +65,12 @@ const Component: FC = () => {
               target.value = '';
               target.format = '';
               break;
+            case 'subtable':
+              target.value = '';
+              target.columnField = '';
+              target.separator = '\n';
+              target.format = '';
+              break;
           }
         })
       );
@@ -100,6 +107,7 @@ const Component: FC = () => {
                   </div>
                   <StringForm item={item} index={index} />
                   <FieldForm item={item} index={index} />
+                  <SubtableForm item={item} index={index} />
                 </div>
               </AccordionDetails>
             </Accordion>
