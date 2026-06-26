@@ -55,6 +55,8 @@ const Component: FC<Props> = ({ item, index }) => {
           color='primary'
           label='文字列'
           fullWidth
+          multiline
+          minRows={1}
           value={item.value}
           onChange={(e) => onStringChange(index, e.target.value)}
         />

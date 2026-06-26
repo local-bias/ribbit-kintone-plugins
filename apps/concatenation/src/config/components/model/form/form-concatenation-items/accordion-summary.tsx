@@ -20,6 +20,12 @@ const Component: FC<Props> = ({ item }) => {
           {label} {item.value ? `(${item.value})` : ''}
         </div>
       );
+    case 'subtable':
+      return (
+        <div>
+          {label} {item.columnField ? `(${item.value} / ${item.columnField})` : ''}
+        </div>
+      );
     default:
       return <div>{label}</div>;
   }
