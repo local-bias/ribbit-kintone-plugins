@@ -5,6 +5,7 @@
 **/.next/
 **/.open-next/
 **/.react-router/
+**/.turbo/
 **/dist/
 **/.env*
 !**/.env.example
