@@ -10,7 +10,8 @@
     "build:js": "plugin build",
     "build": "pnpm run build:js && concurrently \"pnpm:build:css-*\" && plugin zip",
     "standalone": "pnpm run build && plugin zip --env standalone",
-    "dev": "plugin dev --cert-dir ~/config/cert"
+    "dev": "plugin dev --cert-dir ~/config/cert",
+    "test": "vitest run"
   },
   "browser": {
     "path": false
@@ -61,6 +62,7 @@
     "concurrently": "^9.2.1",
     "dotenv": "^17.4.2",
     "ts-loader": "^9.5.7",
-    "typescript": "^6.0.3"
+    "typescript": "^6.0.3",
+    "vitest": "^4.0.18"
   }
 }
