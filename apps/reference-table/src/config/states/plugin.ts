@@ -55,6 +55,7 @@ export const filterSubtableRowsByMatchingFieldAtom = getConditionPropertyAtom(
   'filterSubtableRowsByMatchingField'
 );
 export const showFieldAggregationsAtom = getConditionPropertyAtom('showFieldAggregations');
+export const enableCsvExportAtom = getConditionPropertyAtom('enableCsvExport');
 export const recordsPerPageAtom = getConditionPropertyAtom('recordsPerPage');
 export const aggregationRoundingModeAtom = getConditionPropertyAtom('aggregationRoundingMode');
 export const aggregationDecimalDigitsAtom = getConditionPropertyAtom('aggregationDecimalDigits');

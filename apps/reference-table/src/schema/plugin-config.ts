@@ -73,6 +73,8 @@ export const PluginConditionV1Schema = z.object({
   filterSubtableRowsByMatchingField: z.boolean().default(false),
   /** 数値・計算フィールドの集計値を表示するか */
   showFieldAggregations: z.boolean().default(false),
+  /** テーブルの表示内容をCSVとしてダウンロードするボタンを表示するか */
+  enableCsvExport: z.boolean().default(false),
   /** 1ページに表示する行数 */
   recordsPerPage: z
     .number()

@@ -10,9 +10,11 @@ import {
   extractColumnFilterOptions,
   FIELD_AGGREGATION_OPERATIONS,
   filterFlatTableRows,
+  getColumnFilterRangeKind,
   getRowSpanByGroup,
   isAggregatableField,
   isColumnFilterActive,
+  isColumnFilterRangeActive,
   isFirstVisibleRowInGroup,
   paginateFlatTableRowsByRecord,
   resolveRelatedRecordFields,
@@ -55,6 +57,7 @@ const condition: PluginCondition = {
   mergeRelatedRecordFields: true,
   filterSubtableRowsByMatchingField: false,
   showFieldAggregations: false,
+  enableCsvExport: false,
   recordsPerPage: 20,
   aggregationRoundingMode: 'round',
   aggregationDecimalDigits: 10,
@@ -64,6 +67,9 @@ const condition: PluginCondition = {
 
 const field = (value: string): kintoneAPI.Field =>
   ({ type: 'SINGLE_LINE_TEXT', value }) as kintoneAPI.Field;
+
+const typedField = (type: string, value: string): kintoneAPI.Field =>
+  ({ type, value }) as unknown as kintoneAPI.Field;
 
 const subtable = (rows: Record<string, string>[]): kintoneAPI.field.Subtable =>
   ({
@@ -656,5 +662,148 @@ describe('reference table helpers', () => {
     });
 
     expect(aggregation).toMatchObject({ value: 100, formattedValue: '100', count: 1 });
+  });
+});
+
+describe('日付・日時・数値フィールドの範囲絞り込み', () => {
+  const rangeFields = {
+    dueDate: { code: 'dueDate', label: '締切', type: 'DATE' },
+    updatedAt: { code: 'updatedAt', label: '更新日時', type: 'DATETIME' },
+    amount: { code: 'amount', label: '金額', type: 'NUMBER' },
+  } as unknown as kintoneAPI.FieldProperties;
+
+  const rangeCondition: PluginCondition = {
+    ...condition,
+    relatedSubtableCode: '',
+    relatedRecordFieldCodes: ['dueDate', 'updatedAt', 'amount'],
+    subtableFieldCodes: [],
+  };
+
+  const rangeRecords = [
+    {
+      $id: { type: '__ID__', value: '201' },
+      dueDate: typedField('DATE', '2026-06-01'),
+      updatedAt: typedField('DATETIME', '2026-06-01T00:00:00Z'),
+      amount: typedField('NUMBER', '100'),
+    },
+    {
+      $id: { type: '__ID__', value: '202' },
+      dueDate: typedField('DATE', '2026-06-30'),
+      updatedAt: typedField('DATETIME', '2026-06-30T12:00:00Z'),
+      amount: typedField('NUMBER', '500'),
+    },
+  ] as kintoneAPI.RecordData[];
+
+  const buildRangeRows = (records: kintoneAPI.RecordData[] = rangeRecords) =>
+    buildFlatTableRows({
+      records,
+      condition: rangeCondition,
+      relatedRecordFields: resolveRelatedRecordFields(rangeFields, rangeCondition),
+      subtableFields: [],
+    });
+
+  test('日付フィールドを「以降」で絞り込む', () => {
+    const filtered = filterFlatTableRows(
+      buildRangeRows(),
+      '',
+      new Map([[createTableColumnKey('record', 'dueDate'), { range: { from: '2026-06-15' } }]])
+    );
+
+    expect(filtered.map((row) => row.groupKey)).toEqual(['record-202']);
+  });
+
+  test('日付フィールドを「以前」で絞り込む', () => {
+    const filtered = filterFlatTableRows(
+      buildRangeRows(),
+      '',
+      new Map([[createTableColumnKey('record', 'dueDate'), { range: { to: '2026-06-15' } }]])
+    );
+
+    expect(filtered.map((row) => row.groupKey)).toEqual(['record-201']);
+  });
+
+  test('日時フィールドを範囲（以降かつ以前）で絞り込む', () => {
+    const filtered = filterFlatTableRows(
+      buildRangeRows(),
+      '',
+      new Map([
+        [
+          createTableColumnKey('record', 'updatedAt'),
+          { range: { from: '2026-06-15T00:00', to: '2026-07-01T00:00' } },
+        ],
+      ])
+    );
+
+    expect(filtered.map((row) => row.groupKey)).toEqual(['record-202']);
+  });
+
+  test('数値フィールドを「以上／以下」で絞り込む', () => {
+    const filtered = filterFlatTableRows(
+      buildRangeRows(),
+      '',
+      new Map([[createTableColumnKey('record', 'amount'), { range: { from: '200', to: '600' } }]])
+    );
+
+    expect(filtered.map((row) => row.groupKey)).toEqual(['record-202']);
+  });
+
+  test('範囲の境界値は含めて判定する', () => {
+    const filtered = filterFlatTableRows(
+      buildRangeRows(),
+      '',
+      new Map([[createTableColumnKey('record', 'amount'), { range: { from: '100', to: '100' } }]])
+    );
+
+    expect(filtered.map((row) => row.groupKey)).toEqual(['record-201']);
+  });
+
+  test('範囲指定時に比較できない空値の行は除外する', () => {
+    const recordsWithEmpty = [
+      ...rangeRecords,
+      {
+        $id: { type: '__ID__', value: '203' },
+        dueDate: typedField('DATE', ''),
+        updatedAt: typedField('DATETIME', ''),
+        amount: typedField('NUMBER', ''),
+      },
+    ] as kintoneAPI.RecordData[];
+
+    const filtered = filterFlatTableRows(
+      buildRangeRows(recordsWithEmpty),
+      '',
+      new Map([[createTableColumnKey('record', 'amount'), { range: { from: '0' } }]])
+    );
+
+    expect(filtered.map((row) => row.groupKey)).toEqual(['record-201', 'record-202']);
+  });
+
+  test('フリーワード・個別チェック・範囲をAND条件で同時適用する', () => {
+    const filtered = filterFlatTableRows(
+      buildRangeRows(),
+      '',
+      new Map([
+        [
+          createTableColumnKey('record', 'amount'),
+          { selectedValues: ['100', '500'], range: { from: '200' } },
+        ],
+      ])
+    );
+
+    expect(filtered.map((row) => row.groupKey)).toEqual(['record-202']);
+  });
+
+  test('フィールド型を範囲入力種別へ対応付け、アクティブ判定を行う', () => {
+    expect(getColumnFilterRangeKind('DATE')).toBe('date');
+    expect(getColumnFilterRangeKind('DATETIME')).toBe('datetime');
+    expect(getColumnFilterRangeKind('NUMBER')).toBe('number');
+    expect(getColumnFilterRangeKind('CALC')).toBe('number');
+    expect(getColumnFilterRangeKind('SINGLE_LINE_TEXT')).toBeNull();
+    expect(getColumnFilterRangeKind(undefined)).toBeNull();
+
+    expect(isColumnFilterActive({ range: { from: '2026-06-01' } })).toBe(true);
+    expect(isColumnFilterActive({ range: {} })).toBe(false);
+    expect(isColumnFilterRangeActive({ from: '  ' })).toBe(false);
+    expect(isColumnFilterRangeActive({ to: '2026-06-01' })).toBe(true);
+    expect(isColumnFilterRangeActive(undefined)).toBe(false);
   });
 });

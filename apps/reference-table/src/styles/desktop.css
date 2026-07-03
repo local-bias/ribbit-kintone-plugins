@@ -22,19 +22,46 @@
   }
 }
 
+/*
+ * デザインの方針:
+ * kintone 標準 UI に合わせた角ばった（ほぼ直角）フォルムをベースに、
+ * shadcn/ui ライクなニュートラル(zinc)系のミニマルで洗練された配色へ刷新する。
+ * 行の余白を詰めて一度に多くの情報を確認できる高密度レイアウトとする。
+ * デザイントークンはコンポーネント本体と、body直下に生成されるフィルタポップアップの
+ * 双方へ適用する（カスタムプロパティはDOMツリーで継承されるため）。
+ */
+.ribbit-related-subtable,
+.ribbit-related-subtable__filter-popover {
+  --rrt-bg: #ffffff;
+  --rrt-fg: #18181b;
+  --rrt-muted: #f7f7f8;
+  --rrt-muted-2: #f1f1f3;
+  --rrt-muted-3: #e9e9ec;
+  --rrt-muted-fg: #71717a;
+  --rrt-border: #e4e4e7;
+  --rrt-border-subtle: #f0f0f1;
+  --rrt-border-strong: #d4d4d8;
+  --rrt-accent: #f4f4f5;
+  --rrt-primary: #18181b;
+  --rrt-primary-hover: #2f2f33;
+  --rrt-primary-fg: #fafafa;
+  --rrt-ring: rgba(24, 24, 27, 0.16);
+  --rrt-radius: 2px;
+}
+
 @layer components {
   .ribbit-related-subtable {
-    color: #1e293b;
-    font-size: 14px;
-    line-height: 1.6;
+    color: var(--rrt-fg);
+    font-size: 13px;
+    line-height: 1.45;
     margin: 12px 0 24px;
     max-width: min(1600px, 80vw);
   }
 
   .ribbit-related-subtable__inner {
-    background: #fff;
-    border: 1px solid #e2e8f0;
-    border-radius: 12px;
+    background: var(--rrt-bg);
+    border: 1px solid var(--rrt-border);
+    border-radius: var(--rrt-radius);
     overflow: hidden;
   }
 
@@ -50,61 +77,152 @@
 
   .ribbit-related-subtable__header {
     align-items: center;
-    background: #f8fafc;
-    border-bottom: 1px solid #e2e8f0;
+    background: var(--rrt-muted);
+    border-bottom: 1px solid var(--rrt-border);
     display: flex;
     flex-wrap: wrap;
-    gap: 10px 16px;
+    gap: 8px 16px;
     justify-content: space-between;
-    padding: 14px 18px;
+    padding: 9px 14px;
   }
 
   .ribbit-related-subtable__heading {
     display: grid;
-    gap: 3px;
+    gap: 2px;
+    max-width: min(480px, 100%);
     min-width: min(320px, 100%);
   }
 
   .ribbit-related-subtable__title {
-    color: #0f172a;
-    font-size: 15px;
+    color: var(--rrt-fg);
+    font-size: 13px;
     font-weight: 600;
     letter-spacing: -0.01em;
     margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .ribbit-related-subtable__count {
-    color: #64748b;
+    color: var(--rrt-muted-fg);
     font-size: 12px;
     font-weight: 400;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .ribbit-related-subtable__controls {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-left: auto;
+    min-width: min(320px, 100%);
+  }
+
+  .ribbit-related-subtable__cache-status {
+    color: var(--rrt-muted-fg);
+    cursor: default;
+    font-size: 11.5px;
+    font-variant-numeric: tabular-nums;
+    min-width: 78px;
+    text-align: right;
+    visibility: hidden;
+    white-space: nowrap;
+  }
+
+  .ribbit-related-subtable__cache-status[data-visible="true"] {
+    visibility: visible;
+  }
+
+  .ribbit-related-subtable__cache-status[data-cache="true"] {
+    color: #b45309;
+  }
+
+  .ribbit-related-subtable__refresh-button,
+  .ribbit-related-subtable__csv-export-button {
+    align-items: center;
+    background: var(--rrt-bg);
+    border: 1px solid var(--rrt-border-strong);
+    border-radius: var(--rrt-radius);
+    color: var(--rrt-fg);
+    cursor: pointer;
+    display: inline-flex;
+    flex: 0 0 auto;
+    height: 30px;
+    justify-content: center;
+    outline: none;
+    padding: 0;
+    transition:
+      background 0.15s ease,
+      border-color 0.15s ease,
+      color 0.15s ease;
+    width: 30px;
+  }
+
+  .ribbit-related-subtable__refresh-button svg,
+  .ribbit-related-subtable__csv-export-button svg {
+    height: 16px;
+    width: 16px;
+  }
+
+  .ribbit-related-subtable__refresh-button:hover:not(:disabled),
+  .ribbit-related-subtable__csv-export-button:hover:not(:disabled) {
+    background: var(--rrt-accent);
+    border-color: var(--rrt-fg);
+  }
+
+  .ribbit-related-subtable__refresh-button:focus-visible,
+  .ribbit-related-subtable__csv-export-button:focus-visible {
+    border-color: var(--rrt-fg);
+    box-shadow: 0 0 0 3px var(--rrt-ring);
+  }
+
+  .ribbit-related-subtable__refresh-button:disabled,
+  .ribbit-related-subtable__csv-export-button:disabled {
+    cursor: default;
+    opacity: 0.65;
+  }
+
+  .ribbit-related-subtable__refresh-button[data-busy="true"] svg {
+    animation: ribbit-related-subtable-spin 0.8s linear infinite;
+  }
+
+  @keyframes ribbit-related-subtable-spin {
+    to {
+      transform: rotate(360deg);
+    }
   }
 
   .ribbit-related-subtable__search {
     align-items: center;
     display: flex;
     gap: 8px;
-    margin-left: auto;
-    min-width: min(280px, 100%);
+    min-width: min(240px, 100%);
   }
 
   .ribbit-related-subtable__search-label {
-    color: #64748b;
+    color: var(--rrt-muted-fg);
     font-size: 12px;
     font-weight: 500;
     white-space: nowrap;
   }
 
   .ribbit-related-subtable__search-input {
-    background: #fff;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
+    background: var(--rrt-bg);
+    border: 1px solid var(--rrt-border-strong);
+    border-radius: var(--rrt-radius);
     box-sizing: border-box;
-    color: #1e293b;
+    color: var(--rrt-fg);
     font: inherit;
-    height: 34px;
+    font-size: 13px;
+    height: 30px;
     min-width: 0;
     outline: none;
-    padding: 6px 12px;
+    padding: 5px 10px;
     transition:
       border-color 0.15s ease,
       box-shadow 0.15s ease;
@@ -112,38 +230,52 @@
   }
 
   .ribbit-related-subtable__search-input:focus {
-    border-color: #6366f1;
-    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+    border-color: var(--rrt-fg);
+    box-shadow: 0 0 0 3px var(--rrt-ring);
   }
 
+  /*
+   * 高さは JS 側で `--rrt-table-height` に設定し、行数の変動（初回読み込み中の逐次表示、
+   * 検索での絞り込み、ページ末尾の端数行など）によらず一定の表示領域を確保する。
+   * これにより検索欄やページ送りボタンの位置が読み込み・検索・ページ移動のたびに
+   * ずれてしまう問題を防ぐ。JS未設定時は既存のフォールバック値を使う。
+   */
   .ribbit-related-subtable__table-wrapper {
-    max-height: min(480px, 50vh);
+    height: var(--rrt-table-height, min(600px, 64vh));
     overflow: auto;
     width: 100%;
   }
 
+  /* アプリ解決・フィールド取得中の初期シェル専用。まだ table を組み立てられないため
+     テーブル表示領域の中央にメッセージを配置する。 */
+  .ribbit-related-subtable__table-wrapper[data-loading="true"] {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+  }
+
   .ribbit-related-subtable__aggregation {
     align-items: flex-start;
-    background: #f8fafc;
-    border-top: 1px solid #e2e8f0;
+    background: var(--rrt-muted);
+    border-top: 1px solid var(--rrt-border);
     display: none;
     gap: 10px;
-    padding: 10px 18px;
+    padding: 8px 14px;
   }
 
   .ribbit-related-subtable__aggregation-title {
-    color: #475569;
+    color: var(--rrt-muted-fg);
     flex: 0 0 auto;
     font-size: 12px;
     font-weight: 600;
-    line-height: 28px;
+    line-height: 26px;
   }
 
   .ribbit-related-subtable__aggregation-list {
     display: flex;
     flex: 1 1 auto;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 6px;
     margin: 0;
     min-width: 0;
   }
@@ -159,52 +291,60 @@
   }
 
   .ribbit-related-subtable__aggregation-label {
-    background: #eef2ff;
-    border: 1px solid #c7d2fe;
-    border-radius: 6px 0 0 6px;
-    color: #4338ca;
+    background: var(--rrt-muted-2);
+    border: 1px solid var(--rrt-border);
+    border-radius: var(--rrt-radius) 0 0 var(--rrt-radius);
+    color: var(--rrt-muted-fg);
     font-size: 12px;
     font-weight: 600;
     line-height: 1.2;
     max-width: 220px;
     overflow-wrap: anywhere;
-    padding: 6px 8px;
+    padding: 5px 8px;
   }
 
   .ribbit-related-subtable__aggregation-value {
-    background: #fff;
-    border: 1px solid #c7d2fe;
+    background: var(--rrt-bg);
+    border: 1px solid var(--rrt-border);
     border-left: 0;
-    border-radius: 0 6px 6px 0;
-    color: #0f172a;
+    border-radius: 0 var(--rrt-radius) var(--rrt-radius) 0;
+    color: var(--rrt-fg);
     font-size: 12px;
     font-variant-numeric: tabular-nums;
     font-weight: 600;
     line-height: 1.2;
     min-width: 84px;
-    padding: 6px 8px;
+    padding: 5px 8px;
     text-align: right;
   }
 
   .ribbit-related-subtable__rich-text {
-    line-height: 1.6;
+    line-height: 1.5;
     max-width: 480px;
     overflow-wrap: break-word;
     word-break: break-word;
   }
 
   .ribbit-related-subtable__rich-text p {
-    margin: 0 0 0.4em;
+    margin: 0 0 0.35em;
   }
 
   .ribbit-related-subtable__rich-text p:last-child {
     margin-bottom: 0;
   }
 
+  .ribbit-related-subtable__multi-line-text {
+    line-height: 1.5;
+    max-width: 480px;
+    overflow-wrap: break-word;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
   .ribbit-related-subtable__file-list {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 6px;
     list-style: none;
     margin: 0;
     padding: 0;
@@ -217,14 +357,14 @@
   }
 
   .ribbit-related-subtable__file-preview-link {
-    border-radius: 4px;
+    border-radius: var(--rrt-radius);
     display: inline-block;
     overflow: hidden;
   }
 
   .ribbit-related-subtable__file-preview-img {
-    border: 1px solid #e2e8f0;
-    border-radius: 4px;
+    border: 1px solid var(--rrt-border);
+    border-radius: var(--rrt-radius);
     display: block;
     max-height: 80px;
     max-width: 120px;
@@ -233,7 +373,7 @@
 
   .ribbit-related-subtable__file-download-link {
     align-items: center;
-    color: #2563eb;
+    color: var(--rrt-fg);
     display: inline-flex;
     font-size: 12px;
     gap: 4px;
@@ -243,7 +383,7 @@
   }
 
   .ribbit-related-subtable__file-download-link:hover {
-    color: #1d4ed8;
+    color: var(--rrt-fg);
     text-decoration: underline;
   }
 
@@ -261,22 +401,26 @@
 
   .ribbit-related-subtable__empty,
   .ribbit-related-subtable__message {
-    color: #64748b;
+    color: var(--rrt-muted-fg);
     font-size: 13px;
-    padding: 20px 18px;
+    padding: 18px 14px;
+  }
+
+  .ribbit-related-subtable__table-wrapper[data-loading="true"] .ribbit-related-subtable__empty {
+    padding: 0;
   }
 
   .ribbit-related-subtable__message {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    border-radius: 10px;
+    background: var(--rrt-muted);
+    border: 1px solid var(--rrt-border);
+    border-radius: var(--rrt-radius);
     font-size: 13px;
   }
 
   .ribbit-related-subtable__message--error {
-    background: #fff1f2;
-    border-color: #fecdd3;
-    color: #be123c;
+    background: #fef2f2;
+    border-color: #fecaca;
+    color: #b91c1c;
   }
 }
 
@@ -294,37 +438,37 @@
 }
 
 .ribbit-related-subtable__table th {
-  background: #f1f5f9;
-  border-bottom: 1px solid #e2e8f0;
+  background: var(--rrt-muted);
+  border-bottom: 1px solid var(--rrt-border);
   border-left: 0;
-  border-right: 1px solid #e8edf4;
+  border-right: 1px solid var(--rrt-border-subtle);
   border-top: 0;
   box-sizing: border-box;
-  color: #475569;
-  font-size: 11px;
+  color: var(--rrt-muted-fg);
+  font-size: 11.5px;
   font-weight: 600;
-  letter-spacing: 0.06em;
-  padding: 10px 16px;
+  letter-spacing: 0;
+  padding: 7px 12px;
   position: sticky;
   text-align: left;
-  text-transform: uppercase;
+  text-transform: none;
   top: 0;
   white-space: nowrap;
   z-index: 1;
 }
 
 .ribbit-related-subtable__table td {
-  background: #fff;
-  border-bottom: 1px solid #f1f5f9;
+  background: var(--rrt-bg);
+  border-bottom: 1px solid var(--rrt-border-subtle);
   border-left: 0;
-  border-right: 1px solid #f1f5f9;
+  border-right: 1px solid var(--rrt-border-subtle);
   border-top: 0;
   box-sizing: border-box;
-  color: #334155;
-  font-size: 13.5px;
+  color: var(--rrt-fg);
+  font-size: 13px;
   font-weight: 400;
   overflow-wrap: anywhere;
-  padding: 11px 16px;
+  padding: 6px 12px;
   transition: background 0.1s ease;
 }
 
@@ -340,7 +484,7 @@
 .ribbit-related-subtable__table th .ribbit-related-subtable__heading-cell {
   align-items: center;
   display: flex;
-  gap: 8px;
+  gap: 6px;
   justify-content: space-between;
   min-width: 0;
 }
@@ -355,12 +499,12 @@
   align-items: center;
   background: transparent;
   border: 0;
-  border-radius: 6px;
-  color: #64748b;
+  border-radius: var(--rrt-radius);
+  color: var(--rrt-muted-fg);
   cursor: pointer;
   display: inline-flex;
   flex: 0 0 auto;
-  height: 24px;
+  height: 22px;
   justify-content: center;
   opacity: 0;
   padding: 0;
@@ -368,12 +512,12 @@
     background 0.15s ease,
     color 0.15s ease,
     opacity 0.15s ease;
-  width: 24px;
+  width: 22px;
 }
 
 .ribbit-related-subtable__filter-button svg {
-  height: 15px;
-  width: 15px;
+  height: 14px;
+  width: 14px;
 }
 
 .ribbit-related-subtable__table th:hover .ribbit-related-subtable__filter-button,
@@ -383,14 +527,18 @@
 }
 
 .ribbit-related-subtable__filter-button:hover,
-.ribbit-related-subtable__filter-button:focus-visible,
+.ribbit-related-subtable__filter-button:focus-visible {
+  background: var(--rrt-muted-3);
+  color: var(--rrt-fg);
+}
+
 .ribbit-related-subtable__filter-button[data-active="true"] {
-  background: #dbeafe;
-  color: #2563eb;
+  background: var(--rrt-fg);
+  color: var(--rrt-primary-fg);
 }
 
 .ribbit-related-subtable__filter-button:focus-visible {
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+  box-shadow: 0 0 0 3px var(--rrt-ring);
   outline: none;
 }
 
@@ -398,12 +546,12 @@
   align-items: center;
   background: transparent;
   border: 0;
-  border-radius: 6px;
-  color: #64748b;
+  border-radius: var(--rrt-radius);
+  color: var(--rrt-muted-fg);
   cursor: pointer;
   display: inline-flex;
   flex: 0 0 auto;
-  height: 24px;
+  height: 22px;
   justify-content: center;
   opacity: 0;
   padding: 0;
@@ -411,12 +559,12 @@
     background 0.15s ease,
     color 0.15s ease,
     opacity 0.15s ease;
-  width: 24px;
+  width: 22px;
 }
 
 .ribbit-related-subtable__sort-button svg {
-  height: 14px;
-  width: 14px;
+  height: 13px;
+  width: 13px;
 }
 
 .ribbit-related-subtable__table th:hover .ribbit-related-subtable__sort-button,
@@ -427,91 +575,107 @@
 
 .ribbit-related-subtable__sort-button:hover,
 .ribbit-related-subtable__sort-button:focus-visible {
-  background: #f1f5f9;
-  color: #334155;
+  background: var(--rrt-muted-3);
+  color: var(--rrt-fg);
 }
 
 .ribbit-related-subtable__sort-button[data-active="true"] {
-  background: #e0e7ff;
-  color: #4338ca;
+  background: var(--rrt-fg);
+  color: var(--rrt-primary-fg);
 }
 
 .ribbit-related-subtable__sort-button[data-active="true"]:hover {
-  background: #c7d2fe;
+  background: var(--rrt-primary-hover);
 }
 
 .ribbit-related-subtable__sort-button:focus-visible {
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  box-shadow: 0 0 0 3px var(--rrt-ring);
   outline: none;
 }
 
 .ribbit-related-subtable__table tbody tr:hover td {
-  background: #f0f7ff;
+  background: var(--rrt-muted);
 }
 
 .ribbit-related-subtable__table .ribbit-related-subtable__record-heading {
-  background: #eef2ff;
-  border-right: 1px solid #c7d2fe;
-  color: #4338ca;
+  background: var(--rrt-muted-2);
+  border-right: 1px solid var(--rrt-border);
+  color: var(--rrt-fg);
 }
 
 .ribbit-related-subtable__table .ribbit-related-subtable__record-cell {
-  background: #fafaff;
-  border-right: 1px solid #dde3f8;
-  color: #1e293b;
-  font-weight: 400;
+  background: var(--rrt-muted);
+  border-right: 1px solid var(--rrt-border);
+  color: var(--rrt-fg);
+  font-weight: 500;
   min-width: 160px;
 }
 
 .ribbit-related-subtable__table .ribbit-related-subtable__detail-heading,
 .ribbit-related-subtable__table .ribbit-related-subtable__detail-cell,
 .ribbit-related-subtable__table .ribbit-related-subtable__aggregation-control-cell {
-  min-width: 88px;
-  padding-left: 10px;
-  padding-right: 10px;
+  min-width: 56px;
+  padding-left: 8px;
+  padding-right: 8px;
   text-align: center;
-  width: 88px;
+  width: 56px;
 }
 
 .ribbit-related-subtable__table .ribbit-related-subtable__detail-heading {
-  background: #f8fafc;
+  background: var(--rrt-muted);
 }
 
 .ribbit-related-subtable__table .ribbit-related-subtable__detail-cell {
-  color: #64748b;
+  color: var(--rrt-muted-fg);
   vertical-align: middle;
 }
 
 .ribbit-related-subtable__record-link {
-  color: var(--component-color-link-text-default, #0064c8);
-  text-decoration: none;
-  display: flex;
   align-items: center;
+  border-radius: var(--rrt-radius);
+  color: var(--rrt-muted-fg);
+  display: flex;
   justify-content: center;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.ribbit-related-subtable__record-link:hover {
+  color: var(--rrt-fg);
 }
 
 .ribbit-related-subtable__record-link svg {
-  height: 24px;
-  width: 24px;
+  height: 18px;
+  width: 18px;
+  color: var(--component-color-link-text-default, #0064c8);
 }
 
 .ribbit-related-subtable__record-link:focus-visible {
-  box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.18);
+  box-shadow: 0 0 0 3px var(--rrt-ring);
+  outline: none;
 }
 
+/*
+ * ヘッダー行のすぐ下に固定表示する。top の値は JS 側で実際のヘッダー行の高さを
+ * 計測して `--rrt-header-height` に設定する（フォントサイズ変更等でもずれない
+ * ようにするため）。JS未設定時のフォールバックとして概算値を指定する。
+ */
 .ribbit-related-subtable__table .ribbit-related-subtable__aggregation-row td {
-  background: #fff7ed;
-  border-bottom: 1px solid #fed7aa;
-  color: #7c2d12;
+  background: var(--rrt-muted-2);
+  border-bottom: 1px solid var(--rrt-border);
+  color: var(--rrt-fg);
   font-weight: 600;
+  position: sticky;
+  top: var(--rrt-header-height, 33px);
   vertical-align: middle;
+  z-index: 1;
 }
 
 .ribbit-related-subtable__table .ribbit-related-subtable__aggregation-row:hover td,
 .ribbit-related-subtable__table
   .ribbit-related-subtable__aggregation-row:hover
   .ribbit-related-subtable__record-cell {
-  background: #ffedd5;
+  background: var(--rrt-muted-3);
 }
 
 .ribbit-related-subtable__table .ribbit-related-subtable__aggregation-cell {
@@ -525,23 +689,23 @@
 }
 
 .ribbit-related-subtable__table .ribbit-related-subtable__aggregation-cell[data-empty="true"] {
-  color: #c2410c;
+  color: var(--rrt-muted-fg);
   font-weight: 500;
   text-align: center;
 }
 
 .ribbit-related-subtable__aggregation-select {
   appearance: auto;
-  background: #fff;
-  border: 1px solid #fdba74;
-  border-radius: 6px;
+  background: var(--rrt-bg);
+  border: 1px solid var(--rrt-border-strong);
+  border-radius: var(--rrt-radius);
   box-sizing: border-box;
-  color: #7c2d12;
+  color: var(--rrt-fg);
   cursor: pointer;
   font: inherit;
   font-size: 12px;
   font-weight: 600;
-  height: 30px;
+  height: 28px;
   max-width: 100%;
   min-width: 68px;
   outline: none;
@@ -549,26 +713,28 @@
 }
 
 .ribbit-related-subtable__aggregation-select:focus {
-  border-color: #f97316;
-  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.16);
+  border-color: var(--rrt-fg);
+  box-shadow: 0 0 0 3px var(--rrt-ring);
 }
 
 .ribbit-related-subtable__filter-popover {
   --filter-popover-max-height-offset: 96px;
 
-  background: #fff;
-  border: 1px solid #dbe3ef;
-  border-radius: 8px;
-  box-shadow: 0 18px 45px rgba(15, 23, 42, 0.18);
+  background: var(--rrt-bg);
+  border: 1px solid var(--rrt-border-strong);
+  border-radius: var(--rrt-radius);
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.12),
+    0 2px 6px rgba(0, 0, 0, 0.06);
   box-sizing: border-box;
-  color: #1e293b;
+  color: var(--rrt-fg);
   display: grid;
   gap: 10px;
   max-height: calc(100vh - var(--filter-popover-max-height-offset));
   overflow: hidden;
   padding: 0;
   position: fixed;
-  width: 320px;
+  width: 300px;
   z-index: 2147483000;
 }
 
@@ -586,7 +752,7 @@
 
 .ribbit-related-subtable__filter-title {
   box-sizing: border-box;
-  color: #0f172a;
+  color: var(--rrt-fg);
   font-size: 13px;
   font-weight: 700;
   min-width: 0;
@@ -594,24 +760,66 @@
 }
 
 input.ribbit-related-subtable__filter-search {
-  background: #fff;
-  border: 1px solid #dbe3ef;
-  border-radius: 7px;
+  background: var(--rrt-bg);
+  border: 1px solid var(--rrt-border-strong);
+  border-radius: var(--rrt-radius);
   box-sizing: border-box;
-  color: #1e293b;
+  color: var(--rrt-fg);
   font: inherit;
   font-size: 13px;
-  height: 34px;
+  height: 32px;
+  max-width: 100%;
+  min-width: 0;
   outline: none;
   padding: 6px 10px;
-  min-width: 0;
-  max-width: 100%;
   width: 100%;
 }
 
 .ribbit-related-subtable__filter-search:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.14);
+  border-color: var(--rrt-fg);
+  box-shadow: 0 0 0 3px var(--rrt-ring);
+}
+
+.ribbit-related-subtable__filter-range {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ribbit-related-subtable__filter-range-row {
+  align-items: center;
+  box-sizing: border-box;
+  display: flex;
+  gap: 8px;
+}
+
+.ribbit-related-subtable__filter-range-label {
+  color: var(--rrt-muted-fg);
+  flex: 0 0 auto;
+  font-size: 12px;
+  font-weight: 600;
+  width: 40px;
+}
+
+input.ribbit-related-subtable__filter-range-input {
+  background: var(--rrt-bg);
+  border: 1px solid var(--rrt-border-strong);
+  border-radius: var(--rrt-radius);
+  box-sizing: border-box;
+  color: var(--rrt-fg);
+  font: inherit;
+  font-size: 13px;
+  height: 32px;
+  min-width: 0;
+  outline: none;
+  padding: 6px 10px;
+  width: 100%;
+}
+
+.ribbit-related-subtable__filter-range-input:focus {
+  border-color: var(--rrt-fg);
+  box-shadow: 0 0 0 3px var(--rrt-ring);
 }
 
 .ribbit-related-subtable__filter-quick-actions,
@@ -626,7 +834,7 @@ input.ribbit-related-subtable__filter-search {
 }
 
 .ribbit-related-subtable__filter-actions {
-  border-top: 1px solid #eef2f7;
+  border-top: 1px solid var(--rrt-border);
   justify-content: flex-end;
   padding-top: 10px;
 }
@@ -635,7 +843,7 @@ input.ribbit-related-subtable__filter-search {
 .ribbit-related-subtable__filter-clear-button,
 .ribbit-related-subtable__filter-secondary-button,
 .ribbit-related-subtable__filter-apply-button {
-  border-radius: 6px;
+  border-radius: var(--rrt-radius);
   cursor: pointer;
   font: inherit;
   font-size: 12px;
@@ -651,33 +859,33 @@ input.ribbit-related-subtable__filter-search {
 .ribbit-related-subtable__filter-text-button,
 .ribbit-related-subtable__filter-clear-button,
 .ribbit-related-subtable__filter-secondary-button {
-  background: #fff;
-  border: 1px solid #dbe3ef;
-  color: #475569;
+  background: var(--rrt-bg);
+  border: 1px solid var(--rrt-border-strong);
+  color: var(--rrt-fg);
 }
 
 .ribbit-related-subtable__filter-text-button:hover,
 .ribbit-related-subtable__filter-clear-button:hover,
 .ribbit-related-subtable__filter-secondary-button:hover {
-  background: #f8fafc;
-  border-color: #93c5fd;
-  color: #1d4ed8;
+  background: var(--rrt-accent);
+  border-color: var(--rrt-border-strong);
+  color: var(--rrt-fg);
 }
 
 .ribbit-related-subtable__filter-apply-button {
-  background: #2563eb;
-  border: 1px solid #2563eb;
-  color: #fff;
+  background: var(--rrt-primary);
+  border: 1px solid var(--rrt-primary);
+  color: var(--rrt-primary-fg);
 }
 
 .ribbit-related-subtable__filter-apply-button:hover {
-  background: #1d4ed8;
-  border-color: #1d4ed8;
+  background: var(--rrt-primary-hover);
+  border-color: var(--rrt-primary-hover);
 }
 
 .ribbit-related-subtable__filter-options {
-  border: 1px solid #eef2f7;
-  border-radius: 7px;
+  border: 1px solid var(--rrt-border);
+  border-radius: var(--rrt-radius);
   max-height: 220px;
   overflow: auto;
   padding: 4px;
@@ -685,72 +893,98 @@ input.ribbit-related-subtable__filter-search {
 
 .ribbit-related-subtable__filter-option {
   align-items: center;
-  border-radius: 6px;
+  border-radius: var(--rrt-radius);
   cursor: pointer;
   display: grid;
   gap: 8px;
   grid-template-columns: auto minmax(0, 1fr) auto;
-  min-height: 30px;
+  min-height: 28px;
   padding: 4px 6px;
 }
 
 .ribbit-related-subtable__filter-option:hover {
-  background: #f1f5f9;
+  background: var(--rrt-accent);
 }
 
 .ribbit-related-subtable__filter-option input {
+  accent-color: var(--rrt-primary);
   margin: 0;
 }
 
 .ribbit-related-subtable__filter-option-label {
-  color: #334155;
+  color: var(--rrt-fg);
   font-size: 13px;
   overflow-wrap: anywhere;
 }
 
 .ribbit-related-subtable__filter-option-count {
-  color: #94a3b8;
+  color: var(--rrt-muted-fg);
   font-size: 11px;
   font-variant-numeric: tabular-nums;
 }
 
 .ribbit-related-subtable__filter-empty {
-  color: #94a3b8;
+  color: var(--rrt-muted-fg);
   font-size: 13px;
   padding: 16px 8px;
   text-align: center;
 }
 
 .ribbit-related-subtable__table tbody tr:hover .ribbit-related-subtable__record-cell {
-  background: #eaedff;
+  background: var(--rrt-muted-2);
 }
 
 .ribbit-related-subtable__table td.ribbit-related-subtable__table-empty {
-  color: #94a3b8;
+  color: var(--rrt-muted-fg);
   font-size: 13px;
   font-weight: 400;
-  padding: 36px 16px;
+  padding: 32px 16px;
   text-align: center;
 }
+
+/*
+ * データが0件（読み込み中・検索結果なし等）のときは、予約済みの固定表示領域
+ * いっぱいに table を広げてメッセージを縦中央に置く。行がある通常時にこの
+ * ルールが効くと行の高さが不自然に間延びしてしまうため data-empty="true" の
+ * ときだけ適用する。
+ */
+.ribbit-related-subtable__table[data-empty="true"] {
+  height: 100%;
+}
+
+.ribbit-related-subtable__table[data-empty="true"] td.ribbit-related-subtable__table-empty {
+  vertical-align: middle;
+}
+
+/*
+ * ページが1つしかない場合も visibility で内容を隠すだけにし、要素自体は常に
+ * 同じ高さで確保する。display:none による出現・消失は、直前まで表示されていた
+ * 前へ・次へボタンの位置がページ移動のたびにずれる原因になるため避ける。
+ */
 .ribbit-related-subtable__footer {
   align-items: center;
-  background: #f8fafc;
-  border-top: 1px solid #e2e8f0;
+  background: var(--rrt-muted);
+  border-top: 1px solid var(--rrt-border);
   display: flex;
   gap: 8px;
   justify-content: center;
-  padding: 10px 18px;
+  padding: 8px 14px;
+  visibility: hidden;
+}
+
+.ribbit-related-subtable__footer[data-visible="true"] {
+  visibility: visible;
 }
 
 .ribbit-related-subtable__pagination-btn {
-  background: #fff;
-  border: 1px solid #e2e8f0;
-  border-radius: 6px;
-  color: #374151;
+  background: var(--rrt-bg);
+  border: 1px solid var(--rrt-border-strong);
+  border-radius: var(--rrt-radius);
+  color: var(--rrt-fg);
   cursor: pointer;
   font-size: 13px;
   font-weight: 500;
-  height: 32px;
+  height: 30px;
   line-height: 1;
   min-width: 64px;
   padding: 0 12px;
@@ -760,18 +994,18 @@ input.ribbit-related-subtable__filter-search {
 }
 
 .ribbit-related-subtable__pagination-btn:hover:not(:disabled) {
-  background: #f0f7ff;
-  border-color: #6366f1;
+  background: var(--rrt-accent);
+  border-color: var(--rrt-fg);
 }
 
 .ribbit-related-subtable__pagination-btn:disabled {
-  color: #94a3b8;
+  color: var(--rrt-muted-fg);
   cursor: default;
   opacity: 0.6;
 }
 
 .ribbit-related-subtable__pagination-info {
-  color: #64748b;
+  color: var(--rrt-muted-fg);
   font-size: 13px;
   min-width: 80px;
   text-align: center;

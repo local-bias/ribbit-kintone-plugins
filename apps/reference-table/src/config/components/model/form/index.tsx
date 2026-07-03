@@ -43,6 +43,7 @@ import {
 import {
   aggregationDecimalDigitsAtom,
   aggregationRoundingModeAtom,
+  enableCsvExportAtom,
   filterSubtableRowsByMatchingFieldAtom,
   handleRelatedAppChangeAtom,
   handleRelatedSubtableChangeAtom,
@@ -524,6 +525,17 @@ function FieldAggregationsSwitch() {
   );
 }
 
+function CsvExportSwitch() {
+  const [checked, setChecked] = useAtom(enableCsvExportAtom);
+
+  return (
+    <FormControlLabel
+      control={<Switch checked={checked} onChange={(event) => setChecked(event.target.checked)} />}
+      label='テーブルの表示内容をCSVでダウンロードするボタンを表示'
+    />
+  );
+}
+
 function RecordsPerPageField() {
   const [recordsPerPage, setRecordsPerPage] = useAtom(recordsPerPageAtom);
 
@@ -750,6 +762,7 @@ function FormContent() {
           <div className='grid gap-1'>
             <MergeRelatedRecordFieldsSwitch />
             <FilterMatchingSubtableRowsSwitch />
+            <CsvExportSwitch />
           </div>
           <FieldAggregationSettings />
         </div>

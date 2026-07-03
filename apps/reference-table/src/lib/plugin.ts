@@ -75,6 +75,7 @@ export const getNewCondition = (): PluginCondition => ({
   mergeRelatedRecordFields: true,
   filterSubtableRowsByMatchingField: false,
   showFieldAggregations: false,
+  enableCsvExport: false,
   recordsPerPage: DEFAULT_RECORDS_PER_PAGE,
   aggregationRoundingMode: DEFAULT_AGGREGATION_ROUNDING_MODE,
   aggregationDecimalDigits: DEFAULT_AGGREGATION_DECIMAL_DIGITS,
@@ -209,6 +210,7 @@ const normalizeCondition = (condition: unknown): PluginCondition => {
         : false,
     showFieldAggregations:
       typeof source.showFieldAggregations === 'boolean' ? source.showFieldAggregations : false,
+    enableCsvExport: typeof source.enableCsvExport === 'boolean' ? source.enableCsvExport : false,
     recordsPerPage: toBoundedInteger({
       value: source.recordsPerPage,
       defaultValue: DEFAULT_RECORDS_PER_PAGE,

@@ -47,12 +47,26 @@ export type TableFieldColumn = {
   fieldCode: string;
   label: string;
   source: FieldAggregationSource;
+  type: kintoneAPI.FieldPropertyType;
+};
+
+/**
+ * 日付・日時・数値フィールドに対する範囲（以降／以前、以上／以下）絞り込みの値。
+ * 各境界は入力要素の生の文字列をそのまま保持する。
+ */
+export type ColumnFilterRange = {
+  from?: string;
+  to?: string;
 };
 
 export type ColumnFilterState = {
   keyword?: string;
   selectedValues?: string[];
+  range?: ColumnFilterRange;
 };
+
+/** 範囲絞り込みの入力種別。フィールド型を入力UIと比較ロジックに対応付ける。 */
+export type ColumnFilterRangeKind = 'date' | 'datetime' | 'number';
 
 export type ColumnFilterOption = {
   value: string;
@@ -105,6 +119,84 @@ export const formatTableField = (field: kintoneAPI.Field | undefined) => {
   return getFieldValueAsString(field, { separator: ', ' });
 };
 
+/**
+ * フィールド型を範囲絞り込みの入力種別に対応付ける。
+ * 範囲絞り込みに対応しない型の場合は null を返す。
+ */
+export const getColumnFilterRangeKind = (
+  type: string | undefined
+): ColumnFilterRangeKind | null => {
+  switch (type) {
+    case 'DATE':
+      return 'date';
+    case 'DATETIME':
+    case 'CREATED_TIME':
+    case 'UPDATED_TIME':
+      return 'datetime';
+    case 'NUMBER':
+    case 'CALC':
+    case 'RECORD_NUMBER':
+      return 'number';
+    default:
+      return null;
+  }
+};
+
+/**
+ * 範囲比較用の数値に変換する。数値型は数値として、日付・日時型はエポックミリ秒として扱う。
+ * 変換できない場合（空値・不正な値）は null を返す。
+ */
+const toRangeComparableValue = (
+  kind: ColumnFilterRangeKind,
+  rawValue: string | undefined
+): number | null => {
+  const trimmed = (rawValue ?? '').trim();
+  if (!trimmed) {
+    return null;
+  }
+  if (kind === 'number') {
+    const numericValue = Number(trimmed);
+    return Number.isFinite(numericValue) ? numericValue : null;
+  }
+  const timestamp = Date.parse(trimmed);
+  return Number.isNaN(timestamp) ? null : timestamp;
+};
+
+export const isColumnFilterRangeActive = (range: ColumnFilterRange | undefined): boolean => {
+  return !!range && (!!range.from?.trim() || !!range.to?.trim());
+};
+
+const matchesColumnFilterRange = (params: {
+  field: kintoneAPI.Field | undefined;
+  range: ColumnFilterRange;
+}): boolean => {
+  const kind = getColumnFilterRangeKind(params.field?.type);
+  // 範囲に対応しない型は範囲条件の対象外として常に通過させる
+  if (!kind) {
+    return true;
+  }
+
+  const [rawValue] = extractComparableValues(params.field?.value);
+  const value = toRangeComparableValue(kind, rawValue);
+  const from = toRangeComparableValue(kind, params.range.from);
+  const to = toRangeComparableValue(kind, params.range.to);
+
+  if (from === null && to === null) {
+    return true;
+  }
+  // 境界が指定されている状態で比較可能な値が無い行（空値など）は除外する
+  if (value === null) {
+    return false;
+  }
+  if (from !== null && value < from) {
+    return false;
+  }
+  if (to !== null && value > to) {
+    return false;
+  }
+  return true;
+};
+
 export const resolveRelatedRecordFields = (
   fields: kintoneAPI.FieldProperties,
   condition: PluginCondition
@@ -155,12 +247,14 @@ export const createTableFieldColumns = (params: {
     fieldCode: field.code,
     label: field.label,
     source: 'record' as const,
+    type: field.type,
   }));
   const subtableColumns = params.subtableFields.map((field) => ({
     key: createTableColumnKey('subtable', field.code),
     fieldCode: field.code,
     label: field.label,
     source: 'subtable' as const,
+    type: field.type,
   }));
 
   return [...relatedRecordColumns, ...subtableColumns];
@@ -365,7 +459,11 @@ export const isColumnFilterActive = (filter: ColumnFilterState | undefined) => {
   if (!filter) {
     return false;
   }
-  return !!normalizeSearchText(filter.keyword ?? '') || filter.selectedValues !== undefined;
+  return (
+    !!normalizeSearchText(filter.keyword ?? '') ||
+    filter.selectedValues !== undefined ||
+    isColumnFilterRangeActive(filter.range)
+  );
 };
 
 const matchesColumnFilter = (row: FlatTableRow, key: TableColumnKey, filter: ColumnFilterState) => {
@@ -382,8 +480,14 @@ const matchesColumnFilter = (row: FlatTableRow, key: TableColumnKey, filter: Col
   const selectedValues = filter.selectedValues;
   const matchesSelectedValues =
     selectedValues === undefined || selectedValues.includes(displayValue);
+  const matchesRange =
+    !isColumnFilterRangeActive(filter.range) ||
+    matchesColumnFilterRange({
+      field: getFlatTableRowField(row, column),
+      range: filter.range ?? {},
+    });
 
-  return matchesKeyword && matchesSelectedValues;
+  return matchesKeyword && matchesSelectedValues && matchesRange;
 };
 
 const matchesColumnFilters = (

@@ -1,7 +1,10 @@
 import {
+  type ColumnFilterRange,
+  type ColumnFilterRangeKind,
   type ColumnFilterState,
   extractColumnFilterOptions,
   type FlatTableRow,
+  getColumnFilterRangeKind,
   isColumnFilterActive,
   normalizeSearchText,
   type TableFieldColumn,
@@ -109,6 +112,71 @@ const updateOptionVisibility = (params: {
   params.emptyMessage.hidden = hasVisibleOption;
 };
 
+const RANGE_INPUT_TYPE: Record<ColumnFilterRangeKind, string> = {
+  date: 'date',
+  datetime: 'datetime-local',
+  number: 'number',
+};
+
+const RANGE_BOUND_LABELS: Record<ColumnFilterRangeKind, { from: string; to: string }> = {
+  date: { from: '以降', to: '以前' },
+  datetime: { from: '以降', to: '以前' },
+  number: { from: '以上', to: '以下' },
+};
+
+type RangeFilterSection = {
+  element: HTMLElement;
+  getRange: () => ColumnFilterRange | undefined;
+};
+
+const createRangeFilterSection = (params: {
+  kind: ColumnFilterRangeKind;
+  currentRange?: ColumnFilterRange;
+}): RangeFilterSection => {
+  const { kind, currentRange } = params;
+  const labels = RANGE_BOUND_LABELS[kind];
+  const inputType = RANGE_INPUT_TYPE[kind];
+
+  const section = createElement('div', { className: `${ROOT_CLASS}__filter-range` });
+
+  const createBoundInput = (boundLabel: string, value: string | undefined) => {
+    const row = createElement('label', { className: `${ROOT_CLASS}__filter-range-row` });
+    const labelText = createElement('span', {
+      className: `${ROOT_CLASS}__filter-range-label`,
+      text: boundLabel,
+    });
+    const input = document.createElement('input');
+    input.type = inputType;
+    input.className = `${ROOT_CLASS}__filter-range-input`;
+    if (kind === 'number') {
+      input.inputMode = 'decimal';
+    }
+    if (value) {
+      input.value = value;
+    }
+    row.append(labelText, input);
+    return { row, input };
+  };
+
+  const fromBound = createBoundInput(labels.from, currentRange?.from);
+  const toBound = createBoundInput(labels.to, currentRange?.to);
+  section.append(fromBound.row, toBound.row);
+
+  const getRange = (): ColumnFilterRange | undefined => {
+    const from = fromBound.input.value.trim();
+    const to = toBound.input.value.trim();
+    if (!from && !to) {
+      return undefined;
+    }
+    return {
+      ...(from ? { from } : {}),
+      ...(to ? { to } : {}),
+    };
+  };
+
+  return { element: section, getRange };
+};
+
 export const createColumnFilterPopover = (params: {
   column: TableFieldColumn;
   rows: FlatTableRow[];
@@ -120,6 +188,10 @@ export const createColumnFilterPopover = (params: {
   const selectedValues = new Set(
     params.currentFilter?.selectedValues ?? options.map((option) => option.value)
   );
+  const rangeKind = getColumnFilterRangeKind(params.column.type);
+  const rangeSection = rangeKind
+    ? createRangeFilterSection({ kind: rangeKind, currentRange: params.currentFilter?.range })
+    : null;
   const titleId = `${ROOT_CLASS}__filter-title-${nextPopoverId++}`;
   const popover = createElement('div', { className: `${ROOT_CLASS}__filter-popover` });
   popover.tabIndex = -1;
@@ -210,16 +282,25 @@ export const createColumnFilterPopover = (params: {
     const selectedValueList = getSelectedValues(optionList);
     const selectedValuesFilter =
       selectedValueList.length === options.length ? undefined : selectedValueList;
+    const range = rangeSection?.getRange();
     const nextFilter: ColumnFilterState = {
       ...(keyword ? { keyword } : {}),
       ...(selectedValuesFilter === undefined ? {} : { selectedValues: selectedValuesFilter }),
+      ...(range ? { range } : {}),
     };
     params.onApply(isColumnFilterActive(nextFilter) ? nextFilter : undefined);
   });
 
   const footer = createElement('div', { className: `${ROOT_CLASS}__filter-actions` });
   footer.append(clearFilterButton, cancelButton, applyButton);
-  content.append(title, keywordInput, quickActions, optionList, footer);
+  content.append(
+    title,
+    ...(rangeSection ? [rangeSection.element] : []),
+    keywordInput,
+    quickActions,
+    optionList,
+    footer
+  );
   popover.append(content);
   updateOptionVisibility({ optionList, emptyMessage, keyword: keywordInput.value });
 

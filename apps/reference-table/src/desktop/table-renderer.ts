@@ -123,6 +123,11 @@ const createTableDataCell = (params: {
     wrapper.className = `${ROOT_CLASS}__rich-text`;
     wrapper.innerHTML = params.text;
     cell.append(wrapper);
+  } else if (params.field.type === 'MULTI_LINE_TEXT') {
+    const wrapper = document.createElement('div');
+    wrapper.className = `${ROOT_CLASS}__multi-line-text`;
+    wrapper.textContent = params.text;
+    cell.append(wrapper);
   } else {
     cell.textContent = params.text;
   }

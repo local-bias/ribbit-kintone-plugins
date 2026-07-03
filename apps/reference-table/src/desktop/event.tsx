@@ -22,19 +22,28 @@ import {
   MIN_RECORDS_PER_PAGE,
   type PluginCondition,
 } from '@/schema/plugin-config';
+import { exportFlatTableRowsAsCsv } from './csv-export';
 import { type FileLoadRequest, loadFilesBatch } from './file-loader';
 import {
   createColumnFilterPopover,
   positionFilterPopover,
   trapFocusWithin,
 } from './filter-popover';
+import { createDownloadIconElement, createRefreshIconElement } from './icons';
 import { validPluginConditionsAtom } from './public-state';
+import {
+  clearCachedRecords,
+  createRecordCacheKey,
+  getCachedRecords,
+  setCachedRecords,
+} from './record-cache';
 import {
   buildFlatTableRows,
   type ColumnFilterState,
   type ColumnSortState,
   calculateFieldAggregations,
   createSubtableRelatedQueryConditionsRowFilter,
+  createTableFieldColumns,
   type FieldAggregationOperation,
   type FlatTableRow,
   filterFlatTableRows,
@@ -157,6 +166,42 @@ const createSearchInput = (onInput: (searchText: string) => void) => {
   input.addEventListener('input', () => onInput(input.value));
   wrapper.append(label, input);
   return wrapper;
+};
+
+const createRefreshButton = (onClick: () => void) => {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = `${ROOT_CLASS}__refresh-button`;
+  button.dataset.busy = 'false';
+  button.title = '再取得';
+  button.setAttribute('aria-label', '関連レコードを再取得');
+  button.append(createRefreshIconElement());
+  button.addEventListener('click', () => onClick());
+  return button;
+};
+
+const createCsvExportButton = (onClick: () => void) => {
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = `${ROOT_CLASS}__csv-export-button`;
+  button.title = 'CSVをダウンロード';
+  button.setAttribute('aria-label', '表示中のテーブルをCSVでダウンロード');
+  button.append(createDownloadIconElement());
+  button.addEventListener('click', () => onClick());
+  return button;
+};
+
+const formatCacheClockTime = (timestamp: number) => {
+  return new Date(timestamp).toLocaleTimeString('ja-JP', {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+};
+
+const formatCacheFullTime = (timestamp: number) => {
+  return new Date(timestamp).toLocaleString('ja-JP', {
+    hour12: false,
+  });
 };
 
 const isSubtableProperty = (
@@ -303,7 +348,9 @@ const createPagination = (onPageChange: (newPage: number) => void) => {
     pageInfo.textContent = `${page} / ${totalPages} ページ`;
     prevBtn.disabled = page <= 1;
     nextBtn.disabled = page >= totalPages;
-    wrapper.style.display = totalPages <= 1 ? 'none' : 'flex';
+    // display の切り替えではなく visibility を使い、フッターの高さ自体は常に確保する。
+    // これにより1ページ⇄複数ページの切り替わり時に前へ・次へボタンの位置がずれない。
+    wrapper.dataset.visible = totalPages <= 1 ? 'false' : 'true';
   };
 
   return { element: wrapper, update };
@@ -316,6 +363,26 @@ const getRecordsPerPage = (condition: PluginCondition) => {
   return Math.min(MAX_RECORDS_PER_PAGE, Math.max(MIN_RECORDS_PER_PAGE, recordsPerPage));
 };
 
+/** thead/tbody の1行あたりの実測に近いおおよその高さ（px）。CSSの padding/font-size と対応させる。 */
+const TABLE_ROW_HEIGHT_PX = 32;
+const TABLE_HEADER_HEIGHT_PX = 32;
+/** 表示行数が少ない設定でも、読み込み中・空メッセージが窮屈に見えない最小の表示領域。 */
+const TABLE_MIN_HEIGHT_PX = 160;
+/** 大きい recordsPerPage でも際限なく伸びないための上限（既存の見た目の上限を踏襲）。 */
+const TABLE_MAX_HEIGHT_CSS = '600px, 64vh';
+
+/**
+ * 1ページあたりの表示行数から、テーブル表示領域の高さを固定的に算出する。
+ * 初回の逐次読み込み・検索による絞り込み・ページ末尾の端数行など、実際の行数が
+ * 変動する場面でも表示領域の高さを一定に保ち、検索欄やページ送りボタンの位置が
+ * ずれないようにするために使う。
+ */
+const getReservedTableHeightCss = (recordsPerPage: number) => {
+  const contentHeight = TABLE_HEADER_HEIGHT_PX + TABLE_ROW_HEIGHT_PX * recordsPerPage;
+  const preferredHeight = Math.max(TABLE_MIN_HEIGHT_PX, contentHeight);
+  return `min(${preferredHeight}px, ${TABLE_MAX_HEIGHT_CSS})`;
+};
+
 const renderRecords = (params: {
   root: HTMLElement;
   condition: PluginCondition;
@@ -323,9 +390,17 @@ const renderRecords = (params: {
   appName: string;
   relatedAppGuestSpaceId?: string;
   subtableRowFilter?: SubtableRowFilter;
+  onRefresh: () => void;
 }) => {
-  const { root, condition, relatedFields, appName, relatedAppGuestSpaceId, subtableRowFilter } =
-    params;
+  const {
+    root,
+    condition,
+    relatedFields,
+    appName,
+    relatedAppGuestSpaceId,
+    subtableRowFilter,
+    onRefresh,
+  } = params;
   const relatedRecordFields = resolveRelatedRecordFields(relatedFields, condition);
   const subtableFields = resolveSubtableFields(relatedFields, condition);
 
@@ -350,6 +425,28 @@ const renderRecords = (params: {
     count
   );
   header.append(heading);
+
+  const controls = createElement('div', { className: `${ROOT_CLASS}__controls` });
+  // visibility で表示/非表示を切り替え、幅を常に確保しておく（hidden属性で
+  // レイアウトから除外すると、更新ボタンや検索欄が横方向にずれてしまうため）。
+  const cacheStatus = createElement('span', { className: `${ROOT_CLASS}__cache-status` });
+  cacheStatus.dataset.visible = 'false';
+  const csvExportButton = condition.enableCsvExport
+    ? createCsvExportButton(() =>
+        exportFlatTableRowsAsCsv({
+          columns: createTableFieldColumns({ relatedRecordFields, subtableFields }),
+          rows: currentFilteredRows,
+          baseName: condition.memo || appName || '関連レコード',
+        })
+      )
+    : null;
+  // データが揃うまでは無効化しておく（render() 実行後に isComplete/行数に応じて更新される）
+  if (csvExportButton) {
+    csvExportButton.disabled = true;
+  }
+  const refreshButton = createRefreshButton(() => onRefresh());
+  controls.append(cacheStatus, ...(csvExportButton ? [csvExportButton] : []), refreshButton);
+  header.append(controls);
   container.append(header);
   const mergeRelatedRecordFields = shouldMergeRelatedRecordFields(condition);
   const recordsPerPage = getRecordsPerPage(condition);
@@ -374,6 +471,38 @@ const renderRecords = (params: {
   const applyCurrentFilters = () => {
     const filtered = filterFlatTableRows(rows, currentSearchText, currentColumnFilters);
     currentFilteredRows = sortFlatTableRows(filtered, currentSort);
+  };
+
+  const setRefreshing = (busy: boolean) => {
+    refreshButton.disabled = busy;
+    refreshButton.dataset.busy = busy ? 'true' : 'false';
+    refreshButton.setAttribute('aria-busy', busy ? 'true' : 'false');
+    // 取得中の不完全な行を書き出さないよう、再取得中はエクスポートも止める
+    if (csvExportButton) {
+      csvExportButton.disabled = busy || !isComplete || !currentFilteredRows.length;
+    }
+  };
+
+  const updateCsvExportButtonState = () => {
+    if (!csvExportButton) {
+      return;
+    }
+    csvExportButton.disabled = !isComplete || !currentFilteredRows.length;
+  };
+
+  const updateCacheStatus = (info?: { fromCache?: boolean; cachedAt?: number }) => {
+    if (!info || typeof info.cachedAt !== 'number') {
+      cacheStatus.dataset.visible = 'false';
+      return;
+    }
+    const clockTime = formatCacheClockTime(info.cachedAt);
+    const fullTime = formatCacheFullTime(info.cachedAt);
+    cacheStatus.textContent = info.fromCache ? `キャッシュ ${clockTime}` : `取得 ${clockTime}`;
+    cacheStatus.title = info.fromCache
+      ? `キャッシュから表示しています（取得日時: ${fullTime}）。再取得するには更新ボタンを押してください。`
+      : `サーバーから取得しました（${fullTime}）。`;
+    cacheStatus.dataset.cache = info.fromCache ? 'true' : 'false';
+    cacheStatus.dataset.visible = 'true';
   };
 
   const setColumnSort = (key: TableColumnKey, direction: SortDirection | null) => {
@@ -487,6 +616,9 @@ const renderRecords = (params: {
     Math.max(1, Math.ceil(getFlatTableRowGroupCount(currentFilteredRows) / recordsPerPage));
 
   const tableWrapper = createElement('div', { className: `${ROOT_CLASS}__table-wrapper` });
+  // recordsPerPage は表示中に変わらない静的な値なので、一度だけ高さを確保すれば
+  // 以降の読み込み・検索・ページ移動で表示領域が伸び縮みすることはない。
+  tableWrapper.style.setProperty('--rrt-table-height', getReservedTableHeightCss(recordsPerPage));
   const table = createElement('table', { className: `${ROOT_CLASS}__table` });
   const caption = createElement('caption', {
     className: `${ROOT_CLASS}__visually-hidden`,
@@ -511,6 +643,7 @@ const renderRecords = (params: {
 
     // ページ変更や再レンダリング時に進行中のファイル取得をキャンセルする
     fileLoadVersion++;
+    updateCsvExportButtonState();
 
     renderTableHead({
       thead,
@@ -523,6 +656,11 @@ const renderRecords = (params: {
         currentSort?.key === columnKey ? currentSort.direction : null,
       onSortClick: handleSortClick,
     });
+    // 集計行をヘッダーの直下に固定表示するため、実際のヘッダー行の高さを計測して
+    // 反映する（フォントサイズや折り返し等でヘッダー高さが変わってもずれない）。
+    // 初回のみ container が document に未接続で 0 になるが、その時点では行が
+    // 空でこの後 return するため実害はない。
+    table.style.setProperty('--rrt-header-height', `${thead.offsetHeight}px`);
     updateCount({
       count,
       recordsLength: records.length,
@@ -544,6 +682,8 @@ const renderRecords = (params: {
           : '関連するレコードはありません。'
         : '関連レコードを読み込んでいます。';
       pagination.update(1, 1);
+      // 予約した固定高さの中で空・読み込み中メッセージが浮かないよう縦中央に配置する
+      table.dataset.empty = 'true';
       tbody.replaceChildren(
         createEmptyTableRow(
           DETAIL_COLUMN_LENGTH + relatedRecordFields.length + subtableFields.length,
@@ -553,6 +693,7 @@ const renderRecords = (params: {
       return;
     }
 
+    table.dataset.empty = 'false';
     const pageRows = paginateFlatTableRowsByRecord({
       rows: currentFilteredRows,
       page: currentPage,
@@ -609,11 +750,22 @@ const renderRecords = (params: {
     render();
   };
 
-  header.append(createSearchInput(applySearch));
+  controls.append(createSearchInput(applySearch));
   applySearch('');
   root.replaceChildren(container);
 
   return {
+    /** 再取得・キャッシュ再読み込み時に表示データを初期化し、読み込み中状態へ戻す。 */
+    reset: () => {
+      records = [];
+      rows = [];
+      currentPage = 1;
+      isComplete = false;
+      updateCacheStatus(undefined);
+      applyCurrentFilters();
+      render();
+    },
+    setRefreshing,
     appendRecords: (nextRecords: RelatedRecord[]) => {
       if (!nextRecords.length) {
         return;
@@ -634,8 +786,9 @@ const renderRecords = (params: {
       applyCurrentFilters();
       render();
     },
-    finish: () => {
+    finish: (info?: { fromCache?: boolean; cachedAt?: number }) => {
       isComplete = true;
+      updateCacheStatus(info);
       render();
     },
   };
@@ -697,6 +850,72 @@ const resolveRelatedApp = async (condition: PluginCondition) => {
   };
 };
 
+/**
+ * アプリ解決・フィールド取得が完了する前の初期表示。
+ * ヘッダー(タイトル・検索欄・更新ボタン)とテーブル表示領域の高さを、
+ * 後続で `renderRecords` が組み立てる本体と同じ見た目で先に確保しておく。
+ * こうすることで、読み込み完了時に検索欄やページ送りボタンが
+ * 新たに出現して位置がずれる、という初回読み込み時のジャンプを防ぐ。
+ */
+const renderLoadingShell = (root: HTMLElement, condition: PluginCondition) => {
+  const container = createElement('div', { className: `${ROOT_CLASS}__inner` });
+  const header = createElement('div', { className: `${ROOT_CLASS}__header` });
+  const heading = createElement('div', { className: `${ROOT_CLASS}__heading` });
+  heading.append(
+    createElement('h3', {
+      className: `${ROOT_CLASS}__title`,
+      text: condition.memo || '関連レコード',
+    }),
+    createElement('div', {
+      className: `${ROOT_CLASS}__count`,
+      text: '関連レコードを読み込んでいます。',
+    })
+  );
+  header.append(heading);
+
+  const controls = createElement('div', { className: `${ROOT_CLASS}__controls` });
+  const cacheStatus = createElement('span', { className: `${ROOT_CLASS}__cache-status` });
+  cacheStatus.dataset.visible = 'false';
+  // enableCsvExport は静的な設定値なので、本体側と同じ条件でここでも先にボタンを
+  // 確保しておく。読み込み完了時に出現してコントロール列の幅がずれるのを防ぐ。
+  const csvExportButton = condition.enableCsvExport ? createCsvExportButton(() => {}) : null;
+  if (csvExportButton) {
+    csvExportButton.disabled = true;
+  }
+  const refreshButton = createRefreshButton(() => {});
+  refreshButton.disabled = true;
+  const searchWrapper = createSearchInput(() => {});
+  searchWrapper.querySelector('input')?.setAttribute('disabled', 'true');
+  controls.append(
+    cacheStatus,
+    ...(csvExportButton ? [csvExportButton] : []),
+    refreshButton,
+    searchWrapper
+  );
+  header.append(controls);
+  container.append(header);
+
+  const tableWrapper = createElement('div', { className: `${ROOT_CLASS}__table-wrapper` });
+  tableWrapper.style.setProperty(
+    '--rrt-table-height',
+    getReservedTableHeightCss(getRecordsPerPage(condition))
+  );
+  tableWrapper.dataset.loading = 'true';
+  tableWrapper.append(
+    createElement('div', {
+      className: `${ROOT_CLASS}__empty`,
+      text: '関連レコードを読み込んでいます。',
+    })
+  );
+  container.append(tableWrapper);
+
+  const footer = createElement('div', { className: `${ROOT_CLASS}__footer` });
+  footer.dataset.visible = 'false';
+  container.append(footer);
+
+  root.replaceChildren(container);
+};
+
 const renderCondition = async (condition: PluginCondition, record: kintoneAPI.RecordData) => {
   const spaceElement = getSpaceElement(condition.targetSpaceId);
   if (!spaceElement) {
@@ -708,7 +927,7 @@ const renderCondition = async (condition: PluginCondition, record: kintoneAPI.Re
   disposeConditionUi(condition.id);
   spaceElement.querySelector(`[data-condition-id="${condition.id}"]`)?.remove();
   spaceElement.append(root);
-  renderMessage(root, '関連レコードを読み込んでいます。');
+  renderLoadingShell(root, condition);
   const requestScope = createConditionRequestScope(condition.id);
 
   try {
@@ -767,17 +986,15 @@ const renderCondition = async (condition: PluginCondition, record: kintoneAPI.Re
     }
 
     const subtableRowFilter = createSubtableRowFilter({ condition, resolvedConditions });
-    let incrementalRenderError: unknown;
-    const handleIncrementalRenderError = (error: unknown) => {
-      if (incrementalRenderError) {
-        return;
-      }
-      incrementalRenderError = error;
-      logClientError('Reference table incremental render error:', error);
-      renderMessage(root, '関連レコードの表示中にエラーが発生しました。', 'error');
-    };
-
     const fetchFields = getFetchFields(condition);
+    const cacheKey = createRecordCacheKey({
+      conditionId: condition.id,
+      relatedAppId: condition.relatedAppId,
+      query,
+      fields: fetchFields,
+    });
+
+    let triggerRefresh = () => {};
     const renderer = renderRecords({
       root,
       condition,
@@ -785,36 +1002,89 @@ const renderCondition = async (condition: PluginCondition, record: kintoneAPI.Re
       appName: app.name,
       relatedAppGuestSpaceId,
       subtableRowFilter,
+      onRefresh: () => triggerRefresh(),
     });
     if (!renderer) {
       return;
     }
 
-    await getAllRecords<RelatedRecord>({
-      app: condition.relatedAppId,
-      fields: fetchFields,
-      query,
-      guestSpaceId: relatedAppGuestSpaceId,
-      debug: isDev,
-      onStep: ({ incremental }) => {
-        if (!requestScope.isCurrent()) {
-          return;
+    // 再取得ごとに採番し、同一表示内で進行中の前回取得を無効化するためのトークン
+    let activeLoadId = 0;
+    const loadRecords = async ({ forceRefresh }: { forceRefresh: boolean }) => {
+      const loadId = ++activeLoadId;
+      // ナビゲーション（新しい renderCondition）と、同一表示内での再取得の双方を検知する
+      const isCurrentLoad = () => requestScope.isCurrent() && activeLoadId === loadId;
+      renderer.setRefreshing(true);
+
+      try {
+        if (forceRefresh) {
+          clearCachedRecords(cacheKey);
+        } else {
+          const cached = getCachedRecords(cacheKey);
+          if (cached) {
+            renderer.reset();
+            renderer.appendRecords(cached.records);
+            renderer.finish({ fromCache: true, cachedAt: cached.cachedAt });
+            return;
+          }
         }
-        if (incrementalRenderError) {
+
+        renderer.reset();
+
+        const collectedRecords: RelatedRecord[] = [];
+        let incrementalRenderError: unknown;
+        const handleIncrementalRenderError = (error: unknown) => {
+          if (incrementalRenderError) {
+            return;
+          }
+          incrementalRenderError = error;
+          logClientError('Reference table incremental render error:', error);
+          renderMessage(root, '関連レコードの表示中にエラーが発生しました。', 'error');
+        };
+
+        await getAllRecords<RelatedRecord>({
+          app: condition.relatedAppId,
+          fields: fetchFields,
+          query,
+          guestSpaceId: relatedAppGuestSpaceId,
+          debug: isDev,
+          onStep: ({ incremental }) => {
+            if (!isCurrentLoad() || incrementalRenderError) {
+              return;
+            }
+
+            try {
+              collectedRecords.push(...incremental);
+              renderer.appendRecords(incremental);
+            } catch (error) {
+              handleIncrementalRenderError(error);
+            }
+          },
+        });
+        if (!isCurrentLoad() || incrementalRenderError) {
           return;
         }
 
-        try {
-          renderer.appendRecords(incremental);
-        } catch (error) {
-          handleIncrementalRenderError(error);
+        const entry = setCachedRecords(cacheKey, collectedRecords);
+        renderer.finish({ fromCache: false, cachedAt: entry.cachedAt });
+      } catch (error) {
+        if (!isCurrentLoad()) {
+          return;
         }
-      },
-    });
-    if (!requestScope.isCurrent() || incrementalRenderError) {
-      return;
-    }
-    renderer.finish();
+        logClientError('Reference table fetch error:', error);
+        renderMessage(root, '関連レコードの取得中にエラーが発生しました。', 'error');
+      } finally {
+        if (isCurrentLoad()) {
+          renderer.setRefreshing(false);
+        }
+      }
+    };
+
+    triggerRefresh = () => {
+      void loadRecords({ forceRefresh: true });
+    };
+
+    await loadRecords({ forceRefresh: false });
   } catch (error) {
     if (!requestScope.isCurrent()) {
       return;

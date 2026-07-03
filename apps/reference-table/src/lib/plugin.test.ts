@@ -124,6 +124,61 @@ describe('reference table plugin config helpers', () => {
     });
   });
 
+  test('CSVエクスポート設定がない既存設定には既定値falseを補完する', () => {
+    const migrated = migrateConfig({
+      version: 1,
+      common: { memo: 'memo' },
+      conditions: [
+        {
+          id: 'condition-1',
+          memo: '',
+          targetSpaceId: 'space',
+          relatedAppId: '10',
+          currentAppFieldCode: 'currentKey',
+          relatedAppFieldCode: 'relatedKey',
+          relatedSubtableCode: '',
+          relatedRecordFieldCodes: ['customer'],
+          subtableFieldCodes: [],
+          mergeRelatedRecordFields: true,
+          filterSubtableRowsByMatchingField: false,
+          showFieldAggregations: false,
+          sortFieldCode: '$id',
+          sortOrder: 'asc',
+        },
+      ],
+    });
+
+    expect(migrated.conditions[0]).toMatchObject({ enableCsvExport: false });
+  });
+
+  test('CSVエクスポート設定を保存済み値のまま復元する', () => {
+    const migrated = migrateConfig({
+      version: 1,
+      common: { memo: 'memo' },
+      conditions: [
+        {
+          id: 'condition-1',
+          memo: '',
+          targetSpaceId: 'space',
+          relatedAppId: '10',
+          currentAppFieldCode: 'currentKey',
+          relatedAppFieldCode: 'relatedKey',
+          relatedSubtableCode: '',
+          relatedRecordFieldCodes: ['customer'],
+          subtableFieldCodes: [],
+          mergeRelatedRecordFields: true,
+          filterSubtableRowsByMatchingField: false,
+          showFieldAggregations: false,
+          enableCsvExport: true,
+          sortFieldCode: '$id',
+          sortOrder: 'asc',
+        },
+      ],
+    });
+
+    expect(migrated.conditions[0]).toMatchObject({ enableCsvExport: true });
+  });
+
   test('片方だけ残った旧照合フィールドからは不完全な取得条件を作らない', () => {
     const migrated = migrateConfig({
       version: 1,
