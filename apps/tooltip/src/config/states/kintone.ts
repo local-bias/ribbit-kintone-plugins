@@ -15,7 +15,13 @@ export const appFieldsAtom = atom<Promise<kintoneAPI.FieldProperty[]>>(async () 
     guestSpaceId: GUEST_SPACE_ID,
   });
 
-  const values = Object.values(properties);
+  // サブテーブルはコンテナ自体ではなく、内包するフィールドを選択肢として展開する
+  const values = Object.values(properties).flatMap((field) => {
+    if (field.type === 'SUBTABLE') {
+      return Object.values(field.fields);
+    }
+    return field;
+  });
 
   return values.sort((a, b) => a.label.localeCompare(b.label, 'ja'));
 });
