@@ -12,6 +12,8 @@
 **/.dev.vars*
 **/worker-configuration.d.ts
 **/.claude/
+**/*.ppk
+**/plugin/
 
 # Dependencies
 .pnp
