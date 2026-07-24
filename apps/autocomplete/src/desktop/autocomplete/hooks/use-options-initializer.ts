@@ -1,57 +1,41 @@
-import { getAllRecordsWithId } from '@konomi-app/kintone-utilities';
-import { useAtom, useAtomValue } from '@repo/jotai';
+import { useAtomValue, useSetAtom } from '@repo/jotai';
 import { useEffect } from 'react';
-import { GUEST_SPACE_ID } from '@/lib/global';
-import { getAutocompleteOptions, getAutocompleteValues } from '@/lib/plugin';
-import { LOCAL_STORAGE_KEY } from '@/lib/static';
-import { autoCompleteOptionsAtom, cachedOptionsAtom, pluginConditionAtom } from '../states';
+import { loadAutocompleteOptions } from '@/desktop/cache-control/loader';
+import { isProd } from '@/lib/global';
+import { getAutocompleteOptions } from '@/lib/plugin';
+import { autoCompleteOptionsAtom, pluginConditionAtom } from '../states';
 
 export const useOptionsInitializer = () => {
   const condition = useAtomValue(pluginConditionAtom);
-  const [options, setOptions] = useAtom(autoCompleteOptionsAtom);
-  const cachedOptions = useAtomValue(cachedOptionsAtom);
+  // Write-only: this effect must not read back what it writes, otherwise its
+  // own setOptions call changes a dependency and re-triggers the effect,
+  // duplicating the getAllRecordsWithId request on every mount.
+  const setOptions = useSetAtom(autoCompleteOptionsAtom);
 
   useEffect(() => {
     if (!condition) {
-      process.env.NODE_ENV === 'development' && console.warn('condition is not set');
+      !isProd && console.warn('condition is not set');
       return;
     }
-    if (cachedOptions.length > 0 && !options.length) {
-      process.env.NODE_ENV === 'development' &&
-        console.info('キャッシュが存在するため、キャッシュを利用します');
-      setOptions(getAutocompleteOptions(cachedOptions));
-    }
-    (async () => {
-      const { srcAppId, srcFieldCode } = condition;
-      const allRecords = await getAllRecordsWithId({
-        app: srcAppId,
-        fields: [srcFieldCode],
-        guestSpaceId: GUEST_SPACE_ID,
-        debug: process.env.NODE_ENV === 'development',
-        onStep: ({ records }) => {
-          if (cachedOptions.length) {
-            return;
-          }
-          const values = getAutocompleteValues({ records, srcFieldCode });
-          setOptions(getAutocompleteOptions(values));
-        },
-      });
-      const allValues = getAutocompleteValues({ records: allRecords, srcFieldCode });
 
-      process.env.NODE_ENV === 'development' &&
-        console.log('最新のオプションを取得しました', { allRecords, allValues });
+    let cancelled = false;
 
-      setOptions(getAutocompleteOptions(allValues));
-      const localStorageItem = localStorage.getItem(LOCAL_STORAGE_KEY) || '{}';
-      const cache = {
-        ...JSON.parse(localStorageItem),
-        version: 1,
-        [condition.cacheId]: allValues,
-      };
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(cache));
-      process.env.NODE_ENV === 'development' && console.info('キャッシュを更新しました');
-    })();
-  }, [condition, cachedOptions, setOptions, options.length]);
+    void loadAutocompleteOptions({
+      condition,
+      onValues: (values) => {
+        if (cancelled) {
+          return;
+        }
+        setOptions(getAutocompleteOptions(values));
+      },
+    }).catch((error) => {
+      !isProd && console.error('オプションの取得に失敗しました', error);
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [condition, setOptions]);
 
   return null;
 };

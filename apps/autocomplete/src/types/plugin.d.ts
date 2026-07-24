@@ -4,10 +4,4 @@ declare namespace Plugin {
     value: string;
     quickSearch: string;
   };
-
-  type CacheData = CacheDataV1;
-
-  type CacheDataV1 = {
-    version: 1;
-  } & Record<string, string[]>;
 }

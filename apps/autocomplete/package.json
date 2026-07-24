@@ -5,6 +5,8 @@
   "license": "MIT",
   "scripts": {
     "init": "plugin init && plugin genkey",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "build:css-desktop": "pnpm dlx @tailwindcss/cli -i ./src/styles/desktop.css -o ./.plugin/contents/desktop.css --minify",
     "build:css-config": "pnpm dlx @tailwindcss/cli -i ./src/styles/config.css -o ./.plugin/contents/config.css --minify",
     "build:js": "plugin build",
@@ -33,6 +35,7 @@
     "@radix-ui/react-popover": "^1.1.15",
     "@radix-ui/react-slot": "^1.2.4",
     "@repo/constants": "workspace:*",
+    "@repo/idb-cache": "workspace:*",
     "@repo/jotai": "workspace:*",
     "@repo/ui": "workspace:*",
     "@repo/utils": "workspace:*",
@@ -68,9 +71,11 @@
     "@types/react-dom": "catalog:",
     "concurrently": "^9.2.1",
     "dotenv": "17.2.3",
+    "fake-indexeddb": "^6.2.5",
     "tailwindcss": "^4.1.18",
     "ts-loader": "^9.5.4",
     "tw-animate-css": "^1.4.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "catalog:"
   }
 }

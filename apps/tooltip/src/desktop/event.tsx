@@ -10,7 +10,8 @@ import { restorePluginConfig } from '@/lib/plugin';
 import { PLUGIN_NAME } from '@/lib/static';
 import TooltipContainer from './components';
 
-let rendered = false;
+/** ツールチップを設置済みのラベル要素に付与し、重複設置を防ぐための目印クラス */
+const TOOLTIP_INSTALLED_CLASS = 'ribbit-tooltip-installed';
 
 type ResolvedMetaField = {
   /** kintoneが内部的に使用する一意なフィールドID */
@@ -89,12 +90,7 @@ manager.add(
     'app.record.index.show',
   ],
   (event) => {
-    if (rendered && event.type.includes('index')) {
-      return event;
-    }
-
     const config = restorePluginConfig();
-    rendered = true;
 
     const metaTable = getMetaTable_UNSTABLE();
     const metaSubtable = getMetaSubtable_UNSTABLE();
@@ -130,6 +126,10 @@ manager.add(
         continue;
       }
 
+      if (target.classList.contains(TOOLTIP_INSTALLED_CLASS)) {
+        continue;
+      }
+
       target.classList.add(css`
         padding-right: 36px !important;
         position: relative !important;
@@ -137,7 +137,14 @@ manager.add(
 
       const root = document.createElement('span');
       target.append(root);
-      createRoot(root).render(<TooltipContainer condition={condition} />);
+
+      try {
+        createRoot(root).render(<TooltipContainer condition={condition} />);
+        target.classList.add(TOOLTIP_INSTALLED_CLASS);
+      } catch (error) {
+        root.remove();
+        !isProd && console.error(`[${PLUGIN_NAME}] ツールチップの描画に失敗しました`, error);
+      }
     }
 
     return event;

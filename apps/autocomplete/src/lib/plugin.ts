@@ -22,7 +22,14 @@ export function isPluginConditionMet(condition: unknown): condition is PluginCon
  * プラグインの設定情報のスキーマ定義(バージョン1)
  */
 const PluginConditionV1Schema = z.object({
-  /** キャッシュID */
+  /**
+   * キャッシュID(レガシー)
+   *
+   * 旧localStorageキャッシュのキーとして使われていたが、config UIに編集画面がなく
+   * 常に空文字のまま保存されるため実質未使用。desktop/cache-controlのIndexedDBキャッシュは
+   * 代わりに`id`(下記PluginConditionV2Schemaで追加)でスコープする。configスキーマの
+   * 後方互換のためフィールド自体は残す
+   */
   cacheId: z.string(),
   /** プラグインの機能を表示するフィールドのフィールドコード */
   targetFieldCode: z.string(),
