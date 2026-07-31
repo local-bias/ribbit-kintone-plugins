@@ -24,7 +24,7 @@
     "react-dom": "catalog:",
     "remeda": "^2.33.6",
     "tiny-invariant": "^1.3.3",
-    "typescript": "^5.9.3"
+    "typescript": "catalog:"
   },
   "peerDependencies": {
     "@konomi-app/kintone-utilities": ">=5.0.0",

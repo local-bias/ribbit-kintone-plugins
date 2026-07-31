@@ -15,7 +15,7 @@
     "clsx": "^2.1.1",
     "file-saver": "^2.0.5",
     "tailwind-merge": "^3.4.0",
-    "typescript": "5.9.3"
+    "typescript": "catalog:"
   },
   "peerDependencies": {
     "clsx": "^2.0.0",
@@ -23,6 +23,6 @@
     "tailwind-merge": "^2.0.0 || ^3.0.0"
   },
   "dependencies": {
-    "@konomi-app/ketch": "^0.4.0"
+    "@konomi-app/ketch": "catalog:"
   }
 }
