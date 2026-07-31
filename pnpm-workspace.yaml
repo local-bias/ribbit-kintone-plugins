@@ -3,9 +3,11 @@ packages:
   - "packages/*"
 
 allowBuilds:
+  '@openrouter/sdk': true
   '@parcel/watcher': true
   core-js: true
   esbuild: true
+  puppeteer: true
   unrs-resolver: true
 
 catalog:
