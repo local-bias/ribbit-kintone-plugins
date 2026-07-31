@@ -9,6 +9,7 @@ import { PLUGIN_NAME } from '@/lib/constants';
 import { t } from '@/lib/i18n';
 import { createConfig, migrateConfig, restorePluginConfig } from '@/lib/plugin';
 import type { PluginConfig } from '@/schema/plugin-config';
+import { currentAppFieldsAtom } from './kintone';
 
 export const pluginConfigAtom = atom<PluginConfig>(restorePluginConfig());
 
@@ -29,6 +30,13 @@ export const {
   getCommonPropertyAtom,
 } = usePluginAtoms(pluginConfigAtom, {
   enableCommonCondition: true,
+});
+
+/** 選択中の条件が対象とするフィールドのプロパティ（フィールド情報未取得の場合は`undefined`） */
+export const selectedFieldPropertyAtom = atom(async (get) => {
+  const fieldCode = get(getConditionPropertyAtom('fieldCode'));
+  const fields = await get(currentAppFieldsAtom);
+  return fields.find((field) => field.code === fieldCode);
 });
 
 /** CSVインポート共通設定 */

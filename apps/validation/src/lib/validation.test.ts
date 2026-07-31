@@ -38,6 +38,19 @@ describe('validateRule - required（必須入力）', () => {
     const field = { type: 'CHECK_BOX', value: [] } as unknown as kintoneAPI.Field;
     expect(validateRule(buildRule('required'), field).isValid).toBe(false);
   });
+
+  test('添付ファイルフィールドは、値が空でも常に有効として扱う（kintoneの仕様上、保存時イベントでは新規添付が反映されないため）', () => {
+    const field = { type: 'FILE', value: [] } as unknown as kintoneAPI.Field;
+    expect(validateRule(buildRule('required'), field).isValid).toBe(true);
+  });
+
+  test('添付ファイルフィールドは、値が存在していても有効として扱う', () => {
+    const field = {
+      type: 'FILE',
+      value: [{ contentType: 'text/plain', fileKey: 'key', name: 'a.txt', size: '1' }],
+    } as unknown as kintoneAPI.Field;
+    expect(validateRule(buildRule('required'), field).isValid).toBe(true);
+  });
 });
 
 describe('validateRule - 文字数チェック', () => {

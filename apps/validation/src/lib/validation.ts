@@ -45,6 +45,12 @@ export function validateRule(
   switch (rule.type) {
     case 'required': {
       // 必須入力チェック
+      // 添付ファイルフィールドはkintoneの仕様上、レコード保存イベント発火時点では
+      // 新たに添付したファイルの情報がrecordに反映されないため、
+      // 必須チェックの対象から除外する（常に有効として扱う）。
+      if (value?.type === 'FILE') {
+        return { isValid: true, errorMessage: '' };
+      }
       return {
         isValid: !isEmpty,
         errorMessage: isEmpty ? rule.errorMessage : '',

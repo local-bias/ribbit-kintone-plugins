@@ -1,20 +1,23 @@
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {
+  Alert,
   Card,
   CardContent,
   FormControl,
+  FormHelperText,
   IconButton,
   InputLabel,
   MenuItem,
   Select,
+  Skeleton,
   TextField,
   Tooltip,
 } from '@mui/material';
 import { useAtomValue } from '@repo/jotai';
 import { useAtomCallback } from '@repo/jotai/utils';
-import { useCallback } from 'react';
-import { getConditionPropertyAtom } from '@/config/states/plugin';
+import { Suspense, useCallback, useMemo } from 'react';
+import { getConditionPropertyAtom, selectedFieldPropertyAtom } from '@/config/states/plugin';
 import { getNewRule } from '@/lib/plugin';
 import type { ValidationRule, ValidationType } from '@/schema/plugin-config';
 
@@ -96,12 +99,14 @@ function ValidationRuleItem({
   onUpdate,
   onDelete,
   canDelete,
+  disabledTypes,
 }: {
   rule: ValidationRule;
   index: number;
   onUpdate: (index: number, updatedRule: ValidationRule) => void;
   onDelete: (index: number) => void;
   canDelete: boolean;
+  disabledTypes: Partial<Record<ValidationType, string>>;
 }) {
   const typeOption = VALIDATION_TYPE_OPTIONS.find((opt) => opt.value === rule.type);
   const requiresValue = typeOption?.requiresValue ?? false;
@@ -135,11 +140,18 @@ function ValidationRuleItem({
               onChange={(e) => handleTypeChange(e.target.value as ValidationType)}
             >
               {VALIDATION_TYPE_OPTIONS.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
+                <MenuItem
+                  key={option.value}
+                  value={option.value}
+                  disabled={!!disabledTypes[option.value]}
+                >
                   {option.label}
                 </MenuItem>
               ))}
             </Select>
+            {disabledTypes[rule.type] && (
+              <FormHelperText error>{disabledTypes[rule.type]}</FormHelperText>
+            )}
           </FormControl>
           {requiresValue && (
             <TextField
@@ -218,8 +230,18 @@ function getValuePlaceholder(type: ValidationType): string {
   }
 }
 
-export default function ValidationRulesForm() {
+const FILE_REQUIRED_DISABLED_REASON =
+  '添付ファイルフィールドはkintoneの仕様上、レコード保存時に新しく添付したファイルの情報を判定できないため、「必須入力」チェックには使用できません。';
+
+function ValidationRulesFormContent() {
   const rules = useAtomValue(rulesAtom);
+  const field = useAtomValue(selectedFieldPropertyAtom);
+  const isFileField = field?.type === 'FILE';
+
+  const disabledTypes = useMemo<Partial<Record<ValidationType, string>>>(
+    () => (isFileField ? { required: FILE_REQUIRED_DISABLED_REASON } : {}),
+    [isFileField]
+  );
 
   const handleAdd = useAtomCallback(
     useCallback((_, set) => {
@@ -245,6 +267,7 @@ export default function ValidationRulesForm() {
 
   return (
     <div className='flex flex-col gap-4'>
+      {isFileField && <Alert severity='info'>{FILE_REQUIRED_DISABLED_REASON}</Alert>}
       {rules.map((rule, index) => (
         <ValidationRuleItem
           key={rule.id}
@@ -253,6 +276,7 @@ export default function ValidationRulesForm() {
           onUpdate={handleUpdate}
           onDelete={handleDelete}
           canDelete={rules.length > 1}
+          disabledTypes={disabledTypes}
         />
       ))}
       <div>
@@ -263,5 +287,17 @@ export default function ValidationRulesForm() {
         </Tooltip>
       </div>
     </div>
+  );
+}
+
+function ValidationRulesFormPlaceholder() {
+  return <Skeleton variant='rounded' width='100%' height={120} />;
+}
+
+export default function ValidationRulesForm() {
+  return (
+    <Suspense fallback={<ValidationRulesFormPlaceholder />}>
+      <ValidationRulesFormContent />
+    </Suspense>
   );
 }
