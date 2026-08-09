@@ -1,0 +1,47 @@
+import { kintoneAPI } from '@konomi-app/kintone-utilities';
+import { Autocomplete, TextField } from '@mui/material';
+import { useAtomValue } from 'jotai';
+import { FC, useCallback } from 'react';
+import { appFieldsAtom } from '../../../states/kintone';
+
+type ContainerProps = {
+  fieldCode: string;
+  onChange: (code: string) => void;
+};
+
+type Props = {
+  value: kintoneAPI.FieldProperty | null;
+  fields: kintoneAPI.FieldProperty[];
+  onFieldChange: (_: unknown, field: kintoneAPI.FieldProperty | null) => void;
+};
+
+const Component: FC<Props> = ({ fields, value, onFieldChange }) => (
+  <Autocomplete
+    value={value}
+    sx={{ width: '350px' }}
+    options={fields}
+    isOptionEqualToValue={(option, v) => option.code === v.code}
+    getOptionLabel={(option) => `${option.label}(${option.code})`}
+    onChange={onFieldChange}
+    renderInput={(params) => (
+      <TextField {...params} label='対象フィールド' variant='outlined' color='primary' />
+    )}
+  />
+);
+
+const Container: FC<ContainerProps> = (props) => {
+  const fields = useAtomValue(appFieldsAtom);
+
+  const value = fields.find((field) => field.code === props.fieldCode) ?? null;
+
+  const onFieldChange = useCallback(
+    (_: unknown, field: kintoneAPI.FieldProperty | null) => {
+      props.onChange(field?.code ?? '');
+    },
+    [props.onChange]
+  );
+
+  return <Component {...{ onFieldChange, value, fields }} />;
+};
+
+export default Container;
