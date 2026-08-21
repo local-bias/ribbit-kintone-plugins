@@ -63,7 +63,7 @@ const Component: FC = () => {
     recurrence?.kind === 'master' ? parseRRuleString(recurrence.rrule) : DEFAULT_RECURRENCE_FORM;
 
   return (
-    <div className='grid gap-2'>
+    <div className='rad:grid rad:gap-2'>
       <FormControlLabel
         control={<Switch checked={isMaster} onChange={(_, checked) => onToggle(checked)} />}
         label={t('desktop.dialog.recurrence.enable')}

@@ -33,29 +33,29 @@ const Component: FC<{ categories: string[]; }> = memo(({ categories }) => {
     displayingCategories === null || displayingCategories.includes(category);
 
   return (
-    <div className='grid py-3'>
+    <div className='rad:grid rad:py-3'>
       {categories.map((category, i) => (
         <div
           key={i}
           className={cn(
-            'flex text-sm justify-between items-center text-foreground cursor-pointer transition-colors hover:bg-muted py-1 px-2 rounded-md',
+            'rad:flex rad:text-sm rad:justify-between rad:items-center rad:text-foreground rad:cursor-pointer rad:transition-colors rad:hover:bg-muted rad:py-1 rad:px-2 rad:rounded-md',
             {
-              'text-foreground/30': !isShown(category),
+              'rad:text-foreground/30': !isShown(category),
             }
           )}
           onClick={() => onCategoryChange(category)}
         >
-          <div className='flex items-center gap-2'>
+          <div className='rad:flex rad:items-center rad:gap-2'>
             <div
               style={{ backgroundColor: colors[i % colors.length] }}
-              className='w-4 h-4 rounded-sm'
+              className='rad:w-4 rad:h-4 rad:rounded-xs'
             ></div>
             <div>{category}</div>
           </div>
           {isShown(category) ? (
-            <Eye strokeWidth={1.5} className='w-4 h-4 text-foreground/50' />
+            <Eye strokeWidth={1.5} className='rad:w-4 rad:h-4 rad:text-foreground/50' />
           ) : (
-            <EyeOff strokeWidth={1.5} className='w-4 h-4 text-foreground/50' />
+            <EyeOff strokeWidth={1.5} className='rad:w-4 rad:h-4 rad:text-foreground/50' />
           )}
         </div>
       ))}
@@ -75,7 +75,7 @@ const CategoryTitle: FC = () => {
 
 const CategoryTitleContainer: FC = () => {
   return (
-    <div className='text-xs text-foreground/70'>
+    <div className='rad:text-xs rad:text-foreground/70'>
       <Suspense fallback={<>{t('desktop.sidebar.category')}</>}>
         <CategoryTitle />
       </Suspense>

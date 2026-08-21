@@ -68,7 +68,7 @@ const ScrollBar = React.forwardRef<
         position: relative;
         flex: 1;
         border-radius: 9999px;
-        background-color: hsl(var(--ribbit-border));
+        background-color: var(--🐸border);
       `}
     />
   </ScrollAreaPrimitive.ScrollAreaScrollbar>

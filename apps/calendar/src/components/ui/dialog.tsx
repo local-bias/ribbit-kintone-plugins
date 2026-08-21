@@ -23,7 +23,7 @@ const DialogOverlay = React.forwardRef<
       position: fixed;
       inset: 0;
       z-index: 50;
-      background-color: hsl(var(--ribbit-black) / 0.8);
+      background-color: color-mix(in oklab, oklch(0 0 0) 80%, transparent);
       &[data-state='open'] {
         animation: fadeIn 150ms cubic-bezier(0.16, 1, 0.3, 1);
       }
@@ -71,12 +71,12 @@ const DialogContent = React.forwardRef<
         max-width: 32rem;
         transform: translate(-50%, -50%);
         gap: 1rem;
-        border: 1px solid hsl(var(--ribbit-border));
-        background-color: hsl(var(--ribbit-background));
+        border: 1px solid var(--🐸border);
+        background-color: var(--🐸background);
         padding: 1.5rem;
         box-shadow:
-          0 10px 15px -3px hsl(var(--ribbit-shadow) / 0.1),
-          0 4px 6px -4px hsl(var(--ribbit-shadow) / 0.1);
+          0 10px 15px -3px color-mix(in oklab, oklch(0 0 0) 10%, transparent),
+          0 4px 6px -4px color-mix(in oklab, oklch(0 0 0) 10%, transparent);
         transition-duration: 200ms;
 
         &[data-state='open'] {
@@ -132,8 +132,8 @@ const DialogContent = React.forwardRef<
 
           &:focus {
             outline: none;
-            ring: 2px solid hsl(var(--ribbit-ring));
-            ring-offset: 2px hsl(var(--ribbit-ring-offset));
+            ring: 2px solid var(--🐸ring);
+            ring-offset: 2px var(--🐸background);
           }
 
           &:disabled {
@@ -141,8 +141,8 @@ const DialogContent = React.forwardRef<
           }
 
           &[data-state='open'] {
-            background-color: hsl(var(--ribbit-accent));
-            color: hsl(var(--ribbit-muted-foreground));
+            background-color: var(--🐸accent);
+            color: var(--🐸muted-foreground);
           }
         `}
       >
@@ -241,7 +241,7 @@ const DialogDescription = React.forwardRef<
     ref={ref}
     className={css`
       font-size: 0.875rem;
-      color: hsl(var(--ribbit-muted-foreground));
+      color: var(--🐸muted-foreground);
 
       ${className}
     `}

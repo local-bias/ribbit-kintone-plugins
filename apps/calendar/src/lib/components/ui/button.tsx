@@ -4,24 +4,32 @@ import { cva, type VariantProps } from 'class-variance-authority';
 
 import { cn } from '@/lib/utils';
 
+/**
+ * デスクトップ(kintoneのレコード一覧・詳細画面)にのみマウントされるため、
+ * Tailwindのユーティリティはデスクトップ用エントリ(`src/styles/desktop.css`)の
+ * `rad:`プレフィックス付きで記述する。設定画面から読み込む場合はプレフィックス無しの
+ * クラスを別途用意する必要がある。
+ */
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
+  'rad:inline-flex rad:items-center rad:justify-center rad:gap-2 rad:whitespace-nowrap rad:rounded-md rad:text-sm rad:font-medium rad:transition-colors rad:focus-visible:outline-hidden rad:focus-visible:ring-1 rad:focus-visible:ring-ring rad:disabled:pointer-events-none rad:disabled:opacity-50 rad:[&_svg]:pointer-events-none rad:[&_svg]:size-4 rad:[&_svg]:shrink-0',
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground shadow hover:bg-primary/90',
-        destructive: 'bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90',
+        default: 'rad:bg-primary rad:text-primary-foreground rad:shadow-sm rad:hover:bg-primary/90',
+        destructive:
+          'rad:bg-destructive rad:text-white rad:shadow-xs rad:hover:bg-destructive/90',
         outline:
-          'border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground',
-        secondary: 'bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80',
-        ghost: 'hover:bg-accent hover:text-accent-foreground',
-        link: 'text-primary underline-offset-4 hover:underline',
+          'rad:border rad:border-input rad:bg-background rad:shadow-xs rad:hover:bg-accent rad:hover:text-accent-foreground',
+        secondary:
+          'rad:bg-secondary rad:text-secondary-foreground rad:shadow-xs rad:hover:bg-secondary/80',
+        ghost: 'rad:hover:bg-accent rad:hover:text-accent-foreground',
+        link: 'rad:text-primary rad:underline-offset-4 rad:hover:underline',
       },
       size: {
-        default: 'h-9 px-4 py-2',
-        sm: 'h-8 rounded-md px-3 text-xs',
-        lg: 'h-10 rounded-md px-8',
-        icon: 'h-9 w-9',
+        default: 'rad:h-9 rad:px-4 rad:py-2',
+        sm: 'rad:h-8 rad:rounded-md rad:px-3 rad:text-xs',
+        lg: 'rad:h-10 rad:rounded-md rad:px-8',
+        icon: 'rad:h-9 rad:w-9',
       },
     },
     defaultVariants: {

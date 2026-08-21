@@ -36,10 +36,10 @@ const DropdownMenuSubTrigger = React.forwardRef<
       font-size: 0.875rem;
       outline: none;
       &:focus {
-        background-color: hsl(var(--ribbit-accent));
+        background-color: var(--🐸accent);
       }
       &[data-state='open'] {
-        background-color: hsl(var(--ribbit-accent));
+        background-color: var(--🐸accent);
       }
       & svg {
         pointer-events: none;
@@ -74,9 +74,9 @@ const DropdownMenuSubContent = React.forwardRef<
       overflow: hidden;
       border-radius: 0.375rem;
       border: 1px solid;
-      background-color: hsl(var(--ribbit-popover));
+      background-color: var(--🐸popover);
       padding: 0.25rem;
-      color: hsl(var(--ribbit-popover-foreground));
+      color: var(--🐸popover-foreground);
       box-shadow:
         0 10px 15px -3px rgba(0, 0, 0, 0.1),
         0 4px 6px -2px rgba(0, 0, 0, 0.05);
@@ -123,9 +123,9 @@ const DropdownMenuContent = React.forwardRef<
         overflow-x: hidden;
         border-radius: 0.375rem;
         border: 1px solid;
-        background-color: hsl(var(--ribbit-popover));
+        background-color: var(--🐸popover);
         padding: 0.25rem;
-        color: hsl(var(--ribbit-popover-foreground));
+        color: var(--🐸popover-foreground);
         box-shadow:
           0 4px 6px -1px rgba(0, 0, 0, 0.1),
           0 2px 4px -1px rgba(0, 0, 0, 0.06);
@@ -191,8 +191,8 @@ const DropdownMenuItem = React.forwardRef<
       transition: colors 200ms ease;
 
       &:focus {
-        background-color: hsl(var(--ribbit-accent));
-        color: hsl(var(--ribbit-accent-foreground));
+        background-color: var(--🐸accent);
+        color: var(--🐸accent-foreground);
       }
       &[data-disabled] {
         pointer-events: none;
@@ -233,8 +233,8 @@ const DropdownMenuCheckboxItem = React.forwardRef<
       transition: colors 200ms ease;
 
       &:focus {
-        background-color: hsl(var(--ribbit-accent));
-        color: hsl(var(--ribbit-accent-foreground));
+        background-color: var(--🐸accent);
+        color: var(--🐸accent-foreground);
       }
       &[data-disabled] {
         pointer-events: none;
@@ -291,8 +291,8 @@ const DropdownMenuRadioItem = React.forwardRef<
       transition: colors 200ms ease;
 
       &:focus {
-        background-color: hsl(var(--ribbit-accent));
-        color: hsl(var(--ribbit-accent-foreground));
+        background-color: var(--🐸accent);
+        color: var(--🐸accent-foreground);
       }
       &[data-disabled] {
         pointer-events: none;
@@ -357,7 +357,7 @@ const DropdownMenuSeparator = React.forwardRef<
     className={css`
       margin: 0.25rem -0.25rem;
       height: 1px;
-      background-color: hsl(var(--ribbit-muted));
+      background-color: var(--🐸muted);
       ${className}
     `}
     {...props}

@@ -111,7 +111,7 @@ const RecurrenceFieldEditor: FC<RecurrenceFieldEditorProps> = ({ condition, fiel
 
   if (initialMeta?.kind === 'override') {
     return (
-      <div className='p-3 text-sm text-foreground/70'>{t('desktop.recurrenceField.overrideNotice')}</div>
+      <div className='rad:p-3 rad:text-sm rad:text-foreground/70'>{t('desktop.recurrenceField.overrideNotice')}</div>
     );
   }
 
@@ -134,8 +134,8 @@ const RecurrenceFieldEditor: FC<RecurrenceFieldEditorProps> = ({ condition, fiel
   };
 
   return (
-    <div className='p-3 grid gap-2'>
-      <div className='font-bold text-sm'>{t('desktop.recurrenceField.label')}</div>
+    <div className='rad:p-3 rad:grid rad:gap-2'>
+      <div className='rad:font-bold rad:text-sm'>{t('desktop.recurrenceField.label')}</div>
       <FormControlLabel
         control={
           <Switch

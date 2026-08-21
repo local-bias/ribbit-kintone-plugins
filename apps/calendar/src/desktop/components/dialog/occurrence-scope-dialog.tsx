@@ -34,26 +34,26 @@ const Component: FC = () => {
       <MenuList sx={{ minWidth: 260, pb: 2 }}>
         <MenuItem onClick={onEditThis}>
           <ListItemIcon>
-            <Pencil className='w-5 h-5' />
+            <Pencil className='rad:w-5 rad:h-5' />
           </ListItemIcon>
           <ListItemText>{t('desktop.dialog.occurrenceScope.editThis')}</ListItemText>
         </MenuItem>
         <MenuItem onClick={onDeleteThis}>
           <ListItemIcon>
-            <Trash2 className='w-5 h-5' />
+            <Trash2 className='rad:w-5 rad:h-5' />
           </ListItemIcon>
           <ListItemText>{t('desktop.dialog.occurrenceScope.deleteThis')}</ListItemText>
         </MenuItem>
         <Divider />
         <MenuItem onClick={onEditSeries}>
           <ListItemIcon>
-            <CalendarDays className='w-5 h-5' />
+            <CalendarDays className='rad:w-5 rad:h-5' />
           </ListItemIcon>
           <ListItemText>{t('desktop.dialog.occurrenceScope.editSeries')}</ListItemText>
         </MenuItem>
         <MenuItem onClick={onDeleteSeries}>
           <ListItemIcon>
-            <Trash2 className='w-5 h-5' />
+            <Trash2 className='rad:w-5 rad:h-5' />
           </ListItemIcon>
           <ListItemText>{t('desktop.dialog.occurrenceScope.deleteSeries')}</ListItemText>
         </MenuItem>

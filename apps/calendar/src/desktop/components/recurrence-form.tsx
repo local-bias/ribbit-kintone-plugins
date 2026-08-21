@@ -39,8 +39,8 @@ export const RecurrenceFormInputs: FC<{ form: RecurrenceFormState; onChange: Rec
   onChange,
 }) => {
   return (
-    <div className='grid gap-3 pl-3 border-l-2 border-l-foreground/20'>
-      <div className='flex items-center gap-2'>
+    <div className='rad:grid rad:gap-3 rad:pl-3 rad:border-l-2 rad:border-l-foreground/20'>
+      <div className='rad:flex rad:items-center rad:gap-2'>
         <TextField
           select
           size='small'
@@ -132,7 +132,7 @@ export const RecurrenceFormInputs: FC<{ form: RecurrenceFormState; onChange: Rec
           control={<Radio size='small' />}
           label={t('desktop.dialog.recurrence.end.never')}
         />
-        <div className='flex items-center gap-2'>
+        <div className='rad:flex rad:items-center rad:gap-2'>
           <FormControlLabel
             value='onDate'
             control={<Radio size='small' />}
@@ -148,7 +148,7 @@ export const RecurrenceFormInputs: FC<{ form: RecurrenceFormState; onChange: Rec
             />
           )}
         </div>
-        <div className='flex items-center gap-2'>
+        <div className='rad:flex rad:items-center rad:gap-2'>
           <FormControlLabel
             value='afterCount'
             control={<Radio size='small' />}

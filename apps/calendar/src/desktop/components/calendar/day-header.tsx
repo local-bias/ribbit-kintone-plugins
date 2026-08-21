@@ -14,13 +14,13 @@ export default function DayHeader(props: DayHeaderContentArg) {
 
   return (
     <>
-      <span className='hidden md:block'>
+      <span className='rad:hidden rad:md:block'>
         {type !== 'dayGridMonth' && date.toFormat('M/d')}
-        <span className='text-xs text-foreground/50'>{date.toFormat('(EEE)')}</span>
+        <span className='rad:text-xs rad:text-foreground/50'>{date.toFormat('(EEE)')}</span>
       </span>
-      <span className='block md:hidden text-xs'>
+      <span className='rad:block rad:md:hidden rad:text-xs'>
         {type !== 'dayGridMonth' && date.toFormat('d')}
-        <span className='text-[10px] text-foreground/50'>{date.toFormat('(EEE)')}</span>
+        <span className='rad:text-[10px] rad:text-foreground/50'>{date.toFormat('(EEE)')}</span>
       </span>
     </>
   );

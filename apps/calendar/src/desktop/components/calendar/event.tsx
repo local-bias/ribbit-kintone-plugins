@@ -17,14 +17,14 @@ export default function CalendarEvent(props: EventContentArg) {
   const isDayGridMonth = props.view.type === 'dayGridMonth';
 
   return (
-    <div className='grid h-full px-1 py-0.5 overflow-hidden min-h-6'>
+    <div className='rad:grid rad:h-full rad:px-1 rad:py-0.5 rad:overflow-hidden rad:min-h-6'>
       {isDayGridMonth && allDay && <div>{title}</div>}
       {isDayGridMonth && !allDay && (
         <div
-          className='flex items-center gap-1 border-l-4 text-foreground/70 pl-2'
+          className='rad:flex rad:items-center rad:gap-1 rad:border-l-4 rad:text-foreground/70 rad:pl-2'
           style={{ borderColor: backgroundColor }}
         >
-          <div className='text-xs !text-[10px] opacity-70 inline-flex items-center'>
+          <div className='rad:text-xs rad:text-[10px]! rad:opacity-70 rad:inline-flex rad:items-center'>
             <div>{start?.toFormat('H:mm')}</div>
             <div>-</div>
             <div>{end?.toFormat('H:mm')}</div>
@@ -36,7 +36,7 @@ export default function CalendarEvent(props: EventContentArg) {
       {!isDayGridMonth && !allDay && (
         <div>
           <div>{title}</div>
-          <div className='text-xs opacity-70 flex items-center gap-1 ml-2'>
+          <div className='rad:text-xs rad:opacity-70 rad:flex rad:items-center rad:gap-1 rad:ml-2'>
             <div>{start?.toFormat('H:mm')}</div>
             <div>-</div>
             <div>{end?.toFormat('H:mm')}</div>

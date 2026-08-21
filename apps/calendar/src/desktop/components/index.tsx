@@ -29,8 +29,8 @@ function DesktopLayout({ className }: { className?: string; }) {
       <DetailedDialog />
       <div className='🐸'>
         <div
-          className={cn(`grid grid-cols-[auto_1fr] ${className}`, {
-            'grid-cols-1': isMobile,
+          className={cn(`rad:grid rad:grid-cols-[auto_1fr] ${className}`, {
+            'rad:grid-cols-1': isMobile,
           })}
         >
           <Sidebar />
@@ -45,22 +45,22 @@ function DesktopLayout({ className }: { className?: string; }) {
 const StyledDesktopLayout = styled(DesktopLayout)`
   font-family: 'Yu Gothic Medium', YuGothic, 'Noto Sans JP', メイリオ;
   background-color: #fff;
-  color: hsl(var(--ribbit-foreground));
-  border-color: hsl(var(--ribbit-border) / 0.7);
+  color: var(--🐸foreground);
+  border-color: color-mix(in oklab, var(--🐸border) 70%, transparent);
 
   a {
     color: inherit;
     text-decoration: none;
   }
 
-  --fc-border-color: hsl(var(--ribbit-border) / 0.7);
+  --fc-border-color: color-mix(in oklab, var(--🐸border) 70%, transparent);
   --fc-button-bg-color: #fff;
   --fc-button-hover-bg-color: #d2e3fc;
   --fc-button-active-bg-color: #d2e3fc;
   --fc-button-border-color: transparent;
   --fc-button-hover-border-color: transparent;
   --fc-button-active-border-color: transparent;
-  --fc-button-text-color: hsl(var(--ribbit-foreground));
+  --fc-button-text-color: var(--🐸foreground);
   --fc-non-business-color: #6b728011;
 
   --fc-event-bg-color: #dbeafe;
@@ -94,13 +94,13 @@ const StyledDesktopLayout = styled(DesktopLayout)`
   .fc {
     .fc-col-header-cell-cushion,
     .fc-daygrid-day-number {
-      color: hsl(var(--ribbit-foreground) / 0.7) !important;
+      color: color-mix(in oklab, var(--🐸foreground) 70%, transparent) !important;
       font-weight: 500 !important;
       font-size: 14px !important;
     }
     .fc-timegrid-slot-label-cushion,
     .fc-timegrid-axis-cushion {
-      color: hsl(var(--ribbit-foreground) / 0.5) !important;
+      color: color-mix(in oklab, var(--🐸foreground) 50%, transparent) !important;
       font-weight: 500 !important;
       font-size: 12px !important;
       line-height: 1.5 !important;

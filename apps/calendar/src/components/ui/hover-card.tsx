@@ -21,10 +21,10 @@ const HoverCardContent = React.forwardRef<
       z-index: 9999;
       width: 16rem;
       border-radius: 0.375rem;
-      border: 1px solid hsl(var(--ribbit-border));
-      background-color: hsl(var(--ribbit-popover));
+      border: 1px solid var(--🐸border);
+      background-color: var(--🐸popover);
       padding: 1rem;
-      color: hsl(var(--ribbit-popover-foreground));
+      color: var(--🐸popover-foreground);
       box-shadow:
         0 4px 6px -1px rgba(0, 0, 0, 0.1),
         0 2px 4px -2px rgba(0, 0, 0, 0.1);

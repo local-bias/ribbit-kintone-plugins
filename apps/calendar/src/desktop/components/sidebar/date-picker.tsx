@@ -20,8 +20,8 @@ export default function SidebarDatePicker() {
   };
 
   return (
-    <div className='!-mb-20'>
-      <DateCalendar className='!w-full aspect-square' value={date} onChange={onChange} />
+    <div className='rad:-mb-20!'>
+      <DateCalendar className='rad:w-full! rad:aspect-square' value={date} onChange={onChange} />
     </div>
   );
 }

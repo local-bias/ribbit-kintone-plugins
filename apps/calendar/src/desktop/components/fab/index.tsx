@@ -11,7 +11,7 @@ export default function FabContainer() {
   const handleEventAdd = useSetAtom(handleTemporaryEventAddAtom);
 
   return (
-    <div className='!fixed right-4 md:right-8 bottom-4 z-10'>
+    <div className='rad:fixed! rad:right-4 rad:md:right-8 rad:bottom-4 rad:z-10'>
       <Tooltip title={t('desktop.fab.addSchedule')}>
         <Fab
           variant='circular'

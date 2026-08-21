@@ -85,8 +85,8 @@ function FullCalendarRoot() {
       slotMaxTime={getSlotTime(pluginCondition?.slotMaxTime || '24')}
       themeSystem='normal'
       nowIndicator
-      slotLabelContent={(props) => <span className='text-foreground/50'>{props.text}</span>}
-      allDayContent={(props) => <span className='text-foreground/50'>{props.text}</span>}
+      slotLabelContent={(props) => <span className='rad:text-foreground/50'>{props.text}</span>}
+      allDayContent={(props) => <span className='rad:text-foreground/50'>{props.text}</span>}
       dayHeaderContent={DayHeader}
       // slotLaneContent={(props) => <pre>{JSON.stringify(props, null, 2)}</pre>}
       // weekNumberContent={(props) => <pre>{JSON.stringify(props, null, 2)}</pre>}
@@ -125,7 +125,7 @@ export default function FullCalendarContainer() {
   }, [fullcalendarApi]);
 
   return (
-    <div ref={containerRef} className='p-2 md:p-4'>
+    <div ref={containerRef} className='rad:p-2 rad:md:p-4'>
       <FullCalendarRoot />
     </div>
   );

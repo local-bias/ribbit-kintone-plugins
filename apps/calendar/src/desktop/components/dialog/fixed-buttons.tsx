@@ -52,26 +52,26 @@ const Component: FCX = ({ className }) => {
               }}
             >
               <a
-                className='contents text-inherit'
+                className='rad:contents rad:text-inherit'
                 href={`${location.pathname}show${isMobile() ? '?' : '#'}record=${props.event.id}`}
               >
                 <MenuItem>
                   <ListItemIcon>
-                    <File className='w-5 h-5' />
+                    <File className='rad:w-5 rad:h-5' />
                   </ListItemIcon>
                   <ListItemText>詳細</ListItemText>
                 </MenuItem>
               </a>
               <MenuItem onClick={handleEventCopy}>
                 <ListItemIcon>
-                  <Copy className='w-5 h-5' />
+                  <Copy className='rad:w-5 rad:h-5' />
                 </ListItemIcon>
                 <ListItemText>コピー</ListItemText>
               </MenuItem>
               <Divider />
               <MenuItem onClick={handleEventDelete}>
                 <ListItemIcon>
-                  <Trash2 className='w-5 h-5' />
+                  <Trash2 className='rad:w-5 rad:h-5' />
                 </ListItemIcon>
                 <ListItemText>削除</ListItemText>
               </MenuItem>
