@@ -9,7 +9,7 @@
     "./utils": "./src/utils.ts"
   },
   "devDependencies": {
-    "@konomi-app/kintone-utilities": "^6.1.0",
+    "@konomi-app/kintone-utilities": "catalog:",
     "@mui/material": "^7.3.9",
     "@repo/typescript-config": "workspace:*",
     "@repo/utils": "workspace:*",

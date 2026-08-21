@@ -11,7 +11,7 @@
     "check-types": "tsc --noEmit"
   },
   "devDependencies": {
-    "@konomi-app/kintone-utilities": "^6.1.0",
+    "@konomi-app/kintone-utilities": "catalog:",
     "@konomi-app/kintone-utilities-react": "catalog:",
     "@mui/icons-material": "^7.3.6",
     "@mui/material": "^7.3.6",
@@ -26,7 +26,7 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "tiny-invariant": "^1.3.3",
-    "typescript": "^5.9.3"
+    "typescript": "catalog:"
   },
   "peerDependencies": {
     "@konomi-app/kintone-utilities": ">=5.0.0",
