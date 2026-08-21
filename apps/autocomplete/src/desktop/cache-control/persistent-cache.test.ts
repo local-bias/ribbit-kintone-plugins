@@ -6,6 +6,7 @@ import { idbStore } from './idb-store';
 import {
   buildCacheKey,
   buildConfigHash,
+  buildDatasetKey,
   CACHE_ENVELOPE_VERSION,
   type CacheEnvelope,
   cleanupLegacyLocalStorageCache,
@@ -38,10 +39,10 @@ beforeEach(async () => {
 describe('loadCacheEnvelope / saveCacheEnvelope', () => {
   it('保存したエンベロープをそのまま読み出せる', async () => {
     const envelope = buildEnvelope();
-    await saveCacheEnvelope({ conditionId: 'cond-1', envelope });
+    await saveCacheEnvelope({ datasetKey: 'dataset-1', envelope });
 
     const loaded = await loadCacheEnvelope({
-      conditionId: 'cond-1',
+      datasetKey: 'dataset-1',
       expectedConfigHash: envelope.configHash,
     });
 
@@ -50,10 +51,10 @@ describe('loadCacheEnvelope / saveCacheEnvelope', () => {
 
   it('configHashが一致しない場合はnullを返す(設定変更時の失効)', async () => {
     const envelope = buildEnvelope({ configHash: 'hash-old' });
-    await saveCacheEnvelope({ conditionId: 'cond-stale', envelope });
+    await saveCacheEnvelope({ datasetKey: 'dataset-stale', envelope });
 
     const loaded = await loadCacheEnvelope({
-      conditionId: 'cond-stale',
+      datasetKey: 'dataset-stale',
       expectedConfigHash: 'hash-new',
     });
 
@@ -69,8 +70,8 @@ describe('loadCacheEnvelope / saveCacheEnvelope', () => {
       name: 'User A',
       language: 'ja',
     } as ReturnType<typeof kintone.getLoginUser>);
-    const keyForUserA = buildCacheKey('cond-shared');
-    await saveCacheEnvelope({ conditionId: 'cond-shared', envelope: buildEnvelope() });
+    const keyForUserA = buildCacheKey('dataset-shared');
+    await saveCacheEnvelope({ datasetKey: 'dataset-shared', envelope: buildEnvelope() });
 
     getLoginUserSpy.mockReturnValue({
       code: 'user-b',
@@ -78,17 +79,40 @@ describe('loadCacheEnvelope / saveCacheEnvelope', () => {
       name: 'User B',
       language: 'ja',
     } as ReturnType<typeof kintone.getLoginUser>);
-    const keyForUserB = buildCacheKey('cond-shared');
+    const keyForUserB = buildCacheKey('dataset-shared');
 
     expect(keyForUserB).not.toBe(keyForUserA);
     // ユーザーBとしては、ユーザーAが保存したエンベロープを読み出せない
     const loadedByUserB = await loadCacheEnvelope({
-      conditionId: 'cond-shared',
+      datasetKey: 'dataset-shared',
       expectedConfigHash: buildEnvelope().configHash,
     });
     expect(loadedByUserB).toBeNull();
 
     getLoginUserSpy.mockRestore();
+  });
+});
+
+describe('buildDatasetKey', () => {
+  it('参照先アプリ・フィールドが同じであれば、フィールドの並び順によらず同じキーになる', () => {
+    const base = { srcAppId: '1', guestSpaceId: undefined };
+    expect(buildDatasetKey({ ...base, fields: ['会社名', '更新日時'] })).toBe(
+      buildDatasetKey({ ...base, fields: ['更新日時', '会社名'] })
+    );
+  });
+
+  it('参照先アプリが異なれば異なるキーになる', () => {
+    const base = { guestSpaceId: undefined, fields: ['会社名'] };
+    expect(buildDatasetKey({ ...base, srcAppId: '1' })).not.toBe(
+      buildDatasetKey({ ...base, srcAppId: '2' })
+    );
+  });
+
+  it('参照先フィールドが異なれば異なるキーになる', () => {
+    const base = { srcAppId: '1', guestSpaceId: undefined };
+    expect(buildDatasetKey({ ...base, fields: ['会社名'] })).not.toBe(
+      buildDatasetKey({ ...base, fields: ['担当者名'] })
+    );
   });
 });
 
@@ -110,14 +134,14 @@ describe('buildConfigHash', () => {
 
 describe('quota超過時の挙動', () => {
   it('put失敗時は例外を投げず、エントリを削除し永続化を無効化する', async () => {
-    const key = buildCacheKey('cond-quota');
+    const key = buildCacheKey('dataset-quota');
     const quotaError = new DOMException('quota exceeded', 'QuotaExceededError');
     const putSpy = vi.spyOn(IDBObjectStore.prototype, 'put').mockImplementation(() => {
       throw quotaError;
     });
 
     await expect(
-      saveCacheEnvelope({ conditionId: 'cond-quota', envelope: buildEnvelope() })
+      saveCacheEnvelope({ datasetKey: 'dataset-quota', envelope: buildEnvelope() })
     ).resolves.toBeUndefined();
 
     putSpy.mockRestore();

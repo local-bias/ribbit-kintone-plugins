@@ -35,10 +35,14 @@ vi.mock('./sync', () => ({
   getMaxUpdatedTime: getMaxUpdatedTimeMock,
 }));
 
-const { loadAutocompleteOptions } = await import('./loader');
-const { buildConfigHash, loadCacheEnvelope, saveCacheEnvelope, CACHE_ENVELOPE_VERSION } = await import(
-  './persistent-cache'
-);
+const { loadAutocompleteOptions, resetSharedLoads } = await import('./loader');
+const {
+  buildConfigHash,
+  buildDatasetKey,
+  loadCacheEnvelope,
+  saveCacheEnvelope,
+  CACHE_ENVELOPE_VERSION,
+} = await import('./persistent-cache');
 
 const UPDATED_FIELD_CODE = '更新日時';
 
@@ -59,6 +63,7 @@ const buildRecord = (id: string, value: string): kintoneAPI.RecordData => ({
 
 beforeEach(() => {
   globalThis.indexedDB = new IDBFactory();
+  resetSharedLoads();
   getAllRecordsWithIdMock.mockReset();
   resolveUpdatedFieldCodeMock.mockReset();
   scheduleExpiredFormPropertiesCleanupMock.mockReset();
@@ -112,19 +117,28 @@ describe('キャッシュ未ヒット(初回)', () => {
       guestSpaceId: undefined,
       fields: ['会社名', UPDATED_FIELD_CODE],
     });
-    const cached = await loadCacheEnvelope({ conditionId: condition.id, expectedConfigHash: configHash });
+    const cached = await loadCacheEnvelope({
+      datasetKey: buildDatasetKey({
+        srcAppId: '1',
+        guestSpaceId: undefined,
+        fields: ['会社名', UPDATED_FIELD_CODE],
+      }),
+      expectedConfigHash: configHash,
+    });
     expect(cached?.count).toBe(1);
   });
 });
 
 describe('キャッシュヒット', () => {
   const fields = ['会社名', UPDATED_FIELD_CODE];
-  const configHash = buildConfigHash({ srcAppId: '1', guestSpaceId: undefined, fields });
+  const identity = { srcAppId: '1', guestSpaceId: undefined, fields };
+  const configHash = buildConfigHash(identity);
+  const datasetKey = buildDatasetKey(identity);
 
   beforeEach(async () => {
     resolveUpdatedFieldCodeMock.mockResolvedValue(UPDATED_FIELD_CODE);
     await saveCacheEnvelope({
-      conditionId: condition.id,
+      datasetKey,
       envelope: {
         version: CACHE_ENVELOPE_VERSION,
         savedAt: Date.now(),
@@ -172,7 +186,7 @@ describe('キャッシュヒット', () => {
     expect(onValues).toHaveBeenNthCalledWith(2, ['アルファ', 'ベータ'], { fromCache: false });
     expect(getAllRecordsWithIdMock).not.toHaveBeenCalled();
 
-    const reloaded = await loadCacheEnvelope({ conditionId: condition.id, expectedConfigHash: configHash });
+    const reloaded = await loadCacheEnvelope({ datasetKey, expectedConfigHash: configHash });
     expect(reloaded?.count).toBe(2);
   });
 
@@ -198,5 +212,83 @@ describe('キャッシュヒット', () => {
     expect(onValues).toHaveBeenCalledTimes(1);
     expect(onValues).toHaveBeenCalledWith(['アルファ'], { fromCache: true });
     expect(getAllRecordsWithIdMock).not.toHaveBeenCalled();
+  });
+});
+
+describe('同一の参照先を持つ複数の候補設定', () => {
+  const otherCondition: PluginCondition = {
+    ...condition,
+    id: 'cond-2',
+    targetFieldCode: '会社名候補2',
+  };
+
+  beforeEach(() => {
+    resolveUpdatedFieldCodeMock.mockResolvedValue(UPDATED_FIELD_CODE);
+  });
+
+  it('並行して読み込んでも、レコード取得は1回だけで両方に同じ候補が配信される', async () => {
+    let resolveRecords!: (records: kintoneAPI.RecordData[]) => void;
+    getAllRecordsWithIdMock.mockReturnValue(
+      new Promise<kintoneAPI.RecordData[]>((resolve) => {
+        resolveRecords = resolve;
+      })
+    );
+
+    const onValuesA = vi.fn();
+    const onValuesB = vi.fn();
+    const promiseA = loadAutocompleteOptions({ condition, onValues: onValuesA });
+    const promiseB = loadAutocompleteOptions({ condition: otherCondition, onValues: onValuesB });
+
+    await vi.waitFor(() => expect(getAllRecordsWithIdMock).toHaveBeenCalled());
+    resolveRecords([buildRecord('1', 'アルファ')]);
+    await Promise.all([promiseA, promiseB]);
+
+    expect(getAllRecordsWithIdMock).toHaveBeenCalledTimes(1);
+    expect(resolveUpdatedFieldCodeMock).toHaveBeenCalledTimes(1);
+    expect(onValuesA).toHaveBeenCalledWith(['アルファ'], { fromCache: false });
+    expect(onValuesB).toHaveBeenCalledWith(['アルファ'], { fromCache: false });
+  });
+
+  it('読み込み完了後に追加された設定へは、APIを呼ばずに保持済みの候補を即座に配信する', async () => {
+    getAllRecordsWithIdMock.mockResolvedValue([buildRecord('1', 'アルファ')]);
+
+    const onValuesA = vi.fn();
+    await loadAutocompleteOptions({ condition, onValues: onValuesA });
+
+    const onValuesB = vi.fn();
+    await loadAutocompleteOptions({ condition: otherCondition, onValues: onValuesB });
+
+    expect(getAllRecordsWithIdMock).toHaveBeenCalledTimes(1);
+    expect(resolveUpdatedFieldCodeMock).toHaveBeenCalledTimes(1);
+    expect(onValuesB).toHaveBeenCalledWith(['アルファ'], { fromCache: false });
+  });
+
+  it('参照先フィールドが異なる場合は、共有せずそれぞれ取得する', async () => {
+    getAllRecordsWithIdMock.mockResolvedValue([
+      { ...buildRecord('1', 'アルファ'), 担当者名: { type: 'SINGLE_LINE_TEXT', value: '田中' } },
+    ]);
+
+    await loadAutocompleteOptions({ condition, onValues: vi.fn() });
+    await loadAutocompleteOptions({
+      condition: { ...otherCondition, srcFieldCode: '担当者名' },
+      onValues: vi.fn(),
+    });
+
+    expect(getAllRecordsWithIdMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('読み込みに失敗した場合は結果を共有せず、次の呼び出しで再取得する', async () => {
+    getAllRecordsWithIdMock.mockRejectedValueOnce(new Error('network error'));
+
+    await expect(loadAutocompleteOptions({ condition, onValues: vi.fn() })).rejects.toThrow(
+      'network error'
+    );
+
+    getAllRecordsWithIdMock.mockResolvedValue([buildRecord('1', 'アルファ')]);
+    const onValues = vi.fn();
+    await loadAutocompleteOptions({ condition: otherCondition, onValues });
+
+    expect(getAllRecordsWithIdMock).toHaveBeenCalledTimes(2);
+    expect(onValues).toHaveBeenCalledWith(['アルファ'], { fromCache: false });
   });
 });
