@@ -160,6 +160,51 @@ describe('resolveUpdatedFieldCode', () => {
   });
 });
 
+describe('並行呼び出しの重複排除', () => {
+  it('同一アプリへの解決が同時に走っても、getApp/getFormFieldsは1回ずつしか呼ばれない', async () => {
+    const { cache } = setupCache();
+    getFormFieldsMock.mockResolvedValue({ properties: PROPERTIES_WITH_UPDATED_TIME });
+    getAppMock.mockResolvedValue({ modifiedAt: '2026-01-01T00:00:00Z' });
+
+    const params = { srcAppId: '1', guestSpaceId: undefined };
+    const results = await Promise.all([
+      cache.resolveUpdatedFieldCode(params),
+      cache.resolveUpdatedFieldCode(params),
+      cache.resolveUpdatedFieldCode(params),
+    ]);
+
+    expect(results).toEqual(['更新日時', '更新日時', '更新日時']);
+    expect(getFormFieldsMock).toHaveBeenCalledTimes(1);
+    expect(getAppMock).toHaveBeenCalledTimes(1);
+  });
+
+  it('参照先アプリが異なる場合は共有せず、それぞれ解決する', async () => {
+    const { cache } = setupCache();
+    getFormFieldsMock.mockResolvedValue({ properties: PROPERTIES_WITH_UPDATED_TIME });
+    getAppMock.mockResolvedValue({ modifiedAt: '2026-01-01T00:00:00Z' });
+
+    await Promise.all([
+      cache.resolveUpdatedFieldCode({ srcAppId: '1', guestSpaceId: undefined }),
+      cache.resolveUpdatedFieldCode({ srcAppId: '2', guestSpaceId: undefined }),
+    ]);
+
+    expect(getFormFieldsMock).toHaveBeenCalledTimes(2);
+  });
+
+  it('解決に失敗した場合、次の呼び出しでは再度APIを呼ぶ', async () => {
+    const { cache } = setupCache();
+    getFormFieldsMock.mockRejectedValueOnce(new Error('network error'));
+    getAppMock.mockResolvedValue({ modifiedAt: '2026-01-01T00:00:00Z' });
+
+    const params = { srcAppId: '1', guestSpaceId: undefined };
+    await expect(cache.resolveUpdatedFieldCode(params)).rejects.toThrow('network error');
+
+    getFormFieldsMock.mockResolvedValue({ properties: PROPERTIES_WITH_UPDATED_TIME });
+    await expect(cache.resolveUpdatedFieldCode(params)).resolves.toBe('更新日時');
+    expect(getFormFieldsMock).toHaveBeenCalledTimes(2);
+  });
+});
+
 describe('永続化が利用できない場合', () => {
   it('IndexedDBを使わず、常に最新のフィールド定義を取得する', async () => {
     const idbStore = createIdbStore({ dbName: 'test-form-properties-disabled', storeName: 'cache' });

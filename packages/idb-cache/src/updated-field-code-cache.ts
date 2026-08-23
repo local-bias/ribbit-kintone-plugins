@@ -86,7 +86,14 @@ export const createUpdatedFieldCodeCache = (params: {
     }
   };
 
-  const resolveUpdatedFieldCode: UpdatedFieldCodeCache['resolveUpdatedFieldCode'] = async ({
+  // 同一アプリに対する解決が並行して走った場合、getApp/getFormFieldsを重複して呼ばないよう
+  // 実行中のPromiseを共有する。1つのレコード画面に同じ参照先アプリを使う設定が複数あると、
+  // それぞれのマウント時に解決が同時に走り、設定の数だけAPIを消費してしまうため。
+  // 解決後は保持しない(次の解決時にはgetApp1回でフィンガープリント検証まで済むため、
+  // 結果を持ち回してアプリ設定の変更を見逃すリスクを取る必要がない)
+  const inFlight = new Map<string, Promise<string | null>>();
+
+  const resolveFromApi: UpdatedFieldCodeCache['resolveUpdatedFieldCode'] = async ({
     srcAppId,
     guestSpaceId,
   }) => {
@@ -124,6 +131,20 @@ export const createUpdatedFieldCodeCache = (params: {
       getApp({ id: srcAppId, guestSpaceId, debug }),
     ]);
     return persistAndReturn(app, properties);
+  };
+
+  const resolveUpdatedFieldCode: UpdatedFieldCodeCache['resolveUpdatedFieldCode'] = (params) => {
+    const key = buildCacheKey(params);
+    const running = inFlight.get(key);
+    if (running) {
+      return running;
+    }
+
+    const promise = resolveFromApi(params).finally(() => {
+      inFlight.delete(key);
+    });
+    inFlight.set(key, promise);
+    return promise;
   };
 
   const scheduleCleanup: UpdatedFieldCodeCache['scheduleCleanup'] = () => {
