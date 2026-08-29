@@ -12,7 +12,7 @@ allowBuilds:
 
 catalog:
   "@biomejs/biome": ^2.5.4
-  "@konomi-app/k2": ^4.2.0
+  "@konomi-app/k2": ^5.0.0
   "@konomi-app/ketch": ^0.4.0
   "@konomi-app/kintone-utilities": ^6.2.0
   "@konomi-app/kintone-utilities-react": ^3.6.0
@@ -51,3 +51,4 @@ minimumReleaseAgeExclude:
   - '@biomejs/cli-win32-arm64@2.5.4'
   - '@biomejs/cli-win32-x64@2.5.4'
   - '@konomi-app/ui@7.1.0'
+  - '@konomi-app/k2@5.0.0'
