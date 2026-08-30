@@ -10,6 +10,7 @@ import { type FC, Suspense, useCallback } from 'react';
 import { currentAppFieldsAtom } from '@/config/states/kintone';
 import { getConditionPropertyAtom } from '@/config/states/plugin';
 import { LANGUAGE } from '@/lib/global';
+import { t } from '@/lib/i18n';
 
 const applyConditionsAtom = getConditionPropertyAtom('applyConditions');
 
@@ -43,9 +44,7 @@ const FormApplyConditionsContent: FC = () => {
   return (
     <div className='flex flex-col gap-2'>
       {conditions.length === 0 && (
-        <p className='text-sm text-gray-500'>
-          条件が設定されていません。常にバリデーションを適用します。
-        </p>
+        <p className='text-sm text-gray-500'>{t('config.condition.applyConditions.empty')}</p>
       )}
       {conditions.map((condition, index) => (
         // biome-ignore lint/suspicious/noArrayIndexKey: 条件の並びはインデックスで安定している
@@ -58,14 +57,18 @@ const FormApplyConditionsContent: FC = () => {
               lang={LANGUAGE}
             />
           </div>
-          <IconButton size='small' onClick={() => handleDelete(index)} aria-label='条件を削除'>
+          <IconButton
+            size='small'
+            onClick={() => handleDelete(index)}
+            aria-label={t('config.condition.applyConditions.delete')}
+          >
             <DeleteIcon fontSize='small' />
           </IconButton>
         </div>
       ))}
       <div>
         <Button size='small' variant='outlined' startIcon={<AddIcon />} onClick={() => handleAdd()}>
-          条件を追加
+          {t('config.condition.applyConditions.add')}
         </Button>
       </div>
     </div>

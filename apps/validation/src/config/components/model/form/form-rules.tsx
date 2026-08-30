@@ -18,78 +18,64 @@ import { useAtomValue } from '@repo/jotai';
 import { useAtomCallback } from '@repo/jotai/utils';
 import { Suspense, useCallback, useMemo } from 'react';
 import { getConditionPropertyAtom, selectedFieldPropertyAtom } from '@/config/states/plugin';
+import { t } from '@/lib/i18n';
 import { getNewRule } from '@/lib/plugin';
 import type { ValidationRule, ValidationType } from '@/schema/plugin-config';
 
-const VALIDATION_TYPE_OPTIONS: { value: ValidationType; label: string; requiresValue: boolean }[] =
-  [
-    // 基本チェック
-    { value: 'required', label: '必須入力', requiresValue: false },
-    // 文字数チェック
-    { value: 'minLength', label: '最小文字数', requiresValue: true },
-    { value: 'maxLength', label: '最大文字数', requiresValue: true },
-    { value: 'exactLength', label: '正確な文字数', requiresValue: true },
-    // 数値チェック
-    { value: 'minValue', label: '最小値（数値）', requiresValue: true },
-    { value: 'maxValue', label: '最大値（数値）', requiresValue: true },
-    { value: 'range', label: '数値の範囲', requiresValue: true },
-    // 形式チェック
-    { value: 'email', label: 'メールアドレス形式', requiresValue: false },
-    { value: 'url', label: 'URL形式', requiresValue: false },
-    { value: 'phone', label: '電話番号形式（日本）', requiresValue: false },
-    { value: 'postalCode', label: '郵便番号形式（日本）', requiresValue: false },
-    // 文字種チェック
-    { value: 'alphanumeric', label: '英数字のみ（半角）', requiresValue: false },
-    { value: 'numeric', label: '数字のみ（半角）', requiresValue: false },
-    { value: 'alpha', label: '英字のみ（半角）', requiresValue: false },
-    { value: 'hiragana', label: 'ひらがなのみ', requiresValue: false },
-    { value: 'katakana', label: 'カタカナのみ（全角）', requiresValue: false },
-    { value: 'halfwidthKatakana', label: 'カタカナのみ（半角）', requiresValue: false },
-    { value: 'fullwidth', label: '全角文字のみ', requiresValue: false },
-    { value: 'halfwidth', label: '半角文字のみ', requiresValue: false },
-    { value: 'fullwidthAlphanumeric', label: '全角英数字のみ', requiresValue: false },
-    // 日本の商習慣向けチェック
-    { value: 'corporateNumber', label: '法人番号（13桁）', requiresValue: false },
-    { value: 'bankAccount', label: '銀行口座番号形式', requiresValue: false },
-    // 文字列チェック
-    { value: 'contains', label: '特定の文字列を含む', requiresValue: true },
-    { value: 'notContains', label: '特定の文字列を含まない', requiresValue: true },
-    { value: 'startsWith', label: '特定の文字列で始まる', requiresValue: true },
-    { value: 'endsWith', label: '特定の文字列で終わる', requiresValue: true },
-    // カスタムチェック
-    { value: 'pattern', label: '正規表現パターン', requiresValue: true },
-  ];
+/**
+ * チェック種類の選択肢。
+ * ラベルは表示時に翻訳するため、ここでは並び順と値の入力要否のみを定義する。
+ */
+const VALIDATION_TYPE_OPTIONS: { value: ValidationType; requiresValue: boolean }[] = [
+  // 基本チェック
+  { value: 'required', requiresValue: false },
+  // 文字数チェック
+  { value: 'minLength', requiresValue: true },
+  { value: 'maxLength', requiresValue: true },
+  { value: 'exactLength', requiresValue: true },
+  // 数値チェック
+  { value: 'minValue', requiresValue: true },
+  { value: 'maxValue', requiresValue: true },
+  { value: 'range', requiresValue: true },
+  // 形式チェック
+  { value: 'email', requiresValue: false },
+  { value: 'url', requiresValue: false },
+  { value: 'phone', requiresValue: false },
+  { value: 'postalCode', requiresValue: false },
+  // 文字種チェック
+  { value: 'alphanumeric', requiresValue: false },
+  { value: 'numeric', requiresValue: false },
+  { value: 'alpha', requiresValue: false },
+  { value: 'hiragana', requiresValue: false },
+  { value: 'katakana', requiresValue: false },
+  { value: 'halfwidthKatakana', requiresValue: false },
+  { value: 'fullwidth', requiresValue: false },
+  { value: 'halfwidth', requiresValue: false },
+  { value: 'fullwidthAlphanumeric', requiresValue: false },
+  // 日本の商習慣向けチェック
+  { value: 'corporateNumber', requiresValue: false },
+  { value: 'bankAccount', requiresValue: false },
+  // 文字列チェック
+  { value: 'contains', requiresValue: true },
+  { value: 'notContains', requiresValue: true },
+  { value: 'startsWith', requiresValue: true },
+  { value: 'endsWith', requiresValue: true },
+  // カスタムチェック
+  { value: 'pattern', requiresValue: true },
+];
 
-const DEFAULT_ERROR_MESSAGES: Record<ValidationType, string> = {
-  required: 'この項目は必須です',
-  minLength: '文字数が不足しています',
-  maxLength: '文字数が上限を超えています',
-  exactLength: '文字数が一致しません',
-  pattern: '入力形式が正しくありません',
-  minValue: '値が小さすぎます',
-  maxValue: '値が大きすぎます',
-  range: '値が指定範囲外です',
-  email: 'メールアドレスの形式が正しくありません',
-  url: 'URLの形式が正しくありません',
-  phone: '電話番号の形式が正しくありません',
-  postalCode: '郵便番号の形式が正しくありません',
-  alphanumeric: '半角英数字のみで入力してください',
-  numeric: '半角数字のみで入力してください',
-  alpha: '半角英字のみで入力してください',
-  hiragana: 'ひらがなのみで入力してください',
-  katakana: '全角カタカナのみで入力してください',
-  halfwidthKatakana: '半角カタカナのみで入力してください',
-  fullwidth: '全角文字のみで入力してください',
-  halfwidth: '半角文字のみで入力してください',
-  fullwidthAlphanumeric: '全角英数字のみで入力してください',
-  corporateNumber: '法人番号の形式が正しくありません（13桁の数字）',
-  bankAccount: '銀行口座番号の形式が正しくありません',
-  contains: '指定された文字列が含まれていません',
-  notContains: '指定された文字列が含まれています',
-  startsWith: '指定された文字列で始まっていません',
-  endsWith: '指定された文字列で終わっていません',
-  custom: 'エラーが発生しました',
-};
+/** チェック種類の表示名を返します。 */
+function getValidationTypeLabel(type: ValidationType): string {
+  return t(`validationType.${type}` as 'validationType.required');
+}
+
+/**
+ * チェック種類を選び直した際に初期表示する、既定のエラーメッセージを返します。
+ * 設定情報として保存されるため、設定画面の言語の文言が採用されます。
+ */
+function getDefaultErrorMessage(type: ValidationType): string {
+  return t(`defaultErrorMessage.${type}` as 'defaultErrorMessage.required');
+}
 
 const rulesAtom = getConditionPropertyAtom('rules');
 
@@ -116,7 +102,7 @@ function ValidationRuleItem({
       ...rule,
       type: newType,
       value: '',
-      errorMessage: DEFAULT_ERROR_MESSAGES[newType],
+      errorMessage: getDefaultErrorMessage(newType),
     });
   };
 
@@ -133,10 +119,10 @@ function ValidationRuleItem({
       <CardContent className='flex flex-col gap-4'>
         <div className='flex items-center gap-4'>
           <FormControl sx={{ minWidth: 200 }}>
-            <InputLabel>チェック種類</InputLabel>
+            <InputLabel>{t('config.rule.type.label')}</InputLabel>
             <Select
               value={rule.type}
-              label='チェック種類'
+              label={t('config.rule.type.label')}
               onChange={(e) => handleTypeChange(e.target.value as ValidationType)}
             >
               {VALIDATION_TYPE_OPTIONS.map((option) => (
@@ -145,7 +131,7 @@ function ValidationRuleItem({
                   value={option.value}
                   disabled={!!disabledTypes[option.value]}
                 >
-                  {option.label}
+                  {getValidationTypeLabel(option.value)}
                 </MenuItem>
               ))}
             </Select>
@@ -163,7 +149,7 @@ function ValidationRuleItem({
             />
           )}
           {canDelete && (
-            <Tooltip title='このルールを削除'>
+            <Tooltip title={t('config.rule.delete')}>
               <IconButton onClick={() => onDelete(index)} color='error'>
                 <DeleteIcon />
               </IconButton>
@@ -171,11 +157,11 @@ function ValidationRuleItem({
           )}
         </div>
         <TextField
-          label='エラーメッセージ'
+          label={t('config.rule.errorMessage.label')}
           value={rule.errorMessage}
           onChange={(e) => handleErrorMessageChange(e.target.value)}
           fullWidth
-          placeholder='バリデーションエラー時に表示するメッセージ'
+          placeholder={t('config.rule.errorMessage.placeholder')}
         />
       </CardContent>
     </Card>
@@ -187,21 +173,21 @@ function getValueLabel(type: ValidationType): string {
     case 'minLength':
     case 'maxLength':
     case 'exactLength':
-      return '文字数';
+      return t('config.rule.value.label.length');
     case 'pattern':
-      return '正規表現';
+      return t('config.rule.value.label.pattern');
     case 'minValue':
     case 'maxValue':
-      return '数値';
+      return t('config.rule.value.label.number');
     case 'range':
-      return '範囲（min-max）';
+      return t('config.rule.value.label.range');
     case 'contains':
     case 'notContains':
     case 'startsWith':
     case 'endsWith':
-      return '文字列';
+      return t('config.rule.value.label.text');
     default:
-      return '値';
+      return t('config.rule.value.label.default');
   }
 }
 
@@ -210,28 +196,25 @@ function getValuePlaceholder(type: ValidationType): string {
     case 'minLength':
     case 'maxLength':
     case 'exactLength':
-      return '例: 10';
+      return t('config.rule.value.placeholder.length');
     case 'pattern':
-      return '例: ^[0-9]+$';
+      return t('config.rule.value.placeholder.pattern');
     case 'minValue':
     case 'maxValue':
-      return '例: 100';
+      return t('config.rule.value.placeholder.number');
     case 'range':
-      return '例: 0-100';
+      return t('config.rule.value.placeholder.range');
     case 'contains':
     case 'notContains':
-      return '例: @example.com';
+      return t('config.rule.value.placeholder.contains');
     case 'startsWith':
-      return '例: https://';
+      return t('config.rule.value.placeholder.startsWith');
     case 'endsWith':
-      return '例: .pdf';
+      return t('config.rule.value.placeholder.endsWith');
     default:
       return '';
   }
 }
-
-const FILE_REQUIRED_DISABLED_REASON =
-  '添付ファイルフィールドはkintoneの仕様上、レコード保存時に新しく添付したファイルの情報を判定できないため、「必須入力」チェックには使用できません。';
 
 function ValidationRulesFormContent() {
   const rules = useAtomValue(rulesAtom);
@@ -239,7 +222,7 @@ function ValidationRulesFormContent() {
   const isFileField = field?.type === 'FILE';
 
   const disabledTypes = useMemo<Partial<Record<ValidationType, string>>>(
-    () => (isFileField ? { required: FILE_REQUIRED_DISABLED_REASON } : {}),
+    () => (isFileField ? { required: t('config.rule.fileRequiredDisabled') } : {}),
     [isFileField]
   );
 
@@ -267,7 +250,7 @@ function ValidationRulesFormContent() {
 
   return (
     <div className='flex flex-col gap-4'>
-      {isFileField && <Alert severity='info'>{FILE_REQUIRED_DISABLED_REASON}</Alert>}
+      {isFileField && <Alert severity='info'>{t('config.rule.fileRequiredDisabled')}</Alert>}
       {rules.map((rule, index) => (
         <ValidationRuleItem
           key={rule.id}
@@ -280,7 +263,7 @@ function ValidationRulesFormContent() {
         />
       ))}
       <div>
-        <Tooltip title='ルールを追加'>
+        <Tooltip title={t('config.rule.add')}>
           <IconButton onClick={handleAdd} color='primary'>
             <AddIcon />
           </IconButton>

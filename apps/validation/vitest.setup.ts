@@ -12,5 +12,9 @@ vi.stubGlobal('kintone', {
       getId: () => null,
     },
   },
-  getLoginUser: () => ({ code: 'taro', name: '田中 太郎' }),
+  getLoginUser: () => ({ code: 'taro', name: '田中 太郎', language: 'ja' }),
 });
+
+// `detectGuestSpaceId`（`@/lib/global` 経由で `@/lib/i18n` から読み込まれる）が
+// `location.pathname` を参照するため、ゲストスペース以外のパスをスタブする
+vi.stubGlobal('location', { pathname: '/k/1/' });

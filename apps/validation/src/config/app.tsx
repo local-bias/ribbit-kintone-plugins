@@ -13,13 +13,14 @@ import { Suspense } from 'react';
 import config from '@/../plugin.config.mjs';
 import { PluginErrorBoundary } from '@/components/error-boundary';
 import { ThemeProvider } from '@/components/theme-provider';
+import { t } from '@/lib/i18n';
 import Footer from './components/model/footer';
 import Form from './components/model/form';
 import Sidebar from './components/model/sidebar';
 
 export default function App() {
   return (
-    <Suspense fallback={<LoaderWithLabel label='画面の描画を待機しています' />}>
+    <Suspense fallback={<LoaderWithLabel label={t('common.config.rootIsLoading')} />}>
       <Provider store={store}>
         <ThemeProvider>
           <PluginErrorBoundary>
@@ -29,7 +30,7 @@ export default function App() {
                 maxSnack={1}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
               >
-                <Suspense fallback={<LoaderWithLabel label='設定情報を取得しています' />}>
+                <Suspense fallback={<LoaderWithLabel label={t('common.config.formIsLoading')} />}>
                   <PluginLayout>
                     <Sidebar />
                     <PluginContent>

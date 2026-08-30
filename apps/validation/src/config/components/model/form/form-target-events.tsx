@@ -3,17 +3,12 @@ import { useAtomValue } from '@repo/jotai';
 import { useAtomCallback } from '@repo/jotai/utils';
 import { useCallback } from 'react';
 import { getConditionPropertyAtom } from '@/config/states/plugin';
+import { t } from '@/lib/i18n';
 import type { TargetEvent } from '@/schema/plugin-config';
 
-const OPTIONS: { value: TargetEvent; label: string }[] = [
-  {
-    value: 'create',
-    label: 'レコード追加画面',
-  },
-  {
-    value: 'edit',
-    label: 'レコード編集画面',
-  },
+const OPTIONS: { value: TargetEvent; labelKey: 'create' | 'edit' }[] = [
+  { value: 'create', labelKey: 'create' },
+  { value: 'edit', labelKey: 'edit' },
 ];
 
 const targetEventsAtom = getConditionPropertyAtom('targetEvents');
@@ -44,7 +39,7 @@ export default function TargetEventsForm() {
                 onChange={(_, checked) => onChange(option.value, checked)}
               />
             }
-            label={option.label}
+            label={t(`config.condition.targetEvents.${option.labelKey}`)}
           />
         ))}
       </FormGroup>
