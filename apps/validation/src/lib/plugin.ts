@@ -9,6 +9,7 @@ import {
   type ValidationRule,
 } from '@/schema/plugin-config';
 import { isProd, PLUGIN_ID } from './global';
+import { t } from './i18n';
 
 /**
  * プラグインの設定情報が、最新の設定情報の形式に準拠しているか検証します
@@ -39,7 +40,7 @@ export const getNewRule = (): ValidationRule => ({
   id: nanoid(),
   type: 'required',
   value: '',
-  errorMessage: 'この項目は必須です',
+  errorMessage: t('defaultErrorMessage.required'),
 });
 
 /**
@@ -56,19 +57,23 @@ export const getNewCondition = (): PluginCondition => ({
 
 /**
  * プラグインの共通設定の初期値を返却します
+ *
+ * ラベル・見出しは空文字列を初期値とし、未入力のまま運用された場合は
+ * 操作画面側で閲覧者の言語に応じた既定の文言へフォールバックさせます。
  */
 export const getNewCommonConfig = (): PluginCommonConfig => ({
   csvImport: {
     enabled: false,
-    buttonLabel: 'CSVインポート（入力チェック付き）',
+    buttonLabel: '',
   },
+  recordErrorHeading: '',
 });
 
 /**
  * プラグインの設定情報のひな形を返却します
  */
 export const createConfig = (): PluginConfig => ({
-  version: 2,
+  version: 3,
   common: getNewCommonConfig(),
   conditions: [getNewCondition()],
 });
@@ -98,11 +103,19 @@ export const migrateConfig = (anyConfig: AnyPluginConfig): PluginConfig => {
         })),
       });
     }
-    case 2:
+    case 2: {
+      // V2 -> V3: 共通設定に保存エラーの見出し `recordErrorHeading` を追加する。
+      return migrateConfig({
+        version: 3,
+        common: { ...getNewCommonConfig(), ...anyConfig.common },
+        conditions: anyConfig.conditions,
+      });
+    }
+    case 3:
     default: {
       // `default` -> `config.js`と`desktop.js`のバージョンが一致していない場合に通る可能性があるため必要
       // もし新しいバージョンを追加したらここに追加する
-      // 後方互換のため、`applyConditions` が欠落している場合は初期値で補完する。
+      // 後方互換のため、欠落しているプロパティは初期値で補完する。
       return {
         ...anyConfig,
         common: { ...getNewCommonConfig(), ...anyConfig.common },
