@@ -39,6 +39,9 @@ export const selectedFieldPropertyAtom = atom(async (get) => {
   return fields.find((field) => field.code === fieldCode);
 });
 
+/** 保存エラーの見出し（共通設定） */
+export const recordErrorHeadingAtom = getCommonPropertyAtom('recordErrorHeading');
+
 /** CSVインポート共通設定 */
 const csvImportConfigAtom = getCommonPropertyAtom('csvImport');
 export const csvImportEnabledAtom = focusAtom(csvImportConfigAtom, (o) => o.prop('enabled'));
@@ -82,7 +85,7 @@ export const importPluginConfigAtom = atom(
     try {
       set(handleLoadingStartAtom);
       const { files } = event.target;
-      invariant(files?.length, 'ファイルが見つかりませんでした');
+      invariant(files?.length, t('common.config.error.import'));
       const [file] = Array.from(files);
       const fileEvent = await onFileLoad(file!);
       const text = (fileEvent.target?.result ?? '') as string;

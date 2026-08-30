@@ -6,30 +6,42 @@ import {
 } from '@konomi-app/kintone-utilities-react';
 import { useAtomValue } from '@repo/jotai';
 import type { FC } from 'react';
-import { csvImportButtonLabelAtom, csvImportEnabledAtom } from '@/config/states/plugin';
+import {
+  csvImportButtonLabelAtom,
+  csvImportEnabledAtom,
+  recordErrorHeadingAtom,
+} from '@/config/states/plugin';
+import { t } from '@/lib/i18n';
 
 const CommonSettings: FC = () => {
   const csvImportEnabled = useAtomValue(csvImportEnabledAtom);
   return (
     <div className='p-4'>
       <PluginFormSection>
-        <PluginFormTitle>CSVインポート（入力チェック付き）</PluginFormTitle>
+        <PluginFormTitle>{t('config.common.recordErrorHeading.title')}</PluginFormTitle>
         <PluginFormDescription last>
-          有効にすると、一覧画面にCSVインポートボタンを表示します。
-          kintone標準のCSV形式でファイルを読み込み、すべてのレコードに入力チェックを適用してから登録します。
+          {t('config.common.recordErrorHeading.description')}
         </PluginFormDescription>
-        <JotaiSwitch atom={csvImportEnabledAtom} label='CSVインポート機能を有効にする' />
+        <JotaiText
+          atom={recordErrorHeadingAtom}
+          placeholder={t('desktop.error.recordHeading')}
+          sx={{ width: '100%' }}
+        />
+      </PluginFormSection>
+      <PluginFormSection>
+        <PluginFormTitle>{t('config.common.csvImport.title')}</PluginFormTitle>
+        <PluginFormDescription last>
+          {t('config.common.csvImport.description')}
+        </PluginFormDescription>
+        <JotaiSwitch atom={csvImportEnabledAtom} label={t('config.common.csvImport.label')} />
       </PluginFormSection>
       {csvImportEnabled && (
         <PluginFormSection>
-          <PluginFormTitle>ボタンラベル</PluginFormTitle>
+          <PluginFormTitle>{t('config.common.csvImport.buttonLabel.title')}</PluginFormTitle>
           <PluginFormDescription last>
-            一覧画面に表示するインポートボタンの文言を設定してください。
+            {t('config.common.csvImport.buttonLabel.description')}
           </PluginFormDescription>
-          <JotaiText
-            atom={csvImportButtonLabelAtom}
-            placeholder='CSVインポート（入力チェック付き）'
-          />
+          <JotaiText atom={csvImportButtonLabelAtom} placeholder={t('csv.button.defaultLabel')} />
         </PluginFormSection>
       )}
     </div>

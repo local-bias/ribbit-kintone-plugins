@@ -1,38 +1,12 @@
 import type { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { manager } from '@/lib/event-manager';
+import { t } from '@/lib/i18n';
 import { restorePluginConfig } from '@/lib/plugin';
-import { validateCondition } from '@/lib/validation';
 import type { TargetEvent } from '@/schema/plugin-config';
+import { applyFieldErrors, buildRecordErrorMessage, buildWatchedFieldMap } from './field-errors';
+import { getFieldLabel, loadFieldLabels } from './field-labels';
 
 type RecordData = kintoneAPI.RecordData;
-
-/**
- * フィールドにエラーを設定する
- */
-function setFieldError(record: RecordData, fieldCode: string, errorMessage: string | null): void {
-  const field = record[fieldCode];
-  if (field) {
-    // @ts-expect-error - kintone API では field.error が存在するがTypeScript型には含まれていない
-    field.error = errorMessage;
-  }
-}
-
-/**
- * フィールド変更イベントを生成
- */
-function getChangeEvents(
-  fields: string[],
-  events: ('create' | 'edit')[]
-): kintoneAPI.js.EventType[] {
-  return events.reduce<kintoneAPI.js.EventType[]>(
-    (acc, event) =>
-      [
-        ...acc,
-        ...fields.map((field) => `app.record.${event}.change.${field}`),
-      ] as kintoneAPI.js.EventType[],
-    []
-  );
-}
 
 const pluginConfig = restorePluginConfig();
 
@@ -41,37 +15,34 @@ const validConditions = pluginConfig.conditions.filter(
   (condition) => condition.fieldCode && condition.rules.length > 0
 );
 
+const CHANGE_EVENT_TYPES: TargetEvent[] = ['create', 'edit'];
+
+// 保存エラーの見出し。共通設定が未入力の場合は、閲覧者の言語に応じた既定の文言を使用する。
+const recordErrorHeading =
+  pluginConfig.common.recordErrorHeading || t('desktop.error.recordHeading');
+
+// レコード表示時に、エラー通知で使用するフィールド名を取得しておく。
+// 取得を待つとレコード画面の表示が遅れるため、完了は待たない。
+// 保存時までに取得できていない場合は、フィールドコードで代替される。
+if (validConditions.length > 0) {
+  manager.add(['app.record.create.show', 'app.record.edit.show'], (event) => {
+    void loadFieldLabels();
+    return event;
+  });
+}
+
 // フィールド変更時のイベント
-for (const condition of validConditions) {
-  const { fieldCode, showErrorOnChange, targetEvents } = condition;
+for (const eventType of CHANGE_EVENT_TYPES) {
+  // 変更時にエラーを表示する条件のうち、この画面が対象のもの
+  const changeConditions = validConditions.filter(
+    (condition) => condition.showErrorOnChange && condition.targetEvents.includes(eventType)
+  );
 
-  if (!showErrorOnChange) {
-    continue;
-  }
-
-  const changeEventTypes: ('create' | 'edit')[] = [];
-  if (targetEvents.includes('create')) {
-    changeEventTypes.push('create');
-  }
-  if (targetEvents.includes('edit')) {
-    changeEventTypes.push('edit');
-  }
-
-  if (changeEventTypes.length > 0) {
-    // 対象フィールドに加え、適用条件で参照しているフィールドの変更も監視する。
-    // これにより、条件フィールドが変わって適用条件を満たさなくなった際にエラーが解除される。
-    const conditionFieldCodes = (condition.applyConditions ?? [])
-      .map((c) => c.fieldCode)
-      .filter((code): code is string => !!code);
-    const watchedFieldCodes = Array.from(new Set([fieldCode, ...conditionFieldCodes]));
-    const changeEvents = getChangeEvents(watchedFieldCodes, changeEventTypes);
-    manager.addChangeEvents(changeEvents, (event) => {
-      const result = validateCondition(condition, event.record as RecordData);
-      setFieldError(
-        event.record as RecordData,
-        fieldCode,
-        result.isValid ? null : result.errorMessage
-      );
+  for (const [watchedFieldCode, targetFieldCodes] of buildWatchedFieldMap(changeConditions)) {
+    const changeEvent =
+      `app.record.${eventType}.change.${watchedFieldCode}` as kintoneAPI.js.EventType;
+    manager.addChangeEvents([changeEvent], (event) => {
+      applyFieldErrors(event.record as RecordData, targetFieldCodes, changeConditions);
       return event;
     });
   }
@@ -81,27 +52,20 @@ for (const condition of validConditions) {
 manager.add(['app.record.create.submit', 'app.record.edit.submit'], (event) => {
   const eventType: TargetEvent = event.type.includes('create') ? 'create' : 'edit';
 
-  let hasError = false;
+  // 対象イベントの条件のみを検証する
+  const conditions = validConditions.filter((condition) =>
+    condition.targetEvents.includes(eventType)
+  );
+  const targetFieldCodes = new Set(conditions.map((condition) => condition.fieldCode));
 
-  for (const condition of validConditions) {
-    // 対象イベントかどうかをチェック
-    if (!condition.targetEvents.includes(eventType)) {
-      continue;
-    }
+  const errorFieldCodes = applyFieldErrors(
+    event.record as RecordData,
+    targetFieldCodes,
+    conditions
+  );
 
-    const result = validateCondition(condition, event.record as RecordData);
-    setFieldError(
-      event.record as RecordData,
-      condition.fieldCode,
-      result.isValid ? null : result.errorMessage
-    );
-    if (!result.isValid) {
-      hasError = true;
-    }
-  }
-
-  if (hasError) {
-    event.error = '入力内容にエラーがあります。修正してください。';
+  if (errorFieldCodes.length > 0) {
+    event.error = buildRecordErrorMessage(errorFieldCodes.map(getFieldLabel), recordErrorHeading);
   }
 
   return event;

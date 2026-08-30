@@ -7,6 +7,7 @@ import {
 import { useAtomValue } from '@repo/jotai';
 import type { FC } from 'react';
 import { getConditionPropertyAtom, isConditionIdUnselectedAtom } from '@/config/states/plugin';
+import { t } from '@/lib/i18n';
 import CommonSettings from './common';
 import DeleteButton from './condition-delete-button';
 import FormApplyConditions from './form-apply-conditions';
@@ -18,43 +19,40 @@ const FormContent: FC = () => {
   return (
     <div className='p-4'>
       <PluginFormSection>
-        <PluginFormTitle>対象フィールド</PluginFormTitle>
+        <PluginFormTitle>{t('config.condition.fieldCode.title')}</PluginFormTitle>
         <PluginFormDescription last>
-          入力チェックを行うフィールドを選択してください。
+          {t('config.condition.fieldCode.description')}
         </PluginFormDescription>
         <FieldCodeForm />
       </PluginFormSection>
       <PluginFormSection>
-        <PluginFormTitle>適用する画面</PluginFormTitle>
+        <PluginFormTitle>{t('config.condition.targetEvents.title')}</PluginFormTitle>
         <PluginFormDescription last>
-          入力チェックを適用する画面を選択してください。
+          {t('config.condition.targetEvents.description')}
         </PluginFormDescription>
         <TargetEventsForm />
       </PluginFormSection>
       <PluginFormSection>
-        <PluginFormTitle>適用条件</PluginFormTitle>
+        <PluginFormTitle>{t('config.condition.applyConditions.title')}</PluginFormTitle>
         <PluginFormDescription last>
-          バリデーションを適用する条件を設定してください。
-          指定したすべての条件を満たすレコードのみ入力チェックを行います。
-          条件を設定しない場合は常に適用されます。
+          {t('config.condition.applyConditions.description')}
         </PluginFormDescription>
         <FormApplyConditions />
       </PluginFormSection>
       <PluginFormSection>
-        <PluginFormTitle>フィールド変更時にエラーを表示</PluginFormTitle>
+        <PluginFormTitle>{t('config.condition.showErrorOnChange.title')}</PluginFormTitle>
         <PluginFormDescription last>
-          有効にすると、フィールドの値が変更された直後にエラーメッセージを表示します。
-          無効の場合は、レコード保存時のみエラーが表示されます。
+          {t('config.condition.showErrorOnChange.description')}
         </PluginFormDescription>
         <JotaiSwitch
           atom={getConditionPropertyAtom('showErrorOnChange')}
-          label='フィールド変更時にエラーを表示する'
+          label={t('config.condition.showErrorOnChange.label')}
         />
       </PluginFormSection>
       <PluginFormSection>
-        <PluginFormTitle>バリデーションルール</PluginFormTitle>
+        <PluginFormTitle>{t('config.condition.rules.title')}</PluginFormTitle>
         <PluginFormDescription last>
-          入力チェックのルールを設定してください。複数のルールを設定できます。
+          {t('config.condition.rules.description')}
         </PluginFormDescription>
         <ValidationRulesForm />
       </PluginFormSection>
