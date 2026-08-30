@@ -8,6 +8,14 @@
 @import "@repo/tailwindcss/desktop.css";
 
 @layer base {
+  /*
+   * kintoneの通知領域は既定で改行を無視するため、改行を反映させる。
+   * 保存時のエラーメッセージを、エラーとなったフィールドごとの箇条書きで表示するために必要。
+   */
+  .notifier-body-cybozu li {
+    white-space: pre-wrap;
+  }
+
   .MuiAutocomplete-popper[role="presentation"] {
     ::-webkit-scrollbar {
       @apply rad:w-1 rad:h-1 rad:md:w-2 rad:md:h-2;

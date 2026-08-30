@@ -102,16 +102,29 @@ export const PluginConditionV2Schema = PluginConditionV1Schema.extend({
 });
 
 /**
- * プラグインの共通設定（全条件に適用される設定）
+ * プラグインの共通設定（全条件に適用される設定）V1
  */
 export const PluginCommonConfigV1Schema = z.object({
   /** CSVインポート機能の設定 */
   csvImport: z.object({
     /** CSVインポート機能を有効にするか */
     enabled: z.boolean(),
-    /** 一覧画面に表示するインポートボタンのラベル */
+    /** 一覧画面に表示するインポートボタンのラベル（空文字列の場合は閲覧者の言語の既定値） */
     buttonLabel: z.string(),
   }),
+});
+
+/**
+ * プラグインの共通設定（全条件に適用される設定）V2
+ *
+ * V1 に保存エラーの見出し（recordErrorHeading）を追加したもの。
+ */
+export const PluginCommonConfigV2Schema = PluginCommonConfigV1Schema.extend({
+  /**
+   * 入力チェックにより保存を中止した際、画面上部に表示する見出し。
+   * 空文字列の場合は、閲覧者の言語に応じた既定の見出しを使用する。
+   */
+  recordErrorHeading: z.string(),
 });
 
 /**
@@ -133,18 +146,30 @@ export const PluginConfigV2Schema = z.object({
   common: PluginCommonConfigV1Schema,
   conditions: z.array(PluginConditionV2Schema),
 });
-type PluginConfigV2 = z.infer<typeof PluginConfigV2Schema>;
+
+/**
+ * プラグイン設定V3
+ *
+ * 各条件は V2 から変更なし。共通設定に保存エラーの見出しを追加。
+ */
+export const PluginConfigV3Schema = z.object({
+  version: z.literal(3),
+  common: PluginCommonConfigV2Schema,
+  conditions: z.array(PluginConditionV2Schema),
+});
+type PluginConfigV3 = z.infer<typeof PluginConfigV3Schema>;
 
 /** 🔌 過去全てのバージョンを含むプラグインの設定情報 */
 export const AnyPluginConfigSchema = z.discriminatedUnion('version', [
   PluginConfigV1Schema,
   PluginConfigV2Schema,
+  PluginConfigV3Schema,
 ]);
 
 export const LatestPluginConditionSchema = PluginConditionV2Schema;
 
 /** 🔌 プラグインがアプリ単位で保存する設定情報 */
-export type PluginConfig = PluginConfigV2;
+export type PluginConfig = PluginConfigV3;
 
 /** 🔌 プラグインの共通設定 */
 export type PluginCommonConfig = PluginConfig['common'];

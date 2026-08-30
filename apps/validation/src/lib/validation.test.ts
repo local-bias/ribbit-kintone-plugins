@@ -1,7 +1,13 @@
 import type { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { describe, expect, test } from 'vitest';
 import type { PluginCondition, ValidationRule, ValidationType } from '@/schema/plugin-config';
-import { shouldApplyValidation, validateCondition, validateRule } from './validation';
+import {
+  combineErrorMessages,
+  mergeValidationResults,
+  shouldApplyValidation,
+  validateCondition,
+  validateRule,
+} from './validation';
 
 /**
  * テスト用の `ValidationRule` を生成するヘルパー。
@@ -254,10 +260,14 @@ describe('validateCondition - 条件全体のバリデーション', () => {
     const record = {
       name: { type: 'SINGLE_LINE_TEXT', value: 'hello' },
     } as unknown as kintoneAPI.RecordData;
-    expect(validateCondition(condition, record)).toEqual({ isValid: true, errorMessage: '' });
+    expect(validateCondition(condition, record)).toEqual({
+      isValid: true,
+      errorMessage: '',
+      errorMessages: [],
+    });
   });
 
-  test('最初に失敗したルールのエラーメッセージを返す', () => {
+  test('失敗したルールのエラーメッセージを返す', () => {
     const condition = baseCondition({
       rules: [buildRule('required', '', '必須'), buildRule('maxLength', '3', '長すぎ')],
     });
@@ -266,7 +276,40 @@ describe('validateCondition - 条件全体のバリデーション', () => {
     } as unknown as kintoneAPI.RecordData;
     const result = validateCondition(condition, record);
     expect(result.isValid).toBe(false);
+    expect(result.errorMessages).toEqual(['長すぎ']);
     expect(result.errorMessage).toBe('長すぎ');
+  });
+
+  test('複数のルールに違反した場合、すべてのエラーメッセージを返す', () => {
+    const condition = baseCondition({
+      rules: [
+        buildRule('minLength', '10', '短すぎ'),
+        buildRule('numeric', '', '数字のみ'),
+        buildRule('maxLength', '3', '長すぎ'),
+      ],
+    });
+    const record = {
+      name: { type: 'SINGLE_LINE_TEXT', value: 'hello' },
+    } as unknown as kintoneAPI.RecordData;
+    const result = validateCondition(condition, record);
+    expect(result.isValid).toBe(false);
+    expect(result.errorMessages).toEqual(['短すぎ', '数字のみ', '長すぎ']);
+    expect(result.errorMessage).toBe('・短すぎ\n・数字のみ\n・長すぎ');
+  });
+
+  test('違反したルールのみを、設定順のまま返す', () => {
+    const condition = baseCondition({
+      rules: [
+        buildRule('required', '', '必須'),
+        buildRule('numeric', '', '数字のみ'),
+        buildRule('maxLength', '10', '長すぎ'),
+        buildRule('minLength', '10', '短すぎ'),
+      ],
+    });
+    const record = {
+      name: { type: 'SINGLE_LINE_TEXT', value: 'hello' },
+    } as unknown as kintoneAPI.RecordData;
+    expect(validateCondition(condition, record).errorMessages).toEqual(['数字のみ', '短すぎ']);
   });
 
   test('適用条件を満たさない場合はルール違反でも有効扱いになる', () => {
@@ -278,6 +321,73 @@ describe('validateCondition - 条件全体のバリデーション', () => {
       status: { type: 'SINGLE_LINE_TEXT', value: 'open' },
       name: { type: 'SINGLE_LINE_TEXT', value: '' },
     } as unknown as kintoneAPI.RecordData;
-    expect(validateCondition(condition, record)).toEqual({ isValid: true, errorMessage: '' });
+    expect(validateCondition(condition, record)).toEqual({
+      isValid: true,
+      errorMessage: '',
+      errorMessages: [],
+    });
+  });
+});
+
+describe('combineErrorMessages - エラーメッセージの連結', () => {
+  test('エラーがない場合は空文字列', () => {
+    expect(combineErrorMessages([])).toBe('');
+  });
+
+  test('1件の場合はそのまま返す', () => {
+    expect(combineErrorMessages(['必須'])).toBe('必須');
+  });
+
+  test('複数件の場合は箇条書きで連結する', () => {
+    expect(combineErrorMessages(['必須', '長すぎ'])).toBe('・必須\n・長すぎ');
+  });
+});
+
+describe('mergeValidationResults - 複数条件の結果の統合', () => {
+  const baseCondition = (overrides: Partial<PluginCondition> = {}): PluginCondition => ({
+    id: 'c1',
+    fieldCode: 'name',
+    targetEvents: ['create', 'edit'],
+    showErrorOnChange: false,
+    rules: [],
+    applyConditions: [],
+    ...overrides,
+  });
+
+  const record = {
+    name: { type: 'SINGLE_LINE_TEXT', value: 'hello' },
+  } as unknown as kintoneAPI.RecordData;
+
+  test('すべて有効なら有効', () => {
+    expect(mergeValidationResults([])).toEqual({
+      isValid: true,
+      errorMessage: '',
+      errorMessages: [],
+    });
+  });
+
+  test('同じフィールドに対する複数条件のエラーをすべてまとめる', () => {
+    const results = [
+      validateCondition(baseCondition({ rules: [buildRule('numeric', '', '数字のみ')] }), record),
+      validateCondition(
+        baseCondition({ id: 'c2', rules: [buildRule('minLength', '10', '短すぎ')] }),
+        record
+      ),
+    ];
+    const merged = mergeValidationResults(results);
+    expect(merged.isValid).toBe(false);
+    expect(merged.errorMessages).toEqual(['数字のみ', '短すぎ']);
+    expect(merged.errorMessage).toBe('・数字のみ\n・短すぎ');
+  });
+
+  test('重複するエラーメッセージは1つにまとめる', () => {
+    const results = [
+      validateCondition(baseCondition({ rules: [buildRule('numeric', '', 'NG')] }), record),
+      validateCondition(
+        baseCondition({ id: 'c2', rules: [buildRule('minLength', '10', 'NG')] }),
+        record
+      ),
+    ];
+    expect(mergeValidationResults(results).errorMessages).toEqual(['NG']);
   });
 });
