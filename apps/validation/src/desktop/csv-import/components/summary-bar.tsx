@@ -35,7 +35,11 @@ export const SummaryBar: FC<{ items: SummaryItem[] }> = ({ items }) => (
         <Typography variant='caption' color='text.secondary' component='div'>
           {item.label}
         </Typography>
-        <Typography variant='h5' component='div' sx={{ color: TONE_COLOR[item.tone], fontWeight: 700 }}>
+        <Typography
+          variant='h5'
+          component='div'
+          sx={{ color: TONE_COLOR[item.tone], fontWeight: 700 }}
+        >
           {item.value.toLocaleString()}
         </Typography>
       </Box>

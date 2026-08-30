@@ -4,6 +4,7 @@ import { Drawer } from '@mui/material';
 import { Upload } from 'lucide-react';
 import { enqueueSnackbar } from 'notistack';
 import { type FC, useEffect, useMemo, useRef, useState } from 'react';
+import { t } from '@/lib/i18n';
 import type { PluginCondition } from '@/schema/plugin-config';
 import {
   buildRecordsFromCsv,
@@ -156,7 +157,7 @@ export const ImportButton: FC<ImportButtonProps> = ({
       const { headers, rows } = parseCsv(decodedText, settings.delimiter);
       return { headers, rows, error: null };
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'CSVの解析に失敗しました。';
+      const message = error instanceof Error ? error.message : t('csv.error.parse');
       return { headers: [], rows: [], error: message };
     }
   }, [decodedText, settings.delimiter]);
@@ -229,7 +230,7 @@ export const ImportButton: FC<ImportButtonProps> = ({
       setStage({ type: 'settings' });
     } catch (error) {
       console.error(error);
-      const message = error instanceof Error ? error.message : 'CSVの読み込みに失敗しました。';
+      const message = error instanceof Error ? error.message : t('csv.error.fileRead');
       enqueueSnackbar(message, { variant: 'error' });
     } finally {
       setIsPreparing(false);
@@ -243,7 +244,7 @@ export const ImportButton: FC<ImportButtonProps> = ({
 
     const { rows } = parsed;
     if (rows.length === 0) {
-      enqueueSnackbar('データ行が見つかりませんでした。', { variant: 'warning' });
+      enqueueSnackbar(t('csv.error.noDataRows'), { variant: 'warning' });
       return;
     }
 
@@ -280,7 +281,7 @@ export const ImportButton: FC<ImportButtonProps> = ({
       setStage({ type: 'errors', errors, totalCount: records.length, proceed });
     } catch (error) {
       console.error(error);
-      const message = error instanceof Error ? error.message : 'CSVの処理に失敗しました。';
+      const message = error instanceof Error ? error.message : t('csv.error.process');
       enqueueSnackbar(message, { variant: 'error' });
     }
   };
@@ -312,8 +313,8 @@ export const ImportButton: FC<ImportButtonProps> = ({
         total,
         succeeded: summary.added + summary.updated,
         failed,
-        errorMessages: summary.failures.map(
-          (failure) => `行 ${failure.rowNumber}: ${failure.message}`
+        errorMessages: summary.failures.map((failure) =>
+          t('csv.result.error.row', String(failure.rowNumber), failure.message)
         ),
       });
     } catch (error) {
@@ -413,9 +414,7 @@ export const ImportButton: FC<ImportButtonProps> = ({
           />
         )}
 
-        {stage.type === 'processing' && (
-          <ProcessingPanel total={stage.total} done={stage.done} />
-        )}
+        {stage.type === 'processing' && <ProcessingPanel total={stage.total} done={stage.done} />}
 
         {stage.type === 'result' && (
           <ResultPanel
@@ -464,15 +463,15 @@ function buildSkipPayload(
 
 /** インポート方法に応じた確認メッセージを構築します。 */
 function buildConfirmMessage(payload: ConfirmPayload): string {
-  const count = payload.records.length;
+  const count = payload.records.length.toLocaleString();
   switch (payload.settings.mode) {
     case 'add':
-      return `${count}件のレコードを追加します。よろしいですか？`;
+      return t('csv.confirm.message.add', count);
     case 'update':
-      return `${count}件のレコードを更新します。よろしいですか？`;
+      return t('csv.confirm.message.update', count);
     case 'upsert':
-      return `${count}件のレコードを更新または追加します。よろしいですか？`;
+      return t('csv.confirm.message.upsert', count);
     default:
-      return `${count}件のレコードを取り込みます。よろしいですか？`;
+      return t('csv.confirm.message.default', count);
   }
 }

@@ -13,6 +13,7 @@ import {
   Typography,
 } from '@mui/material';
 import type { FC } from 'react';
+import { t } from '@/lib/i18n';
 import type {
   ColumnMapping,
   DelimiterOption,
@@ -48,27 +49,28 @@ interface SettingsPanelProps {
   onConfirm: () => void;
 }
 
+/** 文字コードの選択肢。UTF-8などの規格名は翻訳せずそのまま表示する。 */
 const ENCODING_OPTIONS: { value: EncodingOption; label: string }[] = [
-  { value: 'AUTO', label: '自動判定' },
+  { value: 'AUTO', label: t('csv.settings.encoding.auto') },
   { value: 'UTF8', label: 'UTF-8' },
   { value: 'SJIS', label: 'Shift_JIS' },
   { value: 'EUCJP', label: 'EUC-JP' },
 ];
 
 const DELIMITER_OPTIONS: { value: DelimiterOption; label: string }[] = [
-  { value: 'comma', label: 'カンマ ( , )' },
-  { value: 'tab', label: 'タブ' },
+  { value: 'comma', label: t('csv.settings.delimiter.comma') },
+  { value: 'tab', label: t('csv.settings.delimiter.tab') },
 ];
 
 const MODE_OPTIONS: { value: ImportMode; label: string }[] = [
-  { value: 'add', label: 'レコードの追加のみ' },
-  { value: 'upsert', label: 'レコードの更新と追加' },
-  { value: 'update', label: 'レコードの更新のみ' },
+  { value: 'add', label: t('csv.settings.mode.add') },
+  { value: 'upsert', label: t('csv.settings.mode.upsert') },
+  { value: 'update', label: t('csv.settings.mode.update') },
 ];
 
 const ERROR_BEHAVIOR_OPTIONS: { value: ErrorBehavior; label: string }[] = [
-  { value: 'abort', label: 'エラーがある場合は取り込みを中断する' },
-  { value: 'skip', label: 'エラー行を除いて取り込む' },
+  { value: 'abort', label: t('csv.settings.errorBehavior.abort') },
+  { value: 'skip', label: t('csv.settings.errorBehavior.skip') },
 ];
 
 export const SettingsPanel: FC<SettingsPanelProps> = ({
@@ -99,19 +101,19 @@ export const SettingsPanel: FC<SettingsPanelProps> = ({
 
   const footer = (
     <>
-      <Button onClick={onCancel}>キャンセル</Button>
+      <Button onClick={onCancel}>{t('csv.common.cancel')}</Button>
       <Button variant='contained' onClick={onConfirm} disabled={isConfirmDisabled}>
-        次へ
+        {t('csv.settings.next')}
       </Button>
     </>
   );
 
   return (
-    <DrawerLayout title='CSVインポート設定' footer={footer}>
+    <DrawerLayout title={t('csv.settings.title')} footer={footer}>
       <Stack spacing={3}>
         <Stack direction='row' spacing={2} flexWrap='wrap' useFlexGap>
           <FormControl size='small' sx={{ minWidth: 220 }}>
-            <FormLabel sx={{ mb: 1 }}>文字コード</FormLabel>
+            <FormLabel sx={{ mb: 1 }}>{t('csv.settings.encoding')}</FormLabel>
             <Select
               value={settings.encoding}
               onChange={(event) => update('encoding', event.target.value as EncodingOption)}
@@ -120,7 +122,7 @@ export const SettingsPanel: FC<SettingsPanelProps> = ({
                 <MenuItem key={option.value} value={option.value}>
                   {option.label}
                   {option.value === 'AUTO' && detectedEncodingLabel
-                    ? `（検出: ${detectedEncodingLabel}）`
+                    ? t('csv.settings.encoding.detected', detectedEncodingLabel)
                     : ''}
                 </MenuItem>
               ))}
@@ -128,7 +130,7 @@ export const SettingsPanel: FC<SettingsPanelProps> = ({
           </FormControl>
 
           <FormControl size='small' sx={{ minWidth: 180 }}>
-            <FormLabel sx={{ mb: 1 }}>区切り文字</FormLabel>
+            <FormLabel sx={{ mb: 1 }}>{t('csv.settings.delimiter')}</FormLabel>
             <Select
               value={settings.delimiter}
               onChange={(event) => update('delimiter', event.target.value as DelimiterOption)}
@@ -144,7 +146,7 @@ export const SettingsPanel: FC<SettingsPanelProps> = ({
 
         <Stack direction='row' spacing={4} flexWrap='wrap' useFlexGap>
           <FormControl>
-            <FormLabel>インポート方法</FormLabel>
+            <FormLabel>{t('csv.settings.mode')}</FormLabel>
             <RadioGroup
               value={settings.mode}
               onChange={(event) => update('mode', event.target.value as ImportMode)}
@@ -161,7 +163,7 @@ export const SettingsPanel: FC<SettingsPanelProps> = ({
           </FormControl>
 
           <FormControl>
-            <FormLabel>エラー発生時の挙動</FormLabel>
+            <FormLabel>{t('csv.settings.errorBehavior')}</FormLabel>
             <RadioGroup
               value={settings.errorBehavior}
               onChange={(event) => update('errorBehavior', event.target.value as ErrorBehavior)}
@@ -179,7 +181,7 @@ export const SettingsPanel: FC<SettingsPanelProps> = ({
 
           {requiresKey && (
             <FormControl size='small' sx={{ minWidth: 240, alignSelf: 'flex-start' }}>
-              <FormLabel sx={{ mb: 1 }}>更新のキーフィールド</FormLabel>
+              <FormLabel sx={{ mb: 1 }}>{t('csv.settings.updateKey')}</FormLabel>
               {hasKeyCandidates ? (
                 <Select
                   value={settings.updateKeyField}
@@ -187,7 +189,9 @@ export const SettingsPanel: FC<SettingsPanelProps> = ({
                   onChange={(event) => update('updateKeyField', event.target.value)}
                 >
                   <MenuItem value=''>
-                    <Typography color='text.secondary'>選択してください</Typography>
+                    <Typography color='text.secondary'>
+                      {t('csv.settings.updateKey.placeholder')}
+                    </Typography>
                   </MenuItem>
                   {updateKeyCandidates.map((candidate) => (
                     <MenuItem key={candidate.code} value={candidate.code}>
@@ -197,7 +201,7 @@ export const SettingsPanel: FC<SettingsPanelProps> = ({
                 </Select>
               ) : (
                 <Alert severity='warning' sx={{ maxWidth: 360 }}>
-                  更新キーに使えるフィールド（レコード番号・重複禁止フィールド）が割り当てられていません。
+                  {t('csv.settings.updateKey.noCandidates')}
                 </Alert>
               )}
             </FormControl>
@@ -208,7 +212,7 @@ export const SettingsPanel: FC<SettingsPanelProps> = ({
 
         <div>
           <Typography variant='subtitle1' sx={{ mb: 1 }}>
-            取り込み項目のマッピングとプレビュー
+            {t('csv.settings.mapping.title')}
           </Typography>
           {parseError ? (
             <Alert severity='error'>{parseError}</Alert>

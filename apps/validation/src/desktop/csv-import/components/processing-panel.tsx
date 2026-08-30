@@ -1,5 +1,6 @@
 import { Box, CircularProgress, LinearProgress, Typography } from '@mui/material';
 import type { FC } from 'react';
+import { t } from '@/lib/i18n';
 import { DrawerLayout } from './drawer-layout';
 
 interface ProcessingPanelProps {
@@ -11,7 +12,7 @@ export const ProcessingPanel: FC<ProcessingPanelProps> = ({ total, done }) => {
   const percent = total > 0 ? Math.round((done / total) * 100) : 0;
 
   return (
-    <DrawerLayout title='取り込み中'>
+    <DrawerLayout title={t('csv.processing.title')}>
       <Box
         sx={{
           display: 'flex',
@@ -23,18 +24,20 @@ export const ProcessingPanel: FC<ProcessingPanelProps> = ({ total, done }) => {
         }}
       >
         <CircularProgress />
-        <Typography variant='body1'>レコードを取り込んでいます…</Typography>
+        <Typography variant='body1'>{t('csv.processing.message')}</Typography>
         <Box sx={{ width: '100%', maxWidth: 480 }}>
-          <LinearProgress
-            variant={total > 0 ? 'determinate' : 'indeterminate'}
-            value={percent}
-          />
+          <LinearProgress variant={total > 0 ? 'determinate' : 'indeterminate'} value={percent} />
         </Box>
         <Typography variant='body2' color='text.secondary'>
-          {done.toLocaleString()} / {total.toLocaleString()} 件（{percent}%）
+          {t(
+            'csv.processing.progress',
+            done.toLocaleString(),
+            total.toLocaleString(),
+            String(percent)
+          )}
         </Typography>
         <Typography variant='caption' color='text.secondary'>
-          処理が完了するまでこの画面を閉じないでください。
+          {t('csv.processing.caution')}
         </Typography>
       </Box>
     </DrawerLayout>

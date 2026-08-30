@@ -9,6 +9,7 @@ import {
   TableRow,
 } from '@mui/material';
 import type { FC } from 'react';
+import { t } from '@/lib/i18n';
 import type { RecordValidationError } from '../build-records';
 import { DrawerLayout } from './drawer-layout';
 import { SummaryBar, type SummaryItem } from './summary-bar';
@@ -35,41 +36,51 @@ export const ErrorPanel: FC<ErrorPanelProps> = ({
 }) => {
   const validCount = Math.max(totalCount - errorRowCount, 0);
   const items: SummaryItem[] = [
-    { label: '取り込み対象', value: totalCount, tone: 'neutral' },
-    { label: '正常', value: validCount, tone: validCount > 0 ? 'success' : 'neutral' },
-    { label: 'エラー', value: errorRowCount, tone: errorRowCount > 0 ? 'error' : 'neutral' },
+    { label: t('csv.summary.total'), value: totalCount, tone: 'neutral' },
+    {
+      label: t('csv.summary.valid'),
+      value: validCount,
+      tone: validCount > 0 ? 'success' : 'neutral',
+    },
+    {
+      label: t('csv.summary.error'),
+      value: errorRowCount,
+      tone: errorRowCount > 0 ? 'error' : 'neutral',
+    },
   ];
 
   const footer = (
     <>
       <Button sx={{ mr: 'auto' }} onClick={onBack}>
-        設定に戻る
+        {t('csv.common.back')}
       </Button>
       {canProceed && (
         <Button variant='contained' onClick={onProceed} disabled={validCount === 0}>
-          エラー行を除いて取り込む
+          {t('csv.validation.proceed')}
         </Button>
       )}
     </>
   );
 
   return (
-    <DrawerLayout title='入力チェック結果' footer={footer}>
+    <DrawerLayout title={t('csv.validation.title')} footer={footer}>
       <SummaryBar items={items} />
 
       <Alert severity={canProceed ? 'warning' : 'error'} sx={{ my: 2 }}>
         {canProceed
-          ? `エラーのない ${validCount.toLocaleString()} 件のみを取り込みます。エラー行は取り込まれません。`
-          : '以下のエラーを解消してから、再度インポートしてください。「エラー発生時の挙動」で「エラー行を除いて取り込む」を選ぶと、正常な行のみ取り込めます。'}
+          ? t('csv.validation.alert.canProceed', validCount.toLocaleString())
+          : t('csv.validation.alert.blocked')}
       </Alert>
 
       <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, overflow: 'auto' }}>
         <Table size='small' stickyHeader>
           <TableHead>
             <TableRow>
-              <TableCell sx={{ width: 80, bgcolor: 'grey.50' }}>行</TableCell>
-              <TableCell sx={{ bgcolor: 'grey.50' }}>フィールド</TableCell>
-              <TableCell sx={{ bgcolor: 'grey.50' }}>エラー内容</TableCell>
+              <TableCell sx={{ width: 80, bgcolor: 'grey.50' }}>
+                {t('csv.validation.table.row')}
+              </TableCell>
+              <TableCell sx={{ bgcolor: 'grey.50' }}>{t('csv.validation.table.field')}</TableCell>
+              <TableCell sx={{ bgcolor: 'grey.50' }}>{t('csv.validation.table.message')}</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>

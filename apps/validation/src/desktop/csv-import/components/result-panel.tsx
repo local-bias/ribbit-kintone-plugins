@@ -1,5 +1,6 @@
 import { Alert, AlertTitle, Box, Button, Typography } from '@mui/material';
 import { type FC, useMemo } from 'react';
+import { t } from '@/lib/i18n';
 import { aggregateErrorMessages } from '../kintone-error';
 import { DrawerLayout } from './drawer-layout';
 import { SummaryBar, type SummaryItem } from './summary-bar';
@@ -24,33 +25,37 @@ export const ResultPanel: FC<ResultPanelProps> = ({
   onClose,
 }) => {
   const items: SummaryItem[] = [
-    { label: '取り込み対象', value: total, tone: 'neutral' },
-    { label: '成功', value: succeeded, tone: succeeded > 0 ? 'success' : 'neutral' },
-    { label: '失敗', value: failed, tone: failed > 0 ? 'error' : 'neutral' },
+    { label: t('csv.summary.total'), value: total, tone: 'neutral' },
+    {
+      label: t('csv.summary.succeeded'),
+      value: succeeded,
+      tone: succeeded > 0 ? 'success' : 'neutral',
+    },
+    { label: t('csv.summary.failed'), value: failed, tone: failed > 0 ? 'error' : 'neutral' },
   ];
 
   const aggregated = useMemo(() => aggregateErrorMessages(errorMessages), [errorMessages]);
 
   const footer = (
     <Button variant='contained' onClick={onClose}>
-      閉じる
+      {t('csv.common.close')}
     </Button>
   );
 
   return (
-    <DrawerLayout title='取り込み結果' footer={footer}>
+    <DrawerLayout title={t('csv.result.title')} footer={footer}>
       <SummaryBar items={items} />
 
       <Box sx={{ mt: 3 }}>
         {failed === 0 ? (
-          <Alert severity='success'>すべてのレコードを取り込みました。</Alert>
+          <Alert severity='success'>{t('csv.result.success')}</Alert>
         ) : (
           <>
             <Alert severity='error' sx={{ mb: 2 }}>
-              <AlertTitle>kintoneアプリ側の検証でエラーが発生しました</AlertTitle>
+              <AlertTitle>{t('csv.result.error.title')}</AlertTitle>
               {succeeded > 0
-                ? `${succeeded.toLocaleString()} 件は取り込まれましたが、残り ${failed.toLocaleString()} 件は取り込まれていません。`
-                : 'レコードは取り込まれませんでした。エラー内容を確認してください。'}
+                ? t('csv.result.error.partial', succeeded.toLocaleString(), failed.toLocaleString())
+                : t('csv.result.error.none')}
             </Alert>
 
             <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
@@ -72,7 +77,7 @@ export const ResultPanel: FC<ResultPanelProps> = ({
                   </Typography>
                   {entry.count > 1 && (
                     <Typography variant='body2' color='error.main' sx={{ whiteSpace: 'nowrap' }}>
-                      {entry.count.toLocaleString()} 件
+                      {t('csv.result.error.count', entry.count.toLocaleString())}
                     </Typography>
                   )}
                 </Box>

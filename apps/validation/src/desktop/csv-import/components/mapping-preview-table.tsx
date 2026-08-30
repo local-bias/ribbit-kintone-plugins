@@ -10,6 +10,7 @@ import {
   Typography,
 } from '@mui/material';
 import type { FC } from 'react';
+import { t } from '@/lib/i18n';
 import type { ColumnMapping, ImportableField } from '../types';
 
 interface MappingPreviewTableProps {
@@ -34,16 +35,33 @@ export const MappingPreviewTable: FC<MappingPreviewTableProps> = ({
     mapping.some((code, index) => index !== columnIndex && code === fieldCode);
 
   return (
-    <Box sx={{ border: '1px solid', borderColor: 'divider', borderRadius: 1, overflow: 'auto', maxHeight: '50vh' }}>
+    <Box
+      sx={{
+        border: '1px solid',
+        borderColor: 'divider',
+        borderRadius: 1,
+        overflow: 'auto',
+        maxHeight: '50vh',
+      }}
+    >
       <Table size='small' stickyHeader>
         <TableHead>
           <TableRow>
             {headers.map((header, columnIndex) => (
-              // CSVの列順は固定のため index をキーに使用
-              // biome-ignore lint/suspicious/noArrayIndexKey: CSV列はインデックスで一意
-              <TableCell key={columnIndex} sx={{ minWidth: 200, verticalAlign: 'top', bgcolor: 'grey.50' }}>
-                <Typography variant='caption' color='text.secondary' noWrap component='div' title={header}>
-                  {header || `列 ${columnIndex + 1}`}
+              <TableCell
+                // CSVの列順は固定のため index をキーに使用
+                // biome-ignore lint/suspicious/noArrayIndexKey: CSV列はインデックスで一意
+                key={columnIndex}
+                sx={{ minWidth: 200, verticalAlign: 'top', bgcolor: 'grey.50' }}
+              >
+                <Typography
+                  variant='caption'
+                  color='text.secondary'
+                  noWrap
+                  component='div'
+                  title={header}
+                >
+                  {header || t('csv.mapping.column', String(columnIndex + 1))}
                 </Typography>
                 <Select
                   size='small'
@@ -55,7 +73,7 @@ export const MappingPreviewTable: FC<MappingPreviewTableProps> = ({
                 >
                   <MenuItem value={IGNORE_VALUE}>
                     <Typography color='text.secondary' variant='body2'>
-                      （取り込まない）
+                      {t('csv.mapping.ignore')}
                     </Typography>
                   </MenuItem>
                   {importableFields.map((field) => (
@@ -79,7 +97,12 @@ export const MappingPreviewTable: FC<MappingPreviewTableProps> = ({
               {headers.map((_, columnIndex) => (
                 // biome-ignore lint/suspicious/noArrayIndexKey: CSV列はインデックスで一意
                 <TableCell key={columnIndex}>
-                  <Typography variant='body2' noWrap sx={{ maxWidth: 240 }} title={row[columnIndex] ?? ''}>
+                  <Typography
+                    variant='body2'
+                    noWrap
+                    sx={{ maxWidth: 240 }}
+                    title={row[columnIndex] ?? ''}
+                  >
                     {row[columnIndex] ?? ''}
                   </Typography>
                 </TableCell>
@@ -90,7 +113,7 @@ export const MappingPreviewTable: FC<MappingPreviewTableProps> = ({
             <TableRow>
               <TableCell colSpan={Math.max(headers.length, 1)}>
                 <Typography variant='body2' color='text.secondary'>
-                  プレビューできるデータ行がありません。
+                  {t('csv.mapping.noPreview')}
                 </Typography>
               </TableCell>
             </TableRow>
