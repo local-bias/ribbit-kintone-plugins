@@ -1,5 +1,5 @@
-import { restoreStorage } from '@konomi-app/kintone-utilities';
-import { PLUGIN_ID } from './global';
+import { restorePluginConfig as restore } from '@konomi-app/kintone-utilities';
+import { isProd, PLUGIN_ID } from './global';
 import type { AnyPluginConfig, PluginConfig } from '@/schema/plugin-config';
 import { DEFAULT_COLOR } from './static';
 
@@ -50,6 +50,6 @@ export const migrateConfig = (anyConfig: AnyPluginConfig): PluginConfig => {
  * プラグインの設定情報を復元します
  */
 export const restorePluginConfig = (): PluginConfig => {
-  const config = restoreStorage<AnyPluginConfig>(PLUGIN_ID) ?? createConfig();
+  const config = restore<AnyPluginConfig>(PLUGIN_ID, { debug: !isProd }) ?? createConfig();
   return migrateConfig(config);
 };

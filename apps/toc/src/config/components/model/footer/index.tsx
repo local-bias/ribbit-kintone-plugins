@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { storeStorage } from '@konomi-app/kintone-utilities';
+import { storePluginConfig } from '@konomi-app/kintone-utilities';
 import SaveIcon from '@mui/icons-material/Save';
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore';
 import { Button, CircularProgress } from '@mui/material';
@@ -70,7 +70,10 @@ const Container: FC = () => {
   const onSaveButtonClick = useCallback(async () => {
     setLoading(true);
     try {
-      storeStorage(storage, () => true);
+      storePluginConfig(storage, {
+        flatProperties: ['conditions'],
+        debug: true,
+      });
       enqueueSnackbar('設定を保存しました', {
         variant: 'success',
         action: (
