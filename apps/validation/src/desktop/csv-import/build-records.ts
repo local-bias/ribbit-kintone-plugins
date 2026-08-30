@@ -1,5 +1,6 @@
 import type { kintoneAPI } from '@konomi-app/kintone-utilities';
 import Papa from 'papaparse';
+import { t } from '@/lib/i18n';
 import { validateCondition } from '@/lib/validation';
 import type { PluginCondition } from '@/schema/plugin-config';
 import { normalizeDateTimeValue, normalizeDateValue, normalizeTimeValue } from './date-format';
@@ -83,12 +84,12 @@ export function parseCsv(content: string, delimiter: DelimiterOption = 'comma'):
 
   if (result.errors.length > 0) {
     const [firstError] = result.errors;
-    throw new Error(`CSVの解析に失敗しました: ${firstError?.message ?? '不明なエラー'}`);
+    throw new Error(t('csv.error.parseDetail', firstError?.message ?? t('csv.error.unknown')));
   }
 
   const [headers, ...rows] = result.data;
   if (!headers || headers.length === 0) {
-    throw new Error('CSVにヘッダー行が見つかりませんでした。');
+    throw new Error(t('csv.error.noHeader'));
   }
 
   return {
@@ -174,14 +175,22 @@ export function validateRecords(
     if (!record) {
       continue;
     }
+    // 同じフィールドに複数の条件が設定されている場合、メッセージが重複しうるため
+    // フィールドごとに重複を除いてから列挙する
+    const messagesByFieldCode = new Map<string, Set<string>>();
     for (const condition of conditions) {
       const result = validateCondition(condition, record);
-      if (!result.isValid) {
-        errors.push({
-          rowNumber: rowIndex + 1,
-          fieldCode: condition.fieldCode,
-          errorMessage: result.errorMessage,
-        });
+      const messages = messagesByFieldCode.get(condition.fieldCode) ?? new Set<string>();
+      for (const errorMessage of result.errorMessages) {
+        messages.add(errorMessage);
+      }
+      messagesByFieldCode.set(condition.fieldCode, messages);
+    }
+
+    // 通過できなかったチェックをすべて1件ずつ列挙する
+    for (const [fieldCode, messages] of messagesByFieldCode) {
+      for (const errorMessage of messages) {
+        errors.push({ rowNumber: rowIndex + 1, fieldCode, errorMessage });
       }
     }
   }
@@ -306,7 +315,7 @@ export function validateUpdateKeys(
       errors.push({
         rowNumber: i + 1,
         fieldCode: keyFieldCode,
-        errorMessage: '更新キーの値が空です。',
+        errorMessage: t('csv.error.emptyUpdateKey'),
       });
     }
   }

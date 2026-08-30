@@ -6,6 +6,7 @@ import {
   updateAllRecords,
   updateRecord,
 } from '@konomi-app/kintone-utilities';
+import { t } from '@/lib/i18n';
 import { parseKintoneErrorMessages } from './kintone-error';
 import type { ErrorBehavior, ImportMode } from './types';
 
@@ -130,7 +131,7 @@ function buildRecordIdRequests(
   });
 
   if (notFound.length > 0) {
-    throw new Error(`レコード番号が見つかりませんでした: ${notFound.join(', ')}`);
+    throw new Error(t('csv.error.recordNumbersNotFound', notFound.join(', ')));
   }
   return requests;
 }
@@ -258,7 +259,7 @@ async function importOneRecord(params: ImportOneParams): Promise<RecordOutcome> 
     if (isRecordNumber) {
       const id = idByKey?.get(keyValue);
       if (!id) {
-        throw new Error(`レコード番号 ${keyValue} が見つかりません。`);
+        throw new Error(t('csv.error.recordNumberNotFound', keyValue));
       }
       await updateRecord({ app, guestSpaceId, id, record: body });
     } else {
@@ -308,9 +309,7 @@ async function executePerRecord(params: ExecuteImportParams): Promise<ImportSumm
 
   // アップサート、またはレコード番号キーの更新では既存レコードのIDが必要
   const needsIdMap = mode === 'upsert' || (mode === 'update' && isRecordNumber);
-  const idByKey = needsIdMap
-    ? await fetchRecordIdsByKey(appId, guestSpaceId, keyFieldCode)
-    : null;
+  const idByKey = needsIdMap ? await fetchRecordIdsByKey(appId, guestSpaceId, keyFieldCode) : null;
 
   let added = 0;
   let updated = 0;

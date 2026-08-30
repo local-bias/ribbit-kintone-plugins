@@ -1,5 +1,6 @@
 import { Button, Typography } from '@mui/material';
 import type { FC } from 'react';
+import { t } from '@/lib/i18n';
 import { DrawerLayout } from './drawer-layout';
 import { SummaryBar } from './summary-bar';
 
@@ -16,17 +17,17 @@ export const ConfirmPanel: FC<ConfirmPanelProps> = ({ message, count, onBack, on
   const footer = (
     <>
       <Button sx={{ mr: 'auto' }} onClick={onBack}>
-        設定に戻る
+        {t('csv.common.back')}
       </Button>
       <Button variant='contained' onClick={onConfirm}>
-        取り込む
+        {t('csv.confirm.submit')}
       </Button>
     </>
   );
 
   return (
-    <DrawerLayout title='インポートの確認' footer={footer}>
-      <SummaryBar items={[{ label: '取り込み件数', value: count, tone: 'neutral' }]} />
+    <DrawerLayout title={t('csv.confirm.title')} footer={footer}>
+      <SummaryBar items={[{ label: t('csv.confirm.count'), value: count, tone: 'neutral' }]} />
       <Typography variant='body1' sx={{ mt: 3 }}>
         {message}
       </Typography>

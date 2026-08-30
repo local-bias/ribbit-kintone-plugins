@@ -39,7 +39,7 @@ interface TimeParts {
 
 /** 文字列から日付部分を抽出します。実在しない日付（繰り上がり）は無効とみなします。 */
 function parseDate(normalized: string): DateParts | null {
-  let matched =
+  const matched =
     normalized.match(/(\d{4})[-/.](\d{1,2})[-/.](\d{1,2})/) ??
     normalized.match(/(\d{4})年(\d{1,2})月(\d{1,2})日?/) ??
     normalized.match(/^(\d{4})(\d{2})(\d{2})(?:\D|$)/);

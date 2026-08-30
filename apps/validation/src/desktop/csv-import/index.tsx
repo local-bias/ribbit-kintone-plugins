@@ -5,6 +5,7 @@ import { SnackbarProvider } from 'notistack';
 import config from '@/../plugin.config.mjs';
 import { manager } from '@/lib/event-manager';
 import { GUEST_SPACE_ID, isDev } from '@/lib/global';
+import { t } from '@/lib/i18n';
 import { restorePluginConfig } from '@/lib/plugin';
 import { ImportButton } from './components/import-button';
 
@@ -39,7 +40,7 @@ manager.add(['app.record.index.show'], async (event) => {
     component: (
       <SnackbarProvider maxSnack={3}>
         <ImportButton
-          label={csvImport.buttonLabel || 'CSVインポート（入力チェック付き）'}
+          label={csvImport.buttonLabel || t('csv.button.defaultLabel')}
           appId={appId}
           guestSpaceId={GUEST_SPACE_ID}
           conditions={pluginConfig.conditions}

@@ -14,6 +14,8 @@
  * ```
  */
 
+import { t } from '@/lib/i18n';
+
 /** kintone の `errors` マップ（フィールド単位の検証エラー）からメッセージを抽出します。 */
 function extractFieldMessages(errors: unknown): string[] {
   if (!errors || typeof errors !== 'object') {
@@ -22,7 +24,11 @@ function extractFieldMessages(errors: unknown): string[] {
 
   const messages: string[] = [];
   for (const entry of Object.values(errors as Record<string, unknown>)) {
-    if (entry && typeof entry === 'object' && Array.isArray((entry as { messages?: unknown }).messages)) {
+    if (
+      entry &&
+      typeof entry === 'object' &&
+      Array.isArray((entry as { messages?: unknown }).messages)
+    ) {
       for (const message of (entry as { messages: unknown[] }).messages) {
         if (typeof message === 'string' && message.length > 0) {
           messages.push(message);
@@ -79,7 +85,7 @@ export function parseKintoneErrorMessages(error: unknown): string[] {
     }
   }
 
-  return messages.length > 0 ? messages : ['レコードの取り込みに失敗しました。'];
+  return messages.length > 0 ? messages : [t('csv.error.import')];
 }
 
 /** メッセージ一覧を、同一メッセージごとに件数集計します（件数の多い順）。 */
