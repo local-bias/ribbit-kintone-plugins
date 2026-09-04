@@ -13,7 +13,8 @@
     "dev:js": "plugin dev --ppk ~/config/kintone-plugin-dev.ppk --cert-dir ~/config/cert",
     "dev:css-desktop": "pnpm dlx @tailwindcss/cli -i ./src/styles/desktop.css -o ./.plugin/dev/desktop.css --watch",
     "dev:css-config": "pnpm dlx @tailwindcss/cli -i ./src/styles/config.css -o ./.plugin/dev/config.css --watch",
-    "dev": "concurrently \"pnpm:dev:*\""
+    "dev": "concurrently \"pnpm:dev:*\"",
+    "check-types": "tsc --noEmit"
   },
   "browser": {
     "path": false
@@ -37,13 +38,14 @@
     "@mui/icons-material": "^7.3.7",
     "@mui/material": "^7.3.7",
     "@openrouter/ai-sdk-provider": "^2.1.1",
-    "@repo/jotai": "workspace:*",
     "@openrouter/sdk": "^0.8.0",
     "@radix-ui/react-label": "^2.1.8",
     "@radix-ui/react-scroll-area": "^1.2.10",
     "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-slot": "^1.2.4",
     "@radix-ui/react-switch": "^1.2.6",
+    "@repo/constants": "workspace:*",
+    "@repo/jotai": "workspace:*",
     "ai": "^6.0.70",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -72,6 +74,7 @@
   "devDependencies": {
     "@kintone/dts-gen": "^9.0.2",
     "@konomi-app/k2": "catalog:",
+    "@repo/typescript-config": "workspace:*",
     "@types/luxon": "^3.7.1",
     "@types/marked": "^6.0.0",
     "@types/node": "catalog:",

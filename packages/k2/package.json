@@ -7,6 +7,10 @@
   },
   "devDependencies": {
     "@konomi-app/k2": "catalog:",
-    "@repo/typescript-config": "workspace:*"
+    "@repo/typescript-config": "workspace:*",
+    "typescript": "catalog:"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit"
   }
 }

@@ -13,7 +13,8 @@
     "dev:js": "plugin dev --cert-dir ~/config/cert",
     "dev:css-desktop": "pnpm dlx @tailwindcss/cli -i ./src/styles/desktop.css -o ./.plugin/dev/desktop.css --watch",
     "dev:css-config": "pnpm dlx @tailwindcss/cli -i ./src/styles/config.css -o ./.plugin/dev/config.css --watch",
-    "dev": "concurrently \"pnpm:dev:*\""
+    "dev": "concurrently \"pnpm:dev:*\"",
+    "check-types": "tsc --noEmit"
   },
   "browser": {
     "path": false
@@ -34,6 +35,7 @@
     "@lb-ribbit/kintone-xapp": "0.4.0",
     "@mui/icons-material": "5.16.6",
     "@mui/material": "5.16.6",
+    "@repo/typescript-config": "workspace:*",
     "@types/luxon": "3.4.2",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",

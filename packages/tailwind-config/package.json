@@ -7,6 +7,10 @@
   },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
-    "tailwindcss": "catalog:"
+    "tailwindcss": "catalog:",
+    "typescript": "catalog:"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit"
   }
 }

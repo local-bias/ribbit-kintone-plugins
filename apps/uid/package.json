@@ -10,7 +10,8 @@
     "build:js": "plugin build",
     "build": "pnpm run build:js && concurrently \"pnpm:build:css-*\" && plugin zip",
     "standalone": "pnpm run build && plugin zip --env standalone",
-    "dev": "plugin dev --cert-dir ~/config/cert"
+    "dev": "plugin dev --cert-dir ~/config/cert",
+    "check-types": "tsc --noEmit"
   },
   "browser": {
     "path": false
@@ -54,6 +55,7 @@
   "devDependencies": {
     "@kintone/dts-gen": "^9.0.5",
     "@konomi-app/k2": "catalog:",
+    "@repo/typescript-config": "workspace:*",
     "@types/luxon": "^3.7.1",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
