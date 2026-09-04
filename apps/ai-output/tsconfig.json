@@ -1,16 +1,13 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "@repo/typescript-config/kintone.json",
   "compilerOptions": {
-    "typeRoots": ["src/types", "node_modules/@types"],
-    "paths": { "@/*": ["./src/*"] },
-    "rootDir": "./src",
-    "outDir": "./dist"
+    "paths": { "@/*": ["./src/*"] }
   },
   "files": [
     "./node_modules/@kintone/dts-gen/kintone.d.ts",
-    "./node_modules/@konomi-app/k2/types.d.ts",
-    "./node_modules/@konomi-app/kintone-utilities/cybozu.d.ts"
+    "./node_modules/@konomi-app/k2/types.d.ts"
   ],
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": ["node_modules", ".plugin"]
+  "include": ["src/**/*.ts", "src/**/*.tsx", "plugin.config.mjs"],
+  "exclude": ["node_modules", "dist", ".plugin"]
 }
