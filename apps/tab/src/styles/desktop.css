@@ -1,0 +1,234 @@
+@source not "../../.plugin";
+
+@layer theme, base, components, utilities;
+@import "tailwindcss/theme.css" layer(theme) prefix(rad);
+@import "tailwindcss/utilities.css" layer(utilities);
+@import "tw-animate-css";
+
+@import "@repo/tailwindcss/desktop.css";
+
+/*
+ * ⚠ ここから下のスタイルは、意図的にカスケードレイヤーの外(unlayered)に定義しています。
+ *
+ * CSSのカスケードでは「レイヤーに属さない宣言」が「レイヤー内の宣言」より常に優先されます
+ * (詳細度に関係なく)。kintone標準のCSSはレイヤーを使用していないため、
+ * `@layer utilities`に入るTailwindのユーティリティクラスは、レコード画面のDOM内に描画した
+ * 要素に対しては kintone 側のスタイルへ軒並み負けてしまいます。
+ *
+ * そのため、レコード画面へ差し込むタブUIのスタイルは
+ *   1. レイヤー外に定義する(kintone標準スタイルと同じ土俵に乗せる)
+ *   2. プラグインが付与したルート要素のid (#ribbit-tab-plugin-root) を起点に記述して
+ *      詳細度を (1,1,0) 以上に保つ(kintoneの `#record-gaia button` などに勝つため)
+ *   3. kintoneから継承・上書きされうるプロパティは全て明示的に指定する
+ * という方針で、環境に依存しない形で記述しています。
+ *
+ * 色は共通CSS(CDNの`common/desktop.css`)が定義する`--🐸*`変数を使用しますが、
+ * 共通CSSが読み込まれない環境でも破綻しないようフォールバック値を併記しています。
+ */
+
+/**
+ * タブを左端に並べるため、kintoneのレコード画面を横並びのレイアウトへ変更します。
+ * kintoneが `#record-gaia` (詳細度 1,0,0) に対して指定するスタイルへ勝つ必要があるため、
+ * idとクラスを組み合わせた (1,1,0) のセレクタで指定しています。
+ */
+#record-gaia.ribbit-tab-record-layout {
+  display: flex;
+  gap: 8px;
+  /* biome-ignore lint/complexity/noImportantStyles: kintone側のpadding指定を確実に打ち消すため */
+  padding: 0 !important;
+}
+
+/* 表示できるタブが1つも無い場合に、空の枠が残らないようにする */
+#ribbit-tab-plugin-root:empty {
+  display: none;
+}
+
+#ribbit-tab-plugin-root {
+  --ribbit-tab-primary: var(--🐸primary, #3498db);
+  --ribbit-tab-border: var(--🐸border, #e3e7e8);
+  --ribbit-tab-surface: #fff;
+  /* 非アクティブなタブの文字色・ホバー背景。テーマ変数に依存しない中立色を使用する */
+  --ribbit-tab-text: rgb(0 0 0 / 60%);
+  --ribbit-tab-hover: rgb(0 0 0 / 4%);
+  --ribbit-tab-badge: #e8453c;
+  /*
+   * タブを固定する位置。kintoneのヘッダーの高さに合わせた固定値です。
+   *
+   * `position: fixed`の要素を実測して自動追従させる実装を試しましたが、
+   * kintoneはヘッダーのスクロール制御を独自に行っており、
+   * 「その瞬間に画面上端へ固定されている高さ」を外部から正しく取得できませんでした。
+   * 実測値が大きすぎればタブの上に余白ができ、小さすぎればタブがヘッダーに隠れるため、
+   * 環境差で壊れにくい固定値を採用しています。
+   */
+  --ribbit-tab-header-offset: 130px;
+  --ribbit-tab-scrollbar-thumb: rgb(0 0 0 / 25%);
+
+  box-sizing: border-box;
+  display: flex;
+  /*
+   * 幅は共通設定の値を`.ribbit-tab__sticky`へインラインで指定しているため、
+   * このルート要素は伸縮せず内容(=タブ)の幅にそろえます。
+   * `flex: 1`にすると、レコードフォームが広いときにルート要素が自動最小サイズまで
+   * 潰れてしまい、設定した幅どおりに表示されません。
+   */
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0;
+  background-color: var(--ribbit-tab-surface);
+  border-right: 1px solid var(--ribbit-tab-border);
+}
+
+/**
+ * 幅(`width`)は共通設定の値をReactがインラインスタイルで指定します。
+ *
+ * スクロールバーは、プラグイン設定画面のサイドバーと同じくホバー
+ * (とキーボード操作によるフォーカス)の間だけ見えるようにします。
+ *
+ * ただし`overflow`を`hidden`↔`auto`で切り替えると、ホバーのたびに
+ * スクロールバーの幅だけコンテンツ領域が変化し、ラベルの折り返し位置がずれてしまいます。
+ * そのため`overflow-y`は常に`auto`のままとし、**つまみ(thumb)の色だけ**を切り替えます。
+ * これによりスクロールバーの占める幅は常に一定になり、レイアウトは変化しません。
+ */
+#ribbit-tab-plugin-root .ribbit-tab__sticky {
+  box-sizing: border-box;
+  position: sticky;
+  top: var(--ribbit-tab-header-offset);
+  display: flex;
+  flex-direction: column;
+  /* タブが多くても画面内に収まるよう、表示領域を画面の高さに制限する */
+  height: calc(100vh - var(--ribbit-tab-header-offset));
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  /* Firefox向け。幅を確保したまま、つまみと軌道を透明にして見えなくする */
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+#ribbit-tab-plugin-root .ribbit-tab__sticky:hover,
+#ribbit-tab-plugin-root .ribbit-tab__sticky:focus-within {
+  scrollbar-color: var(--ribbit-tab-scrollbar-thumb) transparent;
+}
+
+/* WebKit系。`::-webkit-scrollbar`に幅を指定すると、常に幅を占有する古典的な表示になる */
+#ribbit-tab-plugin-root .ribbit-tab__sticky::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+#ribbit-tab-plugin-root .ribbit-tab__sticky::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+#ribbit-tab-plugin-root .ribbit-tab__sticky::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background-color: transparent;
+  transition: background-color 0.15s ease;
+}
+
+#ribbit-tab-plugin-root .ribbit-tab__sticky:hover::-webkit-scrollbar-thumb,
+#ribbit-tab-plugin-root .ribbit-tab__sticky:focus-within::-webkit-scrollbar-thumb {
+  background-color: var(--ribbit-tab-scrollbar-thumb);
+}
+
+#ribbit-tab-plugin-root .ribbit-tab__list {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/**
+ * kintoneはレコード画面の`button`要素にも独自のスタイルを当てているため、
+ * 見た目に影響するプロパティは全て明示的に打ち消します。
+ *
+ * 配色・寸法はバージョン2(MUIの垂直タブ)の見た目を踏襲しています。
+ */
+#ribbit-tab-plugin-root .ribbit-tab__item {
+  appearance: none;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+  min-height: 48px;
+  margin: 0;
+  padding: 12px 16px;
+  border: 0;
+  border-right: 2px solid transparent;
+  border-radius: 0;
+  background: none;
+  background-color: transparent;
+  box-shadow: none;
+  color: var(--ribbit-tab-text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: normal;
+  text-align: center;
+  text-decoration: none;
+  text-shadow: none;
+  text-transform: none;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+  outline: none;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+#ribbit-tab-plugin-root .ribbit-tab__label {
+  box-sizing: border-box;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+}
+
+/**
+ * 未入力の必須フィールドを含むタブに付ける印です。
+ * ラベルの折り返し位置を変えないよう、行の流れから外して右上に重ねます。
+ */
+#ribbit-tab-plugin-root .ribbit-tab__badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  box-sizing: border-box;
+  width: 8px;
+  height: 8px;
+  margin: 0;
+  padding: 0;
+  border-radius: 50%;
+  background-color: var(--ribbit-tab-badge);
+}
+
+#ribbit-tab-plugin-root .ribbit-tab__item:hover {
+  background-color: var(--ribbit-tab-hover);
+}
+
+#ribbit-tab-plugin-root .ribbit-tab__item:focus-visible {
+  outline: 2px solid var(--ribbit-tab-primary);
+  outline-offset: -2px;
+}
+
+/* `:hover` (詳細度 1,2,0) と同じ詳細度にし、後勝ちで選択状態を優先させる */
+#ribbit-tab-plugin-root .ribbit-tab__item.ribbit-tab__item--selected {
+  border-right-color: var(--ribbit-tab-primary);
+  color: var(--ribbit-tab-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  #ribbit-tab-plugin-root .ribbit-tab__item,
+  #ribbit-tab-plugin-root .ribbit-tab__sticky::-webkit-scrollbar-thumb {
+    transition: none;
+  }
+}
