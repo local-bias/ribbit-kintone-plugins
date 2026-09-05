@@ -1,5 +1,6 @@
 import { DateTime, Settings } from 'luxon';
-import { afterEach, describe, expect, it } from 'vitest';
+import { RRule } from 'rrule';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import {
   applyRecurrenceMetaToEventInput,
   buildRRuleString,
@@ -14,6 +15,7 @@ import {
 
 afterEach(() => {
   Settings.defaultZone = 'system';
+  vi.useRealTimers();
 });
 
 describe('weekday numbering conversion', () => {
@@ -244,6 +246,127 @@ describe('applyRecurrenceMetaToEventInput', () => {
     for (const value of result.exdate!) {
       expect(typeof value).toBe('string');
       expect(Number.isNaN(Date.parse(value))).toBe(false);
+    }
+  });
+});
+
+describe('applyRecurrenceMetaToEventInput: generated occurrence times', () => {
+  // The pattern text stored per record is deliberately DTSTART-agnostic. `RRule.fromString`
+  // used to be asked for its *parsed* options, which fills BYHOUR/BYMINUTE/BYSECOND from
+  // `new Date()` whenever no dtstart is present — so every occurrence rendered at the current
+  // wall clock (and drifted forward a minute at a time) instead of the record's start time.
+  const occurrencesOf = (rrule: string, count: number): string[] =>
+    RRule.fromString(rrule)
+      .all((_, index) => index < count)
+      .map((date) => date.toISOString());
+
+  beforeEach(() => {
+    // A "now" deliberately unlike the fixtures' 10:00 start, so any leakage is visible.
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2026-07-16T03:47:19.000Z'));
+  });
+
+  const buildMaster = (rrule: string) =>
+    applyRecurrenceMetaToEventInput({
+      meta: { kind: 'master' as const, rrule, exceptions: [] },
+      start: '2026-07-14T10:00:00', // a Tuesday
+      end: '2026-07-14T11:00:00',
+      zone: 'Asia/Tokyo',
+    });
+
+  it('never leaks the current clock into the rule text', () => {
+    const { rrule } = buildMaster('RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU');
+    expect(rrule).toBe('DTSTART:20260714T100000Z\nRRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU');
+    expect(rrule).not.toMatch(/BYHOUR|BYMINUTE|BYSECOND/);
+  });
+
+  it('WEEKLY: every occurrence keeps the record start time', () => {
+    const { rrule } = buildMaster('RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU');
+    expect(occurrencesOf(rrule!, 3)).toEqual([
+      '2026-07-14T10:00:00.000Z',
+      '2026-07-21T10:00:00.000Z',
+      '2026-07-28T10:00:00.000Z',
+    ]);
+  });
+
+  it('MONTHLY: the first occurrence is the series start itself, not the next month', () => {
+    const { rrule } = buildMaster('RRULE:FREQ=MONTHLY;INTERVAL=1;BYMONTHDAY=14');
+    expect(occurrencesOf(rrule!, 3)).toEqual([
+      '2026-07-14T10:00:00.000Z',
+      '2026-08-14T10:00:00.000Z',
+      '2026-09-14T10:00:00.000Z',
+    ]);
+  });
+
+  it('DAILY: interval and count survive the dtstart injection', () => {
+    const { rrule } = buildMaster('RRULE:FREQ=DAILY;INTERVAL=3;COUNT=3');
+    expect(occurrencesOf(rrule!, 5)).toEqual([
+      '2026-07-14T10:00:00.000Z',
+      '2026-07-17T10:00:00.000Z',
+      '2026-07-20T10:00:00.000Z',
+    ]);
+  });
+
+  it('YEARLY: BYMONTH/BYMONTHDAY survive the dtstart injection', () => {
+    const { rrule } = buildMaster('RRULE:FREQ=YEARLY;INTERVAL=1;BYMONTH=7;BYMONTHDAY=14');
+    expect(occurrencesOf(rrule!, 2)).toEqual([
+      '2026-07-14T10:00:00.000Z',
+      '2027-07-14T10:00:00.000Z',
+    ]);
+  });
+
+  it('produces the exact same rule text whatever the current clock says', () => {
+    const first = buildMaster('RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU').rrule;
+    vi.setSystemTime(new Date('2026-07-16T03:48:19.000Z')); // one minute later
+    expect(buildMaster('RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU').rrule).toBe(first);
+  });
+
+  it('exdate entries line up exactly with the generated occurrences', () => {
+    const result = applyRecurrenceMetaToEventInput({
+      meta: {
+        kind: 'master' as const,
+        rrule: 'RRULE:FREQ=WEEKLY;INTERVAL=1;BYDAY=TU',
+        exceptions: ['2026-07-21T10:00:00'],
+      },
+      start: '2026-07-14T10:00:00',
+      end: '2026-07-14T11:00:00',
+      zone: 'Asia/Tokyo',
+    });
+    // An EXDATE only removes an occurrence when it matches to the millisecond.
+    expect(result.exdate).toEqual(['2026-07-21T10:00:00.000Z']);
+    expect(occurrencesOf(result.rrule!, 3)).toContain('2026-07-21T10:00:00.000Z');
+  });
+
+  it('falls back to a plain event (no rrule) when the stored pattern is unusable', () => {
+    for (const broken of ['', 'not a rule', 'RRULE:INTERVAL=2']) {
+      const result = buildMaster(broken);
+      expect(result.rrule).toBeUndefined();
+      expect(result.extendedProps.recurrence.kind).toBe('master');
+    }
+  });
+});
+
+describe('parseRRuleString: no current-clock defaults', () => {
+  beforeEach(() => {
+    vi.useFakeTimers();
+    // A Friday — the weekday rrule would otherwise substitute for a missing BYDAY.
+    vi.setSystemTime(new Date('2026-07-17T03:47:19.000Z'));
+  });
+
+  it('leaves byweekday empty when the pattern has no BYDAY', () => {
+    expect(parseRRuleString('RRULE:FREQ=WEEKLY;INTERVAL=1').byweekday).toEqual([]);
+  });
+
+  it('falls back to the default form for unusable pattern text instead of throwing', () => {
+    for (const broken of ['', 'not a rule']) {
+      expect(() => parseRRuleString(broken)).not.toThrow();
+      expect(parseRRuleString(broken)).toEqual({
+        freq: 'WEEKLY',
+        interval: 1,
+        byweekday: [],
+        monthlyMode: 'dayOfMonth',
+        end: { type: 'never' },
+      });
     }
   });
 });

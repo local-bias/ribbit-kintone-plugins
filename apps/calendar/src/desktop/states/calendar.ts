@@ -1,4 +1,8 @@
-import { applyRecurrenceMetaToEventInput, RecurrenceMeta } from '@/desktop/recurrence';
+import {
+  applyRecurrenceMetaToEventInput,
+  hasRecurrenceExpansion,
+  RecurrenceMeta,
+} from '@/desktop/recurrence';
 import { GUEST_SPACE_ID, isDev } from '@/lib/global';
 import { t } from '@/lib/i18n-plugin';
 import { DateSelectArg, EventInput } from '@fullcalendar/core';
@@ -97,6 +101,11 @@ export const renderableCalendarEventsAtom = atom<PluginCalendarEvent[]>((get) =>
       end: event.end,
       zone: timezone,
     });
+    // 繰り返しパターンが壊れている等でrrule展開が組み立てられなかった場合は、start/endを
+    // 消してしまうとイベントごと消えてしまうため、そのまま単発イベントとして描画する。
+    if (!hasRecurrenceExpansion(recurrenceFields)) {
+      return event;
+    }
     return { ...event, start: undefined, end: undefined, ...recurrenceFields };
   });
 });
