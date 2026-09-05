@@ -1,5 +1,15 @@
 @import "./theme.css";
 
+/*
+ * Tailwind v4の自動ソース検出は`node_modules`を除外するため、
+ * ワークスペースパッケージ(シンボリックリンク経由で解決される)のクラスは検出されません。
+ * 設定画面のフッターやサイドバーは`@repo/plugin`が提供しているため、
+ * その実装をスキャン対象として明示します。
+ *
+ * `@source`のパスは、このファイル自身からの相対パスとして解決されます。
+ */
+@source "../../plugin/src";
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
