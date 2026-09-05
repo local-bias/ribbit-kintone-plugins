@@ -17,7 +17,7 @@
     "tailwindcss": "catalog:",
     "tsx": "catalog:",
     "turbo": "catalog:",
-    "typesafe-i18n": "^5.27.1",
+    "typesafe-i18n": "catalog:",
     "typescript": "catalog:"
   },
   "packageManager": "pnpm@11.22.0",
