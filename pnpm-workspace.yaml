@@ -11,15 +11,15 @@ allowBuilds:
   unrs-resolver: true
 
 catalog:
-  "@biomejs/biome": ^2.5.11
+  "@biomejs/biome": ^2.5.12
   "@konomi-app/k2": ^5.0.0
   "@konomi-app/ketch": ^0.4.0
   "@konomi-app/kintone-utilities": ^6.2.0
-  "@konomi-app/kintone-utilities-react": ^3.6.0
-  "@konomi-app/kintone-utilities-jotai": ^2.6.0
+  "@konomi-app/kintone-utilities-react": ^4.0.0
+  "@konomi-app/kintone-utilities-jotai": ^3.0.0
   "@konomi-app/ui": ^7.2.0
   "@konomi-app/ui-react": ^3.0.1
-  "@types/node": ^26.4.0
+  "@types/node": ^26.4.1
   "@types/react": ^19.2.17
   "@types/react-dom": ^19.2.3
   jotai: ^2.20.1
@@ -53,3 +53,5 @@ minimumReleaseAgeExclude:
   - '@biomejs/cli-win32-x64@2.5.4'
   - '@konomi-app/ui@7.1.0 || 7.2.0'
   - '@konomi-app/k2@5.0.0'
+  - '@konomi-app/kintone-utilities-jotai@3.0.0'
+  - '@konomi-app/kintone-utilities-react@4.0.0'

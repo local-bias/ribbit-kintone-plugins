@@ -14,6 +14,7 @@
 **/.claude/
 **/*.ppk
 **/plugin/
+**/*:Zone.Identifier
 
 # Dependencies
 .pnp
