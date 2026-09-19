@@ -1,4 +1,5 @@
 import ContentCopyRoundedIcon from '@mui/icons-material/ContentCopyRounded';
+import InfoOutlineRoundedIcon from '@mui/icons-material/InfoOutlineRounded';
 import WarningAmberRoundedIcon from '@mui/icons-material/WarningAmberRounded';
 import {
   Alert,
@@ -88,14 +89,34 @@ function MarkerRow({ row, columnCount }: { row: BulkEditMarkerRow; columnCount: 
     <TableRow>
       <TableCell colSpan={columnCount} sx={{ py: 0.5 }}>
         <div
-          className='flex items-center gap-2 text-xs text-amber-700'
+          className='flex items-center gap-2 text-xs text-gray-500'
           style={{ paddingLeft: row.nested ? 24 : 0 }}
         >
-          <WarningAmberRoundedIcon color='warning' sx={{ fontSize: 16 }} />
+          <InfoOutlineRoundedIcon sx={{ fontSize: 16 }} />
           {t(MARKER_MESSAGE_KEYS[row.kind])}
         </div>
       </TableCell>
     </TableRow>
+  );
+}
+
+/**
+ * 要素IDが未設定の要素についての補足を表示します
+ *
+ * 要素IDを設定できるようになったのはkintoneの2026年2月8日のアップデート以降のため、
+ * 既存アプリの罫線・スペースはほとんどが未設定です。設定画面を開くたびに警告として
+ * 目に入ると不具合と受け取られるため、既定では概要のみを畳んだ状態で示します
+ */
+function AnonymousNotice({ count }: { count: number }) {
+  return (
+    <Alert severity='info'>
+      <details>
+        <summary className='cursor-pointer'>
+          {t('config.common.bulkEdit.anonymous', String(count))}
+        </summary>
+        <div className='mt-2'>{t('config.common.bulkEdit.anonymousDetail')}</div>
+      </details>
+    </Alert>
   );
 }
 
@@ -167,11 +188,7 @@ function BulkEditTable() {
           {t('config.common.bulkEdit.unassigned', String(unassignedCount))}
         </Alert>
       )}
-      {anonymousCount > 0 && (
-        <Alert severity='warning'>
-          {t('config.common.bulkEdit.anonymous', String(anonymousCount))}
-        </Alert>
-      )}
+      {anonymousCount > 0 && <AnonymousNotice count={anonymousCount} />}
       <div className='max-h-[70vh] overflow-auto border border-gray-200 rounded'>
         <Table size='small' stickyHeader>
           <TableHead>
