@@ -1,6 +1,6 @@
 import type { kintoneAPI } from '@konomi-app/kintone-utilities';
-import { evaluateCondition } from '@konomi-app/kintone-utilities-react';
 import type { PluginCondition, TargetScreen } from '@/schema/plugin-config';
+import { evaluateCondition } from './condition';
 
 /** タブの表示可否を判定するために必要な、画面側の状態 */
 export type TabVisibilityContext = {

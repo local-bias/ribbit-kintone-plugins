@@ -1,8 +1,6 @@
 import { isMobile, type kintoneAPI } from '@konomi-app/kintone-utilities';
-import { ComponentManager } from '@konomi-app/kintone-utilities-react';
 import { store } from '@repo/jotai';
-import config from '@/../plugin.config.mjs';
-import { PLUGIN_ROOT_ID, RECORD_LAYOUT_CLASS, RECORD_ROOT_SELECTOR } from '@/lib/constants';
+import { RECORD_LAYOUT_CLASS, RECORD_ROOT_SELECTOR } from '@/lib/constants';
 import { manager } from '@/lib/event-manager';
 import { isDev } from '@/lib/global';
 import { t } from '@/lib/i18n';
@@ -16,15 +14,14 @@ import {
   currentScreenAtom,
   missingRequiredFieldCodesAtom,
   pluginCommonConfigAtom,
+  resolveViewerAtom,
   selectedConditionAtom,
   selectedTabIndexAtom,
   validPluginConditionsAtom,
   visiblePluginConditionsAtom,
 } from './public-state';
+import { mountTabList } from './render';
 import { handleInitialTabResolveAtom, handleVisibleConditionsChangeAtom } from './states/tab';
-
-const componentManager = ComponentManager.getInstance();
-componentManager.debug = isDev;
 
 const SHOW_EVENTS = [
   'app.record.create.show',
@@ -72,29 +69,38 @@ const registerFieldWatchers = () => {
 
   // changeイベントのハンドラはPromiseを返却できないため、
   // レコードの反映だけを同期的に行い、再描画は待たずに実行します
+  // (待たない以上、失敗はここで受け止めないとunhandled rejectionになります)
   manager.addChangeEvents(events, (event) => {
     store.set(currentRecordAtom, event.record);
-    void store.set(handleVisibleConditionsChangeAtom);
+    store.set(handleVisibleConditionsChangeAtom).catch((error: unknown) => {
+      console.error(`[plugin] ${t('desktop.error.render')}`, error);
+    });
     return event;
   });
 };
 
-manager.add(SHOW_EVENTS, async (event) => {
+/**
+ * レコード画面へタブを描画し、選択中のタブに合わせて表示を切り替えます
+ *
+ * 例外は呼び出し元で握りつぶすため、この関数の中では素直に投げて構いません
+ */
+const renderTabs = async (event: kintoneAPI.js.Event) => {
   // モバイルはレコード画面のレイアウトが異なるため、タブの描画対象外とする
   if (isMobile(event.type)) {
-    return event;
+    return;
   }
 
   if (store.get(validPluginConditionsAtom).length === 0) {
-    return event;
+    return;
   }
 
   store.set(currentScreenAtom, toTargetScreen(event.type));
   store.set(currentRecordAtom, event.record);
+  await store.set(resolveViewerAtom);
 
   // 表示できるタブが1つも無い場合は、レイアウトを変更せずに何もしない
-  if ((await store.get(visiblePluginConditionsAtom)).length === 0) {
-    return event;
+  if (store.get(visiblePluginConditionsAtom).length === 0) {
+    return;
   }
 
   await store.set(handleInitialTabResolveAtom);
@@ -103,50 +109,52 @@ manager.add(SHOW_EVENTS, async (event) => {
   const target = document.querySelector(RECORD_ROOT_SELECTOR);
   if (!target) {
     console.warn(`[plugin] ${t('desktop.error.rootNotFound')}`, RECORD_ROOT_SELECTOR);
-    return event;
+    return;
   }
   target.classList.add(RECORD_LAYOUT_CLASS);
 
-  componentManager.renderComponent({
-    id: `🐸${config.id}-root`,
-    component: <App />,
-    parentElement: target,
-    prepend: true,
-    // タブUIのCSSはこのidを起点に詳細度を確保しているため、必ず付与する
-    // (`🐸`はプラグイン共通のスタイルスコープ)
-    onRootElementReady: (element) => {
-      element.id = PLUGIN_ROOT_ID;
-      element.classList.add('🐸');
-    },
-  });
+  mountTabList(<App />, target);
 
   await refresh();
+};
 
+/**
+ * タブの描画は、失敗してもレコード画面の表示を妨げてはいけません
+ *
+ * イベントマネージャへ例外を渡すと`event.error`が設定され、レコード画面に
+ * プラグインのエラーが表示されてしまうため、ここで握りつぶして記録だけ行います。
+ * タブが出ないだけで、レコード自体は通常どおり閲覧・編集できます。
+ */
+manager.add(SHOW_EVENTS, async (event) => {
+  try {
+    await renderTabs(event);
+  } catch (error) {
+    console.error(`[plugin] ${t('desktop.error.render')}`, error);
+  }
   return event;
 });
 
 /**
- * 保存時に、未入力の必須フィールドが非表示のタブにある場合は、そのタブへ切り替えます
+ * 未入力の必須フィールドが非表示のタブにある場合に、そのタブへ切り替えます
  *
  * kintoneは非表示のフィールドも必須チェックの対象にするため、
  * 切り替えておかないとエラーの原因が画面上に見えません。
  *
- * 判定を誤って保存を妨げることが無いよう、保存自体は中断しません
- * (未入力であれば、この後にkintone自身が保存を中断します)。
+ * 例外は呼び出し元で握りつぶすため、この関数の中では素直に投げて構いません
  */
-manager.add(SUBMIT_EVENTS, async (event) => {
+const switchToTabWithMissingRequiredField = async (event: kintoneAPI.js.Event) => {
   if (isMobile(event.type)) {
-    return event;
+    return;
   }
   if (!store.get(pluginCommonConfigAtom).notifiesMissingRequiredFields) {
-    return event;
+    return;
   }
 
   store.set(currentRecordAtom, event.record);
 
   const missing = await store.get(missingRequiredFieldCodesAtom);
   if (missing.length === 0) {
-    return event;
+    return;
   }
 
   const selected = await store.get(selectedConditionAtom);
@@ -160,7 +168,7 @@ manager.add(SUBMIT_EVENTS, async (event) => {
       })
     );
   if (isVisibleInSelectedTab) {
-    return event;
+    return;
   }
 
   const conditions = await store.get(visiblePluginConditionsAtom);
@@ -174,12 +182,27 @@ manager.add(SUBMIT_EVENTS, async (event) => {
     )
   );
   if (targetIndex === -1) {
-    return event;
+    return;
   }
 
   store.set(selectedTabIndexAtom, targetIndex);
   await refresh();
   isDev && console.log('⚠ 未入力の必須フィールドを含むタブへ切り替えました', missing);
+};
 
+/**
+ * この処理は保存を助けるためのものなので、失敗しても保存を妨げてはいけません
+ *
+ * イベントマネージャへ例外を渡すと`event.error`が設定され、kintoneが保存を中断します。
+ * 判定にはアプリのフィールド情報の取得(REST API)を伴い、通信の失敗もありうるため、
+ * ここで握りつぶして記録だけ行い、保存はそのまま続行させます
+ * (未入力であれば、この後にkintone自身が保存を中断します)。
+ */
+manager.add(SUBMIT_EVENTS, async (event) => {
+  try {
+    await switchToTabWithMissingRequiredField(event);
+  } catch (error) {
+    console.error(`[plugin] ${t('desktop.error.submit')}`, error);
+  }
   return event;
 });

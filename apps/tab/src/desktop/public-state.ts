@@ -113,6 +113,19 @@ export const viewerAtom = atom<Promise<TabVisibilityContext['viewer']>>(async (g
   }
 });
 
+/** 初期表示前に解決したログインユーザーの所属情報 */
+const resolvedViewerAtom = atom<TabVisibilityContext['viewer']>(null);
+
+/**
+ * ログインユーザーの所属情報を解決し、同期的に参照できる状態へ保存します
+ *
+ * レコードの変更ごとにタブ一覧を再評価してもSuspenseへ戻らないよう、
+ * 非同期処理はレコード画面の初期表示時だけに限定します。
+ */
+export const resolveViewerAtom = atom(null, async (get, set) => {
+  set(resolvedViewerAtom, await get(viewerAtom));
+});
+
 /** プロセス管理の現在のステータス。プロセス管理が無効な場合は`null` */
 export const currentStatusAtom = atom<string | null>((get) => {
   const record = get(currentRecordAtom);
@@ -124,11 +137,11 @@ export const currentStatusAtom = atom<string | null>((get) => {
 });
 
 /** 現在の画面状態で実際に表示するタブ */
-export const visiblePluginConditionsAtom = atom<Promise<PluginCondition[]>>(async (get) => {
+export const visiblePluginConditionsAtom = atom<PluginCondition[]>((get) => {
   const context: TabVisibilityContext = {
     screen: get(currentScreenAtom),
     record: get(currentRecordAtom),
-    viewer: await get(viewerAtom),
+    viewer: get(resolvedViewerAtom),
     status: get(currentStatusAtom),
   };
   return get(validPluginConditionsAtom).filter((condition) => isTabVisible(condition, context));
@@ -138,8 +151,8 @@ export const visiblePluginConditionsAtom = atom<Promise<PluginCondition[]>>(asyn
 export const selectedTabIndexAtom = atom(0);
 
 /** 現在選択されているタブの設定 */
-export const selectedConditionAtom = atom<Promise<PluginCondition | null>>(async (get) => {
-  const conditions = await get(visiblePluginConditionsAtom);
+export const selectedConditionAtom = atom<PluginCondition | null>((get) => {
+  const conditions = get(visiblePluginConditionsAtom);
   return conditions[get(selectedTabIndexAtom)] ?? conditions[0] ?? null;
 });
 
@@ -164,7 +177,7 @@ export const conditionIdsWithMissingRequiredAtom = atom<Promise<Set<string>>>(as
   if (missing.length === 0) {
     return new Set<string>();
   }
-  const conditions = await get(visiblePluginConditionsAtom);
+  const conditions = get(visiblePluginConditionsAtom);
   return new Set(
     conditions
       .filter((condition) =>

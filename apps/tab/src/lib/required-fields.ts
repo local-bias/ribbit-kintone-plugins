@@ -1,4 +1,4 @@
-import { getFieldValueAsString, type kintoneAPI } from '@konomi-app/kintone-utilities';
+import type { kintoneAPI } from '@konomi-app/kintone-utilities';
 
 /** 必須チェックの対象にしないフィールドタイプ(入力欄を持たない、または自動で値が入るもの) */
 const UNCHECKED_FIELD_TYPES = new Set<string>([
@@ -16,6 +16,24 @@ const UNCHECKED_FIELD_TYPES = new Set<string>([
 ]);
 
 type RequiredFieldProperty = kintoneAPI.FieldProperty & { required?: boolean };
+
+/**
+ * フィールドの実値が未入力かどうかを判定します
+ *
+ * kintoneの型定義では文字列となるフィールドでも、他のカスタマイズから数値などが
+ * 代入されることがあります。保存イベントではその値がそのまま渡されるため、
+ * 型定義を信用して文字列メソッドを呼ばず、実行時の型に応じて判定します。
+ */
+const isFieldValueEmpty = (field: kintoneAPI.RecordData[string]): boolean => {
+  const value: unknown = field.value;
+  if (typeof value === 'string') {
+    return value.trim() === '';
+  }
+  if (Array.isArray(value)) {
+    return value.length === 0;
+  }
+  return value === null || value === undefined;
+};
 
 /**
  * 未入力の必須フィールドのフィールドコードを返します
@@ -51,6 +69,6 @@ export const findMissingRequiredFieldCodes = (params: {
       if (!field) {
         return false;
       }
-      return getFieldValueAsString(field).trim() === '';
+      return isFieldValueEmpty(field);
     });
 };

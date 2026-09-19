@@ -53,6 +53,17 @@ describe('findMissingRequiredFieldCodes', () => {
     expect(result).toEqual([]);
   });
 
+  test('実値が数値の0でも入力済みとして扱い、例外にしない', () => {
+    const result = findMissingRequiredFieldCodes({
+      fields,
+      record: record({
+        必須数値: { type: 'NUMBER', value: 0 } as unknown as kintoneAPI.RecordData[string],
+      }),
+    });
+
+    expect(result).toEqual([]);
+  });
+
   test('未選択のユーザー選択は未入力として扱う', () => {
     const result = findMissingRequiredFieldCodes({
       fields,

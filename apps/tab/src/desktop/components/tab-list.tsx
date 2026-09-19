@@ -1,6 +1,6 @@
 import { useAtomValue, useSetAtom } from '@repo/jotai';
 import { clsx } from 'clsx';
-import { type KeyboardEvent, useRef } from 'react';
+import { type KeyboardEvent, Suspense, useRef } from 'react';
 import { t } from '@/lib/i18n';
 import {
   conditionIdsWithMissingRequiredAtom,
@@ -9,6 +9,7 @@ import {
   visiblePluginConditionsAtom,
 } from '../public-state';
 import { handleTabChangeAtom } from '../states/tab';
+import { DesktopErrorBoundary } from './error-boundary';
 
 /** WAI-ARIAのタブパターンに沿ったキー操作(縦方向) */
 const resolveNextIndex = (key: string, current: number, length: number): number | null => {
@@ -26,6 +27,21 @@ const resolveNextIndex = (key: string, current: number, length: number): number 
   }
 };
 
+const MissingRequiredBadge = ({ conditionId }: { conditionId: string }) => {
+  const missingRequiredIds = useAtomValue(conditionIdsWithMissingRequiredAtom);
+  if (!missingRequiredIds.has(conditionId)) {
+    return null;
+  }
+  return (
+    <span
+      className='ribbit-tab__badge'
+      role='img'
+      aria-label={t('desktop.tab.missingRequired')}
+      title={t('desktop.tab.missingRequired')}
+    />
+  );
+};
+
 /**
  * レコード画面の左側に固定表示される、垂直方向のタブです
  *
@@ -40,9 +56,16 @@ export default function TabList() {
   const conditions = useAtomValue(visiblePluginConditionsAtom);
   const selectedIndex = useAtomValue(selectedTabIndexAtom);
   const tabWidth = useAtomValue(tabWidthAtom);
-  const missingRequiredIds = useAtomValue(conditionIdsWithMissingRequiredAtom);
-  const onTabChange = useSetAtom(handleTabChangeAtom);
+  const setSelectedTab = useSetAtom(handleTabChangeAtom);
   const listRef = useRef<HTMLDivElement>(null);
+
+  // タブの切り替えはレコード画面の更新を伴う非同期処理のため、
+  // 失敗しても未処理の例外にならないようここで受け止めます
+  const onTabChange = (index: number) => {
+    setSelectedTab(index).catch((error: unknown) => {
+      console.error(`[plugin] ${t('desktop.error.render')}`, error);
+    });
+  };
 
   if (conditions.length === 0) {
     return null;
@@ -69,7 +92,6 @@ export default function TabList() {
       >
         {conditions.map((condition, index) => {
           const selected = index === selectedIndex;
-          const hasMissingRequired = missingRequiredIds.has(condition.id);
           return (
             <button
               key={condition.id}
@@ -83,14 +105,15 @@ export default function TabList() {
               })}
             >
               <span className='ribbit-tab__label'>{condition.tabName}</span>
-              {hasMissingRequired && (
-                <span
-                  className='ribbit-tab__badge'
-                  role='img'
-                  aria-label={t('desktop.tab.missingRequired')}
-                  title={t('desktop.tab.missingRequired')}
-                />
-              )}
+              {/*
+                印は補助的な情報のため、タブ本体を巻き込まないよう境界を印だけに限定する
+                (取得中は`Suspense`で、取得に失敗した場合はエラー境界で、印だけが消える)
+              */}
+              <DesktopErrorBoundary>
+                <Suspense fallback={null}>
+                  <MissingRequiredBadge conditionId={condition.id} />
+                </Suspense>
+              </DesktopErrorBoundary>
             </button>
           );
         })}

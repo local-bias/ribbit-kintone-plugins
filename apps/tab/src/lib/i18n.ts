@@ -29,7 +29,9 @@ const ui = mergeDeep(commonUi, {
     'config.common.bulkEdit.anonymousHr':
       '罫線(要素IDが未設定のため、個別に表示・非表示を切り替えられません)',
     'config.common.bulkEdit.anonymous':
-      '要素IDが未設定のため、タブごとに切り替えられない要素が{0}件あります。アプリのフォーム設定で要素IDを設定すると、個別に割り当てられるようになります。非表示にしたはずの場所に余白が残る場合は、これらの要素が残っていないか確認してください。',
+      '要素IDが未設定のため、タブごとに個別に指定できない要素が{0}件あります',
+    'config.common.bulkEdit.anonymousDetail':
+      'これらは下の表で灰色の行として示しています。要素IDが未設定のままでも、設定の保存や他の要素の割り当てには影響しません。これらの要素は、種別ごとの表示方法に従ってまとめて扱われます。タブごとに個別に指定したい場合は、アプリのフォーム設定で要素IDを設定してください。非表示にしたはずの場所に余白が残る場合は、これらの要素が残っていないか確認してください。',
     'config.common.bulkEdit.unassigned':
       'どのタブにも割り当てられていない要素が{0}件あります。これらは全てのタブで非表示になります。',
     'config.common.bulkEdit.unassignedElement':
@@ -141,6 +143,9 @@ const ui = mergeDeep(commonUi, {
     'config.condition.statuses.disabled': 'このアプリではプロセス管理が有効になっていません。',
     'desktop.tab.missingRequired': '未入力の必須フィールドがあります',
     'desktop.error.rootNotFound': 'タブを描画する対象の要素が取得できませんでした',
+    'desktop.error.render': 'タブの描画に失敗したため、レコード画面はそのまま表示しました',
+    'desktop.error.submit':
+      '未入力の必須フィールドを判定できなかったため、タブを切り替えずに保存を続行しました',
   },
   en: {
     'config.common.title': 'Tab width',
@@ -168,7 +173,9 @@ const ui = mergeDeep(commonUi, {
     'config.common.bulkEdit.anonymousHr':
       'Horizontal rule (no element ID is set, so it cannot be switched individually)',
     'config.common.bulkEdit.anonymous':
-      '{0} element(s) have no element ID and cannot be assigned per tab. Set an element ID in the app form settings to assign them individually. If blank space remains where you expected elements to be hidden, check whether these elements are still visible.',
+      '{0} element(s) cannot be assigned per tab because they have no element ID',
+    'config.common.bulkEdit.anonymousDetail':
+      'They are shown as gray rows in the table below. Leaving the element ID unset does not affect saving the settings or assigning the other elements. These elements are handled together according to the display method for their type. To assign them per tab, set an element ID in the app form settings. If blank space remains where you expected elements to be hidden, check whether these elements are still visible.',
     'config.common.bulkEdit.unassigned':
       '{0} element(s) are not assigned to any tab. They will be hidden on every tab.',
     'config.common.bulkEdit.unassignedElement':
@@ -281,6 +288,9 @@ const ui = mergeDeep(commonUi, {
     'config.condition.statuses.disabled': 'Process management is not enabled for this app.',
     'desktop.tab.missingRequired': 'Contains an empty required field',
     'desktop.error.rootNotFound': 'Could not find the element to render the tabs into',
+    'desktop.error.render': 'Failed to render the tabs, so the record screen was left as is',
+    'desktop.error.submit':
+      'Could not determine the empty required fields, so the save continued without switching tabs',
   },
   es: {
     'config.common.title': 'Ancho de las pestañas',
@@ -309,7 +319,9 @@ const ui = mergeDeep(commonUi, {
     'config.common.bulkEdit.anonymousHr':
       'Línea divisoria (no tiene ID de elemento, por lo que no se puede cambiar individualmente)',
     'config.common.bulkEdit.anonymous':
-      'Hay {0} elemento(s) sin ID de elemento que no se pueden asignar por pestaña. Defina un ID de elemento en los ajustes del formulario para asignarlos individualmente. Si queda un espacio en blanco donde esperaba ocultar elementos, compruebe si estos elementos siguen visibles.',
+      'Hay {0} elemento(s) que no se pueden asignar por pestaña porque no tienen ID de elemento',
+    'config.common.bulkEdit.anonymousDetail':
+      'Se muestran como filas grises en la tabla siguiente. Dejar el ID de elemento sin definir no afecta al guardado de los ajustes ni a la asignación de los demás elementos. Estos elementos se tratan en conjunto según el método de visualización de su tipo. Para asignarlos por pestaña, defina un ID de elemento en los ajustes del formulario de la aplicación. Si queda un espacio en blanco donde esperaba ocultar elementos, compruebe si estos elementos siguen visibles.',
     'config.common.bulkEdit.unassigned':
       'Hay {0} elemento(s) sin asignar a ninguna pestaña. Se ocultarán en todas las pestañas.',
     'config.common.bulkEdit.unassignedElement':
@@ -424,6 +436,10 @@ const ui = mergeDeep(commonUi, {
       'La gestión de procesos no está habilitada en esta aplicación.',
     'desktop.tab.missingRequired': 'Contiene un campo obligatorio vacío',
     'desktop.error.rootNotFound': 'No se encontró el elemento donde renderizar las pestañas',
+    'desktop.error.render':
+      'No se pudieron renderizar las pestañas, la pantalla de registro se dejó sin cambios',
+    'desktop.error.submit':
+      'No se pudieron determinar los campos obligatorios vacíos, el guardado continuó sin cambiar de pestaña',
   },
   zh: {
     'config.common.title': '标签宽度',
@@ -447,8 +463,9 @@ const ui = mergeDeep(commonUi, {
     'config.common.bulkEdit.anonymousLabel':
       '标签字段（未设置元素ID且文字为空，无法切换显示与隐藏）',
     'config.common.bulkEdit.anonymousHr': '分隔线（未设置元素ID，无法单独切换显示与隐藏）',
-    'config.common.bulkEdit.anonymous':
-      '有{0}个元素因未设置元素ID而无法按标签分配。在应用的表单设置中设置元素ID后，即可单独分配。如果本应隐藏的位置仍留有空白，请确认这些元素是否仍然显示。',
+    'config.common.bulkEdit.anonymous': '有{0}个元素因未设置元素ID而无法按标签单独指定',
+    'config.common.bulkEdit.anonymousDetail':
+      '它们在下方表格中以灰色行显示。即使不设置元素ID，也不会影响设置的保存或其他元素的分配。这些元素将按各类型的显示方式统一处理。如需按标签单独指定，请在应用的表单设置中设置元素ID。如果本应隐藏的位置仍留有空白，请确认这些元素是否仍然显示。',
     'config.common.bulkEdit.unassigned':
       '有{0}个元素未分配到任何标签，它们在所有标签中都将被隐藏。',
     'config.common.bulkEdit.unassignedElement':
@@ -554,6 +571,8 @@ const ui = mergeDeep(commonUi, {
     'config.condition.statuses.disabled': '此应用未启用流程管理。',
     'desktop.tab.missingRequired': '存在未填写的必填字段',
     'desktop.error.rootNotFound': '未能获取用于渲染标签的目标元素',
+    'desktop.error.render': '标签渲染失败，记录界面保持原样显示',
+    'desktop.error.submit': '未能判定未填写的必填字段，未切换标签并继续保存',
   },
   'zh-TW': {
     'config.common.title': '分頁寬度',
@@ -577,8 +596,9 @@ const ui = mergeDeep(commonUi, {
     'config.common.bulkEdit.anonymousLabel':
       '標籤欄位（未設定元素ID且文字為空，無法切換顯示與隱藏）',
     'config.common.bulkEdit.anonymousHr': '分隔線（未設定元素ID，無法個別切換顯示與隱藏）',
-    'config.common.bulkEdit.anonymous':
-      '有{0}個元素因未設定元素ID而無法依分頁指派。在應用程式的表單設定中設定元素ID後，即可個別指派。若原本應隱藏的位置仍留有空白，請確認這些元素是否仍然顯示。',
+    'config.common.bulkEdit.anonymous': '有{0}個元素因未設定元素ID而無法依分頁個別指定',
+    'config.common.bulkEdit.anonymousDetail':
+      '它們在下方表格中以灰色列顯示。即使未設定元素ID，也不會影響設定的儲存或其他元素的指派。這些元素會依各類型的顯示方式統一處理。若需依分頁個別指定，請在應用程式的表單設定中設定元素ID。若原本應隱藏的位置仍留有空白，請確認這些元素是否仍然顯示。',
     'config.common.bulkEdit.unassigned':
       '有{0}個元素未指派給任何分頁，它們在所有分頁中都會被隱藏。',
     'config.common.bulkEdit.unassignedElement':
@@ -684,6 +704,8 @@ const ui = mergeDeep(commonUi, {
     'config.condition.statuses.disabled': '此應用程式未啟用流程管理。',
     'desktop.tab.missingRequired': '有未填寫的必填欄位',
     'desktop.error.rootNotFound': '無法取得用於繪製分頁的目標元素',
+    'desktop.error.render': '分頁繪製失敗，記錄畫面維持原樣顯示',
+    'desktop.error.submit': '無法判定未填寫的必填欄位，未切換分頁並繼續儲存',
   },
 } as const);
 

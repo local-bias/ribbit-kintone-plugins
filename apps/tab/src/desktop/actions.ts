@@ -1,6 +1,7 @@
 import { getSpaceElement, setFieldShown } from '@konomi-app/kintone-utilities';
 import { store } from '@repo/jotai';
 import { RECORD_ROOT_SELECTOR } from '@/lib/constants';
+import { classifyEmptyRows } from '@/lib/empty-rows';
 import { isDev } from '@/lib/global';
 import type { LayoutHr, LayoutLabel } from '@/lib/kintone';
 import { shouldShowKey, shouldShowLabel } from '@/lib/visibility';
@@ -179,11 +180,33 @@ const applyHorizontalRuleVisibility = (condition: PluginCondition, hrs: LayoutHr
   });
 };
 
+/**
+ * 要素が描画されているかどうかを判定します
+ *
+ * `offsetParent`は、要素自身か親要素のいずれかが非表示の場合に`null`となります。
+ * 閉じているグループフィールドの内側はこれに該当し、表示状態を測れません
+ */
+const isElementRendered = (element: HTMLElement): boolean => element.offsetParent !== null;
+
 /** 要素が画面上に表示されているかどうかを判定します */
 const isElementVisible = (element: Element): boolean =>
   element instanceof HTMLElement &&
-  element.offsetParent !== null &&
+  isElementRendered(element) &&
   (element.offsetWidth > 0 || element.offsetHeight > 0);
+
+/** レコード画面のレイアウト上の行を取得します */
+const getLayoutRows = (): HTMLElement[] =>
+  [
+    ...document.querySelectorAll<HTMLElement>(`${RECORD_ROOT_SELECTOR} .row-gaia`),
+    // テーブル(サブテーブル)の内側は行の意味が異なるため対象外とする
+  ].filter((row) => !row.closest('table'));
+
+/**
+ * 判定を保留した行の監視
+ *
+ * 監視を重複させないよう、常に1つだけ保持します
+ */
+let deferredRowObserver: ResizeObserver | null = null;
 
 /**
  * 表示できる要素が1つも無くなった行を、行ごと畳みます
@@ -193,22 +216,55 @@ const isElementVisible = (element: Element): boolean =>
  *
  * 判定の前に必ず行の表示状態を戻してから測るため、タブを切り替えると
  * 表示できる要素が増えた行は元に戻ります。
+ *
+ * 閉じているグループフィールドの内側は表示状態を測れないため、
+ * 開かれた時点で判定し直します
  */
 const collapseEmptyRows = () => {
-  const rows = [
-    ...document.querySelectorAll<HTMLElement>(`${RECORD_ROOT_SELECTOR} .row-gaia`),
-    // テーブル(サブテーブル)の内側は行の意味が異なるため対象外とする
-  ].filter((row) => !row.closest('table'));
+  // 監視対象は測り直しのたびに入れ替わるため、行に触れる前に解除する
+  deferredRowObserver?.disconnect();
+  deferredRowObserver = null;
+
+  const rows = getLayoutRows();
 
   // 表示状態の判定はレイアウトの再計算を伴うため、
   // 「全て戻す」「全て測る」「畳む」の順にまとめて処理する
   for (const row of rows) {
     row.style.display = '';
   }
-  const isEmpty = rows.map((row) => ![...row.children].some(isElementVisible));
-  rows.forEach((row, index) => {
-    if (isEmpty[index]) {
-      row.style.display = 'none';
+  // 保留する行は、この関数が畳む前の状態で決まるため、自身が畳んだ行は含まれない
+  const { collapsing, deferred } = classifyEmptyRows(rows, (row) => ({
+    isRendered: isElementRendered(row),
+    hasVisibleElement: [...row.children].some(isElementVisible),
+  }));
+  for (const row of collapsing) {
+    row.style.display = 'none';
+  }
+
+  observeDeferredRows(deferred);
+};
+
+/**
+ * 判定を保留した行を監視し、表示された時点で判定し直します
+ *
+ * 閉じているグループフィールドの内側にある行は、開かれるまで大きさを持ちません。
+ * グループの開閉を知らせるイベントは提供されていないため、大きさの変化から検知します
+ */
+const observeDeferredRows = (rows: HTMLElement[]) => {
+  if (rows.length === 0) {
+    return;
+  }
+
+  const observer = new ResizeObserver(() => {
+    // 監視の開始時にも呼ばれるため、実際に描画されるまでは何もしない
+    if (!rows.some(isElementRendered)) {
+      return;
     }
+    // 測り直しの冒頭で監視を解除し、登録し直すため、ここでは解除しない
+    collapseEmptyRows();
   });
+  for (const row of rows) {
+    observer.observe(row);
+  }
+  deferredRowObserver = observer;
 };

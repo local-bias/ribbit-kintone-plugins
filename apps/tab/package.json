@@ -36,6 +36,7 @@
     "@repo/ui": "workspace:*",
     "@repo/utils": "workspace:*",
     "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
     "immer": "^11.1.4",
     "jotai": "catalog:",
     "jotai-optics": "catalog:",
