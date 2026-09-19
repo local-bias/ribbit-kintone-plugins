@@ -13,6 +13,12 @@ const contentClassName = css`
    */
   max-width: min(360px, calc(100vw - 48px));
   overflow-wrap: anywhere;
+  /*
+   * @repo/ui の TooltipContent は text-wrap: balance を指定している。
+   * balance は行幅を均等化して各行を短くするが、ボックス幅は max-width のまま残るため、
+   * 長文では背景だけが文字より広く表示される。通常の折り返しに戻す。
+   */
+  text-wrap: wrap;
   line-height: 1.6;
   color: inherit;
   font: inherit;
