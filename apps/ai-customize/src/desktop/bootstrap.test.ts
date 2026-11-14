@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 import type { PluginConfig } from '@/schema/plugin-config';
-import { createTestCommonConfig } from '@/test/fixtures';
+import { createTestAsset, createTestCommonConfig } from '@/test/fixtures';
 
 /**
  * 起動処理の結合テスト
@@ -118,9 +118,23 @@ const setupEnvironment = (params: { records: unknown[]; search?: string }) => {
       },
     },
   });
+  const detach = (node: ReturnType<typeof createFakeElement>) => {
+    const index = head.indexOf(node);
+    if (index !== -1) head.splice(index, 1);
+  };
   vi.stubGlobal('document', {
-    createElement: () => createFakeElement(),
-    head: { appendChild: (node: ReturnType<typeof createFakeElement>) => head.push(node) },
+    createElement: () =>
+      Object.assign(createFakeElement(), {
+        remove(this: ReturnType<typeof createFakeElement>) {
+          detach(this);
+        },
+      }),
+    head: {
+      appendChild: (node: ReturnType<typeof createFakeElement>) => {
+        detach(node);
+        head.push(node);
+      },
+    },
     body: { appendChild: vi.fn() },
     addEventListener: vi.fn(),
   });
@@ -224,6 +238,78 @@ describe('bootstrap(結合)', () => {
     expect(env.kintone.api).toHaveBeenCalledWith('/k/v1/record.json', 'PUT', expect.anything());
   });
 
+  test('パネルで「制限なし」を外したり無効にしたりしたJSは、後の画面遷移でも評価しない', async () => {
+    const bypass =
+      "kintone.events.on('app.record.edit.show', (e) => { e.ranBypass = true; return e; }); window.kintone;";
+    const disabled =
+      "kintone.events.on('app.record.edit.show', (e) => { e.ranDisabled = true; return e; });";
+    const env = setupEnvironment({
+      records: [
+        record('1', { permissions: ['制限なし'], screens: ['編集'], code: bypass }),
+        record('2', { screens: ['編集'], code: disabled }),
+      ],
+    });
+    const bootstrap = await importBootstrap();
+    const result = bootstrap();
+    env.releaseRecords();
+    await env.fire('app.record.detail.show')[0];
+
+    result?.services.applyPanelChanges(
+      [
+        createTestAsset({ id: '1', kind: 'js', screens: ['edit'], code: bypass, permissions: [] }),
+        createTestAsset({ id: '2', kind: 'js', screens: ['edit'], code: disabled, enabled: false }),
+      ],
+      new Set()
+    );
+    const shown = await env.fire('app.record.edit.show')[0];
+    expect(shown).not.toHaveProperty('ranBypass');
+    expect(shown).not.toHaveProperty('ranDisabled');
+    expect(result?.view().applied.js).toEqual(new Set());
+  });
+
+  test('パネルでの権限の付与は、このタブでは再読み込みするまで効かない', async () => {
+    const code = [
+      "kintone.events.on('app.record.edit.submit', async (event) => {",
+      "  await kintone.api('/k/v1/record.json', 'PUT', { app: 7, id: 1, record: {} });",
+      '  return event;',
+      '});',
+    ].join('\n');
+    const env = setupEnvironment({ records: [record('1', { code })] });
+    const bootstrap = await importBootstrap();
+    const result = bootstrap();
+    env.releaseRecords();
+    await env.fire('app.record.edit.show')[0];
+
+    result?.services.applyPanelChanges(
+      [createTestAsset({ id: '1', kind: 'js', code, permissions: ['put'] })],
+      new Set()
+    );
+    const [submitted] = env.fire('app.record.edit.submit');
+    await expect(submitted).resolves.toMatchObject({ error: expect.any(String) });
+  });
+
+  test('パネルで権限を取り消すと、このタブでは次のAPI呼び出しから止まる', async () => {
+    const code = [
+      "kintone.events.on('app.record.edit.submit', async (event) => {",
+      "  await kintone.api('/k/v1/record.json', 'PUT', { app: 7, id: 1, record: {} });",
+      '  return event;',
+      '});',
+    ].join('\n');
+    const env = setupEnvironment({ records: [record('1', { permissions: ['更新(PUT)'], code })] });
+    const bootstrap = await importBootstrap();
+    const result = bootstrap();
+    env.releaseRecords();
+    await env.fire('app.record.edit.show')[0];
+
+    result?.services.applyPanelChanges(
+      [createTestAsset({ id: '1', kind: 'js', code, permissions: [] })],
+      new Set()
+    );
+    const [submitted] = env.fire('app.record.edit.submit');
+    await expect(submitted).resolves.toMatchObject({ error: expect.any(String) });
+    expect(env.kintone.api).not.toHaveBeenCalledWith('/k/v1/record.json', 'PUT', expect.anything());
+  });
+
   test('他人の private アセットと迂回パターンを含むアセットは実行しない', async () => {
     const env = setupEnvironment({
       records: [
@@ -250,5 +336,97 @@ describe('bootstrap(結合)', () => {
     bootstrap();
     expect(env.kintone.events.on).not.toHaveBeenCalled();
     expect(env.kintone.api).not.toHaveBeenCalled();
+  });
+
+  test('パネルでCSSを無効にしたら style を外し、ページ内で画面を移っても戻さない', async () => {
+    const env = setupEnvironment({
+      records: [record('2', { kind: 'CSS', code: '.a { color: red; }' })],
+    });
+    const bootstrap = await importBootstrap();
+    const onChange = vi.fn();
+    const result = bootstrap({ onChange });
+    env.releaseRecords();
+    await env.fire('app.record.detail.show')[0];
+    expect(env.head).toHaveLength(1);
+    expect(result?.view().applied.css).toEqual(new Set(['2']));
+    expect(onChange).toHaveBeenCalled();
+
+    const disabled = createTestAsset({
+      id: '2',
+      kind: 'css',
+      code: '.a { color: red; }',
+      enabled: false,
+    });
+    result?.services.applyPanelChanges([disabled], new Set());
+    expect(env.head).toHaveLength(0);
+
+    await env.fire('app.record.edit.show')[0];
+    expect(env.head).toHaveLength(0);
+    expect(result?.view().applied.css).toEqual(new Set());
+  });
+
+  test('セーフモードでもパネル用の窓口は返す(原因のアセットを無効にするため)', async () => {
+    setupEnvironment({ records: [], search: '?ai-customize=off' });
+    const bootstrap = await importBootstrap();
+    const result = bootstrap();
+    expect(result?.services.safeMode).toBe(true);
+    expect(result?.view().phase).toBe('safe-mode');
+  });
+
+  test('取得が終わる前にパネルで無効にしたものは、取得後も実行・適用しない', async () => {
+    const env = setupEnvironment({
+      records: [
+        record('1', {
+          code: "kintone.events.on('app.record.detail.show', (e) => { e.ranAnyway = true; return e; });",
+        }),
+        record('2', { kind: 'CSS', code: '.a { color: red; }' }),
+      ],
+    });
+    const bootstrap = await importBootstrap();
+    const result = bootstrap();
+    const [pending] = env.fire('app.record.detail.show');
+
+    // 取得中に、パネルでJSをこのブラウザだけ無効にし、CSSはレコードごと無効にした
+    const js = createTestAsset({ id: '1', kind: 'js' });
+    const css = createTestAsset({
+      id: '2',
+      kind: 'css',
+      code: '.a { color: red; }',
+      enabled: false,
+    });
+    result?.services.applyPanelChanges([js, css], new Set(['1']));
+
+    env.releaseRecords();
+    await expect(pending).resolves.not.toHaveProperty('ranAnyway');
+    expect(env.head).toHaveLength(0);
+    expect(result?.view().applied).toEqual({ js: new Set(), css: new Set() });
+  });
+
+  test('パネルの一覧に無いCSSも、取得したものは適用する(パネルの一覧が古い場合)', async () => {
+    const env = setupEnvironment({
+      records: [
+        record('10', { kind: 'CSS', code: '.a {}' }),
+        record('11', { kind: 'CSS', code: '.b {}' }),
+      ],
+    });
+    const bootstrap = await importBootstrap();
+    const result = bootstrap();
+    const [pending] = env.fire('app.record.detail.show');
+    // 11 を知らない(古い)パネルの一覧で、無関係な切り替えをした
+    result?.services.applyPanelChanges(
+      [createTestAsset({ id: '10', kind: 'css', code: '.a {}' })],
+      new Set()
+    );
+    env.releaseRecords();
+    await pending;
+    expect(result?.view().applied.css).toEqual(new Set(['10', '11']));
+
+    // 取得後の切り替えでも、パネルの知らないものを外さない
+    result?.services.applyPanelChanges(
+      [createTestAsset({ id: '10', kind: 'css', code: '.a {}', enabled: false })],
+      new Set()
+    );
+    expect(result?.view().applied.css).toEqual(new Set(['11']));
+    expect(env.head.map((style) => style.textContent)).toEqual(['.b {}']);
   });
 });

@@ -3,12 +3,14 @@
  *
  * kintone標準のCSSはカスケードレイヤーを使わないため、レイヤー内のTailwindユーティリティは負ける。
  * 通知は id(#ribbit-ai-customize-notice)を起点に、レイヤーの外で必要なプロパティを全て明示する。
+ * ランチャー(起動ボタンとパネル)はMUIのstyledで書き、ここには置かない。
+ * 通知は右下の起動ボタン(56px + 余白24px)と重ならないよう、その左に出す。
  * 色は共通CSSの`--🐸*`変数を使い、読み込まれない環境でも破綻しないようフォールバックを併記する。
  */
 
 #ribbit-ai-customize-notice {
   position: fixed;
-  right: 24px;
+  right: 96px;
   bottom: 24px;
   z-index: 1000;
   box-sizing: border-box;
@@ -79,7 +81,7 @@
 @media (max-width: 480px) {
   #ribbit-ai-customize-notice {
     right: 16px;
-    bottom: 16px;
+    bottom: 84px;
     left: 16px;
     max-width: none;
   }
