@@ -9,7 +9,7 @@
 | プラグインID | `ribbit-kintone-plugin-ai-customize` |
 | 開発サーバーポート | `6329`(既存プラグインと未衝突) |
 | 対象画面 | デスクトップ(一覧・詳細・追加・編集)。モバイルはv2以降 |
-| 状態 | 設計中(実装未着手) |
+| 状態 | P0・P1・P2・P3(チャットの読み取り)を実装済み。P-1(実機スパイク)は未実施で、リリース前の必須ゲート([10](./10-implementation-plan.md) 0章) |
 
 ## 30秒でわかる概要
 
@@ -31,12 +31,12 @@
 | 05 | [runtime.md](./05-runtime.md) | 実行エンジン。起動ゲート・イベントブリッジ・kintoneファサード・権限の強制・セーフモード |
 | 06 | [ui.md](./06-ui.md) | ランチャー、メニュー、一覧、チャットパネルのUI仕様 |
 | 07 | [ai-tools.md](./07-ai-tools.md) | AI対話仕様。システムプロンプト、function定義、承認フロー |
-| 07b | [ai-providers.md](./07b-ai-providers.md) | AI SDK 6、provider factory、プロキシendpoint、非ストリーミングの制約 |
+| 07b | [ai-providers.md](./07b-ai-providers.md) | AI SDK 7、provider factory、プロキシendpoint、非ストリーミングの制約 |
 | 08 | [security.md](./08-security.md) | セキュリティモデル、権限、監査、既知のリスク |
 | 09 | [testing.md](./09-testing.md) | テスト戦略とテストケース |
 | 10 | [implementation-plan.md](./10-implementation-plan.md) | 実装フェーズ、タスク分解、受け入れ条件 |
 | 11 | [decisions.md](./11-decisions.md) | 設計判断の記録(ADR)と、実装前に確認したい未決事項 |
-| 12 | [preimplementation-review.md](./12-preimplementation-review.md) | 3回のレビューで見つけた穴、改善内容、実装開始ゲート |
+| 12 | [preimplementation-review.md](./12-preimplementation-review.md) | 4回のレビューで見つけた穴、改善内容、実装開始ゲート |
 | 13 | [launch-gate-and-permissions.md](./13-launch-gate-and-permissions.md) | 起動方式(同期キャッシュ → 起動ゲート)の見直しと、カスタマイズ単位の権限 |
 
 ## 読む順番
@@ -70,7 +70,7 @@
 
 | 論点 | 決定 |
 | --- | --- |
-| AIの実装 | **BYOK + AI SDK 6**。`ToolLoopAgent` と公式provider packagesをcustom proxy fetchで使う |
+| AIの実装 | **BYOK + AI SDK 7**(ADR-40)。`ToolLoopAgent` と公式provider packagesをcustom proxy fetchで使う |
 | 使用モデル | 固定リストを持たず、自由入力 + プロバイダごとの候補補完。「接続を確認」でツール対応を実測 |
 | 実行順 | ドラッグ&ドロップで並べ替え(`@dnd-kit`) |
 | 対話ログ | プラグイン設定で有効にしたときだけレコードへ保存。既定オフ |

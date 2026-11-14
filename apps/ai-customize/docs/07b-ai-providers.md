@@ -2,23 +2,44 @@
 
 > [07-ai-tools.md](./07-ai-tools.md) の付属文書。BYOKで複数プロバイダへ接続するが、プロトコル変換は自前実装しない。
 
-## 1. 結論: AI SDK 6を使う
+## 1. 結論: AI SDK 7を使う
 
-AI呼び出しは `ai` の `ToolLoopAgent` と公式プロバイダーパッケージで実装する。
+AI呼び出しは `ai@7` の `ToolLoopAgent` と公式プロバイダーパッケージ `@ai-sdk/*`(openai / anthropic / google / azure は4系、openai-compatible は3系。いずれも `@ai-sdk/provider-utils@5`) で実装する(ADR-40)。
 OpenAI / Anthropic / Geminiごとの会話形式、ツール呼び出し、終了理由、使用量、JSON Schema方言を
 本プラグイン独自のアダプターへ再実装しない。
 
 採用理由:
 
-- `ToolLoopAgent` はツールループ、ステップ上限、`onStepFinish`、`AbortSignal`を提供する。
-- `tool({ inputSchema, execute, needsApproval })` で、入力検証と人間の承認を同じ定義に置ける。
+- `ToolLoopAgent` はツールループ、ステップ上限、`onStepEnd`、`AbortSignal`を提供する。
+- `tool({ inputSchema, contextSchema, execute })` で入力と実行時コンテキストをZodで型付けし、
+  人間の承認は `ToolLoopAgent` の `toolApproval` でツールごとに宣言できる。
 - 各公式プロバイダーがAPI差分を吸収するため、プロバイダーの仕様変更を追う場所が減る。
 - `ai/test` の `MockLanguageModelV3` で、実APIを使わず承認・複数ステップ・異常応答をテストできる。
 - 各プロバイダーはcustom `fetch`を受け取れるため、`@konomi-app/ketch` を経由する要件と両立する。
 
-根拠: [AI SDK: Building Agents](https://ai-sdk.dev/docs/agents/building-agents)、
+根拠: [AI SDK 7 Migration Guide](https://ai-sdk.dev/docs/migration-guides/migration-guide-7-0)、
+[AI SDK: Building Agents](https://ai-sdk.dev/docs/agents/building-agents)、
 [Tools and Tool Calling](https://ai-sdk.dev/docs/ai-sdk-core/tools-and-tool-calling)、
 [Testing](https://ai-sdk.dev/docs/ai-sdk-core/testing)。
+
+### AI SDK 6からの主な変更(2026-06-25 リリースの7.0)
+
+`ai@7.0.118` と `@ai-sdk/provider-utils@5.0.49` の型定義で確認した(2026-09-28)。実装は `ai@7.0.148` で、契約テスト(`src/lib/ai/sdk-contract.test.ts`)で挙動を固定している(2026-10-23)。
+
+| 6 | 7 | 本プラグインへの影響 |
+| --- | --- | --- |
+| `tool({ needsApproval })` | `ToolLoopAgent` / `generateText` の `toolApproval`(`needsApproval` はdeprecated) | 承認の要否をツール定義ではなくAgentで宣言する(4章) |
+| `experimental_context`(全ツール共通の1つの値) | `runtimeContext`(生成全体)と `toolsContext`(ツール名ごと。ツールは `contextSchema` で型を持つ) | 承認の上書き値を `toolsContext` で渡す(4-2) |
+| `system` | `instructions` | — |
+| `stepCountIs(n)` | `isStepCount(n)`(旧名は別名として残る) | 4章 |
+| `onFinish` / `experimental_onStepStart` など | `onEnd` / `onStepStart` など | — |
+| CommonJS | ESMのみ。Node.js 22以上 | ビルド時の要件。ブラウザーのバンドルには影響しない |
+
+`tool-approval-request` / `tool-approval-response` のmessage part、`MockLanguageModelV3`(`ai/test`)、
+`experimental_toolApprovalSecret`、各プロバイダーの `fetch` オプションは7でも同じ名前で残っている。
+
+`apps/ai-chat` は `ai@^6` のまま。本プラグインは `ai` / `@ai-sdk/*` をcatalogへ入れず(ADR-30)、
+レンジを直書きするので、既存アプリと版が分かれても `catalogMode: strict` には抵触しない。
 
 ## 2. 対応プロバイダー
 
@@ -37,8 +58,8 @@ OpenAI / Anthropic / Geminiごとの会話形式、ツール呼び出し、終�
 [Google Generative AI](https://ai-sdk.dev/providers/ai-sdk-providers/google-generative-ai)、
 [OpenAI Compatible](https://ai-sdk.dev/providers/openai-compatible-providers) の公式ドキュメントを実装時の基準にする。
 
-プロバイダーは動的 `import()` し、選択中の1パッケージだけをチャット開始時に読み込む。
-`desktop.js` の初期チャンクへ `ai` やプロバイダー実装を含めない。
+`ai` とプロバイダーは `desktop.js` に含めて1ファイルで配布する(ADR-47)。`webpackMode: "eager"` の動的 `import()` で、
+評価だけをチャットで最初に送信したときまで遅らせ、選択中の1パッケージだけを初期化する。
 
 ## 3. kintoneプロキシ用fetch
 
@@ -117,33 +138,50 @@ const raced = await Promise.race([
 ## 4. Agentとツール
 
 ```ts
-import { ToolLoopAgent, stepCountIs } from 'ai';
+import { isStepCount, ToolLoopAgent } from 'ai';
 
 export const createCustomizeAgent = (ctx: AgentContext) =>
   new ToolLoopAgent({
     model: ctx.model,
     instructions: buildSystemPrompt(ctx),
     tools: createTools(ctx),
-    stopWhen: stepCountIs(ctx.maxToolSteps),
+    // 承認の要否はAgentで宣言する。ここに無いツールは即時 execute する
+    toolApproval: {
+      get_record_sample: 'user-approval',
+      read_asset: 'user-approval',
+      write_asset: 'user-approval',
+      set_asset_state: 'user-approval',
+      delete_asset: 'user-approval',
+    },
+    callOptionsSchema: ApprovalOverridesSchema, // 4-2
+    prepareCall: ({ options, ...rest }) => ({
+      ...rest,
+      toolsContext: buildToolsContext(ctx, options),
+    }),
+    stopWhen: isStepCount(ctx.maxToolSteps),
   });
 ```
 
 - ツールはZodの `inputSchema` を唯一の入力型とし、`z.infer` でハンドラーまで型を通す。
+  実行時コンテキスト(対象座標・画面・ログインユーザー・承認の上書き)は `contextSchema` で型を持ち、`execute(input, { context })` で受け取る。
 - 構造・メタデータだけの読み取りツールは即時 `execute` する。レコード値を送る `get_record_sample`、コード本文を送る
-  `read_asset`、全書き込みツールは `needsApproval: true` とする。
+  `read_asset`、全書き込みツールは `toolApproval` で `'user-approval'` とする。
+  `'approved'`(自動承認)は使わない。`needsApproval` はdeprecatedのため使わない。
 - `scope: public`、削除、JS実行を含む操作は設定に関係なく常に承認する。
 - v1では自動承認設定を提供しない。
 - UIへはAI SDKのmessage/content partをそのまま渡さず、表示用の判別共用体へ変換する。
-- `onStepFinish` でツールカード、使用量、警告をUIへ追加する。
-- 永続化には `response.messages` を基礎にするが、ツール出力は [04-asset-app.md](./04-asset-app.md) の規則で削減する。
+- `onStepEnd` でツールカード、使用量、警告をUIへ追加する。
+- 履歴は **`result.responseMessages`**(承認したツールの実行結果 + 全step)で積む。`result.response.messages` は**最後のstepだけ**で、
+  これで積むと承認したツールの結果が欠け、次の生成が `MissingToolResultsError` になる(契約テストで確認)。
+- 永続化(P4)には `responseMessages` を基礎にするが、ツール出力は [04-asset-app.md](./04-asset-app.md) の規則で削減する。
 
 ## 4-2. 承認の再開はAI SDKの仕組みに乗る(自前でtool結果をpushしない)
 
-AI SDK 6の承認は一級の機能であり、当初案の「承認したらこちらでツールを実行して `tool` メッセージを作る」は**採らない**。
+AI SDKの承認は一級の機能であり、当初案の「承認したらこちらでツールを実行して `tool` メッセージを作る」は**採らない**。
 自前で組むとツール結果partの形・IDの対応・`invalid` 入力の扱いをSDKと二重に持つことになる。
 
 ```ts
-// 1) 生成。needsApproval のツールは実行されず、承認要求として返る
+// 1) 生成。toolApproval で 'user-approval' のツールは実行されず、承認要求として返る
 const first = await agent.generate({ messages, abortSignal });
 
 // assistant メッセージの content に
@@ -156,7 +194,7 @@ const first = await agent.generate({ messages, abortSignal });
 const resumed = await agent.generate({
   messages: [
     ...messages,
-    ...first.response.messages,
+    ...first.responseMessages, // response.messages は最後のstepだけ
     {
       role: 'tool',
       content: [
@@ -183,39 +221,63 @@ const resumed = await agent.generate({
 承認カードでは影響範囲(`scope`)や「保存後すぐ有効にする」をユーザーが最終決定する(→ [06-ui.md](./06-ui.md))。
 一方 `tool-approval-response` は **approve / deny の二値しか運べない**。入力の書き換えには使えない。
 
-したがって上書きは `experimental_context` で渡し、`execute` 側で適用する。
+したがって上書きは再開時の呼び出しオプション(`callOptionsSchema`)で受け、`prepareCall` で
+該当ツールの `toolsContext` へ写し、`execute` 側で適用する。
 
 ```ts
-const resumed = await agent.generate({
-  messages: [...],
-  experimental_context: {
-    approvalOverrides: {
-      [toolCallId]: { scope: 'private', enableAfterSave: false },
-    },
-    // 実行時コンテキスト(対象座標・画面・ログインユーザー)も同じ経路で渡す
-  },
+// agent.ts: 呼び出しごとの上書き値を、ツールごとのcontextへ写す
+const ApprovalOverridesSchema = z.object({
+  approvalOverrides: z.record(z.string(), ApprovalOverrideSchema), // key は toolCallId
 });
 
-// tools.ts
-execute: async (input, { experimental_context, toolCallId }) => {
-  const override = readOverride(experimental_context, toolCallId);
-  const effective = { ...input, scope: override?.scope ?? input.scope ?? 'private' };
-  // ... 認可 → 実行
-  return { ...result, appliedScope: effective.scope, overriddenByUser: override != null };
-}
+const resumed = await agent.generate({
+  messages: [...],
+  options: {
+    approvalOverrides: { [toolCallId]: { scope: 'private', enableAfterSave: false } },
+  },
+  abortSignal,
+});
+
+// tools.ts: contextSchema で型を持ち、execute で受け取る
+const writeAsset = tool({
+  inputSchema: WriteAssetInputSchema,
+  contextSchema: WriteAssetContextSchema, // 対象座標・ログインユーザー・approvalOverrides
+  execute: async (input, { context, toolCallId }) => {
+    const override = context.approvalOverrides[toolCallId];
+    const effective = { ...input, scope: override?.scope ?? input.scope ?? 'private' };
+    // ... 認可 → 実行
+    return { ...result, appliedScope: effective.scope, overriddenByUser: override != null };
+  },
+});
 ```
 
 - 上書きした事実は**ツール結果に含めてモデルへ返す**。返さないとAIは自分の指定が通ったと誤認し、
   次の発言で「全員に公開しました」と嘘をつく。
 - 上書きできるのは `scope` / `enableAfterSave` / `order` / `screens` に限る。`code` と `id` は上書きさせない
   (別物を保存したのに承認画面と一致しない状態を作らないため)。
-- `experimental_context` は実験的APIなので、読み出しは1箇所(`readToolContext()`)に閉じ、型を自前で持つ。
+- `toolsContext` はツール名ごとに分かれているため、上書き値は該当するツール(`write_asset` / `set_asset_state`)の
+  contextにだけ載せる。読み取り系ツールへ渡さない。
+- `prepareCall` と `contextSchema` の組み合わせで再開時に上書きが効くことを、P3で `MockLanguageModelV3` の契約テストにする。
+
+### 承認の応答は、再開が成功してから履歴に入れる
+
+`tool-approval-response` を履歴に積んだまま再開が止まる・失敗すると、末尾が承認の応答のまま残る。
+その後に利用者が新しい発言を送ると、SDKは末尾が `tool` のときしか承認を処理しないため、ツール結果の欠けた履歴になり
+`MissingToolResultsError` で会話が二度と進まなくなる(SDKで再現済み)。
+
+- 承認の応答は `ChatState.resume` に持ち、生成には `[...messages, resume]` を渡す。成功したときだけ `resume` と結果をまとめて履歴へ入れる
+- 再開を止めたら承認待ちへ戻して判断し直させる。失敗したら再試行で同じ再開をやり直す(承認済みのツールは再試行で1回だけ再実行される)
+- `resume` が残っている間は新しい発言を送らせない
+
+stepの途中経過(`onStepEnd`)は**表示だけ**に使い、履歴には全体が成功してから入れる(途中で確定すると、承認したツールの結果が
+入らない状態ができる)。止めた・失敗した生成の途中経過は捨てる。
 
 ### step上限はユーザー発言単位で累積する
 
-`stopWhen: stepCountIs(n)` は `generate` 1回ごとにリセットされる。承認で中断・再開するたびに
+`stopWhen: isStepCount(n)` は `generate` 1回ごとにリセットされる。承認で中断・再開するたびに
 上限が復活すると `maxToolSteps` が意味を失う。**1回のユーザー発言に対する累積step数**を
-`chat.ts` のatomで数え、再開時は `stepCountIs(残り)` を渡す。残り0なら再開せず「続行」ボタンを出す。
+`chat.ts` のatomで数え、再開時は `isStepCount(残り)` を渡す。残り0なら再開せず「続行」ボタンを出す
+(承認要求が上限ちょうどのstepで出た場合も、承認を判断した時点で「続行」にする。`isStepCount(0)` では呼ばない)。
 
 ## 5. プロキシ設定の登録と接続確認
 
@@ -304,7 +366,8 @@ proxy設定へ保存する。
 | Azure OpenAI | `api-key: <key>` |
 
 kintone公式仕様では、実行時ヘッダーと保存済みヘッダーのキーが重複した場合は**保存済み設定が優先**される。
-したがってsentinelは外部へ送られず、本物の値が付与される。ただしこれは統合の根幹なので、P-1で各providerの
+ただし `ketch` はヘッダー名を小文字にして渡すため、大文字小文字の扱いに頼らないよう、**sentinelを値に持つヘッダーは
+restricted proxy fetchで取り除いてから**proxyへ渡す。保存するヘッダー名も小文字に揃える(`authorization` など)。ただしこれは統合の根幹なので、P-1で各providerの
 実リクエストについてheader名、上書き、endpoint、bodyを確認する。provider更新で認証方式が変わった場合は接続確認を失敗させる。
 [プラグインから外部APIを実行する](https://cybozu.dev/ja/kintone/docs/js-api/plugins/kintone-plug-in-proxy/)。
 
@@ -349,7 +412,7 @@ SSEの逐次受信を前提にしない。公式仕様にはレスポンス本�
 | proxy認証 | providerごとのsentinelヘッダーが保存済み秘密で上書きされ、sentinel自体は送信されない |
 | provider smoke | 各プロバイダーにつき、接続確認用fixtureまたは契約テストを1本持つ |
 | 承認の再開 | `tool-approval-response` で再開し承認ツールが実行される / 却下で実行されない / 未判断を残して再開しない |
-| 承認の上書き | `experimental_context` の `scope` 上書きが `execute` に効き、結果に `appliedScope` が載る |
+| 承認の上書き | 再開時の `options.approvalOverrides` が `prepareCall` 経由で `write_asset` の `toolsContext` に載り、`scope` 上書きが `execute` に効き、結果に `appliedScope` が載る。読み取り系ツールのcontextには載らない |
 | step累積 | 承認をまたいで累積stepが `maxToolSteps` を超えない |
 | abort / timeout | signalでwrapperがrejectする、90秒でtimeoutする、中断後に届いた応答を捨てる |
 | ketch異常応答 | status 204 / 0 / 範囲外でRangeError・TypeErrorを投げずUI用エラーになる |

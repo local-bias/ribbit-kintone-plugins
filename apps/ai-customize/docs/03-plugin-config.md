@@ -90,7 +90,7 @@ endpointが変わったときは**APIキーの再入力を必須**にする。�
 | `chatAllowedUsers` | string[] | `[]` | チャットを使えるユーザーのログイン名。全部空ならアプリ管理者のみ |
 | `chatAllowedGroups` | string[] | `[]` | 同上(グループコード) |
 | `chatAllowedOrganizations` | string[] | `[]` | 同上(組織コード) |
-| `publishAllowedUsers` | string[] | `[]` | 「全員」スコープを作成・有効化できるユーザー。**全部空ならアプリ管理者のみ** |
+| `publishAllowedUsers` | string[] | `[]` | 「全員」スコープで作成できる・「自分だけ」から「全員」へ変更できるユーザー(公開済みアセットの有効・無効は管理アプリのアクセス権に従う。ADR-48)。**全部空ならアプリ管理者のみ** |
 | `publishAllowedGroups` | string[] | `[]` | 同上 |
 | `publishAllowedOrganizations` | string[] | `[]` | 同上 |
 | `displayOnIndex` / `displayOnDetail` / `displayOnCreate` / `displayOnEdit` | boolean | すべて `true` | ランチャーを出す画面 |

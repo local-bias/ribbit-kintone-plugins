@@ -23,14 +23,15 @@
 ```
 ユーザー送信
   └→ messages に push
-      └→ ① agent.generate({ messages, abortSignal, experimental_context })
+      └→ ① agent.generate({ messages, abortSignal, options })
           ├─ text → UIへ表示(1往復ぶんがまとめて出る)
-          ├─ needsApproval でないツール → AI SDKが execute し、ループが自動で続く
-          └─ needsApproval のツール → 実行されず tool-approval-request が返り、generate が終了する
+          ├─ toolApproval の対象でないツール → AI SDKが execute し、ループが自動で続く
+          └─ toolApproval で 'user-approval' のツール → 実行されず tool-approval-request が返り、generate が終了する
                 └→ 承認カードを表示。ユーザーが承認/却下(+ scope等の上書き)
-                    └→ messages に前回の response.messages と
+                    └→ messages に前回の responseMessages(response.messages は最後のstepだけ)と
                        { role:'tool', content:[{ type:'tool-approval-response', approvalId, approved, reason }] }
-                       を積み、上書き値を experimental_context に載せて ①へ戻る
+                       を積み、上書き値を options.approvalOverrides に載せて ①へ戻る
+                       (Agentの prepareCall が該当ツールの toolsContext へ写す)
       └→ **累積**stepが maxToolSteps に達したら中断し、
            「操作が長くなったため中断しました」と表示して続行ボタンを出す
 ```
@@ -38,8 +39,9 @@
 - **ツールの実行はAI SDKに任せる。承認後にこちらで `execute` を呼んで結果メッセージを組み立てない。**
   仕組みと型は [07b-ai-providers.md](./07b-ai-providers.md) 4-2章に書いた。
 - step上限は `generate` 1回ごとにリセットされるため、**ユーザー発言1件に対する累積step数**を数えて
-  `stopWhen: stepCountIs(残り)` を渡す。承認のたびに上限が復活しないようにする。
-- 中断・再開があるため、AI SDKの `response.messages` と承認partをjotai atom (`src/desktop/states/chat.ts`) に持つ。
+  `stopWhen: isStepCount(残り)` を渡す。承認のたびに上限が復活しないようにする。
+- 中断・再開があるため、AI SDKの `responseMessages` と承認partをjotai atom (`src/desktop/states/chat.ts`) に持つ。
+  承認の応答は再開が成功するまで履歴へ入れない(→ [07b](./07b-ai-providers.md) 4-2章)。
 - **AIへ送る**会話履歴はトークン上限を超えないよう、**古いツール結果から先に間引く**(テキストのやり取りは残す)。
 - **レコードへ保存する**対話ログも128KiBに制限し、privateは古いturnから削減、publicは本文なしのaudit modeにする
   (→ [04-asset-app.md](./04-asset-app.md) 5-2)。
@@ -70,12 +72,17 @@
    - レコードの取得など GET は自由に使えます。
    - 追加(POST)・更新(PUT)・削除(DELETE)は、write_asset の permissions で必要なものだけを宣言してください。
      宣言していない操作は実行時に拒否されます。
-   - 外部通信(kintone.proxy、CSSの外部 url()/@import)は、write_asset の externalUrls に送信先を列挙してください。
+   - 外部通信(kintone.proxy、CSSの外部 url()/@import、JSで外部URLを src / srcset / poster / action に入れる読み込み、
+     文字列中の外部 url() や <img src>)は、write_asset の externalUrls に送信先を列挙してください。
      列挙していない送信先への通信は拒否されます。送信先はできるだけ狭く(APIのパスまで)書いてください。
      送信先のURLはコード中に文字列リテラルで書くと、承認画面で利用者が確認できます。
+     連結やテンプレートで組み立てた外部URLは送信先を判定できないため、「指定先のみ」では実行されません。
    - kintone REST API は必ず kintone.api(...) で呼び、メソッドは文字列リテラルで書いてください。
-   - fetch / XMLHttpRequest / window.kintone / globalThis / eval / new Function / 動的 import /
-     script・iframe 要素の生成は使わないでください。これらを含むコードは保存できません。
+   - fetch / XMLHttpRequest / window.kintone / globalThis / self・top・parent などwindowの別名を値として使うこと /
+     eval / new Function / 動的 import / document.write / script・iframe 要素の生成 /
+     HTML文字列のインラインイベント属性(onclick= など)は使わないでください。これらを含むコードは保存できません。
+     イベントは addEventListener で登録してください。
+   - 非同期処理はネイティブの Promise と async/await で書いてください。kintone.Promise は古い仕様のため使いません。
    - kintone.plugin.app.proxy は使えません。
 
 3. 現在の状況
@@ -112,6 +119,7 @@
 | REST APIと権限 | `kintone.api(kintone.api.url('/k/v1/record.json', true), 'PUT', body)`。レコードの追加・更新・削除・ステータス変更・コメントは権限が要る。`bulkRequest` は中身の各操作の権限が要る |
 | 値の操作 | `kintone.app.record.get()` / `set()`。レコードは `record[fieldCode].value` |
 | 表示制御 | `kintone.app.record.setFieldShown(fieldCodeまたは要素ID, boolean)` |
+| 非同期処理 | ネイティブの `Promise` と `async` / `await`。`kintone.Promise` は古い仕様のため使わない |
 | 描画先 | `kintone.app.record.getSpaceElement(id)` / `kintone.app.getHeaderMenuSpaceElement()` |
 | 一覧フィールド | `kintone.app.getFieldElements(fieldCode)` を優先する |
 | 注意 | `.xxx-gaia` など非公開DOMクラスを知識として固定しない。`query_dom` で実在を確認し、壊れやすい旨をコメントに残す |
@@ -120,7 +128,7 @@
 
 ## 4. ツール定義
 
-`src/lib/ai/tools.ts` で `tool({ inputSchema, execute, needsApproval })` を定義する。
+`src/lib/ai/tools.ts` で `tool({ inputSchema, contextSchema, execute })` を定義し、承認の要否は `ToolLoopAgent` の `toolApproval` で宣言する。
 `inputSchema` はZodを正本とし、AI SDKにプロバイダー向けJSON Schema変換と実行前検証を任せる。
 ハンドラーの引数型は `z.infer` から導出し、同じ型を二重定義しない。
 
@@ -462,7 +470,7 @@ AIが承認対象ツールを要求
   承認カードを開いただけでstepを消費し、AIの応答を待つことになる。
 
 - 承認カードの影響範囲セレクタは、**ユーザーが最終決定権を持つ**。AIが `public` を指定していてもユーザーが `private` に落とせる。
-  承認レスポンス自体は approve / deny の二値しか運べないため、上書き値は `experimental_context` で `execute` へ渡し、
+  承認レスポンス自体は approve / deny の二値しか運べないため、上書き値は再開時の `options` から該当ツールの `toolsContext` を経由して `execute` へ渡し、
   適用結果(`appliedScope`)をツール結果に載せてAIへ返す(→ [07b](./07b-ai-providers.md) 4-2章)。
   返さないとAIは自分の指定が通ったと誤認し、「全員に公開しました」と事実と違う説明をする。
 - 上書きできるのは `scope` / `enableAfterSave` / `order` / `screens` / `permissions` / `externalUrls`(後の2つは**減らす方向だけ**)に限る。

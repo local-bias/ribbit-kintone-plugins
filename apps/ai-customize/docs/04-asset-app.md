@@ -131,7 +131,8 @@ export type Asset = {
 };
 ```
 
-`src/lib/asset-mapper.ts` に `toAsset(record, common): Asset | null` と `toRecordValue(asset, common)` を置く。
+`src/lib/asset-mapper.ts` に `toAsset(record, common): AssetMappingResult`(変換できなければ理由つきの失敗)、更新用の `toRecordPatch(patch, common)`、複製用の `toNewAssetRecord(asset, common)` を置く。
+実装の `Asset` は上の型に加えて、通信先の元の値(`externalUrlsText`。編集時にコメント行を残すため)・`externalUrlWarnings`・`configurationIssues` を持つ(`src/schema/asset.ts`)。
 
 **変換時の防御(すべてテストを書く)**
 

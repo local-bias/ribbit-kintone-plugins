@@ -287,7 +287,7 @@ P-1で確認し、追従するなら詳細画面の説明に「許可した送�
 
 **① ファサードでの実行時判定**(2-5)。`kintone.api` の呼び出しごとに分類し、付与されていなければ本物を呼ばずに拒否する。
 
-- Promise形式の呼び出しには `kintone.Promise.reject(error)` を返す。コールバック形式なら失敗コールバックを非同期で呼ぶ。
+- Promise形式の呼び出しには `Promise.reject(error)`(ネイティブのPromise)を返す。`kintone.Promise` は古い仕様のため使わない。コールバック形式なら失敗コールバックを非同期で呼ぶ。
 - エラーは `{ code: 'AI_CUSTOMIZE_PERMISSION_DENIED', message, required, method, path }`。アセット側の `catch` で扱える形にする。
 - submitハンドラ内で拒否された場合、それはハンドラの例外になり、保存を止める(ADR-23のfail closedと同じ扱い)。
 - 権限は呼び出しのたびに現在値を参照する。パネルで権限を外すと、そのタブでも**次の呼び出しから**止まる。
@@ -303,8 +303,14 @@ CSRFトークンの付与が必須である([認証](https://cybozu.dev/ja/kinto
 type CapabilityUsage = {
   /** kintone.api の第2引数がリテラルのとき、そのメソッドと行番号 */
   apiCalls: { method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'unknown'; path: string | null; line: number }[];
-  /** kintone.proxy / CSSの外部url()・@import。target はリテラルのときだけURL、組み立てられたURLは null(実行時に判定) */
-  external: { line: number; target: string | null; via: 'proxy' | 'css' }[];
+  /** kintone.proxy。target はリテラルのときだけURL、組み立てられたURLは null(実行時にファサードが判定) */
+  external: { line: number; target: string | null }[];
+  /**
+   * kintone.proxy を通らない外部リソースの読み込み(img.src = 'https://…'、setAttribute('src', …)、
+   * HTML文字列の <img src> / <form action> / <link href>、文字列中の url(…))。
+   * CSSの外部url()と同じ基準で、実行前に外部通信の設定と照合する。組み立てられたURLは null
+   */
+  resources: { line: number; target: string | null }[];
   /** JS内の外部URLの文字列リテラル(情報表示のみ) */
   urlLiterals: { line: number; url: string }[];
   /** ファサードを通らずに本物へ到達しうる書き方 */
@@ -316,15 +322,20 @@ type CapabilityUsage = {
 
 | 分類 | パターン |
 | --- | --- |
-| 本物の `kintone` への到達 | `window.kintone`、`globalThis`、`self`、`top`、`parent`、`frames`、`opener`、`document.defaultView`、`contentWindow`、`window[...]`(計算プロパティ) |
+| 本物の `kintone` への到達 | `window.kintone`、`globalThis`、`document.defaultView`、`contentWindow`、`window[...]`(計算プロパティ)、`window` と別名(`self`、`top`、`parent`、`frames`、`opener`)を値として持ち出す書き方(`const g = self` や `self[...]`。別名は、その位置から見えるスコープで同名の変数・引数が宣言されていれば、その変数とみなす) |
 | ネットワークの直接利用 | `fetch`、`XMLHttpRequest`、`navigator.sendBeacon`、`WebSocket`、`EventSource` |
-| 実行時のコード生成・読み込み | `eval`、`Function`、`.constructor`、`import(`、文字列を渡す `setTimeout` / `setInterval`、`createElement('script')` / `('iframe')`、`Worker`、文字列中の `<script` / `<iframe` / コードを実行する `javascript:` URL(`javascript:void(0)` などの何もしない形は除く) |
+| 実行時のコード生成・読み込み | `eval`、`Function`、`.constructor`、`import(`、文字列を渡す `setTimeout` / `setInterval`、`createElement('script')` / `('iframe')`、`Worker`、`document.write` / `writeln`、文字列中の `<script` / `<iframe` / HTMLのインラインイベント属性(`<img onerror=…>`) / コードを実行する `javascript:` URL(`javascript:void(0)` などの何もしない形は除く) |
 | 非公開のkintone内部 | `cybozu` グローバル |
 
 実行時の規則:
 
 - `bypass` が1件でもあり、「制限なし」が付与されていないJSアセットは**実行しない**。一覧に理由と行番号を出す。
-- CSSアセットは、`external` の全URLが外部通信の設定(3-3-2)で許可されていなければ適用しない(CSSは実行時に迂回できないので静的判定で足りる)。
+- CSSアセットは、外部 `url()` / `@import` の全URLが外部通信の設定(3-3-2)で許可されていなければ適用しない(CSSは実行時に迂回できないので静的判定で足りる)。
+- JSアセットの `resources`(`kintone.proxy` を通らない外部リソースの読み込み)も、CSSと同じ基準で実行前に照合し、
+  1つでも許可されていなければ実行しない。組み立てられた送信先(`null`)は「すべて」でだけ許可する。
+  kintoneと同一オリジン・相対URLは外部通信に数えない。
+- 検出しないもの: 変数だけで渡された送信先(`img.src = url`)と、画面遷移(`location` への代入、`open()`、`<a href>`)。
+  画面遷移は利用者に見える操作で、別レコードへの移動など正規の用途が多いため、静的検出の対象にしない(3-1の限界)。
 - AIの `write_asset` は、`bypass` を含むコードの保存を拒否してAIに書き直させる(正規の書き方が必ず存在するため)。
   「制限なし」と「外部通信(すべて)」はAIから要求できず、人が詳細画面で付与する。AIが要求できるのは通信先を列挙した「指定先のみ」だけである。
 
@@ -367,7 +378,11 @@ publicレコードの保護はレコードアクセス権で行う。private→p
 
 旧設計(同期キャッシュ)では、権限を外してもキャッシュのTTLからhard expiryまで古い状態で動きうる。
 起動ゲートでは毎回最新のレコードから権限を読むため、**権限の変更は他の利用者にも次の画面読み込みで必ず反映される**。
-権限を変更したタブでは、ファサードが現在値を参照するので即時に効く。
+権限を変更したタブでは、**狭める変更(取り消し・無効化・削除・コードの書き換え)だけ**を即時に反映する。
+ファサードは現在値を参照するので次の呼び出しから止まり、まだ評価していないJS(後の画面遷移で評価するもの)は
+パネルで外したものを評価せず、狭めた権限で迂回パターン・外部リソースを判定する。
+広げる変更(付与・通信先の追加・有効化)は、評価済みのコードが保存前の版かもしれないため、再読み込みしてから効かせる。
+パネルの一覧が取得時点より古くても、実行中の権限が広がることはない(`narrowGrants`)。
 起動方式の見直しと権限モデルは独立した改善ではなく、前者が後者の実効性を支えている。
 
 ### 3-8. v1では入れないもの(v1.1候補)

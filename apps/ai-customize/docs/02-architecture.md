@@ -24,7 +24,7 @@
                    │ (@konomi-app/kintone-utilities)        │ (@konomi-app/ketch)
                    ▼                                       ▼
       ┌─────────────────────────────┐        ┌──────────────────────────────┐
-      │  アセット管理アプリ          │        │  AI SDK 6 + プロバイダ (BYOK) │
+      │  アセット管理アプリ          │        │  AI SDK 7 + プロバイダ (BYOK) │
       │  (kintone アプリ)            │        │  OpenAI / Anthropic / Gemini  │
       │  1レコード = 1アセット       │        │  / OpenRouter / Azure / 互換  │
       └─────────────────────────────┘        └──────────────────────────────┘
@@ -43,79 +43,83 @@
 
 判断基準: **「テストを書きたくなったコードは `lib` の純粋関数に置く」**。既存プラグイン(`apps/tab`)と同じ方針。
 
-## 3. ディレクトリ構成(実装時)
+## 3. ディレクトリ構成
+
+2026-09-28時点の実装。`(P3)` `(P4)` は未実装で、そのフェーズで追加する予定のもの。
 
 ```
 apps/ai-customize/
 ├── docs/                              # 本ドキュメント
 ├── plugin.config.mjs                  # manifest / dev server port: 6329
-├── package.json
-├── tsconfig.json
+├── package.json / tsconfig.json / vitest.config.ts / vitest.setup.ts
 └── src/
     ├── schema/
     │   ├── plugin-config.ts           # プラグイン設定(バージョン付き)
-    │   ├── asset.ts                   # Asset / AssetKind / AssetScope
-    │   └── ai.ts                      # 表示・永続化するチャット型
+    │   ├── asset.ts                   # Asset / AssetKind / AssetScope / AssetPermission
+    │   └── ai.ts                      # (P3) 表示・永続化するチャット型
     ├── lib/
     │   ├── global.ts                  # PLUGIN_ID / GUEST_SPACE_ID / LOGIN_USER / isProd
-    │   ├── constants.ts               # ID・キー・上限値
-    │   ├── i18n.ts                    # 翻訳
-    │   ├── event-manager.ts           # createPluginEventManager (@repo/plugin)
-    │   ├── plugin.ts                  # 設定の復元・移行・既定値・検証
-    │   ├── browser.ts                 # ketch(プロキシfetch)
-    │   ├── asset-mapper.ts            # ★純粋: レコード <-> Asset 相互変換
-    │   ├── asset-query.ts             # ★純粋: kintoneクエリ文字列の組み立て
-    │   ├── asset-filter.ts            # ★純粋: 適用対象の絞り込み・並び替え
-    │   ├── asset-repository.ts        # I/O: 取得・作成・更新・削除
-    │   ├── local-mute.ts              # ★純粋+localStorage: ローカル無効化
-    │   ├── safe-mode.ts               # ★純粋: セーフモード判定
-    │   ├── permission.ts              # ★純粋: 公開可否・編集可否の判定
-    │   ├── injector.ts                # I/O: <style> の適用・解除
-    │   ├── runner.ts                  # I/O: JSの評価とエラー隔離
-    │   ├── event-bridge.ts            # 持ち主つきイベントバス(show以外は遅延native登録)
-    │   ├── launch-gate.ts             # 起動ゲート(画面種別ごとの初回showで保留)
-    │   ├── asset-kintone.ts           # アセットへ渡す kintone ファサード
-    │   ├── kintone-request-classifier.ts # ★純粋: REST呼び出し → 必要な権限
-    │   ├── capability-detector.ts     # ★純粋: 権限の使用箇所・迂回パターンの静的検出
-    │   ├── code-validator.ts          # ★純粋: 構文チェック・危険パターン(警告)検出
-    │   ├── hash.ts                    # ★純粋: コードのハッシュ(差分判定用)
-    │   └── ai/
-    │       ├── agent.ts               # ToolLoopAgent の生成
-    │       ├── proxy-fetch.ts         # ketch + endpoint完全一致検証
-    │       ├── provider-factory.ts    # 設定 → AI SDK LanguageModel
-    │       ├── model-presets.ts       # プロバイダごとのモデル候補
-    │       ├── prompt.ts              # ★純粋: システムプロンプト組み立て
-    │       ├── tools.ts               # Zod inputSchema + 型付きexecute/承認
-    │       ├── tool-handlers.ts       # I/O: ツールの実処理
-    │       └── conversation.ts        # 表示用/保存用メッセージへの変換
+    │   ├── constants.ts               # ID・キー・上限値・z-index
+    │   ├── i18n.ts                    # 翻訳(ja / en)
+    │   ├── plugin.ts / config-restore.ts # ★設定の復元・移行・既定値・検証
+    │   ├── field-mapping.ts           # ★設定画面の対応付け・更新日時フィールドの検出
+    │   ├── asset-mapper.ts            # ★レコード → Asset / パネル用の表示情報
+    │   ├── asset-query.ts             # ★kintoneクエリ・取得フィールド・管理アプリのレコードのパス
+    │   ├── asset-filter.ts            # ★適用判定(shouldApply)・権限の実行前判定・上限・適用するCSSの選択
+    │   ├── asset-repository.ts        # ★I/O(関数を注入): 起動時の取得・パネル用の取得・状態の更新・アクセス権
+    │   ├── asset-access.ts            # ★レコード/フィールド単位のアクセス権 → パネルで操作できること
+    │   ├── asset-toggle.ts            # ★有効スイッチで行うこと(レコード更新 / ローカル無効化)
+    │   ├── asset-panel.ts             # ★パネルの一覧の行
+    │   ├── asset-usage.ts             # ★詳細画面の「権限が必要な操作」の一覧
+    │   ├── launcher-status.ts         # ★起動ボタンのバッジ・実行基盤の段階
+    │   ├── relative-time.ts           # ★「3日前」の表記
+    │   ├── browser-storage.ts         # ★ローカル無効化・セーフモード・パネルの開閉(Storageを注入)
+    │   ├── diagnostics.ts             # ★実行時の記録・サーキットブレーカー・アセットごとの問題・拒否のまとめ
+    │   ├── injector.ts                # ★<style> の適用・解除・並べ直し(documentを注入)
+    │   ├── runner.ts                  # ★JSの評価とエラー隔離
+    │   ├── event-bridge.ts            # ★持ち主つきイベントバス(show以外は遅延native登録)
+    │   ├── launch-gate.ts             # ★起動ゲート(画面種別ごとの初回showで保留)
+    │   ├── asset-kintone.ts           # ★アセットへ渡す kintone ファサード
+    │   ├── permission-error.ts        # 拒否エラー
+    │   ├── kintone-request-classifier.ts # ★REST呼び出し → 必要な権限
+    │   ├── external-target.ts         # ★通信先パターンの正規化・照合・参照先の解決
+    │   ├── css-detector.ts            # ★CSSの外部参照
+    │   ├── capability-detector.ts     # ★JSの権限の使用箇所・迂回パターン
+    │   ├── js-token.ts                # ★トークン列・括弧の対応表・引数の読み取り
+    │   ├── js-string-unit.ts          # ★連結・テンプレートをつないだ文字列の単位
+    │   ├── html-tag-scanner.ts        # ★文字列中のHTMLのタグと属性(引用符を意識)
+    │   ├── js-resource-detector.ts    # ★JSの外部リソースの読み込み
+    │   ├── global-alias-detector.ts   # ★windowの別名の持ち出し(スコープつき)
+    │   ├── permission.ts              # (P2の残り) 公開可否の判定
+    │   ├── code-validator.ts          # (P4) 構文チェック・危険パターン(警告)
+    │   └── ai/                        # (P3・P4) agent / proxy-fetch / provider-factory / prompt / tools など
     ├── desktop/
-    │   ├── index.ts                   # エントリ。global を読み、bootstrap を呼ぶ
-    │   ├── bootstrap.ts               # 同期の起動処理(取得開始・showの登録・ランチャー予約)
-    │   ├── event.tsx                  # kintoneイベント購読・React マウント
-    │   ├── render.ts                  # ルート要素の生成(apps/tab の render.ts に準拠)
-    │   ├── public-state.ts            # 外部公開する atom
+    │   ├── index.ts                   # エントリ。bootstrap の後にランチャーを描画する(失敗しても起動ゲートは止めない)
+    │   ├── bootstrap.ts               # 同期の起動処理(セーフモード判定・取得開始・showの登録)。UIに依存しない
+    │   ├── runtime.ts                 # 実行基盤の組み立て。パネルから操作する RuntimeController を返す
+    │   ├── diagnostic-text.ts         # 診断・拒否の文言(コンソールとパネルで共通)
+    │   ├── diagnostic-log.ts          # 診断をコンソールへ
+    │   ├── notice.ts / dom.ts         # セーフモードの通知(Reactを使わない) / 本文の準備待ち
+    │   ├── launcher/
+    │   │   ├── mount.tsx              # ストアへつないで本文へ描画(apps/tab の render.ts に準拠)
+    │   │   ├── app.tsx / theme.ts     # Provider・テーマ・通知
+    │   │   └── services.ts            # kintone / ブラウザへの入出力の窓口
     │   ├── states/
-    │   │   ├── launcher.ts            # 開閉・選択中メニュー
-    │   │   ├── assets.ts              # アセット一覧・更新・スイッチ
-    │   │   └── chat.ts                # メッセージ・ツール実行・承認待ち
+    │   │   ├── launcher.ts            # パネル・一覧・有効スイッチの状態
+    │   │   └── chat.ts                # (P3) メッセージ・ツール実行・承認待ち
     │   └── components/
-    │       ├── index.tsx              # App
-    │       ├── error-boundary.tsx
-    │       ├── launcher-button.tsx
-    │       ├── launcher-menu.tsx
-    │       ├── asset-list.tsx
-    │       ├── asset-row.tsx
-    │       ├── asset-detail.tsx       # コード閲覧・手動編集
-    │       ├── chat-panel.tsx
-    │       ├── chat-message.tsx
-    │       ├── tool-call-card.tsx     # ツール実行の可視化
-    │       └── approval-dialog.tsx    # 書き込み承認 + 差分表示
+    │       ├── launcher.tsx / launcher-button.tsx / launcher-menu.tsx
+    │       ├── panel.tsx / panel-fallback.tsx / status-banner.tsx / use-focus-cycle.ts
+    │       ├── asset-list.tsx / asset-row.tsx / asset-labels.ts
+    │       ├── asset-detail.tsx / code-view.tsx   # 読み取り専用(編集はP2の残り)
+    │       └── chat-panel.tsx など    # (P3・P4) チャット・ツールカード・承認ダイアログ
     ├── config/
     │   ├── index.ts / main.tsx / app.tsx
     │   ├── states/{plugin,kintone}.ts
-    │   └── components/model/{sidebar,footer,form/*}.tsx
+    │   └── components/{asset-app-section,field-mapping-section,choice-values-section,async-form-field,error-boundary,footer}.tsx
     ├── contents/{config.html,icon.png}
-    └── styles/{desktop.css,config.css}
+    ├── styles/{desktop.css,config.css}
+    └── test/fixtures.ts
 ```
 
 ★ = 単体テスト対象。`*.test.ts` を同階層に置く(既存プラグインと同じ)。
@@ -128,10 +132,11 @@ desktop.js 読み込み(同期)
   ├─ 1. global.ts 評価 … PLUGIN_ID / LOGIN_USER / GUEST_SPACE_ID
   │
   ├─ 2. bootstrap.ts (すべて同期)
-  │      ├─ セーフモード判定 → 有効なら 2-b / 2-c をスキップ
-  │      ├─ 2-a. ランチャーの描画予約(アセットの結果に依存させない)
-  │      ├─ 2-b. asset-repository で有効なアセットの取得を開始(await しない)
-  │      └─ 2-c. launch-gate が show系4イベントへ native handler を登録
+  │      ├─ セーフモード判定 → 有効なら 2-a / 2-b をスキップ
+  │      ├─ 2-a. asset-repository で有効なアセットの取得を開始(await しない)
+  │      └─ 2-b. launch-gate が show系4イベントへ native handler を登録
+  │
+  ├─ 2-c. index.ts がランチャーを描画予約(本文の準備後)。bootstrap の戻り値だけを使い、アセットの結果に依存させない
   │
   ├─ 3. kintone が app.record.<screen>.show を発火
   │      ├─ その画面種別で初回 → Promise を返して取得完了を待つ(上限あり)
@@ -168,8 +173,8 @@ desktop.js 読み込み(同期)
 | `@konomi-app/kintone-utilities-react` (catalog) | 設定画面のフォーム部品(`JotaiAppSelect` / `JotaiFieldSelect`) |
 | `@konomi-app/kintone-utilities-jotai` (catalog) | kintoneメタ情報のatom |
 | `@konomi-app/ketch` (catalog) | `kintone.plugin.app.proxy` 経由のfetch |
-| `ai` (`^6.0.70` / ai-chatと同じ) | `ToolLoopAgent`、型付きツール、承認、ループ制御、テスト用モデル |
-| `@ai-sdk/openai` ほか(`^3.0.x`。ai-chatは `@ai-sdk/openai@^3.0.25` を使用) | プロバイダー固有プロトコル。選択したものだけ動的import |
+| `ai` (`^7.0.118`。ai-chatは `^6` のまま。ADR-40) | `ToolLoopAgent`、型付きツール、承認(`toolApproval`)、ループ制御、テスト用モデル |
+| `@ai-sdk/openai` / `anthropic` / `google` / `azure`(`^4.0.x`)、`@ai-sdk/openai-compatible`(`^3.0.x`) | プロバイダー固有プロトコル。選択したものだけ動的import。`ai@7` と同じ `@ai-sdk/provider-utils@5` に揃っていることを追加時に確認する |
 | `@repo/plugin` / `@repo/plugin/react` | イベントマネージャ、設定画面の共通ストア・サイドバー・フッター |
 | `@repo/jotai` | 共有store、kintoneのatom |
 | `@repo/ui` / `@repo/utils` / `@repo/constants` | UI部品・翻訳基盤・URL定数 |
@@ -180,7 +185,7 @@ desktop.js 読み込み(同期)
 | `nanoid` (`^5.1.7`) | ID採番 |
 | JSトークナイザー(候補: `acorn` の tokenizer。P1で選定) | 権限の使用箇所・迂回パターンの静的検出(`capability-detector.ts`)。起動時にも使うため初期チャンクに入る。サイズを実測して決める |
 
-AI呼び出しは **AI SDK 6 + 公式プロバイダーパッケージ**を使い、custom `fetch` として `ketch` を渡す。
+AI呼び出しは **AI SDK 7 + 公式プロバイダーパッケージ**を使い、custom `fetch` として `ketch` を渡す。
 ストリーミングを使わなくても、ツール入力検証、承認、会話形式、終了理由、使用量、プロバイダー差分を
 自前実装しない価値が大きい。プロバイダーは動的importし、初期チャンクの肥大を避ける
 (→ [07b-ai-providers.md](./07b-ai-providers.md))。

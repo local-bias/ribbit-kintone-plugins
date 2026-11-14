@@ -86,7 +86,7 @@
 - **既定モデル(Q2)**: **固定リストをコードに埋め込まない**。自由入力 + プロバイダごとの候補補完とし、
   候補は実装着手時に各社の最新モデル一覧を確認して埋める。設定画面の「接続を確認」でツール対応の可否を実測する。
 
-### ADR-11: AI SDK 6 + 公式プロバイダーを使う
+### ADR-11: AI SDK + 公式プロバイダーを使う(版はADR-40で7へ更新)
 
 - **決定**: `ToolLoopAgent`、Zodツール、公式provider packagesを使い、custom fetchだけをketchへ差し替える。
 - **理由**: ストリーミング以外にも、ツール入力検証、承認、会話形式、step制御、使用量、エラー、provider差分の価値が大きい。
@@ -178,17 +178,17 @@
 
 ### ADR-24: 実データと既存コードはAI送信前に毎回承認する
 
-- **決定**: `get_record_sample` と `read_asset` は毎回 `needsApproval` とし、承認前には値を取得しない。
+- **決定**: `get_record_sample` と `read_asset` は毎回承認対象(`toolApproval` で `'user-approval'`)とし、承認前には値を取得しない。
 - **理由**: 設定でツールを有効にするだけでは、意図しないtool callやprompt injectionによる送信を利用者が確認できない。
 - **含意**: DOM本文はv1では送らず、構造と文字種・長さだけを返す。
 
 ### ADR-25: 承認の再開はAI SDKの `tool-approval-response` に任せる
 
-- **決定**: `needsApproval` のツールはこちらで `execute` を呼ばず、`{ type: 'tool-approval-response', approvalId, approved }` を
+- **決定**: 承認対象のツールはこちらで `execute` を呼ばず、`{ type: 'tool-approval-response', approvalId, approved }` を
   tool メッセージとして積み、`generate` を再実行する。
 - **理由**: 自前で組むと、ツール結果partの形・toolCallIdの対応・不正入力の扱いをAI SDKと二重に持つことになる。
-- **含意**: 承認は approve / deny の二値しか運べない。ユーザーによる `scope` 等の上書きは `experimental_context` で
-  `execute` へ渡し、適用結果をツール結果でAIへ返す。`code` と `id` は上書き対象にしない。
+- **含意**: 承認は approve / deny の二値しか運べない。ユーザーによる `scope` 等の上書きは再開時の `options` から
+  `prepareCall` で該当ツールの `toolsContext` へ写して `execute` へ渡し、適用結果をツール結果でAIへ返す。`code` と `id` は上書き対象にしない。
 - **含意**: step上限は `generate` ごとにリセットされるため、ユーザー発言単位で累積して数える。
 
 ### ADR-26: 設定画面の接続確認は「入力中のキー + `kintone.proxy`」で行う
@@ -303,12 +303,13 @@
   「許可するなら全部」だと、郵便番号APIやWebフォントのように送信先が決まっている用途でも、任意の送信先への送信を許すことになる。
 - **判定方法**: 文字列の前方一致は `https://api.example.com.evil.example` や `/v10` を通すため使わない。`new URL()` で正規化してから比較する。
   ワイルドカードは公開サフィックスの扱いが要るためv1では提供しない。
-- **限界**: 制御できるのは `kintone.proxy` とCSSの外部参照だけで、DOM経由の送信は止められない。`kintone.proxy` がリダイレクトを追従する場合は最初の送信先まで(P-1で確認)。
+- **限界**: 制御できるのは `kintone.proxy`、CSSの外部参照、JSのリテラルによる外部リソースの読み込み(ADR-41)まで。変数で渡した送信先と画面遷移は止められない。`kintone.proxy` がリダイレクトを追従する場合は最初の送信先まで(P-1で確認)。
 - **詳細**: [13](./13-launch-gate-and-permissions.md) 3-3-2章。
 
 ### ADR-37: 迂回パターンを含むJSは「制限なし」が無いと実行しない
 
-- **決定**: `window.kintone` / `globalThis` / `fetch` / `XMLHttpRequest` / `eval` / `Function` / 動的 `import` / script・iframe生成 / `cybozu`
+- **決定**: `window.kintone` / `globalThis` / windowの別名(`self` / `top` / `parent` / `frames` / `opener`)の持ち出し / `fetch` / `XMLHttpRequest` /
+  `eval` / `Function` / 動的 `import` / `document.write` / script・iframe生成 / HTML文字列のインラインイベント属性 / `cybozu`
   などをトークン単位で検出し、「制限なし」が付与されていないJSアセットは実行しない。AIの `write_asset` はこれらを含むコードの保存を拒否する。
 - **理由**: 迂回できるコードを黙って「権限つき」と表示すると、権限設定が利用者に誤った安心を与える。
   正規の書き方(`kintone.api` / `kintone.proxy`)が必ず存在するので、AIには書き直させればよい。
@@ -322,6 +323,84 @@
 - **理由**: どちらもアプリ管理権限が必要で、反映APIは動作テスト環境の全設定を一括で本番へ出す
   ([公式](https://cybozu.dev/ja/kintone/docs/rest-api/apps/settings/deploy-app-settings/))。
   プラグイン設定の更新REST APIはAPI Labで本番未提供。一般ユーザーが「自分だけ」のカスタマイズを作れるという価値と両立しない。
+
+### ADR-40: AI SDK 7を使う(ADR-11の版の更新)
+
+- **決定**: `ai@7` と `@ai-sdk/*`(openai / anthropic / google / azure は4系、openai-compatible は3系。いずれも `@ai-sdk/provider-utils@5`)を使う。承認の要否は `ToolLoopAgent` の `toolApproval`、承認の上書きは
+  `callOptionsSchema` + `prepareCall` で `toolsContext` へ写し、ツールは `contextSchema` で受け取る。
+  deprecatedの `needsApproval` と、7で分割された `experimental_context` は使わない。
+- **理由**: P3の着手前の時点(2026-09-28)で7が最新(2026-06-25リリース、`ai@7.0.118`)。6で設計した
+  承認の上書き(`experimental_context`)と承認の宣言(`needsApproval`)は7で置き換わっており、6で実装すると着手直後に移行が必要になる。
+- **含意**: `apps/ai-chat` は `ai@^6` のまま残る。`ai` / `@ai-sdk/*` はcatalogへ入れない(ADR-30)ので、版が分かれても
+  `catalogMode: strict` には抵触しない。ESMのみ・Node.js 22以上はビルド時の要件で、ブラウザーのバンドルには影響しない。
+- **確認**: `toolApproval` / `contextSchema` / `prepareCall` / `tool-approval-response` による再開は、P3で
+  `MockLanguageModelV3` の契約テストにしてから使う。詳細は [07b](./07b-ai-providers.md) 1章・4章。
+
+### ADR-41: JSの外部リソースの読み込みも、CSSと同じ基準で外部通信の権限と照合する
+
+- **決定**: JSアセットで、外部URLのリテラルを `src` / `srcset` / `poster` / `action` などへ入れる読み込み
+  (`img.src = 'https://…'`、`setAttribute('src', …)`、HTML文字列の `<img src>` / `<form action>` / `<link href>`、文字列中の `url()`)を
+  静的に抽出し、CSSの外部 `url()` と同じ基準で外部通信の設定と照合する。1つでも許可されていなければ評価しない。
+  連結・テンプレートで組み立てた送信先は判定できないため、「すべて」でだけ許可する。
+- **理由**: CSSの `url(https://…)` は止めるのに、JSの `img.src = 'https://…'` は通す、という非対称は利用者に説明できない。
+  AIが「外部の画像を表示する」コードを書いたときに、外部通信の宣言が漏れていれば気づける。
+- **限界**: 変数だけで渡した送信先(`img.src = url`)と画面遷移(`location`・`open()`・リンク)は検出しない。
+  画面遷移は利用者に見える操作で、別レコードへの移動など正規の用途が多いため、検出すると「制限なし」を要求する誤検知が増える。
+- **詳細**: [13](./13-launch-gate-and-permissions.md) 3-4章、[05](./05-runtime.md) 5-2章。
+
+### ADR-42: `kintone.Promise` を使わない
+
+- **決定**: 本プラグインの実装・設計書・AIが生成するコードで `kintone.Promise` を使わない。ネイティブの `Promise` と `async` / `await` を使う。
+  ファサードの拒否も `Promise.reject` で返す。
+- **理由**: `kintone.Promise` は古い仕様であり、ネイティブの `Promise` で代替できる(2026-09-28 方針決定)。
+- **含意**: アセットへ渡すファサードは本物の `kintone` のメンバーを写すため、既存のカスタマイズが `kintone.Promise` を使っていても動く。
+  AIのシステムプロンプトでは使わないよう指示する([07](./07-ai-tools.md) 3章)。
+
+### ADR-43: アプリ管理者かどうかは `GET /k/v1/app/acl.json` の成否で判定する
+
+- **決定**: 公開権限(`canPublish`)の「アプリ管理者」は、対象アプリに対して `GET /k/v1/app/acl.json` を呼び、成功したら管理者、失敗(権限エラー・通信エラーを問わず)したら管理者ではないと判定する。
+  1ページにつき1回だけ、パネルを開いて初めて判定する。`publishAllowedUsers` に本人が含まれていれば呼ばない。
+- **理由**: ログインユーザーのアプリ管理権限を返すAPIは無い(2026-10確認)。このAPIは実行にアプリ管理権限を要求するため、成否がそのまま判定になる。
+  失敗を「管理者ではない」に倒すので、判定を誤っても公開できる人が増える方向には働かない。
+- **含意**: 管理者でない利用者がパネルを開くと、ブラウザの開発者ツールに403の通信が1件残る。`publishAllowed*` はUI上の抑止で、
+  本体はアセット管理アプリの `scope` のフィールドアクセス権である(08 2-1)ことは変わらない。
+
+### ADR-44: 承認の応答は再開が成功してから履歴へ入れ、途中経過は表示だけに使う
+
+- **決定**: `tool-approval-response` は `ChatState.resume` に持ち、再開した生成が成功したときだけ結果とまとめて履歴へ入れる。
+  stepごとの途中経過(`onStepEnd`)は画面の表示だけに使い、履歴の確定は生成全体の `responseMessages` で行う。
+- **理由**: 応答を先に履歴へ入れると、再開を止めた・失敗した後の新しい発言でツール結果の欠けた履歴になり、会話が進まなくなる
+  (SDKで再現)。途中のstepを確定すると、承認したツールの結果(`initialResponseMessages`)が入らない状態ができる。
+- **含意**: 止めた・失敗した生成の途中のツール結果は残らず、再試行で同じ往復をやり直す(費用がかかる)。承認済みのツールは
+  再試行で1回だけ再実行される(利用者は承認済み)。
+
+### ADR-45: 承認なしで動くツールを許可リストで宣言する
+
+- **決定**: `toolApproval` は関数にし、構造・メタデータだけを読むツール(`NO_APPROVAL_TOOLS`)以外は全て `'user-approval'` にする。
+- **理由**: 承認が要るものを列挙する形だと、P4で書き込みツールを足したときに1行忘れるだけで承認なしで実行される。
+
+### ADR-46: `query_dom` のセレクタは、返す情報だけで書けるものに限る
+
+- **決定**: 属性セレクタの属性名は `id` / `class` / `role` だけ、疑似クラスは構造を見るもの(`:nth-child` `:not` `:has` など)だけを許す。
+- **理由**: 属性の値を返さなくても、`[value^="山"]` のような一致件数から値を推測できる(承認なしでレコード値の断片がAIへ渡る)。
+
+### ADR-47: `desktop.js` / `config.js` の1ファイルずつで配布する
+
+- **決定**: `ai` とプロバイダーも `desktop.js` に含める。評価を遅らせるための動的importには `webpackMode: "eager"` を付け、別ファイルに分けない。
+- **理由**: 動的importの別ファイル(`async/*.js`)は、zipに入れる形(standalone)ではmanifestに載らず読み込めない。配布の形によって
+  チャットが動かない状態を作らない(2026-10-23 方針決定)。
+- **含意**: `desktop.js` は約1.9MB / gzip 約520KB(P3時点。分けた場合は784KB / 241KB)になり、チャットを使わない利用者の全ページでも読み込まれる。
+  `ai`とプロバイダーの評価はチャットで最初に送信したときまで行わない。`src/bundle-policy.test.ts` が、指定の無い動的importを検出する。
+
+### ADR-48: 公開権限は「全員に公開する行為」だけに使い、有効・無効はレコードのアクセス権に任せる
+
+- **決定**: `publishAllowed*`(`canPublish`)を確かめるのは、「全員」で作成するときと、「自分だけ」から「全員」へ変えるときだけ。
+  公開済みアセットの有効化・無効化は、管理アプリのレコードと「状態」フィールドのアクセス権で決める(06 5章の表のとおり)。
+  P4の `set_asset_state` による有効化も同じ規則にする(2026-10-23 方針決定。旧Q9)。
+- **理由**: `publishAllowed*` は画面上の抑止であり、公開レコードを編集できる人は管理アプリで直接「状態」を変えられる。
+  有効化にも公開権限を求めても守りは強くならず、有効化のたびの判定と「押せるのに断られる」スイッチが増える。
+  推奨のアクセス権(08 2-1)では、公開レコードの「状態」を編集できるのは公開権限者と同じカスタマイズ管理者になる。
+- **含意**: 03 2-5の `publishAllowed*` の説明から「有効化」を外した。公開レコードを誰が有効にできるかは、管理アプリのアクセス権の設計で決める。
 
 ## B. 未決事項(実装前に判断が必要)
 
@@ -337,6 +416,15 @@ DOM本文は業務データを含みうる一方、すべて空にすると「�
 
 **決定は案B + 案C**。生の `outerHTML` も返さず、allowlist属性による構造表現と文字種/長さだけを返す。
 `sendsRecordToAi` が有効でもDOM本文は返さない。v1で実データを送る経路は、毎回承認する `get_record_sample` に限定する。
+
+### Q11. OpenAIのResponses APIの `store`(保留)
+
+`@ai-sdk/openai` の既定は `store: true` で、ツール結果(承認したコード・レコード値)がOpenAI側に保存される。
+`store: false` にすると、推論するモデルではツールをまたいで `include: ['reasoning.encrypted_content']` が必要になり、
+推論しないモデルへ付けたときの挙動は未確認。保存を止めるか、「AIに送信される情報」に保存を明記するかを決める。
+
+2026-10-23: データの取り扱いはいったん考慮せずに進める方針になった。プロバイダーの既定のまま(`store`を指定しない)とし、
+リリース前(P5の導入前チェックリスト)に改めて判断する。
 
 ### Q8. 実装着手時に確認すること(調査タスク)
 

@@ -25,6 +25,7 @@
 | `normalizeExternalPattern` | `lib/external-target.test.ts` | ホスト小文字化、punycode、既定ポート除去、`..` 解決、コメント・空行、クエリ/フラグメント/ユーザー情報/ワイルドカード/未対応スキームを無効にして理由を返す、`http:` は有効だが警告、50行・2KiB上限 |
 | `matchExternalTarget` | 同上 | オリジン完全一致、ポート違い・スキーム違いは不一致、`api.example.com.evil.example` を通さない、`/v1` が `/v1/x` に一致し `/v10` に一致しない、`/v1/../admin` を正規化後に判定、相対URL・ユーザー情報付きURLは拒否、クエリは判定に使わない |
 | 外部通信の設定の解釈 | `lib/asset-mapper.test.ts` | 指定先のみ + すべての両方選択は指定先のみへ倒す、通信先フィールド未対応付けは空リスト、制限なしは全て許可 |
+| `checkCapabilityPolicy` | `lib/asset-filter.test.ts` | 迂回パターンは「制限なし」が無ければ止める(外部通信より先に判定)、CSSの外部参照とJSの外部リソースの読み込みを同じ基準で照合、同一オリジン・相対URLは数えない、組み立てた送信先は「すべて」でだけ許可 |
 
 `shouldApply` のテストは表駆動で全パターンを列挙する。
 
@@ -54,7 +55,8 @@ describe('shouldApply', () => {
 | `EventBridge` | `lib/event-bridge.test.ts` | 持ち主つき登録、show以外のnative遅延登録(1typeにつき1回)、適用画面外のアセットへ配信しない、eventの直列引継ぎ、`false`、Promise、changeでthenableを無視、submit例外時のfail closed、購読者0件で同期返却 |
 | 起動ゲート | `lib/launch-gate.test.ts` | 画面種別ごとに1回だけゲート、2回目以降は同期配信、取得完了前のshowで待つ・完了後のshowで待たない、タイムアウトでeventを返しJSを評価しない・遅れて届いたCSSだけ適用、取得失敗、セーフモードでゲートを作らない、ゲート内例外でもeventを返す、1アセットは1回だけ評価 |
 | `kintone` ファサード | `lib/asset-kintone.test.ts` | `events.on` がブリッジへ持ち主つきで入る、`api` が拒否時に本物を呼ばない(Promise形式/コールバック形式)、`api.url` 等が残る、`proxy` は外部通信の設定と通信先で判定(禁止 / 指定先のみ / すべて)、通信先を消した直後の呼び出しから拒否、`plugin.app.proxy` は常に拒否、`getRequestToken` は書き込み権限が無ければ拒否、権限を外した直後の呼び出しから拒否 |
-| `detectCapabilityUsage` | `lib/capability-detector.test.ts` | リテラルのメソッドと行番号、変数メソッドは unknown、コメント・文字列内の `fetch(` を誤検知しない、`window.kintone` / `globalThis` / `window[...]` / `eval` / 動的import / `createElement('script')` を検出、CSSの外部 `url()` / `@import` / `image-set()` / `@font-face src` の全URL抽出、JS内の外部URLリテラルの列挙 |
+| `detectCapabilityUsage` | `lib/capability-detector.test.ts` | リテラルのメソッドと行番号、変数メソッドは unknown、コメント・文字列内の `fetch(` を誤検知しない、`window.kintone` / `globalThis` / `window[...]` / windowの別名(`self` / `top` / `parent` / `frames` / `opener`)の持ち出し(同名の変数・引数は除く) / `eval` / 動的import / `createElement('script')` / `document.write` / HTML文字列のインラインイベント属性を検出、JSの外部リソースの読み込み(`src` への代入・`+=`・計算プロパティ・`setAttribute`・HTML文字列・`url()`。組み立てたURLは `null`、`<a href>` と相対URLは数えない)、テンプレート・連結で分かれた属性、引用符内の `>`、別の関数・ブロックでの宣言が外側を隠さないこと、メソッド・`catch`・アロー関数の引数を誤検知しないこと、入れ子の深い128KiBの入力が線形時間で終わること、CSSの外部 `url()` / `@import` / `image-set()` / `@font-face src` の全URL抽出、JS内の外部URLリテラルの列挙 |
+| CSSの注入 | `lib/injector.test.ts` | 実行順に `head` の末尾へ挿入、適用画面外は無効で作る、画面を行き来しても `head` 内の順序が実行順のまま、画面切り替えで有効/無効だけを切り替える |
 | `migrateConfig` | `lib/plugin.test.ts` | 欠損項目の補完、未知バージョン、型が壊れた値 |
 | `isUsableConfig` | 同上 | 必須項目ごとの欠損 |
 
@@ -66,7 +68,7 @@ describe('shouldApply', () => {
 | `local-mute` | `lib/local-mute.test.ts` | 追加・削除・重複、space/app/userごとの鍵分離、別ユーザーのキーの削除、他プラグインのキーに触らない |
 | `buildSystemPrompt` | `lib/ai/prompt.test.ts` | 設定の反映、`sendsRecordToAi` オフ時に該当ツールの説明が入らない |
 | `hash` | `lib/hash.test.ts` | 同一入力で同一出力、1文字違いで別出力 |
-| ツール定義 | `lib/ai/tools.test.ts` | Zod入力検証、write/sample/read_assetは `needsApproval`、設定オフ時にsample toolがない |
+| ツール定義 | `lib/ai/tools.test.ts` | Zod入力検証、write/sample/read_assetは `toolApproval` で `'user-approval'`、設定オフ時にsample toolがない |
 | restricted fetch | `lib/ai/proxy-fetch.test.ts` | Request/文字列入力、method/header/body保持、origin/path/query/method完全一致、prefix攻撃、userinfo、redirect拒否 |
 | Agent | `lib/ai/agent.test.ts` | `MockLanguageModelV3` で複数step、承認/却下、上限、abort、書き込み後の再試行なし |
 | `provider-factory` | `lib/ai/provider-factory.test.ts` | 設定 → 正しいAI SDK modelとendpoint。Azure/GeminiのURL組み立て |
@@ -75,7 +77,7 @@ describe('shouldApply', () => {
 | 並び替えの採番 | `lib/asset-order.test.ts` | 並べ替え後に 100,200,300… へ振り直す、変わったレコードだけを更新対象に含める、revisionを付ける |
 | `buildProxyEndpoint` | `lib/ai/proxy-endpoint.test.ts` | provider別のURL組み立て、Googleはmodel・Azureはdeploymentで変化、再入力要否の判定 |
 | 承認の再開 | `lib/ai/agent.test.ts` | `tool-approval-response` で実行される / 却下で実行されない / 未判断を残して再開しない / 累積stepが上限を超えない |
-| 承認の上書き | `lib/ai/tools.test.ts` | `experimental_context` の `scope` 上書きが効き、結果に `appliedScope` が載る。`code` / `id` は上書きできない |
+| 承認の上書き | `lib/ai/tools.test.ts` | 再開時の `options` から `prepareCall` で `toolsContext` へ写した `scope` 上書きが効き、結果に `appliedScope` が載る。`code` / `id` は上書きできない |
 | フィールドACLの解釈 | `lib/permission.test.ts` | record editable かつ field editable のときだけ操作可、メンテナンスモード(全false)の表示分岐 |
 | 権限の宣言と検出の照合 | `lib/ai/tools.test.ts` | 使っているのに未宣言なら拒否、迂回パターンで拒否、未使用の宣言は警告、`unrestricted` / `external-all` を要求できない、承認で権限・送信先を減らせるが増やせない、リテラルの送信先が `externalUrls` に無ければ拒否、無効な送信先パターンで拒否 |
 

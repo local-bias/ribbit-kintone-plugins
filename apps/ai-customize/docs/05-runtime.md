@@ -207,7 +207,7 @@ DevToolsのSourcesにもファイル名として並ぶので、デバッグ体�
   `events` / `plugin` / `plugin.app` の入れ子も同じく写し、プロトタイプをたどっても本物に届かないようにする。
 - `Proxy` は使わない。本物の `kintone` のプロパティが変更・再定義不可(凍結)だった場合、Proxyのgetで別の値を返すと
   不変条件違反の `TypeError` になるためである。写す方式は凍結の影響を受けない。
-- 差し替えない値は参照のまま写す(`bind`すると `kintone.Promise.all` のような静的メンバーが消える)。
+- 差し替えない値は参照のまま写す(`bind`すると、関数が持つ静的メンバーが消える)。
   `this` を使う関数も、ファサードが同じメンバーを持つため動く。`kintone.app` などの入れ子オブジェクトは本物への参照のままなので、
   それらが本物のルート `kintone` を返さないことをP-1で確認する。
 
@@ -280,7 +280,7 @@ const guardedApi = (pathOrUrl, method, params, success?, failure?) => {
       queueMicrotask(() => failure?.(error));
       return;
     }
-    return kintone.Promise.reject(error);
+    return Promise.reject(error);
   }
   return kintone.api(pathOrUrl, method, params, success, failure);
 };
@@ -306,23 +306,35 @@ const guardedApi = (pathOrUrl, method, params, success?, failure?) => {
   正規の書き方では塞ぐ。
 - CSSアセットは、外部オリジンへの `url(...)` / `@import` / `image-set(...)` / `@font-face` の `src` を静的に抜き出し、
   全て許可されている場合だけ適用する。1つでも許可されていなければ適用せず、一覧に該当URLを出す。
+- JSアセットも、`kintone.proxy` を通らない外部リソースの読み込み(`img.src = 'https://…'`、`setAttribute('src', …)`、
+  HTML文字列の `<img src>` / `<form action>` / `<link href>`、文字列中の `url(…)`)をCSSと同じ基準で評価前に照合し、
+  1つでも許可されていなければ評価しない。連結・テンプレートで組み立てた送信先は判定できないため、「すべて」でだけ許可する。
+  判定は `checkCapabilityPolicy`(`src/lib/asset-filter.ts`)、抽出は `src/lib/js-resource-detector.ts`。
 
 ### 5-3. 迂回パターン
 
 `detectCapabilityUsage(code)`(`src/lib/capability-detector.ts`、純粋関数)は、文字列とコメントを区別するトークナイザーで
-コードを走査し、`kintone.api` の呼び出し(メソッドがリテラルなら値と行番号)、外部通信、迂回パターンを返す。
+コードを走査し、`kintone.api` の呼び出し(メソッドがリテラルなら値と行番号)、外部通信、外部リソースの読み込み、迂回パターンを返す。
 正規表現を生のコードへ当てない(コメント中の `fetch(` で誤検知し、文字列連結で見逃すため)。
 
 - 迂回パターンを含むJSアセットは、「制限なし」が付与されていない限り**実行しない**(4章のループ)。
 - 迂回パターンの一覧は [13](./13-launch-gate-and-permissions.md) 3-4章。承認時(07)と実行時で同じ関数を使う。
 - 検出は1アセットにつき評価前に1回だけ行い、結果を診断と一覧表示に使う。
+- 文字列は `+` の連結とテンプレートリテラルをつないだ単位で検査する(`src/lib/js-string-unit.ts`)。
+  `` `<img src="${a}" onerror="${b}">` `` のように式の差し込みで属性が分かれても見落とさないためである。
+  HTMLの属性は引用符を意識して読む(`src/lib/html-tag-scanner.ts`。`title="a>b"` の `>` でタグを打ち切らない)。
+- windowの別名(`self` など)の持ち出しと `self[...]` は、波括弧のブロックと関数の引数でスコープを近似し、
+  その位置から見える宣言があればその変数とみなす(`src/lib/global-alias-detector.ts`)。`var` は関数全体へ巻き上げて扱い、
+  宣言より前の参照もその変数とみなす。分割代入(`const { self } = x`、`function f({ top })`)で宣言した名前も含む。別の関数での `var self = this` は影響しない。
+- 起動時にメインスレッドで最大128KiB×件数を走査するため、**全ての走査を線形に保つ**。括弧の対応は1回の走査で表にし
+  (`buildBracketIndex`)、入れ子を読み直さない。入れ子の深い呼び出し・連結・テンプレートでも128KiBあたり100ms未満を目安にし、テストで固定する。
 
 ## 6. CSSアセットの適用
 
 `src/lib/injector.ts`。
 
 ```html
-<style data-ai-customize-id="12" data-ai-customize-hash="1f3a..." data-ai-customize-scope="public">
+<style data-ai-customize-id="12" data-ai-customize-scope="public">
   /* code */
 </style>
 ```
@@ -330,7 +342,11 @@ const guardedApi = (pathOrUrl, method, params, success?, failure?) => {
 - 挿入先は `document.head` の**末尾**。kintone標準スタイルより後に来るので詳細度の勝負を有利にする。
 - 順序はアセットの `order` 昇順 → `$id` 昇順。同一 `order` 内の順序が実質的に効くのはCSSだけなので、テストで並びを固定する。
 - 各showで、適用画面に合わせて `<style>` の `disabled` を切り替える(詳細⇄編集のページ内遷移で詳細用CSSを残さない)。
+- `<style>` は最初のshowで、適用画面外のものも含めて全て実行順に作る(画面外は `disabled`)。画面ごとに初めて対象になった時点で
+  末尾へ足すと、画面を行き来したときに `head` 内の順序が実行順とずれ、詳細度が同じ規則の勝ち負けが変わるためである。
 - 無効化・削除は該当 `<style>` の `remove()`。**副作用が残らない**のがCSSの利点で、スイッチ操作が即時に反映できる。
+  パネルでの切り替えは実行基盤の台帳(適用するCSS)を差し替え、ページ内の画面遷移でも台帳から付け直す(無効にしたCSSを戻さない)。
+  取得が終わる前にパネルで無効にしたもの(レコードの無効化・ローカル無効化)は、取得が終わった時点の最新の変更で絞るため、JSも評価しない。
 - プレビュー時は `data-ai-customize-preview="1"` を付けた別の `<style>` を使い、保存済みのものより後ろに置く。
 - 表示のちらつき(FOUC)は、ゲートで待った時間ぶんだけ起こりうる。P-1で問題になった場合の退避策は 13 の 2-7章。
 
@@ -386,7 +402,8 @@ storage keyの生成も純粋関数としてテストする。
 
 - **アセットは一切適用しない**(CSSもJSも)。起動ゲートも作らず、showハンドラは同期でeventを返す。
 - **ランチャーは表示する**。これが目的なので、ランチャーの描画パスはアセットの実行結果に一切依存させない。
-- 画面上部に「セーフモードで表示しています(カスタマイズは無効です)」のバーを出し、解除リンクを添える。
+- 画面右下(起動ボタンの左)に「セーフモードで表示しています」の通知を出し、解除リンクを添える。ランチャーを開かなくても気づけるよう、通知はReactを使わずに出す。
+- 起動ボタンはグレースケールにし、パネル上部にも同じ案内を出す。
 - 一覧は通常どおり表示・操作できる。原因のアセットをオフにしてから解除する、が正しい復旧手順。
 
 ### 起動順序の鉄則
