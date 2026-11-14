@@ -3,7 +3,7 @@ import type { TargetCoordinate } from './asset-query';
 import { detectJsCapabilityUsage } from './capability-detector';
 import { MAX_ASSETS_PER_APP, MAX_TOTAL_CODE_BYTES } from './constants';
 import { detectCssExternalReferences } from './css-detector';
-import { matchExternalTarget } from './external-target';
+import { matchExternalTarget, resolveExternalReference } from './external-target';
 
 /**
  * アセットの適用判定(純粋関数)
@@ -69,10 +69,34 @@ export const isExternalTargetAllowed = (grants: AssetGrants, target: string | nu
   );
 };
 
+type ExternalReference = { target: string | null; line: number };
+
+/**
+ * JSアセットの迂回パターンと、外部通信になるリソースの読み込みを返します
+ *
+ * 読み込み先はkintoneのオリジンを基準に解決し、相対URL・同一オリジンは外部通信に数えない(CSSと同じ基準)
+ */
+const detectJsReferences = (
+  code: string,
+  origin: string
+): { bypass: { pattern: string; line: number }[] } | { external: ExternalReference[] } => {
+  const { bypass, resources } = detectJsCapabilityUsage(code);
+  if (bypass.length > 0) {
+    return { bypass };
+  }
+  return {
+    external: resources.flatMap(({ target, line }) => {
+      const resolved = resolveExternalReference(target, origin);
+      return resolved === undefined ? [] : [{ target: resolved, line }];
+    }),
+  };
+};
+
 /**
  * 権限に関する実行前の判定
  *
- * - JS: 迂回パターンを含むなら「制限なし」が必要
+ * - JS: 迂回パターンを含むなら「制限なし」が必要。そのうえで、`img.src = 'https://…'`などの
+ *   外部リソースの読み込みが全て外部通信の設定で許可されている必要がある
  * - CSS: 外部参照が全て外部通信の設定で許可されている必要がある
  *   (CSSは実行時に迂回できないので、静的判定で足りる)
  *
@@ -81,16 +105,14 @@ export const isExternalTargetAllowed = (grants: AssetGrants, target: string | nu
  * @param origin kintoneのオリジン(`location.origin`)
  */
 export const checkCapabilityPolicy = (asset: Asset, origin: string): CapabilityPolicyResult => {
-  if (asset.kind === 'js') {
-    if (asset.permissions.includes('unrestricted')) {
-      return { allowed: true };
-    }
-    const { bypass } = detectJsCapabilityUsage(asset.code);
-    return bypass.length === 0
-      ? { allowed: true }
-      : { allowed: false, reason: 'bypass', details: bypass };
+  if (asset.kind === 'js' && asset.permissions.includes('unrestricted')) {
+    return { allowed: true };
   }
-  const denied = detectCssExternalReferences(asset.code, origin).filter(
+  const references = asset.kind === 'js' ? detectJsReferences(asset.code, origin) : null;
+  if (references !== null && 'bypass' in references) {
+    return { allowed: false, reason: 'bypass', details: references.bypass };
+  }
+  const denied = (references?.external ?? detectCssExternalReferences(asset.code, origin)).filter(
     (reference) => !isExternalTargetAllowed(asset, reference.target)
   );
   return denied.length === 0
@@ -120,4 +142,38 @@ export const validateAssetSet = (assets: readonly Asset[]): AssetSetValidation =
     .filter((asset) => asset.enabled)
     .reduce((sum, asset) => sum + encoder.encode(asset.code).length, 0);
   return bytes > MAX_TOTAL_CODE_BYTES ? { ok: false, reason: 'too-large', bytes } : { ok: true };
+};
+
+/**
+ * このページで適用してよいCSSアセットを、実行順に返します
+ *
+ * パネルで有効・無効を切り替えたときに、`<style>`を付け直すために使う。
+ * 起動時と同じく、適用判定(`shouldApply`)と外部参照の判定(`checkCapabilityPolicy`)を通す。
+ */
+export const selectApplicableCss = (
+  assets: readonly Asset[],
+  ctx: ApplyContext,
+  origin: string
+): Asset[] =>
+  sortAssets(
+    assets.filter(
+      (asset) =>
+        asset.kind === 'css' &&
+        shouldApply(asset, ctx) &&
+        checkCapabilityPolicy(asset, origin).allowed
+    )
+  );
+
+/**
+ * 取得したアセットに、パネルで取得・更新したアセットを重ねます
+ *
+ * パネルが知っているものはパネルの状態(利用者が切り替えた、より新しいもの)を使い、
+ * 知らないもの(パネルの一覧が古い・取得の時期がずれた)は取得したものを残す
+ */
+export const mergePanelAssets = (
+  loaded: readonly Asset[],
+  panelAssets: readonly Asset[]
+): Asset[] => {
+  const panelIds = new Set(panelAssets.map((asset) => asset.id));
+  return [...loaded.filter((asset) => !panelIds.has(asset.id)), ...panelAssets];
 };

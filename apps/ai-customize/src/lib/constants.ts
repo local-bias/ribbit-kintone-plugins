@@ -47,5 +47,16 @@ export const STORAGE_KEY_PREFIX = '🐸-ai-customize:v3';
 /** 画面に出す通知のルート要素のid */
 export const NOTICE_ROOT_ID = 'ribbit-ai-customize-notice';
 
+/** ランチャー(起動ボタンとパネル)のルート要素のid */
+export const LAUNCHER_ROOT_ID = 'ribbit-ai-customize-launcher';
+
+/**
+ * ランチャーの重なり順
+ *
+ * kintoneのヘッダーや固定UIより上、MUIのメニュー・ツールチップ(1300〜1500)より下にする。
+ * 最大値付近は使わない(kintone本体や他プラグインのダイアログを覆わないため)
+ */
+export const LAUNCHER_Z_INDEX = 1000;
+
 /** アセットのJSに付ける`sourceURL`の接頭辞 */
 export const SOURCE_URL_PREFIX = 'ai-customize';

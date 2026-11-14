@@ -1,6 +1,11 @@
 import { describe, expect, test } from 'vitest';
 import { createTestCommonConfig } from '@/test/fixtures';
-import { buildAssetQuery, escapeQueryValue, getRuntimeFieldCodes } from './asset-query';
+import {
+  buildAssetQuery,
+  buildAssetRecordPath,
+  escapeQueryValue,
+  getRuntimeFieldCodes,
+} from './asset-query';
 
 describe('escapeQueryValue', () => {
   test('\\ と " をエスケープする', () => {
@@ -61,5 +66,20 @@ describe('getRuntimeFieldCodes', () => {
     expect(codes).toContain('permissions');
     expect(codes).not.toContain('description');
     expect(codes).not.toContain('');
+  });
+});
+
+describe('buildAssetRecordPath', () => {
+  test('管理アプリのレコード詳細画面のパス。ゲストスペースはguestを付ける', () => {
+    expect(buildAssetRecordPath(createTestCommonConfig({ assetAppSpaceId: '' }), '12')).toBe(
+      '/k/99/show#record=12'
+    );
+    expect(buildAssetRecordPath(createTestCommonConfig({ assetAppSpaceId: '7' }), '12')).toBe(
+      '/k/guest/7/99/show#record=12'
+    );
+  });
+
+  test('数値でないIDは組み立てない', () => {
+    expect(() => buildAssetRecordPath(createTestCommonConfig(), '1/../x')).toThrow();
   });
 });

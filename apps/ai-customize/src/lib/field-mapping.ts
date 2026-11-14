@@ -39,6 +39,13 @@ export const FIELD_MAPPINGS: readonly FieldMapping[] = [
   { key: 'orderFieldCode', name: 'order', types: ['NUMBER'], required: false },
   { key: 'screensFieldCode', name: 'screens', types: ['CHECK_BOX'], required: false },
   { key: 'descriptionFieldCode', name: 'description', types: ['MULTI_LINE_TEXT'], required: false },
+  {
+    key: 'conversationFieldCode',
+    name: 'conversation',
+    types: ['MULTI_LINE_TEXT'],
+    required: false,
+  },
+  { key: 'modelFieldCode', name: 'model', types: ['SINGLE_LINE_TEXT'], required: false },
 ];
 
 export type ChoiceValueKey = Extract<keyof PluginCommonConfig, `${string}Value`>;
@@ -110,3 +117,11 @@ export const getDefaultSelectedOptions = (
     ? defaultValue.filter((value): value is string => typeof value === 'string')
     : [];
 };
+
+/**
+ * 更新日時フィールドのコードを返します。無ければ空文字
+ *
+ * パネルの一覧に「3日前」のような更新日時を出すため。設定画面で対応付けさせず、フィールドの型で探す
+ */
+export const findUpdatedTimeFieldCode = (fields: readonly kintoneAPI.FieldProperty[]): string =>
+  fields.find((field) => field.type === 'UPDATED_TIME')?.code ?? '';

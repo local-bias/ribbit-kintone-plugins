@@ -1,3 +1,5 @@
+import { resolveExternalReference } from './external-target';
+
 /**
  * CSSアセットから外部通信になる参照を抜き出します
  *
@@ -91,7 +93,7 @@ const scan = (css: string): ScanState => {
   };
   let index = 0;
   while (index < css.length) {
-    const char = css[index]!;
+    const char = css[index] as string;
 
     if (char === '/' && css[index + 1] === '*') {
       const end = css.indexOf('*/', index + 2);
@@ -169,32 +171,6 @@ const scan = (css: string): ScanState => {
 };
 
 /**
- * 参照先が外部通信になるなら、その絶対URLを返します
- *
- * - 相対URL・`data:`・`#`で始まる参照・同一オリジンは外部通信ではない(`undefined`)
- * - http(s)以外のスキームや解釈できない値は、送信先を判定できない外部通信(`null`)
- */
-const toExternalTarget = (value: string | null, origin: string): string | null | undefined => {
-  if (value === null) {
-    return null;
-  }
-  const trimmed = value.trim();
-  if (trimmed === '' || trimmed.startsWith('#') || /^data:/i.test(trimmed)) {
-    return undefined;
-  }
-  let url: URL;
-  try {
-    url = new URL(trimmed, `${origin}/`);
-  } catch {
-    return null;
-  }
-  if (url.protocol !== 'https:' && url.protocol !== 'http:') {
-    return null;
-  }
-  return url.origin === new URL(origin).origin ? undefined : url.href;
-};
-
-/**
  * CSSアセットの外部参照を返します
  *
  * @param origin kintoneのオリジン(`location.origin`)
@@ -205,7 +181,7 @@ export const detectCssExternalReferences = (
 ): CssExternalReference[] => {
   const state = scan(css);
   const references = state.references.flatMap(({ value, line }) => {
-    const target = toExternalTarget(value, origin);
+    const target = resolveExternalReference(value, origin);
     return target === undefined ? [] : [{ target, line }];
   });
   return state.hasEscapeOutsideString ? [...references, { target: null, line: 1 }] : references;

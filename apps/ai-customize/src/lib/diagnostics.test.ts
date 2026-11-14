@@ -1,5 +1,11 @@
 import { describe, expect, test, vi } from 'vitest';
-import { createDiagnostics, summarizeDiagnostics } from './diagnostics';
+import {
+  collectAssetProblems,
+  createDiagnostics,
+  type DiagnosticEntry,
+  groupDenials,
+  summarizeDiagnostics,
+} from './diagnostics';
 
 describe('createDiagnostics', () => {
   test('記録を保持し、onRecord へ渡す', () => {
@@ -57,5 +63,58 @@ describe('summarizeDiagnostics', () => {
       deniedAssetIds: ['2'],
       blockedAssetIds: ['3'],
     });
+  });
+});
+
+const denied = (
+  assetId: string,
+  method: string,
+  target: string
+): Extract<DiagnosticEntry, { kind: 'permission-denied' }> => ({
+  kind: 'permission-denied',
+  denial: { assetId, operation: 'kintone.api', required: ['put'], method, target },
+});
+
+describe('collectAssetProblems', () => {
+  test('アセットごとに、起きた問題の種類を重複なく返す', () => {
+    const problems = collectAssetProblems([
+      { kind: 'evaluation-failed', assetId: '1', error: new Error('x') },
+      { kind: 'handler-failed', assetId: '1', eventType: 'app.record.edit.submit', error: 1 },
+      denied('2', 'PUT', '/k/v1/record'),
+      denied('2', 'PUT', '/k/v1/record'),
+      {
+        kind: 'blocked',
+        assetId: '3',
+        policy: { allowed: false, reason: 'bypass', details: [{ pattern: 'fetch', line: 1 }] },
+      },
+      { kind: 'suspended', assetId: '1' },
+      { kind: 'mapping-skipped', assetId: '4', reason: 'unknown-kind' },
+      { kind: 'gate-timeout' },
+    ]);
+    expect(Object.fromEntries(problems)).toEqual({
+      '1': ['failed', 'suspended'],
+      '2': ['denied'],
+      '3': ['blocked'],
+      '4': ['skipped'],
+    });
+  });
+});
+
+describe('groupDenials', () => {
+  test('同じ操作の拒否をまとめて件数にする(そのアセットの分だけ)', () => {
+    expect(
+      groupDenials(
+        [
+          denied('2', 'PUT', '/k/v1/record'),
+          denied('2', 'PUT', '/k/v1/record'),
+          denied('2', 'DELETE', '/k/v1/records'),
+          denied('9', 'PUT', '/k/v1/record'),
+        ],
+        '2'
+      )
+    ).toEqual([
+      { denial: denied('2', 'PUT', '/k/v1/record').denial, count: 2 },
+      { denial: denied('2', 'DELETE', '/k/v1/records').denial, count: 1 },
+    ]);
   });
 });

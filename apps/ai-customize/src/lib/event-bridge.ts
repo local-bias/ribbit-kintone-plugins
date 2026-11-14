@@ -168,7 +168,7 @@ export const createEventBridge = (options: EventBridgeOptions): EventBridge => {
   ): unknown => {
     let current = event;
     for (let index = start; index < chain.length; index++) {
-      const subscription = chain[index]!;
+      const subscription = chain[index] as Subscription;
       let result: unknown;
       try {
         result = subscription.handler(current);

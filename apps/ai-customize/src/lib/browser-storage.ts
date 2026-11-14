@@ -108,3 +108,72 @@ export const removeOtherUsersKeys = (storage: StorageLike | null, loginUserCode:
     // localStorageが使えない環境では何もしない(機能は落とさない)
   }
 };
+
+/**
+ * ローカル無効化したアセットIDを書き込みます。空なら消します
+ *
+ * @returns 書き込めたか。使えない環境(プライベートモードの容量0など)では`false`
+ */
+export const writeMutedIds = (
+  storage: StorageLike | null,
+  target: TargetCoordinate,
+  loginUserCode: string,
+  ids: ReadonlySet<string>
+): boolean => {
+  if (storage === null) {
+    return false;
+  }
+  const key = buildStorageKey('muted', target, loginUserCode);
+  try {
+    if (ids.size === 0) {
+      storage.removeItem(key);
+    } else {
+      storage.setItem(key, JSON.stringify([...ids].sort()));
+    }
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+export type PanelTab = 'js' | 'css' | 'chat';
+
+/** パネルの開閉と選択中のタブ。画面遷移をまたいで維持する(sessionStorage) */
+export type PanelState = { open: boolean; tab: PanelTab };
+
+const CLOSED_PANEL: PanelState = { open: false, tab: 'js' };
+
+/** パネルの状態のキー。sessionStorageはタブごとなので、ログインユーザーは含めない */
+const buildPanelStateKey = (target: TargetCoordinate): string =>
+  `${STORAGE_KEY_PREFIX}:panel:${target.spaceId}:${target.appId}`;
+
+export const readPanelState = (
+  storage: StorageLike | null,
+  target: TargetCoordinate
+): PanelState => {
+  const raw = safeGet(storage, buildPanelStateKey(target));
+  if (raw === null) {
+    return CLOSED_PANEL;
+  }
+  try {
+    const parsed = JSON.parse(raw) as Partial<Record<keyof PanelState, unknown>>;
+    return typeof parsed.open === 'boolean' &&
+      (parsed.tab === 'js' || parsed.tab === 'css' || parsed.tab === 'chat')
+      ? { open: parsed.open, tab: parsed.tab }
+      : CLOSED_PANEL;
+  } catch {
+    return CLOSED_PANEL;
+  }
+};
+
+export const writePanelState = (
+  storage: StorageLike | null,
+  target: TargetCoordinate,
+  state: PanelState
+): void => {
+  try {
+    storage?.setItem(buildPanelStateKey(target), JSON.stringify(state));
+  } catch {
+    // 保存できなくても、このページの中では状態を持てる
+  }
+};

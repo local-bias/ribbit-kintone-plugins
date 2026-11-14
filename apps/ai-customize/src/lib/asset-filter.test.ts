@@ -6,6 +6,8 @@ import {
   checkCapabilityPolicy,
   isExternalTargetAllowed,
   isScreenTarget,
+  mergePanelAssets,
+  selectApplicableCss,
   shouldApply,
   sortAssets,
   validateAssetSet,
@@ -132,6 +134,58 @@ describe('checkCapabilityPolicy', () => {
     });
   });
 
+  describe('JSの外部リソースの読み込み(CSSと同じ基準)', () => {
+    const code = "img.src = 'https://img.example.com/a.png';";
+
+    test('外部通信の許可が無ければ止める', () => {
+      expect(checkCapabilityPolicy(createTestAsset({ code }), ORIGIN)).toEqual({
+        allowed: false,
+        reason: 'external',
+        details: [{ target: 'https://img.example.com/a.png', line: 1 }],
+      });
+    });
+
+    test('通信先に一致すれば実行してよい', () => {
+      const asset = createTestAsset({
+        code,
+        permissions: ['external-listed'],
+        externalUrls: ['https://img.example.com/'],
+      });
+      expect(checkCapabilityPolicy(asset, ORIGIN)).toEqual({ allowed: true });
+    });
+
+    test('kintoneと同じオリジン・相対URLは外部通信に数えない', () => {
+      const asset = createTestAsset({
+        code: `img.src = '${ORIGIN}/k/api/blob/a.png'; icon.src = '/k/static/a.png';`,
+      });
+      expect(checkCapabilityPolicy(asset, ORIGIN)).toEqual({ allowed: true });
+    });
+
+    test('組み立てた送信先は、指定先のみでは許可せず、すべてなら許可する', () => {
+      const concatenated = "img.src = 'https://img.example.com/?d=' + data;";
+      const listed = createTestAsset({
+        code: concatenated,
+        permissions: ['external-listed'],
+        externalUrls: ['https://img.example.com/'],
+      });
+      expect(checkCapabilityPolicy(listed, ORIGIN)).toEqual({
+        allowed: false,
+        reason: 'external',
+        details: [{ target: null, line: 1 }],
+      });
+      const all = createTestAsset({ code: concatenated, permissions: ['external-all'] });
+      expect(checkCapabilityPolicy(all, ORIGIN)).toEqual({ allowed: true });
+    });
+
+    test('迂回パターンの判定を先に行う', () => {
+      const asset = createTestAsset({ code: `${code}\nfetch('/x');` });
+      expect(checkCapabilityPolicy(asset, ORIGIN)).toMatchObject({
+        allowed: false,
+        reason: 'bypass',
+      });
+    });
+  });
+
   test('外部参照が全て許可されたCSSは適用してよい', () => {
     const asset = createTestAsset({
       kind: 'css',
@@ -173,5 +227,37 @@ describe('validateAssetSet', () => {
         createTestAsset({ id: '2', code: half, enabled: false }),
       ])
     ).toEqual({ ok: true });
+  });
+});
+
+describe('mergePanelAssets', () => {
+  test('パネルが知っているものはパネルの状態(新しい)を、知らないものは取得した状態を使う', () => {
+    const loaded = [createTestAsset({ id: '1' }), createTestAsset({ id: '2' })];
+    const panel = [createTestAsset({ id: '2', enabled: false }), createTestAsset({ id: '3' })];
+    expect(mergePanelAssets(loaded, panel).map(({ id, enabled }) => [id, enabled])).toEqual([
+      ['1', true],
+      ['2', false],
+      ['3', true],
+    ]);
+  });
+});
+
+describe('selectApplicableCss', () => {
+  test('適用してよいCSSだけを、実行順に返す(JS・無効・ローカル無効・外部参照の未許可を除く)', () => {
+    const css = (overrides: Parameters<typeof createTestAsset>[0]) =>
+      createTestAsset({ kind: 'css', code: '.a{}', ...overrides });
+    const selected = selectApplicableCss(
+      [
+        css({ id: '4', order: 200 }),
+        css({ id: '2', order: 100 }),
+        css({ id: '5', enabled: false }),
+        css({ id: '6' }),
+        css({ id: '7', code: '.a{background:url(https://img.example.com/a.png)}' }),
+        createTestAsset({ id: '8', kind: 'js' }),
+      ],
+      createContext({ mutedIds: new Set(['6']) }),
+      ORIGIN
+    );
+    expect(selected.map((asset) => asset.id)).toEqual(['2', '4']);
   });
 });

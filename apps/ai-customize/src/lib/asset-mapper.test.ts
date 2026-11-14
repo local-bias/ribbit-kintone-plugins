@@ -1,6 +1,13 @@
 import { describe, expect, test } from 'vitest';
-import { createTestCommonConfig } from '@/test/fixtures';
-import { type AssetRecord, toAsset } from './asset-mapper';
+import { createTestAsset, createTestCommonConfig } from '@/test/fixtures';
+import {
+  type AssetRecord,
+  applyAssetPatch,
+  toAsset,
+  toNewAssetRecord,
+  toRecordPatch,
+  UnmappedFieldError,
+} from './asset-mapper';
 import { MAX_CODE_BYTES } from './constants';
 
 const common = createTestCommonConfig();
@@ -158,5 +165,173 @@ describe('toAsset', () => {
       createTestCommonConfig({ externalUrlsFieldCode: '' })
     );
     expect(result.ok && result.asset.externalUrls).toEqual([]);
+  });
+});
+
+describe('toRecordPatch', () => {
+  const common = createTestCommonConfig();
+
+  test('渡した項目だけを、管理アプリの選択肢の値で書く', () => {
+    expect(
+      toRecordPatch(
+        {
+          enabled: true,
+          scope: 'private',
+          order: 300,
+          permissions: ['unrestricted', 'put', 'external-listed'],
+          externalUrlsText: '# c\nhttps://a.example.com/',
+        },
+        common
+      )
+    ).toEqual({
+      status: { value: '有効' },
+      scope: { value: '自分だけ' },
+      order: { value: '300' },
+      permissions: { value: ['更新(PUT)', '外部通信(指定先のみ)', '制限なし'] },
+      externalUrls: { value: '# c\nhttps://a.example.com/' },
+    });
+    expect(toRecordPatch({ code: '' }, common)).toEqual({ code: { value: '' } });
+  });
+
+  test('対応付けていないフィールドへは書かずに例外にする', () => {
+    expect(() =>
+      toRecordPatch({ order: 100 }, createTestCommonConfig({ orderFieldCode: '' }))
+    ).toThrow(UnmappedFieldError);
+  });
+
+  test('選択肢の値が空の権限は書けない', () => {
+    expect(() =>
+      toRecordPatch(
+        { permissions: ['unrestricted'] },
+        createTestCommonConfig({ permissionUnrestrictedValue: '' })
+      )
+    ).toThrow(UnmappedFieldError);
+  });
+
+  test('読み込んだ値をそのまま書き戻すと、同じアセットに戻る', () => {
+    const patch = toRecordPatch(
+      { scope: 'public', enabled: false, permissions: ['post', 'external-all'] },
+      common
+    );
+    const asset = createTestAsset();
+    const record: AssetRecord = {
+      ...Object.fromEntries(Object.entries(patch)),
+      $id: { value: '1' },
+      kind: { value: 'JavaScript' },
+    };
+    const result = toAsset(record, common);
+    expect(result.ok && result.asset).toMatchObject({
+      scope: 'public',
+      enabled: false,
+      permissions: ['post', 'external-all'],
+      kind: asset.kind,
+    });
+  });
+});
+
+describe('toNewAssetRecord', () => {
+  test('対象・種別・コード・権限・通信先を含む、新しいレコードの値を作る', () => {
+    const asset = createTestAsset({
+      title: 'コピー',
+      kind: 'css',
+      scope: 'private',
+      enabled: false,
+      code: '.a{}',
+      order: 900,
+      screens: ['index', 'edit'],
+      description: 'desc',
+      permissions: ['external-listed'],
+      externalUrlsText: 'https://fonts.example.com/',
+    });
+    expect(toNewAssetRecord(asset, createTestCommonConfig())).toEqual({
+      title: { value: 'コピー' },
+      targetAppId: { value: '42' },
+      targetSpaceId: { value: '0' },
+      kind: { value: 'CSS' },
+      scope: { value: '自分だけ' },
+      status: { value: '無効' },
+      code: { value: '.a{}' },
+      permissions: { value: ['外部通信(指定先のみ)'] },
+      order: { value: '900' },
+      screens: { value: ['一覧', '編集'] },
+      description: { value: 'desc' },
+      externalUrls: { value: 'https://fonts.example.com/' },
+    });
+  });
+
+  test('任意フィールドを対応付けていなければ、その値は書かない', () => {
+    const record = toNewAssetRecord(
+      createTestAsset(),
+      createTestCommonConfig({
+        orderFieldCode: '',
+        screensFieldCode: '',
+        descriptionFieldCode: '',
+        externalUrlsFieldCode: '',
+      })
+    );
+    expect(Object.keys(record).sort()).toEqual(
+      [
+        'code',
+        'kind',
+        'permissions',
+        'scope',
+        'status',
+        'targetAppId',
+        'targetSpaceId',
+        'title',
+      ].sort()
+    );
+  });
+});
+
+describe('applyAssetPatch', () => {
+  test('書き換えた項目を反映し、通信先は解析し直す', () => {
+    const asset = createTestAsset({
+      permissions: ['external-listed', 'external-all'],
+      configurationIssues: ['conflicting-external-permissions'],
+    });
+    const next = applyAssetPatch(asset, {
+      permissions: ['external-listed'],
+      externalUrlsText: '# c\nhttps://A.example.com/v1\nhttp://b.example.com\nhttps://*.x.com',
+    });
+    expect(next).toMatchObject({
+      permissions: ['external-listed'],
+      configurationIssues: [],
+      externalUrls: ['https://a.example.com/v1', 'http://b.example.com/'],
+      invalidExternalUrls: [{ line: 4, raw: 'https://*.x.com', reason: 'wildcard' }],
+      externalUrlWarnings: [{ line: 3, pattern: 'http://b.example.com/', reason: 'insecure' }],
+    });
+    expect(asset.permissions).toEqual(['external-listed', 'external-all']);
+  });
+});
+
+describe('選択肢の値が空の設定', () => {
+  test('未入力のレコードを「全員」「有効」「JavaScript」として扱わない', () => {
+    const common = createTestCommonConfig({
+      kindJsValue: '',
+      scopePublicValue: '',
+      statusEnabledValue: '',
+    });
+    const record: AssetRecord = { $id: { value: '1' }, kind: { value: 'CSS' } };
+    const result = toAsset(record, common);
+    expect(result.ok && result.asset).toMatchObject({
+      kind: 'css',
+      scope: 'private',
+      enabled: false,
+    });
+    expect(toAsset({ $id: { value: '2' } }, common)).toMatchObject({
+      ok: false,
+      reason: 'unknown-kind',
+    });
+  });
+});
+
+describe('applyAssetPatch(未定義の項目)', () => {
+  test('値が undefined の項目で既存の値を消さない', () => {
+    const asset = createTestAsset({ enabled: true });
+    expect(applyAssetPatch(asset, { code: 'x', enabled: undefined })).toMatchObject({
+      code: 'x',
+      enabled: true,
+    });
   });
 });

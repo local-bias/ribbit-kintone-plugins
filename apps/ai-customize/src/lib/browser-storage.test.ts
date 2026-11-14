@@ -5,8 +5,11 @@ import {
   buildStorageKey,
   isSafeMode,
   readMutedIds,
+  readPanelState,
   removeOtherUsersKeys,
   type StorageLike,
+  writeMutedIds,
+  writePanelState,
 } from './browser-storage';
 
 const target = { spaceId: '0', appId: '42' };
@@ -129,5 +132,41 @@ describe('removeOtherUsersKeys', () => {
 
   test('localStorage が例外を投げても落ちない', () => {
     expect(() => removeOtherUsersKeys(throwingStorage, 'sato')).not.toThrow();
+  });
+});
+
+describe('writeMutedIds', () => {
+  test('書いたIDを readMutedIds で読める', () => {
+    const storage = createStorage();
+    expect(writeMutedIds(storage, target, 'sato', new Set(['3', '1']))).toBe(true);
+    expect(readMutedIds(storage, target, 'sato')).toEqual(new Set(['1', '3']));
+  });
+
+  test('空にしたらキーを消す', () => {
+    const storage = createStorage();
+    writeMutedIds(storage, target, 'sato', new Set(['1']));
+    writeMutedIds(storage, target, 'sato', new Set());
+    expect(storage.data.size).toBe(0);
+  });
+
+  test('ストレージが使えなければ false', () => {
+    expect(writeMutedIds(throwingStorage, target, 'sato', new Set(['1']))).toBe(false);
+    expect(writeMutedIds(null, target, 'sato', new Set(['1']))).toBe(false);
+  });
+});
+
+describe('readPanelState / writePanelState', () => {
+  test('開閉と選択中のタブを保存して読める', () => {
+    const storage = createStorage();
+    writePanelState(storage, target, { open: true, tab: 'css' });
+    expect(readPanelState(storage, target)).toEqual({ open: true, tab: 'css' });
+  });
+
+  test('保存が無い・壊れている・使えないときは閉じたJSタブ', () => {
+    const closed = { open: false, tab: 'js' };
+    expect(readPanelState(createStorage(), target)).toEqual(closed);
+    const broken = createStorage({ '🐸-ai-customize:v3:panel:0:42': '{"open":1,"tab":"x"}' });
+    expect(readPanelState(broken, target)).toEqual(closed);
+    expect(readPanelState(throwingStorage, target)).toEqual(closed);
   });
 });

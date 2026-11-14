@@ -1,6 +1,6 @@
 import { type AssetGrants, isExternalTargetAllowed } from './asset-filter';
 import type { EventBridge } from './event-bridge';
-import { describeExternalTarget } from './external-target';
+import { describeExternalTarget, toCanonicalRequestUrl } from './external-target';
 import {
   classifyKintoneRequest,
   hasAnyWritePermission,
@@ -17,7 +17,7 @@ import { type PermissionDenial, PermissionDeniedError } from './permission-error
  * - 本物をプロトタイプに持たせない。`Object.getPrototypeOf(kintone).api(...)`で判定を素通りできてしまうため。
  *   入れ子の`events` / `plugin` / `plugin.app`も同じく写す
  * - `Proxy`は使わない(本物のプロパティが凍結されていると、getで別の値を返したときに不変条件違反になるため)
- * - 差し替えない関数は参照のまま写す(`bind`すると`kintone.Promise.all`のような静的メンバーが消える)。
+ * - 差し替えない関数は参照のまま写す(`bind`すると、関数が持つ静的メンバーが消える)。
  *   `this`を使う関数も、ファサードが同じメンバーを持つため動く
  *
  * | メンバー | 差し替え後 |
@@ -169,7 +169,14 @@ export const createAssetKintone = (options: AssetKintoneOptions): KintoneGlobal 
     (...args: unknown[]) => {
       const [url, method, , , success, failure] = args;
       const target = typeof url === 'string' ? url : null;
-      if (!isExternalTargetAllowed(getGrants(), target)) {
+      const grants = getGrants();
+      // 送信先を問わない権限なら、元の引数のまま送る
+      if (isExternalTargetAllowed(grants, null)) {
+        return original(...args);
+      }
+      // 「指定先のみ」は、照合した正規形を送る(照合と送信でURLの解釈が割れないように)
+      const canonical = target === null ? null : toCanonicalRequestUrl(target);
+      if (canonical === null || !isExternalTargetAllowed(grants, canonical)) {
         return deny(
           {
             operation: 'kintone.proxy',
@@ -180,7 +187,7 @@ export const createAssetKintone = (options: AssetKintoneOptions): KintoneGlobal 
           [success, failure]
         );
       }
-      return original(...args);
+      return original(canonical, ...args.slice(1));
     };
 
   const proxy = Object.assign(guardProxy(real.proxy.bind(real)), {

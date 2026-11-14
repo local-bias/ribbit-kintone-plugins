@@ -59,6 +59,25 @@ const setup = (permissions: AssetPermission[] = [], externalUrls: string[] = [])
   return { real, facade, bridge, grants, onDenied };
 };
 
+/** 権限なしのファサードを作るための最小の設定 */
+const setupOptions = (): AssetKintoneOptions => ({
+  real: createReal() as unknown as KintoneGlobal,
+  assetId: '1',
+  bridge: createEventBridge({
+    registerNative: vi.fn(),
+    canDeliver: () => true,
+    rankOf: () => 0,
+    onHandlerError: vi.fn(),
+    onRejectedType: vi.fn(),
+    onIgnoredThenable: vi.fn(),
+    submitErrorMessage: 'error',
+  }),
+  getGrants: () => ({ permissions: [], externalUrls: [] }),
+  origin: ORIGIN,
+  onDenied: vi.fn(),
+  describeDenial: () => 'denied',
+});
+
 describe('createAssetKintone: kintone.api', () => {
   test('GET は常に本物へ委譲する', async () => {
     const { real, facade } = setup();
@@ -151,6 +170,20 @@ describe('createAssetKintone: kintone.proxy', () => {
     expect(real.proxy).toHaveBeenCalledTimes(1);
   });
 
+  test('指定先のみなら、照合した正規形を送り、解釈が割れる形は送らない', async () => {
+    const { real, facade } = setup(['external-listed'], ['https://api.example.com/v1/']);
+    await facade.proxy('HTTPS://API.example.com:443/v1/a/../b?q=1', 'GET', {}, {});
+    expect(real.proxy).toHaveBeenCalledWith('https://api.example.com/v1/b?q=1', 'GET', {}, {});
+    for (const url of [
+      'https://api.example.com\\@evil.example/v1/',
+      'https://api.example.com/v1/..%2f..%2fadmin',
+      'https://api.example.com/v1/\tx',
+    ]) {
+      await expect(facade.proxy(url, 'GET', {}, {})).rejects.toBeDefined();
+    }
+    expect(real.proxy).toHaveBeenCalledTimes(1);
+  });
+
   test('すべてなら委譲する', async () => {
     const { real, facade } = setup(['external-all']);
     await facade.proxy('https://anywhere.example/', 'POST', {}, {});
@@ -236,10 +269,17 @@ describe('createAssetKintone: その他', () => {
     expect((Object.getPrototypeOf(facade) as { api?: unknown }).api).toBeUndefined();
   });
 
-  test('kintone.Promise は静的メンバーを含めてそのまま使える', async () => {
-    const { facade } = setup();
-    expect(facade.Promise).toBe(Promise);
-    await expect(facade.Promise.all([1])).resolves.toEqual([1]);
+  test('差し替えない関数は、静的メンバーを持ったまま参照で写す', () => {
+    const real = createReal();
+    const withStatic = Object.assign(real, {
+      util: Object.assign(() => 'called', { helper: () => 'static' }),
+    });
+    const facade = createAssetKintone({
+      ...setupOptions(),
+      real: withStatic as unknown as KintoneGlobal,
+    }) as unknown as typeof withStatic;
+    expect(facade.util).toBe(withStatic.util);
+    expect(facade.util.helper()).toBe('static');
   });
 
   test('this を使う本物のメンバーも、ファサードから呼べる', () => {

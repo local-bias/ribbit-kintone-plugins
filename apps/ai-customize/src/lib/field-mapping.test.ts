@@ -6,6 +6,7 @@ import {
   filterFieldsByTypes,
   getDefaultSelectedOptions,
   getFieldOptions,
+  findUpdatedTimeFieldCode,
 } from './field-mapping';
 import { createCommonConfig } from './plugin';
 
@@ -62,5 +63,17 @@ describe('getDefaultSelectedOptions', () => {
       getDefaultSelectedOptions(field({ type: 'CHECK_BOX', defaultValue: ['更新(PUT)'] }))
     ).toEqual(['更新(PUT)']);
     expect(getDefaultSelectedOptions(field({ type: 'DROP_DOWN', defaultValue: 'x' }))).toEqual([]);
+  });
+});
+
+describe('findUpdatedTimeFieldCode', () => {
+  test('更新日時フィールドのコードを返す。無ければ空文字', () => {
+    expect(
+      findUpdatedTimeFieldCode([
+        { type: 'SINGLE_LINE_TEXT', code: 'title' },
+        { type: 'UPDATED_TIME', code: '更新日時' },
+      ] as never)
+    ).toBe('更新日時');
+    expect(findUpdatedTimeFieldCode([])).toBe('');
   });
 });

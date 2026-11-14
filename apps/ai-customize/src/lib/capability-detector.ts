@@ -1,13 +1,32 @@
-import jsTokens, { type Token } from 'js-tokens';
+import { detectGlobalAliasValues } from './global-alias-detector';
+import { scanHtmlTags } from './html-tag-scanner';
+import { detectResourceLoads, type ResourceLoad } from './js-resource-detector';
+import { collectStringUnits, type StringUnit } from './js-string-unit';
+import {
+  type BracketIndex,
+  buildBracketIndex,
+  isIdentifier,
+  isMemberAccess,
+  isPunctuator,
+  isStringToken,
+  literalArgument,
+  readArguments,
+  type Significant,
+  toSignificantTokens,
+  unquoteLiteral,
+} from './js-token';
 
 /**
  * アセットのコードを静的に走査し、権限の使用箇所と迂回パターンを検出します
  *
- * 文字列・コメント・正規表現リテラルを区別するためにトークナイザーを使う。
- * 正規表現を生のコードへ当てると、コメント中の`fetch(`で誤検知し、文字列連結で見逃すため。
+ * 文字列・コメント・正規表現リテラルを区別するためにトークナイザーを使う(`js-token.ts`)。
+ * 文字列は連結・テンプレートをつないだ単位で検査する(`js-string-unit.ts`)。
+ * 起動時にメインスレッドで走るため、全ての走査を線形に保つ。
  *
  * 検出は「うっかり」を止めるためのもので、悪意ある難読化は止められない(docs/13 3-1章)。
  */
+
+export { unquoteLiteral };
 
 export type ApiMethod = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'unknown';
 
@@ -16,107 +35,16 @@ export type JsCapabilityUsage = {
   apiCalls: { method: ApiMethod; path: string | null; line: number }[];
   /** `kintone.proxy(...)` / `kintone.proxy.upload(...)`。送信先がリテラルでなければ`target: null` */
   external: { target: string | null; line: number }[];
+  /**
+   * `kintone.proxy`を通らない外部リソースの読み込み(`img.src = 'https://…'`など)
+   *
+   * CSSの`url()`と同じ基準で、外部通信の設定と照合する。組み立てられた送信先は`target: null`
+   */
+  resources: ResourceLoad[];
   /** ファサードを通らずに本物のAPIやネットワークへ到達しうる書き方 */
   bypass: { pattern: string; line: number }[];
   /** 外部URLの文字列リテラル(情報表示のみ。実行時には制御されない) */
   urlLiterals: { url: string; line: number }[];
-};
-
-type Significant = { type: Token['type']; value: string; line: number };
-
-const LINE_BREAK = /\r\n|[\n\r\u2028\u2029]/g;
-
-const countLineBreaks = (value: string): number => value.match(LINE_BREAK)?.length ?? 0;
-
-const SKIPPED_TYPES = new Set<Token['type']>([
-  'WhiteSpace',
-  'LineTerminatorSequence',
-  'SingleLineComment',
-  'MultiLineComment',
-  'HashbangComment',
-]);
-
-/** 空白・改行・コメントを除いたトークン列に、行番号を付けて返します */
-const toSignificantTokens = (code: string): Significant[] => {
-  const result: Significant[] = [];
-  let line = 1;
-  for (const token of jsTokens(code)) {
-    if (!SKIPPED_TYPES.has(token.type)) {
-      result.push({ type: token.type, value: token.value, line });
-    }
-    line += countLineBreaks(token.value);
-  }
-  return result;
-};
-
-const isStringToken = (token: Significant | undefined): boolean =>
-  token?.type === 'StringLiteral' || token?.type === 'NoSubstitutionTemplate';
-
-/**
- * 文字列リテラルの中身を返します
- *
- * エスケープを含むものは、見た目と実際の値が一致しない可能性があるため`null`を返します
- * (判定に使う値は、利用者が承認画面で目にするものと同じでなければならない)
- */
-export const unquoteLiteral = (raw: string): string | null => {
-  const quote = raw[0];
-  if (quote !== '"' && quote !== "'" && quote !== '`') {
-    return null;
-  }
-  if (raw.length < 2 || raw[raw.length - 1] !== quote) {
-    return null;
-  }
-  const inner = raw.slice(1, -1);
-  return inner.includes('\\') ? null : inner;
-};
-
-const isPunctuator = (token: Significant | undefined, value: string): boolean =>
-  token?.type === 'Punctuator' && token.value === value;
-
-const isIdentifier = (token: Significant | undefined, value?: string): boolean =>
-  token?.type === 'IdentifierName' && (value === undefined || token.value === value);
-
-const isMemberAccess = (token: Significant | undefined): boolean =>
-  isPunctuator(token, '.') || isPunctuator(token, '?.');
-
-const OPENERS = new Set(['(', '[', '{', '${']);
-const CLOSERS = new Set([')', ']', '}']);
-
-/**
- * `(`の位置から、トップレベルのカンマで区切った引数のトークン列を返します
- *
- * @param openIndex `(`トークンの位置
- */
-const readArguments = (tokens: Significant[], openIndex: number): Significant[][] => {
-  const args: Significant[][] = [[]];
-  let depth = 0;
-  for (let index = openIndex + 1; index < tokens.length; index++) {
-    const token = tokens[index]!;
-    const isTemplateHead = token.type === 'TemplateHead';
-    const isTemplateTail = token.type === 'TemplateTail';
-    if (depth === 0 && isPunctuator(token, ')')) {
-      break;
-    }
-    if (depth === 0 && isPunctuator(token, ',')) {
-      args.push([]);
-      continue;
-    }
-    if ((token.type === 'Punctuator' && OPENERS.has(token.value)) || isTemplateHead) {
-      depth++;
-    } else if ((token.type === 'Punctuator' && CLOSERS.has(token.value)) || isTemplateTail) {
-      depth--;
-    }
-    args[args.length - 1]!.push(token);
-  }
-  return args;
-};
-
-/** 引数が文字列リテラル1つだけなら、その中身を返します */
-const literalArgument = (arg: Significant[] | undefined): string | null => {
-  if (arg?.length !== 1 || !isStringToken(arg[0])) {
-    return null;
-  }
-  return unquoteLiteral(arg[0]!.value);
 };
 
 const API_METHODS = new Set(['GET', 'POST', 'PUT', 'DELETE']);
@@ -158,14 +86,14 @@ const ALWAYS_BYPASS_NAMES = new Set([
   'srcdoc',
 ]);
 
-/** 計算プロパティ(`self[...]`)で本物のグローバルへ到達しうる識別子 */
-const WINDOW_ALIASES = new Set(['window', 'self', 'top', 'parent', 'frames', 'opener']);
-
 /** 生成するとスクリプトの実行や別ウィンドウへの到達につながる要素 */
 const DANGEROUS_ELEMENTS = new Set(['script', 'iframe', 'frame', 'object', 'embed']);
 
 /** 文字列の中にあっても、実行につながる断片 */
 const DANGEROUS_STRING_FRAGMENTS = [/<\s*script/i, /<\s*iframe/i];
+
+/** インラインのイベントハンドラ属性(`<img onerror=...>`)の名前 */
+const INLINE_EVENT_HANDLER = /^on[a-z]+$/;
 
 /**
  * 何も実行しない`javascript:`URL(`javascript:void(0)` / `javascript:;` / `javascript:`)
@@ -179,31 +107,31 @@ const HARMLESS_JAVASCRIPT_URL =
 const hasExecutableJavascriptUrl = (value: string): boolean =>
   /javascript:/i.test(value.replace(HARMLESS_JAVASCRIPT_URL, ''));
 
-type BypassRule = (tokens: Significant[], index: number) => string | null;
+type BypassRule = (tokens: Significant[], index: number, brackets: BracketIndex) => string | null;
 
 const bypassRules: BypassRule[] = [
-  // Unicodeエスケープを含む識別子(fetch の f を \u0066 と書くなど)は、名前による判定をすり抜ける
+  // Unicodeエスケープを含む識別子(fetch の f を f と書くなど)は、名前による判定をすり抜ける
   (tokens, index) => {
-    const token = tokens[index]!;
-    return isIdentifier(token) && token.value.includes('\\') ? 'escaped-identifier' : null;
+    const token = tokens[index];
+    return isIdentifier(token) && token?.value.includes('\\') ? 'escaped-identifier' : null;
   },
   (tokens, index) => {
-    const token = tokens[index]!;
-    return isIdentifier(token) && ALWAYS_BYPASS_NAMES.has(token.value) ? token.value : null;
+    const token = tokens[index];
+    return isIdentifier(token) && ALWAYS_BYPASS_NAMES.has(token?.value ?? '')
+      ? (token?.value ?? null)
+      : null;
   },
   // `window.kintone` / `self.kintone` など、`kintone`をメンバーとして参照する
   (tokens, index) =>
     isIdentifier(tokens[index], 'kintone') && isMemberAccess(tokens[index - 1]) ? '.kintone' : null,
-  // `window[...]` / `self[...]` など、計算プロパティによるグローバルの参照
-  (tokens, index) => {
-    const token = tokens[index]!;
-    return isIdentifier(token) &&
-      WINDOW_ALIASES.has(token.value) &&
-      !isMemberAccess(tokens[index - 1]) &&
-      isPunctuator(tokens[index + 1], '[')
-      ? `${token.value}[...]`
-      : null;
-  },
+  // `window[...]`。計算プロパティによるグローバルの参照
+  // (`self[...]`などの別名は、同名の変数と区別するため global-alias-detector で数える)
+  (tokens, index) =>
+    isIdentifier(tokens[index], 'window') &&
+    !isMemberAccess(tokens[index - 1]) &&
+    isPunctuator(tokens[index + 1], '[')
+      ? 'window[...]'
+      : null,
   // `const w = window` のように、windowを値として持ち出す
   (tokens, index) => {
     const next = tokens[index + 1];
@@ -234,10 +162,17 @@ const bypassRules: BypassRule[] = [
   // 非公開のkintone内部オブジェクト
   (tokens, index) =>
     isIdentifier(tokens[index], 'cybozu') && !isMemberAccess(tokens[index - 1]) ? 'cybozu' : null,
+  // `document.write(...)` / `document.writeln(...)`。文字列からスクリプトを差し込める
+  (tokens, index) =>
+    (isIdentifier(tokens[index], 'write') || isIdentifier(tokens[index], 'writeln')) &&
+    isMemberAccess(tokens[index - 1]) &&
+    isIdentifier(tokens[index - 2], 'document')
+      ? 'document.write'
+      : null,
   // 文字列を渡す setTimeout / setInterval
   (tokens, index) => {
-    const token = tokens[index]!;
-    if (!isIdentifier(token) || (token.value !== 'setTimeout' && token.value !== 'setInterval')) {
+    const token = tokens[index];
+    if (!isIdentifier(token) || (token?.value !== 'setTimeout' && token?.value !== 'setInterval')) {
       return null;
     }
     const next = tokens[index + 2];
@@ -247,39 +182,43 @@ const bypassRules: BypassRule[] = [
       : null;
   },
   // createElement('script') / createElement('iframe') など
-  (tokens, index) => {
-    const token = tokens[index]!;
+  (tokens, index, brackets) => {
+    const token = tokens[index];
     if (
       !isIdentifier(token) ||
-      (token.value !== 'createElement' && token.value !== 'createElementNS') ||
+      (token?.value !== 'createElement' && token?.value !== 'createElementNS') ||
       !isPunctuator(tokens[index + 1], '(')
     ) {
       return null;
     }
-    const args = readArguments(tokens, index + 1);
+    const args = readArguments(tokens, index + 1, brackets);
     const tag = literalArgument(token.value === 'createElement' ? args[0] : args[1]);
     return tag !== null && DANGEROUS_ELEMENTS.has(tag.toLowerCase())
       ? `createElement('${tag.toLowerCase()}')`
       : null;
   },
-  // 文字列に含まれる <script> / <iframe> / javascript:
-  (tokens, index) => {
-    const token = tokens[index]!;
-    const isStringLike =
-      isStringToken(token) ||
-      token.type === 'TemplateHead' ||
-      token.type === 'TemplateMiddle' ||
-      token.type === 'TemplateTail';
-    if (!isStringLike) {
-      return null;
-    }
-    const fragment = DANGEROUS_STRING_FRAGMENTS.find((pattern) => pattern.test(token.value));
-    if (fragment) {
-      return `string:${fragment.source}`;
-    }
-    return hasExecutableJavascriptUrl(token.value) ? 'string:javascript:' : null;
-  },
 ];
+
+/**
+ * 文字列に含まれる <script> / <iframe> / インラインのイベントハンドラ / コードを実行する javascript: URL
+ *
+ * 連結・テンプレートをつないだ単位で判定する(`'<img onerror="' + code + '">'`を見落とさないため)
+ */
+const detectDangerousString = (unit: StringUnit): string | null => {
+  const fragment = DANGEROUS_STRING_FRAGMENTS.find((pattern) => pattern.test(unit.content));
+  if (fragment) {
+    return `string:${fragment.source}`;
+  }
+  const hasInlineHandler = scanHtmlTags(unit.content).some((tag) =>
+    tag.attributes.some(({ name, value }) => value !== null && INLINE_EVENT_HANDLER.test(name))
+  );
+  if (hasInlineHandler) {
+    return 'string:on*=';
+  }
+  return hasExecutableJavascriptUrl(unit.content) ? 'string:javascript:' : null;
+};
+
+const byLine = <T extends { line: number }>(a: T, b: T): number => a.line - b.line;
 
 /** `kintone . api (` の位置なら`(`の位置を返します */
 const matchKintoneCall = (tokens: Significant[], index: number, path: string[]): number | null => {
@@ -308,12 +247,20 @@ const EXTERNAL_URL = /^(https?:)?\/\//i;
  */
 export const detectJsCapabilityUsage = (code: string): JsCapabilityUsage => {
   const tokens = toSignificantTokens(code);
-  const usage: JsCapabilityUsage = { apiCalls: [], external: [], bypass: [], urlLiterals: [] };
+  const brackets = buildBracketIndex(tokens);
+  const units = collectStringUnits(tokens, brackets);
+  const usage: JsCapabilityUsage = {
+    apiCalls: [],
+    external: [],
+    resources: detectResourceLoads(tokens, units, brackets).sort(byLine),
+    bypass: [],
+    urlLiterals: [],
+  };
 
   tokens.forEach((token, index) => {
     const apiOpen = matchKintoneCall(tokens, index, ['api']);
     if (apiOpen !== null) {
-      const [pathArg, methodArg] = readArguments(tokens, apiOpen);
+      const [pathArg, methodArg] = readArguments(tokens, apiOpen, brackets);
       usage.apiCalls.push({
         method: toApiMethod(methodArg),
         path: findApiPath(pathArg),
@@ -324,12 +271,12 @@ export const detectJsCapabilityUsage = (code: string): JsCapabilityUsage => {
       matchKintoneCall(tokens, index, ['proxy']) ??
       matchKintoneCall(tokens, index, ['proxy', 'upload']);
     if (proxyOpen !== null) {
-      const [targetArg] = readArguments(tokens, proxyOpen);
+      const [targetArg] = readArguments(tokens, proxyOpen, brackets);
       usage.external.push({ target: literalArgument(targetArg), line: token.line });
     }
 
     for (const rule of bypassRules) {
-      const pattern = rule(tokens, index);
+      const pattern = rule(tokens, index, brackets);
       if (pattern !== null) {
         usage.bypass.push({ pattern, line: token.line });
       }
@@ -343,5 +290,16 @@ export const detectJsCapabilityUsage = (code: string): JsCapabilityUsage => {
     }
   });
 
-  return usage;
+  const dangerousStrings = units.flatMap((unit) => {
+    const pattern = detectDangerousString(unit);
+    return pattern === null ? [] : [{ pattern, line: unit.line }];
+  });
+  return {
+    ...usage,
+    bypass: [
+      ...usage.bypass,
+      ...detectGlobalAliasValues(tokens, brackets),
+      ...dangerousStrings,
+    ].sort(byLine),
+  };
 };

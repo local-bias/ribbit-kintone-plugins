@@ -85,3 +85,59 @@ export const summarizeDiagnostics = (
     blockedAssetIds: collect((entry) => (entry.kind === 'blocked' ? entry.assetId : null)),
   };
 };
+
+/** 一覧の行に出す、アセットごとの問題の種類 */
+export type AssetProblem = 'failed' | 'denied' | 'blocked' | 'suspended' | 'skipped';
+
+const toProblem = (entry: DiagnosticEntry): [string, AssetProblem] | null => {
+  switch (entry.kind) {
+    case 'evaluation-failed':
+    case 'handler-failed':
+      return [entry.assetId, 'failed'];
+    case 'permission-denied':
+      return [entry.denial.assetId, 'denied'];
+    case 'blocked':
+      return [entry.assetId, 'blocked'];
+    case 'suspended':
+      return [entry.assetId, 'suspended'];
+    case 'mapping-skipped':
+      return [entry.assetId, 'skipped'];
+    default:
+      return null;
+  }
+};
+
+/** アセットごとに、起きた問題の種類を重複なく返します */
+export const collectAssetProblems = (
+  entries: readonly DiagnosticEntry[]
+): Map<string, AssetProblem[]> => {
+  const problems = new Map<string, AssetProblem[]>();
+  for (const entry of entries) {
+    const found = toProblem(entry);
+    if (found === null) continue;
+    const [assetId, problem] = found;
+    const current = problems.get(assetId) ?? [];
+    if (!current.includes(problem)) problems.set(assetId, [...current, problem]);
+  }
+  return problems;
+};
+
+/**
+ * そのアセットで止めた操作を、同じ内容ごとにまとめて件数にします
+ *
+ * 1ページの表示中に同じ拒否を何十件も並べないため(docs/06-ui.md 5章「拒否の記録」)
+ */
+export const groupDenials = (
+  entries: readonly DiagnosticEntry[],
+  assetId: string
+): { denial: PermissionDenial; count: number }[] => {
+  const groups = new Map<string, { denial: PermissionDenial; count: number }>();
+  for (const entry of entries) {
+    if (entry.kind !== 'permission-denied' || entry.denial.assetId !== assetId) continue;
+    const { operation, method, target, required } = entry.denial;
+    const key = JSON.stringify([operation, method, target, required]);
+    const current = groups.get(key);
+    groups.set(key, { denial: current?.denial ?? entry.denial, count: (current?.count ?? 0) + 1 });
+  }
+  return [...groups.values()];
+};

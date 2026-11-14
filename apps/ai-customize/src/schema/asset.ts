@@ -80,6 +80,8 @@ export type Asset = {
   permissions: AssetPermission[];
   /** 外部通信の通信先パターン(正規化済み・有効なものだけ) */
   externalUrls: string[];
+  /** 「通信先」フィールドの値そのもの(コメント行を含む)。編集はこれに対して行い、コメントを消さない */
+  externalUrlsText: string;
   /** 無効として除外した通信先の行 */
   invalidExternalUrls: InvalidExternalPattern[];
   /** 通信先の警告(暗号化されない`http:`など) */
@@ -89,3 +91,12 @@ export type Asset = {
 };
 
 export type AssetConfigurationIssue = 'conflicting-external-permissions';
+
+/**
+ * パネルから書き換えられる項目
+ *
+ * @see docs/06-ui.md 5章
+ */
+export type AssetPatch = Partial<
+  Pick<Asset, 'enabled' | 'scope' | 'code' | 'order' | 'permissions' | 'externalUrlsText'>
+>;

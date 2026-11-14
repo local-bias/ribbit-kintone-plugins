@@ -41,6 +41,7 @@ export const createTestAsset = (overrides: Partial<Asset> = {}): Asset => ({
   description: '',
   permissions: [],
   externalUrls: [],
+  externalUrlsText: '',
   invalidExternalUrls: [],
   externalUrlWarnings: [],
   configurationIssues: [],

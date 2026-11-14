@@ -61,6 +61,8 @@ export type RunnerOptions = {
 export type Runner = {
   /** 指定した画面向けで、まだ評価していないJSアセットを実行順に評価します */
   evaluatePending: (assets: readonly Asset[], screen: AssetScreen) => void;
+  /** このページで評価できたJSアセット(止めたもの・例外を投げたものは含めない) */
+  evaluatedIds: () => ReadonlySet<string>;
 };
 
 const defaultCompile = (source: string) =>
@@ -72,6 +74,7 @@ const defaultCompile = (source: string) =>
 
 export const createRunner = (options: RunnerOptions): Runner => {
   const evaluated = new Set<string>();
+  const succeeded = new Set<string>();
   const compile = options.compile ?? defaultCompile;
 
   const evaluate = (asset: Asset, screen: AssetScreen) => {
@@ -90,6 +93,7 @@ export const createRunner = (options: RunnerOptions): Runner => {
       options.record({ kind: 'evaluation-failed', assetId: asset.id, error });
       return;
     }
+    succeeded.add(asset.id);
     const ms = options.now() - startedAt;
     if (ms > EVALUATION_WARNING_MS) {
       options.record({ kind: 'slow-evaluation', assetId: asset.id, ms });
@@ -107,5 +111,5 @@ export const createRunner = (options: RunnerOptions): Runner => {
     }
   };
 
-  return { evaluatePending };
+  return { evaluatePending, evaluatedIds: () => new Set(succeeded) };
 };

@@ -204,7 +204,7 @@ describe('createEventBridge', () => {
       changed: true,
     }));
     expect(
-      natives.get('app.record.edit.change.A')!(event('app.record.edit.change.A'))
+      natives.get('app.record.edit.change.A')?.(event('app.record.edit.change.A'))
     ).toMatchObject({ changed: true });
   });
 

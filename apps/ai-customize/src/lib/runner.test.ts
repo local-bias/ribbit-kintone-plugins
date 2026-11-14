@@ -133,4 +133,25 @@ describe('createRunner', () => {
       { kind: 'slow-evaluation', assetId: '1', ms: EVALUATION_WARNING_MS + 1 },
     ]);
   });
+
+  test('評価できたJSのIDを返す(止めたもの・例外を投げたものは含めない)', () => {
+    const { runner } = setup({
+      checkPolicy: (asset) =>
+        asset.id === '2'
+          ? { allowed: false, reason: 'bypass', details: [{ pattern: 'fetch', line: 1 }] }
+          : { allowed: true },
+      compile: (source) => () => {
+        if (source.includes('throw')) throw new Error('x');
+      },
+    });
+    runner.evaluatePending(
+      [
+        createTestAsset({ id: '1' }),
+        createTestAsset({ id: '2' }),
+        createTestAsset({ id: '3', code: 'throw 1;' }),
+      ],
+      'detail'
+    );
+    expect(runner.evaluatedIds()).toEqual(new Set(['1']));
+  });
 });

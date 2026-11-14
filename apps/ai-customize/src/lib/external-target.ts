@@ -64,37 +64,91 @@ export type ParsedExternalPatterns = {
   warnings: { line: number; pattern: string; reason: 'insecure' }[];
 };
 
+/** 「通信先」フィールドの1行(空行と`#`で始まるコメント行は含まない) */
+export type ExternalUrlLine = {
+  /** フィールド内の行番号(1始まり) */
+  line: number;
+  raw: string;
+  result: NormalizedPattern;
+};
+
+const LINE_BREAK = /\r\n|\r|\n/;
+
+/**
+ * 「通信先」フィールドの値(1行1パターン)を、行ごとに正規化します
+ *
+ * 上限を超えた行は全て無効にします(一部だけ許可された状態を黙って作らないため、理由を残す)。
+ */
+export const listExternalUrlLines = (text: string): ExternalUrlLine[] =>
+  text
+    .split(LINE_BREAK)
+    .map((raw, index) => ({ raw: raw.trim(), line: index + 1 }))
+    .filter(({ raw }) => raw !== '' && !raw.startsWith('#'))
+    .map(({ raw, line }, index) => ({
+      raw,
+      line,
+      result:
+        index >= MAX_EXTERNAL_PATTERNS
+          ? { ok: false, reason: 'too-many' }
+          : normalizeExternalPattern(raw),
+    }));
+
 /**
  * 「通信先」フィールドの値(1行1パターン)を解析します
  *
  * 空行と`#`で始まる行は無視します。無効な行は除外し、理由を返します。
- * 上限を超えた行は全て無効にします(一部だけ許可された状態を黙って作らないため、理由を残す)。
  */
 export const parseExternalPatterns = (text: string): ParsedExternalPatterns => {
-  const entries = text
-    .split(/\r\n|\r|\n/)
-    .map((raw, index) => ({ raw: raw.trim(), line: index + 1 }))
-    .filter(({ raw }) => raw !== '' && !raw.startsWith('#'));
-
   const patterns = new Set<string>();
   const invalid: InvalidExternalPattern[] = [];
   const warnings: ParsedExternalPatterns['warnings'] = [];
-  entries.forEach(({ raw, line }, index) => {
-    if (index >= MAX_EXTERNAL_PATTERNS) {
-      invalid.push({ line, raw, reason: 'too-many' });
-      return;
-    }
-    const result = normalizeExternalPattern(raw);
+  for (const { raw, line, result } of listExternalUrlLines(text)) {
     if (!result.ok) {
       invalid.push({ line, raw, reason: result.reason });
-      return;
+      continue;
     }
     patterns.add(result.pattern);
     if (result.insecure) {
       warnings.push({ line, pattern: result.pattern, reason: 'insecure' });
     }
-  });
+  }
   return { patterns: [...patterns], invalid, warnings };
+};
+
+export type AppendExternalPatternResult =
+  | { ok: true; text: string; pattern: string }
+  | { ok: false; reason: ExternalPatternError | 'duplicate' };
+
+/**
+ * 通信先を末尾に1行追加します(正規化した形で書く。コメントや他の行はそのまま残す)
+ */
+export const appendExternalPattern = (text: string, raw: string): AppendExternalPatternResult => {
+  const normalized = normalizeExternalPattern(raw);
+  if (!normalized.ok) {
+    return normalized;
+  }
+  const lines = listExternalUrlLines(text);
+  if (lines.some(({ result }) => result.ok && result.pattern === normalized.pattern)) {
+    return { ok: false, reason: 'duplicate' };
+  }
+  if (lines.length >= MAX_EXTERNAL_PATTERNS) {
+    return { ok: false, reason: 'too-many' };
+  }
+  const base = text.replace(/\s+$/, '');
+  return {
+    ok: true,
+    text: base === '' ? normalized.pattern : `${base}\n${normalized.pattern}`,
+    pattern: normalized.pattern,
+  };
+};
+
+/** 指定した行(1始まり)を取り除きます。範囲外なら元の値を返す */
+export const removeExternalLine = (text: string, line: number): string => {
+  const lines = text.split(LINE_BREAK);
+  if (line < 1 || line > lines.length) {
+    return text;
+  }
+  return lines.filter((_, index) => index !== line - 1).join('\n');
 };
 
 /** パスがパターンのパスに、セグメント境界で前方一致するか */
@@ -140,6 +194,39 @@ export const matchExternalTarget = (target: string, patterns: readonly string[])
 };
 
 /**
+ * コードから読み取った参照先が外部通信になるなら、その絶対URLを返します
+ *
+ * CSSの`url()`とJSの`src`などで同じ基準を使う。
+ *
+ * - 相対URL・`data:`・`#`で始まる参照・kintoneと同一オリジンは外部通信ではない(`undefined`)
+ * - http(s)以外のスキームや解釈できない値、組み立てられて読み取れない値(`null`)は、送信先を判定できない外部通信(`null`)
+ *
+ * @param origin kintoneのオリジン(`location.origin`)
+ */
+export const resolveExternalReference = (
+  value: string | null,
+  origin: string
+): string | null | undefined => {
+  if (value === null) {
+    return null;
+  }
+  const trimmed = value.trim();
+  if (trimmed === '' || trimmed.startsWith('#') || /^data:/i.test(trimmed)) {
+    return undefined;
+  }
+  let url: URL;
+  try {
+    url = new URL(trimmed, `${origin}/`);
+  } catch {
+    return null;
+  }
+  if (!ALLOWED_PROTOCOLS.has(url.protocol)) {
+    return null;
+  }
+  return url.origin === new URL(origin).origin ? undefined : url.href;
+};
+
+/**
  * 拒否エラーや診断に載せるための、送信先URLの表示用文字列
  *
  * クエリには業務データが載りうるため、オリジンとパスだけを返します
@@ -151,4 +238,27 @@ export const describeExternalTarget = (target: string): string => {
   } catch {
     return '(invalid URL)';
   }
+};
+
+/**
+ * 送信先URLを、照合と送信に使う正規形へ変換します。曖昧な形なら`null`
+ *
+ * 照合はWHATWG URLで行うが、送信先のサーバーは別のパーサーで解釈しうる。
+ * 解釈が割れる形(`\\`・制御文字・空白、パス中の`%2f` `%5c`)は拒否し、照合した正規形を送信する
+ */
+export const toCanonicalRequestUrl = (raw: string): string | null => {
+  // biome-ignore lint/suspicious/noControlCharactersInRegex: 制御文字を拒否するため
+  if (/[\\\u0000-\u0020\u007f]/.test(raw)) {
+    return null;
+  }
+  let url: URL;
+  try {
+    url = new URL(raw);
+  } catch {
+    return null;
+  }
+  if (!ALLOWED_PROTOCOLS.has(url.protocol) || /%(?:2f|5c)/i.test(url.pathname)) {
+    return null;
+  }
+  return url.href;
 };

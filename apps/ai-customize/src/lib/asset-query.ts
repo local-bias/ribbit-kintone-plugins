@@ -80,3 +80,28 @@ export const getRuntimeFieldCodes = (common: PluginCommonConfig): string[] =>
     common.orderFieldCode,
     common.screensFieldCode,
   ].filter((code) => code !== '');
+
+/**
+ * パネルの一覧に必要なフィールドコードの一覧を返します
+ *
+ * 実行に必要なものに加えて、説明と更新日時を取得する
+ *
+ * @param updatedTimeFieldCode 更新日時フィールドのコード。無ければ空文字
+ */
+export const getPanelFieldCodes = (
+  common: PluginCommonConfig,
+  updatedTimeFieldCode: string
+): string[] =>
+  [...getRuntimeFieldCodes(common), common.descriptionFieldCode, updatedTimeFieldCode].filter(
+    (code, index, codes) => code !== '' && codes.indexOf(code) === index
+  );
+
+/** アセット管理アプリの、レコード詳細画面のパスを返します */
+export const buildAssetRecordPath = (common: PluginCommonConfig, assetId: string): string => {
+  assertNumeric(common.assetAppId, 'assetAppId');
+  assertNumeric(assetId, 'assetId');
+  const space = common.assetAppSpaceId;
+  if (space !== '') assertNumeric(space, 'assetAppSpaceId');
+  const prefix = space === '' ? '/k' : `/k/guest/${space}`;
+  return `${prefix}/${common.assetAppId}/show#record=${assetId}`;
+};

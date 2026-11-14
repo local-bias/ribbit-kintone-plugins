@@ -103,11 +103,16 @@ const classify = (
   if (path === '/k/v1/records/cursor' && (method === 'POST' || method === 'DELETE')) {
     return ['read'];
   }
-  if (RECORD_WRITE_PATHS.has(path)) {
-    return [METHOD_TO_REQUIREMENT[method]!];
+  const write = METHOD_TO_REQUIREMENT[method];
+  if (RECORD_WRITE_PATHS.has(path) && write !== undefined) {
+    return [write];
   }
-  if (path === '/k/v1/record/comment' && (method === 'POST' || method === 'DELETE')) {
-    return [METHOD_TO_REQUIREMENT[method]!];
+  if (
+    path === '/k/v1/record/comment' &&
+    (method === 'POST' || method === 'DELETE') &&
+    write !== undefined
+  ) {
+    return [write];
   }
   if (PROCESS_PATHS.has(path) && method === 'PUT') {
     return ['put'];

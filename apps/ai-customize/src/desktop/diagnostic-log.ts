@@ -1,5 +1,5 @@
 import type { DiagnosticEntry } from '@/lib/diagnostics';
-import { t } from '@/lib/i18n';
+import { describeDiagnostic } from './diagnostic-text';
 
 /**
  * 診断の記録を、開発者ツールのコンソールへ出します
@@ -9,53 +9,34 @@ import { t } from '@/lib/i18n';
 
 const PREFIX = '[ai-customize]';
 
-export const logDiagnostic = (entry: DiagnosticEntry): void => {
+/** 文言に添えて出す詳細(例外・検出箇所・拒否の内容) */
+const detailOf = (entry: DiagnosticEntry): unknown[] => {
   switch (entry.kind) {
-    case 'mapping-skipped':
-      console.warn(PREFIX, t('desktop.log.skipped', entry.assetId, entry.reason));
-      return;
     case 'load-failed':
-      console.error(PREFIX, entry.error);
-      return;
-    case 'gate-timeout':
-      return;
+      return [entry.error];
     case 'blocked':
-      console.warn(
-        PREFIX,
-        t(
-          entry.policy.reason === 'bypass'
-            ? 'desktop.log.blocked.bypass'
-            : 'desktop.log.blocked.external',
-          entry.assetId
-        ),
-        entry.policy.details
-      );
-      return;
+      return [entry.policy.details];
     case 'evaluation-failed':
-      console.error(PREFIX, t('desktop.log.evaluationFailed', entry.assetId), entry.error);
-      return;
-    case 'slow-evaluation':
-      console.warn(PREFIX, t('desktop.log.slowEvaluation', entry.assetId, String(entry.ms)));
-      return;
     case 'handler-failed':
-      console.error(
-        PREFIX,
-        t('desktop.log.handlerFailed', entry.assetId, entry.eventType),
-        entry.error
-      );
-      return;
-    case 'suspended':
-      console.warn(PREFIX, t('desktop.log.suspended', entry.assetId));
-      return;
+      return [entry.error];
     case 'permission-denied':
-      // 拒否エラー自体がアセットへ返り、メッセージはそこに入っている。ここでは経緯だけを残す
-      console.warn(PREFIX, entry.denial);
-      return;
-    case 'rejected-event-type':
-      console.warn(PREFIX, t('desktop.log.rejectedEvent', entry.assetId, String(entry.eventType)));
-      return;
-    case 'ignored-thenable':
-      console.warn(PREFIX, t('desktop.log.ignoredThenable', entry.assetId, entry.eventType));
-      return;
+      return [entry.denial];
+    default:
+      return [];
   }
+};
+
+const isError = (entry: DiagnosticEntry): boolean =>
+  entry.kind === 'load-failed' ||
+  entry.kind === 'evaluation-failed' ||
+  entry.kind === 'handler-failed';
+
+export const logDiagnostic = (entry: DiagnosticEntry): void => {
+  // タイムアウトは起動ゲートが待ち時間つきで出す
+  if (entry.kind === 'gate-timeout') {
+    return;
+  }
+  const message = describeDiagnostic(entry);
+  const log = isError(entry) ? console.error : console.warn;
+  log(PREFIX, message, ...detailOf(entry));
 };

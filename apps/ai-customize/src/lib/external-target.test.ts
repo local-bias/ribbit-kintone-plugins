@@ -1,10 +1,13 @@
 import { describe, expect, test } from 'vitest';
 import { MAX_EXTERNAL_PATTERNS } from './constants';
 import {
+  appendExternalPattern,
   describeExternalTarget,
+  listExternalUrlLines,
   matchExternalTarget,
   normalizeExternalPattern,
   parseExternalPatterns,
+  removeExternalLine,
 } from './external-target';
 
 describe('normalizeExternalPattern', () => {
@@ -123,5 +126,71 @@ describe('describeExternalTarget', () => {
     expect(describeExternalTarget('https://api.example.com/v1/zip?name=secret#x')).toBe(
       'https://api.example.com/v1/zip'
     );
+  });
+});
+
+describe('listExternalUrlLines', () => {
+  test('コメントと空行を除き、元の行番号と正規化結果を返す', () => {
+    const lines = listExternalUrlLines(
+      '# 郵便番号\nhttps://zipcloud.ibsnet.co.jp/api\n\nhttps://*.example.com'
+    );
+    expect(lines).toEqual([
+      {
+        line: 2,
+        raw: 'https://zipcloud.ibsnet.co.jp/api',
+        result: { ok: true, pattern: 'https://zipcloud.ibsnet.co.jp/api', insecure: false },
+      },
+      { line: 4, raw: 'https://*.example.com', result: { ok: false, reason: 'wildcard' } },
+    ]);
+  });
+});
+
+describe('appendExternalPattern', () => {
+  test('正規化した形で末尾に追加し、コメントは残す', () => {
+    expect(
+      appendExternalPattern('# api\nhttps://a.example.com/v1\n\n', 'https://B.example.com')
+    ).toEqual({
+      ok: true,
+      text: '# api\nhttps://a.example.com/v1\nhttps://b.example.com/',
+      pattern: 'https://b.example.com/',
+    });
+    expect(appendExternalPattern('', 'https://a.example.com/x')).toMatchObject({
+      text: 'https://a.example.com/x',
+    });
+  });
+
+  test('無効なパターンと、既にある通信先は追加しない', () => {
+    expect(appendExternalPattern('', 'https://a.example.com/?q=1')).toEqual({
+      ok: false,
+      reason: 'query',
+    });
+    expect(appendExternalPattern('https://a.example.com/', 'https://A.example.com')).toEqual({
+      ok: false,
+      reason: 'duplicate',
+    });
+  });
+
+  test('上限に達していたら追加しない', () => {
+    const text = Array.from(
+      { length: MAX_EXTERNAL_PATTERNS },
+      (_, i) => `https://h${i}.example.com/`
+    ).join('\n');
+    expect(appendExternalPattern(text, 'https://new.example.com')).toEqual({
+      ok: false,
+      reason: 'too-many',
+    });
+  });
+});
+
+describe('removeExternalLine', () => {
+  test('指定した行だけを取り除く', () => {
+    expect(removeExternalLine('# c\nhttps://a.example.com/\nhttps://b.example.com/', 2)).toBe(
+      '# c\nhttps://b.example.com/'
+    );
+  });
+
+  test('範囲外の行番号なら変えない', () => {
+    expect(removeExternalLine('https://a.example.com/', 5)).toBe('https://a.example.com/');
+    expect(removeExternalLine('https://a.example.com/', 0)).toBe('https://a.example.com/');
   });
 });
