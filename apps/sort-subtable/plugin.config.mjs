@@ -11,9 +11,6 @@ export default /** @type { const } */ ({
   server: {
     port: 11335,
   },
-  lint: {
-    build: false,
-  },
   manifest: {
     base: {
       manifest_version: 1,
@@ -27,6 +24,7 @@ export default /** @type { const } */ ({
         es: 'Complemento de ordenación de subtablas',
         'pt-BR': 'Plugin de ordenação de subtabela',
         th: 'ปลั๊กอินจัดเรียงตารางย่อย',
+        ms: 'Pemalam Susun Subtable',
       },
       description: {
         en: 'Add a button to sort the rows of the subtable based on a specific column.',
@@ -37,6 +35,7 @@ export default /** @type { const } */ ({
         'pt-BR':
           'Adiciona um botão para classificar as linhas da subtabela com base em uma coluna específica.',
         th: 'เพิ่มปุ่มเพื่อจัดเรียงแถวของตารางย่อยตามคอลัมน์เฉพาะ',
+        ms: 'Tambah butang untuk menyusun baris subtable berdasarkan lajur tertentu.',
       },
       icon: 'icon.png',
       homepage_url: { ja: hp, en: hp },
