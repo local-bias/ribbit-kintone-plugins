@@ -253,7 +253,7 @@ const writeAsset = tool({
 
 - 上書きした事実は**ツール結果に含めてモデルへ返す**。返さないとAIは自分の指定が通ったと誤認し、
   次の発言で「全員に公開しました」と嘘をつく。
-- 上書きできるのは `scope` / `enableAfterSave` / `order` / `screens` に限る。`code` と `id` は上書きさせない
+- 上書きできるのは `scope` / `enableAfterSave` と、減らす方向の `permissions` / `externalUrls` に限る(07 5章)。`code` と `id` は上書きさせない
   (別物を保存したのに承認画面と一致しない状態を作らないため)。
 - `toolsContext` はツール名ごとに分かれているため、上書き値は該当するツール(`write_asset` / `set_asset_state`)の
   contextにだけ載せる。読み取り系ツールへ渡さない。

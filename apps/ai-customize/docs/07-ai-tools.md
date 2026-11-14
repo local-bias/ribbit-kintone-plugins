@@ -396,7 +396,12 @@ JSはv1でプレビューせず、無効状態で保存・レビュー・有効�
 10. 更新時は既存の有効/無効状態を維持する。新規JSは必ず無効で保存する。新規CSSは承認カード上の
    「保存後すぐ有効にする」をユーザーが明示的に選んだ場合だけ有効にし、既定は無効にする
 
-返り値: `{ id, revision, url }`(レコードのURL。ユーザーが確認しに行ける)
+返り値: `{ status: 'saved', operation, id, revision, url, enabled, appliedScope, appliedPermissions, appliedExternalUrls, overriddenByUser, warnings }`
+(`url` はレコードのURL。ユーザーが確認しに行ける)。拒否したときは `{ status: 'rejected', reason, message, errors? }` を返す。
+
+- 入力だけで保存できないと分かるもの(1〜4の拒否)は、承認を求めずに拒否の理由を返す(ADR-49)
+- 同じツール呼び出しは2回保存しない(ADR-50)
+- 管理アプリで「通信先」を対応付けていなければ、外部通信を使うものは保存しない。「説明」「適用画面」「実行順」は対応付けていなければ書かない
 
 ### 4-11. `set_asset_state`
 
@@ -473,7 +478,9 @@ AIが承認対象ツールを要求
   承認レスポンス自体は approve / deny の二値しか運べないため、上書き値は再開時の `options` から該当ツールの `toolsContext` を経由して `execute` へ渡し、
   適用結果(`appliedScope`)をツール結果に載せてAIへ返す(→ [07b](./07b-ai-providers.md) 4-2章)。
   返さないとAIは自分の指定が通ったと誤認し、「全員に公開しました」と事実と違う説明をする。
-- 上書きできるのは `scope` / `enableAfterSave` / `order` / `screens` / `permissions` / `externalUrls`(後の2つは**減らす方向だけ**)に限る。
+- 上書きできるのは `scope` / `enableAfterSave` / `permissions` / `externalUrls`(後の2つは**減らす方向だけ**)に限る。
+  `order` / `screens` はv1の承認カードで変えられない(AIの指定のまま保存し、変えたければ却下して理由で伝える)。
+  更新では、利用者が影響範囲を選び直したとき(または公開権限が無いため「自分だけ」に落としたとき)だけ `scope` を上書きする。
   `code` と `id` は上書きさせない。権限を減らした結果、コードが使う操作が許可されなくなる場合は、承認カードで
   「この操作は実行時に拒否されます」と表示し、適用結果(`appliedPermissions` / `appliedExternalUrls`)をツール結果でAIへ返す。
   承認画面で見せたコードと、実際に保存されるコードは常に同一でなければならない。
