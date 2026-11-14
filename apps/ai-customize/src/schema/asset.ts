@@ -93,10 +93,23 @@ export type Asset = {
 export type AssetConfigurationIssue = 'conflicting-external-permissions';
 
 /**
- * パネルから書き換えられる項目
+ * パネルとAIのツールから書き換えられる項目
+ *
+ * タイトル・説明・適用画面はAIの`write_asset`だけが書き換える(docs/07-ai-tools.md 4-10章)
  *
  * @see docs/06-ui.md 5章
  */
 export type AssetPatch = Partial<
-  Pick<Asset, 'enabled' | 'scope' | 'code' | 'order' | 'permissions' | 'externalUrlsText'>
+  Pick<
+    Asset,
+    | 'enabled'
+    | 'scope'
+    | 'code'
+    | 'order'
+    | 'permissions'
+    | 'externalUrlsText'
+    | 'title'
+    | 'description'
+    | 'screens'
+  >
 >;

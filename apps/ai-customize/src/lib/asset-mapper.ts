@@ -219,6 +219,11 @@ const toPermissionValues = (
     .filter(([, permission]) => permissions.includes(permission))
     .map(([value, permission]) => requireCode(value, permission));
 
+const toScreenValues = (screens: readonly AssetScreen[], common: PluginCommonConfig): string[] =>
+  screenOptions(common)
+    .filter(([, screen]) => screens.includes(screen))
+    .map(([value, screen]) => requireCode(value, screen));
+
 /**
  * パネルで書き換えた項目を、レコード更新の値にします(渡した項目だけを書く)
  *
@@ -255,6 +260,19 @@ export const toRecordPatch = (patch: AssetPatch, common: PluginCommonConfig): As
       value: patch.externalUrlsText,
     };
   }
+  if (patch.title !== undefined) {
+    values[requireCode(common.titleFieldCode, 'title')] = { value: patch.title };
+  }
+  if (patch.description !== undefined) {
+    values[requireCode(common.descriptionFieldCode, 'description')] = {
+      value: patch.description,
+    };
+  }
+  if (patch.screens !== undefined) {
+    values[requireCode(common.screensFieldCode, 'screens')] = {
+      value: toScreenValues(patch.screens, common),
+    };
+  }
   return values;
 };
 
@@ -288,11 +306,7 @@ export const toNewAssetRecord = (
     optional[common.orderFieldCode] = { value: String(asset.order) };
   }
   if (common.screensFieldCode !== '') {
-    optional[common.screensFieldCode] = {
-      value: screenOptions(common)
-        .filter(([, screen]) => asset.screens.includes(screen))
-        .map(([value]) => value),
-    };
+    optional[common.screensFieldCode] = { value: toScreenValues(asset.screens, common) };
   }
   if (common.descriptionFieldCode !== '') {
     optional[common.descriptionFieldCode] = { value: asset.description };

@@ -193,6 +193,16 @@ describe('toRecordPatch', () => {
     expect(toRecordPatch({ code: '' }, common)).toEqual({ code: { value: '' } });
   });
 
+  test('AIが書き換えるタイトル・説明・適用画面も書ける', () => {
+    expect(
+      toRecordPatch({ title: 'T', description: 'D', screens: ['edit', 'index'] }, common)
+    ).toEqual({
+      title: { value: 'T' },
+      description: { value: 'D' },
+      screens: { value: [common.screenIndexValue, common.screenEditValue] },
+    });
+  });
+
   test('対応付けていないフィールドへは書かずに例外にする', () => {
     expect(() =>
       toRecordPatch({ order: 100 }, createTestCommonConfig({ orderFieldCode: '' }))

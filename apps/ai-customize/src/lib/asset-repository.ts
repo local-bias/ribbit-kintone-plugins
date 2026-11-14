@@ -329,7 +329,9 @@ export type AddRecord = (params: {
   guestSpaceId?: string;
 }) => Promise<{ id: string; revision: string }>;
 
-export type AddResult = { status: 'ok'; id: string } | { status: 'error'; message: string };
+export type AddResult =
+  | { status: 'ok'; id: string; revision: string }
+  | { status: 'error'; message: string };
 
 /** アセットのレコードを追加します */
 export const addAssetRecord = async (params: {
@@ -344,7 +346,7 @@ export const addAssetRecord = async (params: {
       record,
       guestSpaceId: common.assetAppSpaceId || undefined,
     });
-    return { status: 'ok', id: String(response.id) };
+    return { status: 'ok', id: String(response.id), revision: String(response.revision) };
   } catch (error) {
     return { status: 'error', message: toErrorMessage(error) };
   }

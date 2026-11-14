@@ -336,7 +336,11 @@ describe('addAssetRecord', () => {
   test('追加したレコードのIDを返す', async () => {
     const addRecord = vi.fn<AddRecord>(async () => ({ id: '12', revision: '1' }));
     const record = { title: { value: 'a' } };
-    expect(await addAssetRecord({ addRecord, common, record })).toEqual({ status: 'ok', id: '12' });
+    expect(await addAssetRecord({ addRecord, common, record })).toEqual({
+      status: 'ok',
+      id: '12',
+      revision: '1',
+    });
     expect(addRecord).toHaveBeenCalledWith({ app: '99', record, guestSpaceId: undefined });
   });
 
