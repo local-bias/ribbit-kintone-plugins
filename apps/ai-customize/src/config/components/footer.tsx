@@ -1,10 +1,6 @@
 import { ConfigFooter } from '@repo/plugin/react';
-import {
-  exportPluginConfigAtom,
-  handlePluginConfigResetAtom,
-  importPluginConfigAtom,
-  updatePluginConfig,
-} from '@/config/states/plugin';
+import { importConfigAtom, saveConfigAtom } from '@/config/states/ai';
+import { exportPluginConfigAtom, handlePluginConfigResetAtom } from '@/config/states/plugin';
 import { t } from '@/lib/i18n';
 
 export default function Footer() {
@@ -13,8 +9,8 @@ export default function Footer() {
       t={t}
       resetAtom={handlePluginConfigResetAtom}
       exportAtom={exportPluginConfigAtom}
-      importAtom={importPluginConfigAtom}
-      updateAtom={updatePluginConfig}
+      importAtom={importConfigAtom}
+      updateAtom={saveConfigAtom}
     />
   );
 }

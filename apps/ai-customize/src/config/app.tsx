@@ -13,6 +13,7 @@ import { SnackbarProvider } from 'notistack';
 import { Suspense } from 'react';
 import config from '@/../plugin.config.mjs';
 import { t } from '@/lib/i18n';
+import AiSection from './components/ai-section';
 import AssetAppSection from './components/asset-app-section';
 import ChoiceValuesSection from './components/choice-values-section';
 import { PluginErrorBoundary } from './components/error-boundary';
@@ -41,6 +42,7 @@ export default function App() {
                           <AssetAppSection />
                           <FieldMappingSection />
                           <ChoiceValuesSection />
+                          <AiSection />
                         </div>
                       </PluginErrorBoundary>
                     </PluginContent>
