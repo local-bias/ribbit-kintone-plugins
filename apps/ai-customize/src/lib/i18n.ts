@@ -1,8 +1,9 @@
 import { commonUi, useTranslations } from '@repo/utils';
 import { mergeDeep } from 'remeda';
 import { LANGUAGE } from './global';
+import { chatWriteUi } from './i18n-chat-write';
 
-const ui = mergeDeep(commonUi, {
+const baseUi = mergeDeep(commonUi, {
   ja: {
     'desktop.submitError':
       'カスタマイズの保存前処理でエラーが発生したため、保存を中止しました。管理者に連絡してください。',
@@ -249,7 +250,6 @@ const ui = mergeDeep(commonUi, {
     'desktop.chat.thinking': '考えています… {0}秒',
     'desktop.chat.empty':
       'このアプリで実現したいことを書いてください。AIがフィールドや画面を調べて、JavaScriptやCSSを提案します。',
-    'desktop.chat.readOnlyNote': 'いまは提案だけを行います。登録は管理アプリから行ってください。',
     'desktop.chat.context': '対象: アプリ{0}・{1}',
     'desktop.chat.destination': '送信先: {0}',
     'desktop.chat.recordSending.off': 'レコードの値: 送らない',
@@ -700,8 +700,6 @@ const ui = mergeDeep(commonUi, {
     'desktop.chat.thinking': 'Thinking… {0}s',
     'desktop.chat.empty':
       'Describe what you want to do in this app. The AI looks at the fields and the screen and suggests JavaScript or CSS.',
-    'desktop.chat.readOnlyNote':
-      'For now the AI only suggests code. Register it in the management app.',
     'desktop.chat.context': 'Target: app {0} / {1}',
     'desktop.chat.destination': 'Sent to: {0}',
     'desktop.chat.recordSending.off': 'Record values: not sent',
@@ -907,6 +905,8 @@ const ui = mergeDeep(commonUi, {
       'Because the "Destinations" field is not mapped, "external (listed destinations)" always blocks everything.',
   },
 } as const);
+
+const ui = mergeDeep(baseUi, chatWriteUi);
 
 export const t = useTranslations({
   ui,

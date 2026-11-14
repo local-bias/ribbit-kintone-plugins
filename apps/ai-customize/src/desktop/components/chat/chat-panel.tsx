@@ -1,12 +1,21 @@
 import { Alert, Button, TextField, Tooltip } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { useAtomValue, useSetAtom } from '@repo/jotai';
-import { type KeyboardEvent, type MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  type KeyboardEvent,
+  type MouseEvent,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from 'react';
 import { detectScreen } from '@/lib/ai/chat-availability';
 import { toChatItems } from '@/lib/ai/chat-items';
 import { canSend, messagesForGeneration, nextPendingApproval } from '@/lib/ai/chat-session';
 import { t } from '@/lib/i18n';
 import type { AssetScreen } from '@/schema/asset';
+import { cssPreview } from '../../chat/css-preview';
 import {
   chatConfigAtom,
   chatStateAtom,
@@ -176,6 +185,32 @@ function ChatStatus() {
   return null;
 }
 
+/**
+ * CSSのプレビュー中であることと、解除ボタン
+ *
+ * パネルを閉じたとき・画面を移ったときにも外す(プレビューは保存していない一時的な見た目)
+ */
+function PreviewBar() {
+  const preview = useSyncExternalStore(cssPreview.subscribe, cssPreview.get);
+  // パネルを閉じた・タブを移ったら外す(画面の移動では`cssPreview`が自分で外す)
+  useEffect(() => () => cssPreview.clear(), []);
+  if (preview === null) return null;
+  return (
+    <Alert
+      severity='info'
+      square
+      action={
+        // 解除は安全側の操作なので、利用者の操作かを問わない
+        <Button color='inherit' size='small' onClick={() => cssPreview.clear()}>
+          {t('desktop.chat.preview.clear')}
+        </Button>
+      }
+    >
+      {t('desktop.chat.preview.active')}
+    </Alert>
+  );
+}
+
 /** IMEが変換中のキー入力で報告する`keyCode`(Safariは確定のEnterで`isComposing`がfalseになる) */
 const IME_PROCESS_KEY_CODE = 229;
 
@@ -243,10 +278,11 @@ function ChatInput() {
 }
 
 /**
- * AIと会話してカスタマイズを作るパネル(P3: 読み取りと提案まで)
+ * AIと会話してカスタマイズを作るパネル
  *
  * - ストリーミングは使わない。ツールの往復ごとにカードが積まれ、経過秒数を出す
- * - 送信を伴う読み取り(コード本文・レコードの値)は、1件ずつ承認してから行う
+ * - 送信を伴う読み取り(コード本文・レコードの値)と書き込み(登録・変更・削除)は、1件ずつ承認してから行う
+ * - CSSのプレビューは、パネルを閉じる・画面を移ると外れる
  *
  * @see docs/06-ui.md 6章
  */
@@ -284,10 +320,11 @@ export function ChatPanel() {
   return (
     <Root>
       <ChatContext destination={destination} />
+      <PreviewBar />
       <Messages>
         {items.length === 0 ? (
           <span style={{ fontSize: 12 }}>
-            {t('desktop.chat.empty')} {t('desktop.chat.readOnlyNote')}
+            {t('desktop.chat.empty')} {t('desktop.chat.empty.write')}
           </span>
         ) : (
           items.map((item) =>

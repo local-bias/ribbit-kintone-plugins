@@ -1,5 +1,6 @@
 import { styled } from '@mui/material/styles';
 import type { ToolStatus } from '@/lib/ai/chat-items';
+import { isWriteToolName } from '@/lib/ai/write-approval';
 import { t } from '@/lib/i18n';
 
 /** 折りたたんだ中に出す結果の上限(長いJSONで画面を埋めない) */
@@ -51,12 +52,27 @@ const TOOL_LABEL_KEYS = {
   list_assets: 'desktop.chat.tool.list_assets',
   read_asset: 'desktop.chat.tool.read_asset',
   get_record_sample: 'desktop.chat.tool.get_record_sample',
+  preview_css: 'desktop.chat.tool.preview_css',
+  write_asset: 'desktop.chat.tool.write_asset',
+  set_asset_state: 'desktop.chat.tool.set_asset_state',
+  delete_asset: 'desktop.chat.tool.delete_asset',
 } as const;
 
 export const toolLabel = (toolName: string): string =>
   toolName in TOOL_LABEL_KEYS
     ? t(TOOL_LABEL_KEYS[toolName as keyof typeof TOOL_LABEL_KEYS])
     : toolName;
+
+/** ツールの状態の表示。書き込みの却下は「却下した」、保存を拒否した結果は「保存されなかった」と出す */
+const statusLabel = (toolName: string, status: ToolStatus, output: unknown): string => {
+  if (isWriteToolName(toolName)) {
+    if (status === 'denied') return t('desktop.chat.tool.status.deniedWrite');
+    if (status === 'done' && (output as { status?: unknown } | null)?.status === 'rejected') {
+      return t('desktop.chat.tool.status.rejected');
+    }
+  }
+  return t(`desktop.chat.tool.status.${status}`);
+};
 
 const preview = (value: unknown): string => {
   const text = typeof value === 'string' ? value : JSON.stringify(value, null, 2);
@@ -81,7 +97,7 @@ export function ToolCallCard(props: {
         <span aria-hidden='true'>🔧</span>
         <span style={{ flex: 1 }}>{toolLabel(toolName)}</span>
         <span>
-          {STATUS_MARK[status]} {t(`desktop.chat.tool.status.${status}`)}
+          {STATUS_MARK[status]} {statusLabel(toolName, status, output)}
         </span>
       </summary>
       <div>
