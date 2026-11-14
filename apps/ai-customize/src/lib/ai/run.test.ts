@@ -13,7 +13,9 @@ import {
   remainingSteps,
 } from './chat-session';
 import { pruneForModel, runAgent } from './run';
+import { createTestWriteServices } from './test-write-services';
 import { type ChatToolServices, createReadTools, NO_APPROVAL_TOOLS } from './tools';
+import { createWriteTools, isRejectedBeforeApproval } from './write-tools';
 
 const usage = {
   inputTokens: { total: 10, noCache: 10, cacheRead: undefined, cacheWrite: undefined },
@@ -82,9 +84,13 @@ describe('チャットの1往復(Agent + 読み取りツール + 承認)', () =>
     const agent = createCustomizeAgent({
       model,
       instructions: 'test',
-      tools: createReadTools(services, { recordSample: false }),
+      tools: {
+        ...createReadTools(services, { recordSample: false }),
+        ...createWriteTools(createTestWriteServices()),
+      },
       maxOutputTokens: 1000,
       temperature: null,
+      rejectsWriteBeforeApproval: () => false,
     });
 
     let state = appendUserMessage(createChatState(), '既存のコードを直して');
@@ -200,6 +206,113 @@ describe('pruneForModel', () => {
   });
 });
 
+describe('書き込み(承認 + 承認カードでの上書き)', () => {
+  const createAgent = (
+    model: MockLanguageModelV4,
+    writeServices: ReturnType<typeof createTestWriteServices>
+  ) =>
+    createCustomizeAgent({
+      model,
+      instructions: 'test',
+      tools: {
+        ...createReadTools(createServices(), { recordSample: false }),
+        ...createWriteTools(writeServices),
+      },
+      maxOutputTokens: 1000,
+      temperature: null,
+      rejectsWriteBeforeApproval: (input) => isRejectedBeforeApproval(input, writeServices),
+    });
+
+  const css = {
+    kind: 'css',
+    title: 'グレー',
+    code: '.a { color: gray; }',
+    scope: 'public',
+    permissions: [],
+    externalUrls: [],
+  };
+
+  test('承認するまで保存せず、承認カードで決めた影響範囲で保存してAIへ結果を返す', async () => {
+    const writeServices = createTestWriteServices({ canPublish: true });
+    const model = new MockLanguageModelV4({
+      doGenerate: [toolCall('write_asset', css, 'w1'), text('登録しました')],
+    });
+    const agent = createAgent(model, writeServices);
+
+    let state = appendUserMessage(createChatState(), 'グレーにして');
+    state = applyGenerateOutcome(state, await run(agent, state.messages, MAX_STEPS), MAX_STEPS);
+    expect(state.pending).toEqual([expect.objectContaining({ toolName: 'write_asset' })]);
+    expect(writeServices.createAsset).not.toHaveBeenCalled();
+
+    state = decideApproval(
+      state,
+      state.pending[0]?.approvalId ?? '',
+      { approved: true, override: { scope: 'private', enableAfterSave: true } },
+      MAX_STEPS
+    );
+    expect(state.resumeApprovals).toEqual({ w1: { scope: 'private', enableAfterSave: true } });
+    const outcome = await runAgent({
+      agent,
+      messages: messagesForGeneration(state),
+      remainingSteps: remainingSteps(state, MAX_STEPS),
+      approvals: state.resumeApprovals,
+      abortSignal: new AbortController().signal,
+    });
+    state = applyGenerateOutcome(state, outcome, MAX_STEPS);
+    expect(writeServices.createAsset).toHaveBeenCalledWith(
+      expect.objectContaining({ scope: 'private', enabled: true })
+    );
+    expect(state.resumeApprovals).toEqual({});
+    // 適用した値はAIへ返る(AIが「全員に公開しました」と誤って説明しないように)
+    expect(JSON.stringify(model.doGenerateCalls.at(-1)?.prompt)).toContain(
+      '"appliedScope":"private"'
+    );
+  });
+
+  test('入力だけで保存できないと分かる書き込みは、承認を求めずに理由をAIへ返す', async () => {
+    const writeServices = createTestWriteServices();
+    const model = new MockLanguageModelV4({
+      doGenerate: [
+        toolCall('write_asset', { ...css, kind: 'js', code: 'eval(x)' }, 'w1'),
+        text('直します'),
+      ],
+    });
+    const outcome = await run(
+      createAgent(model, writeServices),
+      [{ role: 'user', content: 'x' }],
+      MAX_STEPS
+    );
+    expect(outcome.approvals).toEqual([]);
+    expect(writeServices.createAsset).not.toHaveBeenCalled();
+    expect(JSON.stringify(model.doGenerateCalls.at(-1)?.prompt)).toContain('invalid-code');
+  });
+
+  test('却下したら保存しない', async () => {
+    const writeServices = createTestWriteServices();
+    const model = new MockLanguageModelV4({
+      doGenerate: [toolCall('write_asset', { ...css, scope: 'private' }, 'w1'), text('やめました')],
+    });
+    const agent = createAgent(model, writeServices);
+    let state = appendUserMessage(createChatState(), 'x');
+    state = applyGenerateOutcome(state, await run(agent, state.messages, MAX_STEPS), MAX_STEPS);
+    state = decideApproval(
+      state,
+      state.pending[0]?.approvalId ?? '',
+      { approved: false },
+      MAX_STEPS
+    );
+    expect(state.resumeApprovals).toEqual({});
+    await runAgent({
+      agent,
+      messages: messagesForGeneration(state),
+      remainingSteps: remainingSteps(state, MAX_STEPS),
+      approvals: state.resumeApprovals,
+      abortSignal: new AbortController().signal,
+    });
+    expect(writeServices.createAsset).not.toHaveBeenCalled();
+  });
+});
+
 describe('承認の要否', () => {
   test('レコードの値を送るツールも、承認するまで値を取得しない', async () => {
     const services = createServices();
@@ -209,17 +322,24 @@ describe('承認の要否', () => {
     const agent = createCustomizeAgent({
       model,
       instructions: 'test',
-      tools: createReadTools(services, { recordSample: true }),
+      tools: {
+        ...createReadTools(services, { recordSample: true }),
+        ...createWriteTools(createTestWriteServices()),
+      },
       maxOutputTokens: 1000,
       temperature: null,
+      rejectsWriteBeforeApproval: () => false,
     });
     const outcome = await run(agent, [{ role: 'user', content: 'x' }], MAX_STEPS);
     expect(outcome.approvals).toEqual([expect.objectContaining({ toolName: 'get_record_sample' })]);
     expect(services.getRecordSample).not.toHaveBeenCalled();
   });
 
-  test('承認なしで動くのは、構造・メタデータを読むツールだけ', () => {
-    const tools = createReadTools(createServices(), { recordSample: true });
+  test('承認なしで動くのは、構造・メタデータを読むツールと、保存しないプレビューだけ', () => {
+    const tools = {
+      ...createReadTools(createServices(), { recordSample: true }),
+      ...createWriteTools(createTestWriteServices()),
+    };
     const withoutApproval = Object.keys(tools).filter((name) => NO_APPROVAL_TOOLS.has(name));
     expect(withoutApproval.sort()).toEqual(
       [
@@ -228,6 +348,7 @@ describe('承認の要否', () => {
         'get_form_layout',
         'get_views',
         'list_assets',
+        'preview_css',
         'query_dom',
       ].sort()
     );
@@ -235,6 +356,12 @@ describe('承認の要否', () => {
       Object.keys(tools)
         .filter((name) => !NO_APPROVAL_TOOLS.has(name))
         .sort()
-    ).toEqual(['get_record_sample', 'read_asset']);
+    ).toEqual([
+      'delete_asset',
+      'get_record_sample',
+      'read_asset',
+      'set_asset_state',
+      'write_asset',
+    ]);
   });
 });

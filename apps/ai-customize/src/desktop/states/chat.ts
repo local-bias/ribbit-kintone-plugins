@@ -17,8 +17,16 @@ import {
   retryAfterError,
 } from '@/lib/ai/chat-session';
 import type { AiError } from '@/lib/ai/errors';
+import type { AssetChange } from '@/lib/ai/write-tools';
+import { cssPreview } from '../chat/css-preview';
 import type { ChatRuntime } from '../chat/runtime';
-import { servicesAtom } from './launcher';
+import {
+  deletedAssetsAtom,
+  panelStateAtom,
+  reloadPanelAtom,
+  servicesAtom,
+  syncRuntimeAtom,
+} from './launcher';
 
 /**
  * チャットの状態
@@ -75,6 +83,27 @@ const runtimeKey = () => `${location.pathname}${location.hash}`;
  */
 export const inflightMessagesAtom = atom<ModelMessage[]>([]);
 
+/**
+ * AIが保存・削除したアセットを、一覧と実行基盤へ反映します
+ *
+ * 一覧を取り直し、CSSはその場で付け直す。評価済みのJSは取り消せないため、再読み込み待ちにする
+ */
+export const applyAssetChangeAtom = atom(null, async (_get, set, change: AssetChange) => {
+  if (change.type === 'deleted') {
+    set(deletedAssetsAtom, (deleted) => new Map(deleted).set(change.asset.id, change.asset));
+  }
+  set(reloadPanelAtom);
+  const reloadJsIds =
+    change.type === 'deleted'
+      ? change.asset.kind === 'js'
+        ? [change.asset.id]
+        : []
+      : change.reloadRequired
+        ? [change.assetId]
+        : [];
+  await set(syncRuntimeAtom, { reloadJsIds });
+});
+
 /** いまの履歴でAgentを呼び、結果を状態へ反映します */
 const generateAtom = atom(null, async (get, set) => {
   const services = get(servicesAtom);
@@ -89,7 +118,22 @@ const generateAtom = atom(null, async (get, set) => {
   const key = runtimeKey();
   let entry = get(runtimeAtom);
   if (entry === null || entry.key !== key) {
-    entry = { key, runtime: services.createChatRuntime(config.endpoint) };
+    entry = {
+      key,
+      runtime: services.createChatRuntime(config.endpoint, {
+        onAssetsChanged: (change) => {
+          // 一覧の取り直しに失敗しても、保存の結果(AIへ返す)は変わらない。一覧はパネルで再読み込みできる
+          set(applyAssetChangeAtom, change).catch(() => undefined);
+        },
+        previewCss: (code) => {
+          // 解除ボタンが見えないところでは当てない(パネルを閉じた後も生成は続く)
+          const panel = get(panelStateAtom);
+          if (!panel.open || panel.tab !== 'chat') return false;
+          cssPreview.show('ai', code);
+          return true;
+        },
+      }),
+    };
     set(runtimeAtom, entry);
   }
   const id = get(generationIdAtom) + 1;
@@ -105,6 +149,7 @@ const generateAtom = atom(null, async (get, set) => {
     const outcome = await runtime.run({
       messages: messagesForGeneration(state),
       remainingSteps: remainingSteps(state, maxSteps),
+      approvals: state.resumeApprovals,
       abortSignal: controller.signal,
       onStep: (messages) => {
         if (get(generationIdAtom) === id) set(inflightMessagesAtom, messages);
@@ -184,6 +229,7 @@ export const stopGenerationAtom = atom(null, (get, set) => {
 /** 新しい会話にする。システムプロンプト(登録済みのカスタマイズの一覧など)も作り直す */
 export const newConversationAtom = atom(null, (_get, set) => {
   set(stopGenerationAtom);
+  cssPreview.clear();
   set(runtimeAtom, null);
   set(chatStateAtom, createChatState());
 });

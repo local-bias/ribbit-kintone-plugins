@@ -80,6 +80,38 @@ describe('チャットの進行', () => {
     });
   });
 
+  test('承認カードで決めた値は、承認したツール呼び出しの分だけ再開に持ち運び、止めたら捨てる', () => {
+    const waiting = applyGenerateOutcome(
+      appendUserMessage(createChatState(), 'x'),
+      outcome({
+        approvals: [approval('a1', 'c1'), approval('a2', 'c2'), approval('a3', 'c3')],
+        finishReason: 'tool-calls',
+      }),
+      MAX_STEPS
+    );
+    let state = decideApproval(
+      waiting,
+      'a1',
+      { approved: true, override: { scope: 'private' } },
+      MAX_STEPS
+    );
+    state = decideApproval(
+      state,
+      'a2',
+      { approved: false, override: { scope: 'public' } },
+      MAX_STEPS
+    );
+    state = decideApproval(state, 'a3', { approved: true }, MAX_STEPS);
+    expect(state.resumeApprovals).toEqual({ c1: { scope: 'private' }, c3: {} });
+    // 失敗して再試行するときは同じ値を使う
+    expect(
+      retryAfterError(applyGenerateError(state, { kind: 'network', retryable: true, detail: '' }))
+        .resumeApprovals
+    ).toEqual(state.resumeApprovals);
+    expect(applyAbort(state).resumeApprovals).toEqual({});
+    expect(applyGenerateOutcome(state, outcome(), MAX_STEPS).resumeApprovals).toEqual({});
+  });
+
   test('承認後の再開を止めたら、承認待ちへ戻し、応答を履歴に残さない', () => {
     const waiting = applyGenerateOutcome(
       appendUserMessage(createChatState(), 'x'),

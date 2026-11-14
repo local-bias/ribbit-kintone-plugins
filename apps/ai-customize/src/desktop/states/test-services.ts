@@ -38,6 +38,7 @@ export const createTestServices = (params: {
     createChatRuntime: vi.fn(async () => {
       throw new Error('chat runtime is not mocked');
     }),
+    loadAccess: vi.fn(async () => params.access ?? new Map()),
     readMuted: () => new Set(),
     writeMuted: vi.fn(() => true),
     applyPanelChanges: vi.fn(),

@@ -48,6 +48,8 @@ describe('buildSystemPrompt', () => {
     const full = buildSystemPrompt(context({ tools: { recordSample: true, write: true } }));
     expect(full).not.toContain('登録・変更するツールがありません');
     expect(full).not.toContain('レコードの値を取得するツールはありません');
+    expect(full).toContain('write_asset');
+    expect(full).toContain('applied*');
   });
 
   test('管理者の追加指示は最後に付ける(空なら付けない)', () => {

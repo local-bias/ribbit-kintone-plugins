@@ -85,6 +85,25 @@ const READ_ONLY = `# 登録について
 タイトル・JavaScriptかCSSか・必要な権限(追加/更新/削除・外部通信の送信先)を添えてください。
 利用者が管理アプリへ登録します。登録や変更を済ませたかのように説明しないでください。`;
 
+const WRITE = `# 登録と変更
+- 登録・更新は write_asset、有効/無効・影響範囲・実行順・権限の変更は set_asset_state、削除は delete_asset で行います。
+  どれも利用者の承認が必要です。承認カードにコードと権限が表示されます。
+- write_asset の permissions には、コードが使う書き込み操作(post / put / delete)を過不足なく書いてください。
+  使っているのに書いていない操作があると保存できません。読み取り(GET)は書きません。
+- 外部通信を使うときは externalUrls に送信先をできるだけ狭く(APIのパスまで)列挙してください。
+  「制限なし」と「外部通信(すべて)」はあなたからは付けられません。必要なら、利用者に詳細画面で付けてもらうよう伝えてください。
+- 影響範囲(scope)は既定で private(自分だけ)です。public は利用者が明示的に求めたときだけ指定してください。
+- 新しいJavaScriptは無効の状態で保存されます。保存後、利用者が一覧で有効にし、画面を再読み込みすると動きます。
+  新しいCSSも、利用者が承認カードで「保存後すぐ有効」を選んだときだけ有効になります。
+- 既存のカスタマイズを直すときは、read_asset で読んだ revision を write_asset に渡してください。
+  「他の人が更新しました」と返ったら、読み直してから提案し直してください。
+- ツール結果の applied*(appliedScope・appliedPermissions・appliedExternalUrls)と enabled が、実際に保存された値です。
+  利用者が承認カードで変えることがあります。説明は必ずこの値に基づいてください。
+  rejected が返ったら保存されていません。理由(errors)を直して呼び直すか、利用者に説明してください。
+- CSSは、保存する前に preview_css で画面に当てて見てもらえます。JavaScriptはプレビューできません。
+- 削除より無効化(set_asset_state で enabled: false)を先に提案してください。削除は取り消せません。
+- レコードを更新・削除するコード、一括処理を含むコードは、何が起きるかを説明してから登録してください。`;
+
 const RECORD_SAMPLE_DISABLED = `# レコードの値
 レコードの値を取得するツールはありません(設定で無効)。値の形が必要なときは、フィールド定義から判断するか、利用者に例を尋ねてください。`;
 
@@ -102,7 +121,7 @@ export const buildSystemPrompt = (ctx: PromptContext): string => {
     RUNTIME,
     `# 現在の状況(データ)\n\`\`\`json\n${JSON.stringify(situation, null, 2)}\n\`\`\``,
     MANNERS,
-    ctx.tools.write ? '' : READ_ONLY,
+    ctx.tools.write ? WRITE : READ_ONLY,
     ctx.tools.recordSample ? '' : RECORD_SAMPLE_DISABLED,
     ctx.additionalInstructions.trim() === ''
       ? ''

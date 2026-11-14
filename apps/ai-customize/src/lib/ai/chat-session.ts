@@ -1,5 +1,6 @@
 import type { ModelMessage } from 'ai';
 import type { AiError } from './errors';
+import type { ApprovalOverride } from './write-approval';
 
 /**
  * チャットの進行(送信 → 生成 → 承認 → 再開)を表す状態と、その遷移(純粋関数)
@@ -23,7 +24,12 @@ export type PendingApproval = {
   input: unknown;
 };
 
-export type ApprovalDecision = { approved: boolean; reason?: string };
+export type ApprovalDecision = {
+  approved: boolean;
+  reason?: string;
+  /** 承認カードで利用者が決めた値(書き込みツールのみ。承認したときだけ使う) */
+  override?: ApprovalOverride;
+};
 
 export type TokenUsage = { inputTokens: number; outputTokens: number };
 
@@ -44,6 +50,12 @@ export type ChatState = {
   decisions: Readonly<Record<string, ApprovalDecision>>;
   /** 全て判断した承認の応答。再開が成功したら履歴へ入れる */
   resume: ModelMessage | null;
+  /**
+   * 再開で承認したツール呼び出し(toolCallId)と、承認カードで決めた値
+   *
+   * 再開の呼び出しオプションで書き込みツールへ渡す。再試行でも同じ値を使う
+   */
+  resumeApprovals: Readonly<Record<string, ApprovalOverride>>;
   /** いまの利用者の発言に対して使ったstep数 */
   usedSteps: number;
   error: AiError | null;
@@ -58,6 +70,7 @@ export const createChatState = (): ChatState => ({
   pending: [],
   decisions: {},
   resume: null,
+  resumeApprovals: {},
   usedSteps: 0,
   error: null,
   notice: null,
@@ -139,6 +152,7 @@ export const applyGenerateOutcome = (
     pending: outcome.approvals,
     decisions: {},
     resume: null,
+    resumeApprovals: {},
     usedSteps,
     error: null,
     notice: noticeOf(outcome),
@@ -196,10 +210,17 @@ export const decideApproval = (
       };
     }),
   };
+  const resumeApprovals = Object.fromEntries(
+    state.pending.flatMap(({ approvalId: id, toolCallId }) => {
+      const decision = decisions[id] as ApprovalDecision;
+      return decision.approved ? [[toolCallId, decision.override ?? {}]] : [];
+    })
+  );
   return {
     ...state,
     decisions,
     resume,
+    resumeApprovals,
     status: remainingSteps(state, maxSteps) > 0 ? 'generating' : 'step-limit',
   };
 };
@@ -219,5 +240,5 @@ export const retryAfterError = (state: ChatState): ChatState =>
  */
 export const applyAbort = (state: ChatState): ChatState =>
   state.resume !== null
-    ? { ...state, status: 'awaiting-approval', decisions: {}, resume: null }
+    ? { ...state, status: 'awaiting-approval', decisions: {}, resume: null, resumeApprovals: {} }
     : { ...state, status: 'idle' };

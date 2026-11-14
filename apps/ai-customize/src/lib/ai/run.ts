@@ -1,5 +1,5 @@
 import type { ModelMessage } from 'ai';
-import type { CustomizeAgent } from './agent';
+import type { AgentCallOptions, CustomizeAgent } from './agent';
 import type { GenerateOutcome, PendingApproval } from './chat-session';
 
 /**
@@ -57,6 +57,8 @@ export const runAgent = async (params: {
   agent: CustomizeAgent;
   messages: readonly ModelMessage[];
   remainingSteps: number;
+  /** 承認したツール呼び出しと、承認カードで決めた値(再開のときだけ中身がある) */
+  approvals?: AgentCallOptions['approvals'];
   abortSignal: AbortSignal;
   /**
    * stepが終わるたびに、ここまでのstepのメッセージを渡す(画面に往復ごとの進み具合を出すため)
@@ -68,7 +70,7 @@ export const runAgent = async (params: {
   const steps: ModelMessage[] = [];
   const result = await params.agent.generate({
     messages: pruneForModel(params.messages),
-    options: { remainingSteps: params.remainingSteps },
+    options: { remainingSteps: params.remainingSteps, approvals: params.approvals ?? {} },
     abortSignal: params.abortSignal,
     onStepEnd: (step) => {
       steps.push(...step.response.messages);

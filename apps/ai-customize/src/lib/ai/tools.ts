@@ -239,4 +239,6 @@ export const NO_APPROVAL_TOOLS: ReadonlySet<string> = new Set([
   'get_views',
   'query_dom',
   'list_assets',
+  // 保存せず、この画面へ一時的に当てるだけ。利用者はいつでも解除できる(docs/07-ai-tools.md 4-9章)
+  'preview_css',
 ]);

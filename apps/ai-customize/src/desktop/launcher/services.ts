@@ -48,7 +48,7 @@ import {
 } from '@/lib/permission';
 import type { Asset, AssetPatch } from '@/schema/asset';
 import type { PluginCommonConfig } from '@/schema/plugin-config';
-import type { ChatRuntime } from '../chat/runtime';
+import type { ChatRuntime, ChatRuntimeHooks } from '../chat/runtime';
 import type { RuntimeController } from '../runtime';
 
 /**
@@ -89,7 +89,9 @@ export type LauncherServices = {
    *
    * `ai`とプロバイダーは`desktop.js`に含めるが、評価はここで初めて行う(チャットを使わないページで初期化しない)
    */
-  createChatRuntime: (endpoint: ProxyEndpoint) => Promise<ChatRuntime>;
+  createChatRuntime: (endpoint: ProxyEndpoint, hooks: ChatRuntimeHooks) => Promise<ChatRuntime>;
+  /** 指定したアセットのアクセス権(取得できなければ空) */
+  loadAccess: (ids: readonly string[]) => Promise<ReadonlyMap<string, AssetAccess>>;
   readMuted: () => ReadonlySet<string>;
   /** @returns ブラウザに保存できたか */
   writeMuted: (ids: ReadonlySet<string>) => boolean;
@@ -245,11 +247,17 @@ export const createLauncherServices = (params: {
       });
       return chattable;
     },
-    createChatRuntime: async (endpoint) => {
+    loadAccess: (ids) =>
+      loadAssetAccess({
+        evaluate: (request) => getRecordACLEvaluate({ ...request, debug: isDev }),
+        common,
+        ids: [...ids],
+      }),
+    createChatRuntime: async (endpoint, hooks) => {
       // 1ファイルで配布するため別ファイルには分けない(ADR-47)。評価はチャットで最初に送信したときまで遅らせる
       const { createChatRuntime } = await import(/* webpackMode: "eager" */ '../chat/runtime');
       const { screen, recordId } = detectScreen(location.href);
-      return createChatRuntime({ services: self, endpoint, screen, recordId });
+      return createChatRuntime({ services: self, endpoint, screen, recordId, hooks });
     },
     readMuted: () => readMutedIds(params.localStorage, target, loginUserCode),
     writeMuted: (ids) => writeMutedIds(params.localStorage, target, loginUserCode, ids),

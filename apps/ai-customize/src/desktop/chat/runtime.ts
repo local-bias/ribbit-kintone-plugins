@@ -18,9 +18,16 @@ import { createRestrictedProxyFetch } from '@/lib/ai/proxy-fetch';
 import { pickRecordValues, toSampleQuery } from '@/lib/ai/record-sample';
 import { runAgent } from '@/lib/ai/run';
 import { type ChatToolServices, canReadAsset, createReadTools } from '@/lib/ai/tools';
-import { type AssetRecord, toAsset } from '@/lib/asset-mapper';
+import {
+  type AssetChange,
+  createWriteTools,
+  isRejectedBeforeApproval,
+  type WriteToolServices,
+} from '@/lib/ai/write-tools';
+import { type AssetRecord, toAsset, toNewAssetRecord } from '@/lib/asset-mapper';
 import { LAUNCHER_ROOT_ID, NOTICE_ROOT_ID } from '@/lib/constants';
 import { GUEST_SPACE_ID, isDev, LANGUAGE, LOGIN_USER, PLUGIN_ID } from '@/lib/global';
+import { checkJsSyntax } from '@/lib/js-syntax';
 import type { AssetScreen } from '@/schema/asset';
 import type { LauncherServices } from '../launcher/services';
 
@@ -36,6 +43,14 @@ import type { LauncherServices } from '../launcher/services';
 export type ChatRuntime = {
   run: (params: Omit<Parameters<typeof runAgent>[0], 'agent'>) => Promise<GenerateOutcome>;
   classifyError: (error: unknown) => AiError;
+};
+
+/** チャットの実行部分から画面へ伝えること */
+export type ChatRuntimeHooks = {
+  /** AIが保存・削除した(一覧を取り直し、CSSの適用を付け直す) */
+  onAssetsChanged: (change: AssetChange) => void;
+  /** AIがCSSのプレビューを求めた。当てたか(チャットが見えていなければ当てない)を返す */
+  previewCss: (code: string) => boolean;
 };
 
 /**
@@ -62,6 +77,70 @@ const toPlainText = (html: string, max: number): string => {
     .replace(/\s+/g, ' ')
     .trim();
   return text.length > max ? `${text.slice(0, max)}…` : text;
+};
+
+const loadAssetById = async (common: LauncherServices['common'], id: string) => {
+  try {
+    const record = await getRecord({
+      app: common.assetAppId,
+      id,
+      guestSpaceId: common.assetAppSpaceId || undefined,
+      debug: isDev,
+    });
+    const result = toAsset(record as unknown as AssetRecord, common);
+    return result.ok ? result.asset : null;
+  } catch {
+    return null;
+  }
+};
+
+const createWriteServices = (
+  services: LauncherServices,
+  hooks: ChatRuntimeHooks
+): WriteToolServices => {
+  const { common, target } = services;
+  return {
+    target,
+    loginUserCode: services.loginUserCode,
+    origin: location.origin,
+    mapped: {
+      externalUrls: common.externalUrlsFieldCode !== '',
+      description: common.descriptionFieldCode !== '',
+      screens: common.screensFieldCode !== '',
+      order: common.orderFieldCode !== '',
+    },
+    checkJsSyntax,
+    loadAsset: (id) => loadAssetById(common, id),
+    loadAccess: async (id) => (await services.loadAccess([id])).get(id) ?? null,
+    canPublish: () => services.loadCanPublish(),
+    countAssets: async () => (await services.loadPanel()).assets.length,
+    createAsset: async (values) => {
+      let record: ReturnType<typeof toNewAssetRecord>;
+      try {
+        // 対象座標はツールの引数にせず、いま開いているアプリで固定する。所有者は作成者フィールド(作った人)
+        record = toNewAssetRecord(
+          { ...values, targetAppId: target.appId, targetSpaceId: target.spaceId },
+          common
+        );
+      } catch (error) {
+        return { status: 'error', message: String(error) };
+      }
+      // 監査用に、生成したモデルを残す
+      const withModel =
+        common.modelFieldCode === ''
+          ? record
+          : {
+              ...record,
+              [common.modelFieldCode]: { value: `${common.providerType}:${common.model}` },
+            };
+      return services.addAsset(withModel);
+    },
+    updateAsset: (asset, patch) => services.updateAsset(asset, patch),
+    deleteAsset: (asset) => services.deleteAsset(asset),
+    previewCss: hooks.previewCss,
+    recordUrl: (id) => `${location.origin}${services.recordPath(id)}`,
+    onChanged: hooks.onAssetsChanged,
+  };
 };
 
 const createToolServices = (params: {
@@ -119,20 +198,7 @@ const createToolServices = (params: {
       return pickRecordValues(records as Parameters<typeof pickRecordValues>[0], fields, limit);
     },
     listAssets: async () => (await services.loadPanel()).assets,
-    loadAsset: async (id) => {
-      try {
-        const record = await getRecord({
-          app: common.assetAppId,
-          id,
-          guestSpaceId: common.assetAppSpaceId || undefined,
-          debug: isDev,
-        });
-        const result = toAsset(record as unknown as AssetRecord, common);
-        return result.ok ? result.asset : null;
-      } catch {
-        return null;
-      }
-    },
+    loadAsset: (id) => loadAssetById(common, id),
   };
 };
 
@@ -141,8 +207,9 @@ export const createChatRuntime = async (params: {
   endpoint: ProxyEndpoint;
   screen: AssetScreen;
   recordId: string | null;
+  hooks: ChatRuntimeHooks;
 }): Promise<ChatRuntime> => {
-  const { services, endpoint, screen, recordId } = params;
+  const { services, endpoint, screen, recordId, hooks } = params;
   const { common, target } = services;
 
   // 認証ヘッダーを含むため、ketchのデバッグ出力は開発時も使わない
@@ -161,6 +228,7 @@ export const createChatRuntime = async (params: {
     appName: appInfo?.name ?? '',
     appDescription: appInfo?.description ?? '',
   });
+  const writeServices = createWriteServices(services, hooks);
   const agent = createCustomizeAgent({
     model,
     instructions: buildSystemPrompt({
@@ -178,12 +246,16 @@ export const createChatRuntime = async (params: {
           scope: asset.scope,
           enabled: asset.enabled,
         })),
-      tools: { recordSample: common.sendsRecordToAi, write: false },
+      tools: { recordSample: common.sendsRecordToAi, write: true },
       additionalInstructions: common.additionalSystemPrompt,
     }),
-    tools: createReadTools(toolServices, { recordSample: common.sendsRecordToAi }),
+    tools: {
+      ...createReadTools(toolServices, { recordSample: common.sendsRecordToAi }),
+      ...createWriteTools(writeServices),
+    },
     maxOutputTokens: common.maxOutputTokens,
     temperature: common.temperature,
+    rejectsWriteBeforeApproval: (input) => isRejectedBeforeApproval(input, writeServices),
   });
 
   return {
