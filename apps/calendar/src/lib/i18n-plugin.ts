@@ -153,7 +153,7 @@ const ui = mergeDeep(commonUi, {
     'config.section.recurrence.enableLabel': '繰り返し予定を有効にする',
     'config.section.editMode.title': '編集モード',
     'config.section.editMode.description':
-      '予定の追加・編集方法を選択してください。簡易編集ではプラグイン独自のダイアログで編集します。詳細編集ではkintone標準のレコード追加・編集画面をダイアログ内に表示するため、必須フィールドが設定されている場合でも予定を追加できます',
+      '予定の追加・編集方法を選択してください。簡易編集ではプラグイン独自のダイアログで編集します。詳細編集ではkintone標準のレコード追加・編集画面をダイアログ内に表示するため、必須フィールドが設定されている場合でも予定を追加できます。なお、詳細編集はPC版のみ対応しており、モバイル版では簡易編集で表示されます(必須フィールドが設定されている場合、モバイル版からは予定を追加できないことがあります)',
     'config.section.editMode.description2':
       '繰り返し予定を有効にしている場合、詳細編集ではレコード編集画面上の繰り返し設定フィールドがプラグイン独自の入力UIに置き換えられます',
     'config.section.advanced': '高度な設定',
@@ -374,7 +374,7 @@ const ui = mergeDeep(commonUi, {
     'config.section.recurrence.enableLabel': 'Enable recurring events',
     'config.section.editMode.title': 'Edit mode',
     'config.section.editMode.description':
-      'Choose how schedules are added and edited. Simple edit uses the plugin\'s own dialog. Detailed edit shows the kintone standard record add/edit screen in a dialog, so schedules can be added even when required fields are configured',
+      'Choose how schedules are added and edited. Simple edit uses the plugin\'s own dialog. Detailed edit shows the kintone standard record add/edit screen in a dialog, so schedules can be added even when required fields are configured. Detailed edit is available on desktop only; the mobile version always uses simple edit (if required fields are configured, schedules may not be addable from mobile)',
     'config.section.editMode.description2':
       'When recurring events are enabled, detailed edit replaces the recurrence field on the record edit screen with the plugin\'s own input UI',
     'config.section.advanced': 'Advanced settings',
@@ -596,7 +596,7 @@ const ui = mergeDeep(commonUi, {
     'config.section.recurrence.enableLabel': 'Habilitar eventos recurrentes',
     'config.section.editMode.title': 'Modo de edición',
     'config.section.editMode.description':
-      'Elija cómo se agregan y editan los horarios. La edición simple usa el propio diálogo del plugin. La edición detallada muestra la pantalla estándar de agregar/editar registro de kintone en un diálogo, para poder agregar horarios incluso cuando hay campos obligatorios configurados',
+      'Elija cómo se agregan y editan los horarios. La edición simple usa el propio diálogo del plugin. La edición detallada muestra la pantalla estándar de agregar/editar registro de kintone en un diálogo, para poder agregar horarios incluso cuando hay campos obligatorios configurados. La edición detallada solo está disponible en la versión de escritorio; la versión móvil siempre usa la edición simple (si hay campos obligatorios configurados, es posible que no se puedan agregar horarios desde el móvil)',
     'config.section.editMode.description2':
       'Cuando los eventos recurrentes están habilitados, la edición detallada reemplaza el campo de recurrencia en la pantalla de edición de registro con la interfaz propia del plugin',
     'config.section.advanced': 'Configuración avanzada',
@@ -805,7 +805,7 @@ const ui = mergeDeep(commonUi, {
     'config.section.recurrence.enableLabel': '启用重复日程',
     'config.section.editMode.title': '编辑模式',
     'config.section.editMode.description':
-      '选择日程的添加、编辑方式。简易编辑使用插件独有的对话框。详细编辑会在对话框中显示kintone标准的记录添加、编辑画面，因此即使设置了必填字段也可以添加日程',
+      '选择日程的添加、编辑方式。简易编辑使用插件独有的对话框。详细编辑会在对话框中显示kintone标准的记录添加、编辑画面，因此即使设置了必填字段也可以添加日程。详细编辑仅支持电脑版，手机版始终使用简易编辑（如果设置了必填字段，可能无法从手机版添加日程）',
     'config.section.editMode.description2':
       '启用重复日程时，详细编辑会将记录编辑画面上的重复设置字段替换为插件独有的输入界面',
     'config.section.advanced': '高级设置',
@@ -1008,7 +1008,7 @@ const ui = mergeDeep(commonUi, {
     'config.section.recurrence.enableLabel': '啟用重複行程',
     'config.section.editMode.title': '編輯模式',
     'config.section.editMode.description':
-      '選擇行程的新增、編輯方式。簡易編輯使用外掛獨有的對話方塊。詳細編輯會在對話方塊中顯示kintone標準的記錄新增、編輯畫面，因此即使設定了必填欄位也可以新增行程',
+      '選擇行程的新增、編輯方式。簡易編輯使用外掛獨有的對話方塊。詳細編輯會在對話方塊中顯示kintone標準的記錄新增、編輯畫面，因此即使設定了必填欄位也可以新增行程。詳細編輯僅支援電腦版，手機版一律使用簡易編輯（若設定了必填欄位，可能無法從手機版新增行程）',
     'config.section.editMode.description2':
       '啟用重複行程時，詳細編輯會將記錄編輯畫面上的重複設定欄位替換為外掛獨有的輸入介面',
     'config.section.advanced': '進階設定',

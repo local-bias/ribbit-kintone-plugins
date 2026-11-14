@@ -70,7 +70,25 @@ const {
   isInlineEditPage,
   CALENDAR_INLINE_CREATE_PARAM,
   CALENDAR_INLINE_EDIT_PARAM,
+  shouldUseDetailedEditMode,
 } = await import('./inline-record');
+
+describe('shouldUseDetailedEditMode', () => {
+  it('uses the detailed (iframe) edit mode on desktop when configured', () => {
+    expect(shouldUseDetailedEditMode({ editMode: 'detailed', isMobile: false })).toBe(true);
+  });
+
+  it('falls back to the simple dialog on mobile even when detailed mode is configured', () => {
+    // 詳細編集のiframe(PC版URL・PC版イベント前提)はモバイルで動作せず、kintoneが
+    // CB_VA01エラーを表示してしまうため、モバイルでは簡易編集にフォールバックする
+    expect(shouldUseDetailedEditMode({ editMode: 'detailed', isMobile: true })).toBe(false);
+  });
+
+  it('never uses the detailed edit mode when simple mode or no mode is configured', () => {
+    expect(shouldUseDetailedEditMode({ editMode: 'simple', isMobile: false })).toBe(false);
+    expect(shouldUseDetailedEditMode({ editMode: undefined, isMobile: false })).toBe(false);
+  });
+});
 
 describe('buildInlineEditUrl', () => {
   it('builds a pathname-relative show URL in edit mode with the record id in the hash', () => {

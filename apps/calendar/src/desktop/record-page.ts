@@ -14,8 +14,9 @@ import './record-page-recurrence';
  * 保存・キャンセルをkintoneの標準イベントで検知し、`window.parent`へpostMessageする。
  *
  * `KintoneEventManager#add`はデスクトップ版のイベントを登録すると自動的に対応する
- * `mobile.*`イベントも登録するが、詳細編集のiframeはデスクトップ限定(v1の既知の制限)のため、
- * mobileイベントはここでは無視する。
+ * `mobile.*`イベントも登録するが、詳細編集のiframeはデスクトップ限定のため、mobileイベントは
+ * ここでは無視する(親側でもモバイルでは簡易編集にフォールバックするため、これは防御的なガード。
+ * `shouldUseDetailedEditMode`を参照)。
  */
 const isMobileEvent = (type: string): boolean => type.startsWith('mobile.');
 

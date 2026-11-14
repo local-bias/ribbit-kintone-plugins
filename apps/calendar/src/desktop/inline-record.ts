@@ -1,6 +1,6 @@
 import { parseRecurrenceMeta } from '@/desktop/recurrence';
 import { restorePluginConfig } from '@/lib/plugin';
-import type { PluginCondition } from '@/schema/plugin-config';
+import type { EditMode, PluginCondition } from '@/schema/plugin-config';
 
 /**
  * URL/postMessageベースでkintone標準のレコード追加・編集画面をiframeに埋め込むための共通基盤。
@@ -139,6 +139,20 @@ const postParentMessage = (type: string, recordId?: string): void => {
   }
   window.parent.postMessage({ type, recordId }, location.origin);
 };
+
+/**
+ * 詳細編集(kintone標準画面のiframeダイアログ)を使用するかどうかを判定します。
+ *
+ * iframeに読み込むURL(`show#record=...`等)と、保存・キャンセルを検知するイベント
+ * (record-page.ts)はいずれもPC版前提のため、モバイルでは動作しません(モバイル版の
+ * レコード画面は`show?record=...`形式のため、レコードIDが渡らずkintoneがCB_VA01エラーを
+ * 表示すると考えられる)。
+ * そのためモバイルでは、設定に関わらず簡易編集(プラグイン独自ダイアログ)へフォールバックします。
+ */
+export const shouldUseDetailedEditMode = (params: {
+  editMode: EditMode | undefined;
+  isMobile: boolean;
+}): boolean => params.editMode === 'detailed' && !params.isMobile;
 
 export const isInlineEditPage = (): boolean =>
   new URLSearchParams(location.search).has(CALENDAR_INLINE_EDIT_PARAM);

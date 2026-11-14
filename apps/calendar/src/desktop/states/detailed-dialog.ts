@@ -4,10 +4,10 @@ import {
   patchMasterException,
 } from '@/desktop/actions';
 import type { InlineInitialValue } from '@/desktop/inline-record';
-import { INLINE_MESSAGE } from '@/desktop/inline-record';
+import { INLINE_MESSAGE, shouldUseDetailedEditMode } from '@/desktop/inline-record';
 import { GUEST_SPACE_ID } from '@/lib/global';
 import { t } from '@/lib/i18n-plugin';
-import { getAppId, getRecord } from '@konomi-app/kintone-utilities';
+import { getAppId, getRecord, isMobile } from '@konomi-app/kintone-utilities';
 import { produce } from 'immer';
 import { atom } from 'jotai';
 import { enqueueSnackbar } from 'notistack';
@@ -26,7 +26,13 @@ export type DetailedDialogState =
 
 export const detailedDialogAtom = atom<DetailedDialogState>(null);
 
-export const isDetailedModeAtom = atom((get) => get(pluginConditionAtom)?.editMode === 'detailed');
+/** 詳細編集はPC版のみ対応のため、モバイルでは簡易編集ダイアログにフォールバックする */
+export const isDetailedModeAtom = atom((get) =>
+  shouldUseDetailedEditMode({
+    editMode: get(pluginConditionAtom)?.editMode,
+    isMobile: isMobile(),
+  })
+);
 
 /** `handleDetailedDialogClosedAtom`の多重実行を防ぐためのガード。編集の保存成功後、kintoneが
  *  詳細画面へ遷移して`app.record.detail.show`も追加で発火し、キャンセル用メッセージが
