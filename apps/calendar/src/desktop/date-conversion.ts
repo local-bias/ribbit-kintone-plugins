@@ -88,8 +88,45 @@ export const kintoneRecordDatesToCalendar = (params: {
 };
 
 /**
+ * Converts an all-day calendar-space `end` into the *inclusive* last day (kintone/human convention).
+ *
+ * A proper all-day `end` sits at midnight and is exclusive, so it is shifted back by one day.
+ * An `end` that still carries a time of day (e.g. a timed draft from the FAB that is forced to
+ * all-day because the fields are DATE type) already lies *within* its last day, so it is kept on
+ * that day. The result never falls before the start day.
+ */
+export const calendarAllDayEndToInclusive = (end: DateTime, start?: DateTime): DateTime => {
+  const endDay = end.startOf('day');
+  const inclusive = end.equals(endDay) ? endDay.minus({ days: 1 }) : endDay;
+  const startDay = start?.startOf('day');
+  return startDay && inclusive < startDay ? startDay : inclusive;
+};
+
+/**
+ * Normalizes a calendar-space range into a proper all-day range: date-only `start` and an
+ * exclusive date-only `end`. Used when a timed draft (e.g. a time-slot selection in a timeGrid
+ * view) must become all-day because the configured fields cannot hold a time.
+ */
+export const calendarRangeToAllDay = (params: {
+  start: DateInput | undefined;
+  end: DateInput | undefined;
+  zone: string;
+}): { start: string | undefined; end: string | undefined } => {
+  const { start, end, zone } = params;
+  const startDt = start ? calendarDateInputToDateTime(start, zone) : undefined;
+  const endDt = end ? calendarDateInputToDateTime(end, zone) : undefined;
+  return {
+    start: startDt ? dateTimeToCalendarValue(startDt.startOf('day'), true) : undefined,
+    end: endDt
+      ? dateTimeToCalendarValue(calendarAllDayEndToInclusive(endDt, startDt).plus({ days: 1 }), true)
+      : undefined,
+  };
+};
+
+/**
  * Converts FullCalendar-space event values back into kintone record field values.
- * Inverse of {@link kintoneRecordDatesToCalendar}: all-day ends get −1 day.
+ * Inverse of {@link kintoneRecordDatesToCalendar}: all-day ends are converted to the inclusive
+ * last day via {@link calendarAllDayEndToInclusive}.
  */
 export const calendarEventDatesToKintone = (params: {
   start: DateInput | undefined;
@@ -102,13 +139,8 @@ export const calendarEventDatesToKintone = (params: {
   const { start, end, allDay, startFieldType, endFieldType, zone } = params;
 
   const startDt = start ? calendarDateInputToDateTime(start, zone) : undefined;
-  let endDt = end ? calendarDateInputToDateTime(end, zone) : undefined;
-
-  if (allDay && endDt) {
-    // Defensive clamp: a zero/negative-length selection (e.g. a missing end filled in with
-    // the start value) collapses to a single day instead of producing an end before start.
-    endDt = startDt && endDt <= startDt ? startDt : endDt.minus({ days: 1 });
-  }
+  const rawEndDt = end ? calendarDateInputToDateTime(end, zone) : undefined;
+  const endDt = allDay && rawEndDt ? calendarAllDayEndToInclusive(rawEndDt, startDt) : rawEndDt;
 
   const format = (dt: DateTime | undefined, fieldType: CalendarFieldType | undefined): string | null => {
     if (!dt || !fieldType) return null;
@@ -122,6 +154,18 @@ export const calendarEventDatesToKintone = (params: {
   return {
     start: format(startDt, startFieldType),
     end: format(endDt, endFieldType),
+  };
+};
+
+/** Default start/end for a brand-new all-day event: today, with FullCalendar's exclusive end. */
+export const getDefaultAllDayRange = (
+  zone: string,
+  now: DateTime = DateTime.now()
+): { start: string; end: string } => {
+  const today = now.setZone(zone).startOf('day');
+  return {
+    start: dateTimeToCalendarValue(today, true),
+    end: dateTimeToCalendarValue(today.plus({ days: 1 }), true),
   };
 };
 

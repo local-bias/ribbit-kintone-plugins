@@ -2,7 +2,9 @@ import {
   calendarDateInputToDateTime,
   calendarEventDatesToKintone,
   CalendarFieldType,
+  calendarRangeToAllDay,
   dateTimeToCalendarValue,
+  getDefaultAllDayRange as getDefaultAllDayRangeInZone,
   getDefaultEndDate as getDefaultEndDateInZone,
   getDefaultStartDate as getDefaultStartDateInZone,
   getLoginUserTimezone,
@@ -37,6 +39,21 @@ const toCalendarFieldType = (property: kintoneAPI.FieldProperty | undefined): Ca
 
 export const getDefaultStartDate = (): string => getDefaultStartDateInZone(getLoginUserTimezone());
 export const getDefaultEndDate = (): string => getDefaultEndDateInZone(getLoginUserTimezone());
+export const getDefaultAllDayRange = (): { start: string; end: string } =>
+  getDefaultAllDayRangeInZone(getLoginUserTimezone());
+
+/**
+ * 時刻を保持できないフィールド構成(`isTimeSupported`がfalse)では、時間枠の選択などで作られた
+ * 時刻付きの下書きを全日イベント(日付のみ・排他的終了)に正規化します。
+ */
+export const forceAllDayCalendarEvent = (event: PluginCalendarEvent): PluginCalendarEvent => {
+  const { start, end } = calendarRangeToAllDay({
+    start: event.start,
+    end: event.end,
+    zone: getLoginUserTimezone(),
+  });
+  return { ...event, allDay: true, start, end };
+};
 
 export const completeCalendarEvent = (eventInput: PluginCalendarEvent) => {
   return produce(eventInput, (draft) => {

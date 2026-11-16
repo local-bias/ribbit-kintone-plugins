@@ -1,4 +1,8 @@
-import { calendarDateInputToDateTime, dateTimeToCalendarValue } from '@/desktop/date-conversion';
+import {
+  calendarAllDayEndToInclusive,
+  calendarDateInputToDateTime,
+  dateTimeToCalendarValue,
+} from '@/desktop/date-conversion';
 import { loginUserAtom } from '@/desktop/states/kintone';
 import { isTimeSupportedAtom } from '@/desktop/states/plugin';
 import { DatePicker } from '@/lib/components/date-picker';
@@ -11,15 +15,22 @@ import { FC } from 'react';
 import { dialogAllDayAtom, dialogPropsAtom } from '../../../states/dialog';
 import { PickerValue } from '@mui/x-date-pickers/internals';
 
+/** 描画側(`!isTimeSupported || allDay`でDatePickerを出す)と同じ基準で全日かどうかを判定する */
+const effectiveAllDayAtom = atom(
+  (get) => !get(isTimeSupportedAtom) || !!get(dialogPropsAtom).event.allDay
+);
+
 const handleStartChangeAtom = atom(null, (get, set, date: PickerValue) => {
+  const allDay = get(effectiveAllDayAtom);
   set(dialogPropsAtom, (current) =>
     produce(current, (draft) => {
-      draft.event.start = date instanceof DateTime ? dateTimeToCalendarValue(date, !!draft.event.allDay) : undefined;
+      draft.event.start = date instanceof DateTime ? dateTimeToCalendarValue(date, allDay) : undefined;
     })
   );
 });
 
 const handleEndChangeAtom = atom(null, (get, set, date: PickerValue) => {
+  const allDay = get(effectiveAllDayAtom);
   set(dialogPropsAtom, (current) =>
     produce(current, (draft) => {
       if (!(date instanceof DateTime)) {
@@ -27,9 +38,9 @@ const handleEndChangeAtom = atom(null, (get, set, date: PickerValue) => {
         return;
       }
       // The end-date picker shows the *inclusive* last day (kintone/human convention), while
-      // `event.end` itself stays FullCalendar's exclusive end — so shift it back by a day here.
-      const value = draft.event.allDay ? date.plus({ days: 1 }) : date;
-      draft.event.end = dateTimeToCalendarValue(value, !!draft.event.allDay);
+      // `event.end` itself stays FullCalendar's exclusive end — so shift it forward by a day here.
+      const value = allDay ? date.plus({ days: 1 }) : date;
+      draft.event.end = dateTimeToCalendarValue(value, allDay);
     })
   );
 });
@@ -41,13 +52,14 @@ const DateEnd: FC = () => {
   const onEndChange = useSetAtom(handleEndChangeAtom);
   const { timezone } = useAtomValue(loginUserAtom);
 
+  const start = props.event.start ? calendarDateInputToDateTime(props.event.start, timezone) : undefined;
   const end = props.event.end ? calendarDateInputToDateTime(props.event.end, timezone) : undefined;
 
   if (!isTimeSupported || allDay) {
     return (
       <DatePicker
         label={t('desktop.dialog.endDate')}
-        value={end ? end.minus({ days: 1 }) : DateTime.now().setZone(timezone)}
+        value={end ? calendarAllDayEndToInclusive(end, start) : DateTime.now().setZone(timezone)}
         onChange={onEndChange}
       />
     );

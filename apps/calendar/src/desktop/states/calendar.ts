@@ -13,6 +13,8 @@ import { enqueueSnackbar } from 'notistack';
 import {
   addNewRecord,
   completeCalendarEvent,
+  forceAllDayCalendarEvent,
+  getDefaultAllDayRange,
   getDefaultEndDate,
   getDefaultStartDate,
 } from '../actions';
@@ -115,13 +117,16 @@ export const handleCalendarDateSelectAtom = atom(null, async (get, set, props: D
 
   const temporaryKey = Math.random().toString();
 
-  const completed = completeCalendarEvent({
+  const selected = completeCalendarEvent({
     id: temporaryKey,
     allDay: props.allDay,
     start: props.startStr,
     end: props.endStr,
     __quickSearch: '',
   });
+  // 日付型フィールドでは保存時に全日が強制されるため、時間枠ビューでの選択も下書きの時点で
+  // 全日に揃える(表示・入力・保存で全日の扱いがずれないように)
+  const completed = get(isTimeSupportedAtom) ? selected : forceAllDayCalendarEvent(selected);
 
   // 詳細編集モードでは独自ダイアログの代わりにkintone標準画面のiframeダイアログを開くため、
   // 下書きイベントをcalendarEventsAtomにpushしない(キャンセル時の後始末が不要になるように)
@@ -146,13 +151,19 @@ export const handleTemporaryEventAddAtom = atom(null, async (get, set) => {
   const temporaryKey = Math.random().toString();
   // フィールド設定がDATE型なら常に全日イベントになる(actions.tsの強制ルールと同じ)
   const isTimeSupported = get(isTimeSupportedAtom);
+  const allDay = !isTimeSupported;
+  // 全日イベントには時刻付きの既定値ではなく「当日〜翌日(排他的終了)」を渡す。時刻付きのまま
+  // 渡すと、終了日の表示・保存時の変換(排他的→包含的)がずれる原因になる
+  const { start, end } = allDay
+    ? getDefaultAllDayRange()
+    : { start: getDefaultStartDate(), end: getDefaultEndDate() };
 
   const completed = completeCalendarEvent({
     id: temporaryKey,
-    allDay: !isTimeSupported,
+    allDay,
     title: '',
-    start: getDefaultStartDate(),
-    end: getDefaultEndDate(),
+    start,
+    end,
     __quickSearch: '',
   });
 
