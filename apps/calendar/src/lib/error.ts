@@ -101,3 +101,13 @@ export const extractErrorMessage = (
 
   return fallbackMessage;
 };
+
+/** kintone REST APIの「レコードが見つからない」エラーのコード(削除済み・閲覧権限なし) */
+const RECORD_NOT_FOUND_ERROR_CODE = 'GAIA_RE01';
+
+/** kintone REST APIの「レコードが見つからない」エラーかどうか */
+export const isRecordNotFoundError = (error: unknown): boolean =>
+  typeof error === 'object' &&
+  error !== null &&
+  'code' in error &&
+  (error as { code: unknown }).code === RECORD_NOT_FOUND_ERROR_CODE;

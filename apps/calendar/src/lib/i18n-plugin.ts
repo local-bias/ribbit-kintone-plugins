@@ -85,11 +85,12 @@ const ui = mergeDeep(commonUi, {
     'desktop.error.detailedRefreshFailed':
       'レコードの反映に失敗しました、一覧を再表示してご確認ください',
     'desktop.error.detailedOpenFailed':
-      'レコードの追加・編集画面を開けませんでした、時間をおいて再度お試しください',
+      'レコードの画面を開けませんでした、時間をおいて再度お試しください',
 
     // Desktop - Detailed edit dialog (kintone standard record screen in iframe)
     'desktop.detailedDialog.createTitle': 'レコードの追加',
     'desktop.detailedDialog.editTitle': 'レコードの編集',
+    'desktop.detailedDialog.viewTitle': 'レコードの詳細',
     'desktop.detailedDialog.loading': '読み込んでいます',
 
     // Config - Loading
@@ -158,9 +159,9 @@ const ui = mergeDeep(commonUi, {
     'config.section.recurrence.enableLabel': '繰り返し予定を有効にする',
     'config.section.editMode.title': '編集モード',
     'config.section.editMode.description':
-      '予定の追加・編集方法を選択してください。簡易編集ではプラグイン独自のダイアログで編集します。詳細編集ではkintone標準のレコード追加・編集画面をダイアログ内に表示するため、必須フィールドが設定されている場合でも予定を追加できます。詳細編集はPC版・モバイル版の両方に対応しています(モバイル版では画面全体に表示されます)',
+      '予定の追加・編集方法を選択してください。簡易編集ではプラグイン独自のダイアログで編集します。詳細編集ではkintone標準のレコード追加・編集画面をダイアログ内に表示するため、必須フィールドが設定されている場合でも予定を追加できます。詳細表示では予定をクリックするとkintone標準のレコード詳細画面をダイアログ内に表示し、予定の追加・編集は詳細編集と同じくkintone標準画面で行います。詳細編集・詳細表示はPC版・モバイル版の両方に対応しています(モバイル版では画面全体に表示されます)',
     'config.section.editMode.description2':
-      '繰り返し予定を有効にしている場合、詳細編集ではレコード編集画面上の繰り返し設定フィールドがプラグイン独自の入力UIに置き換えられます',
+      '繰り返し予定を有効にしている場合、詳細編集・詳細表示ではレコード編集画面上の繰り返し設定フィールドがプラグイン独自の入力UIに置き換えられます',
     'config.section.advanced': '高度な設定',
     'config.section.initialView.title': '初期表示するカレンダーの種類',
     'config.section.initialView.description': '初期表示するカレンダーの種類を選択してください',
@@ -195,6 +196,7 @@ const ui = mergeDeep(commonUi, {
     'config.form.editMode': '編集方法',
     'config.form.editMode.simple': '簡易編集（専用ダイアログ）',
     'config.form.editMode.detailed': '詳細編集（kintone標準画面）',
+    'config.form.editMode.detailView': '詳細表示（kintone標準画面）',
     'config.form.colorLabel': '色{0}',
     'config.form.addColor': '色設定を追加する',
     'config.form.deleteColor': 'この色設定を削除する',
@@ -385,11 +387,12 @@ const ui = mergeDeep(commonUi, {
     'desktop.error.detailedRefreshFailed':
       'Failed to reflect the record. Please refresh the list to check.',
     'desktop.error.detailedOpenFailed':
-      'Could not open the record add/edit screen. Please wait a moment and try again.',
+      'Could not open the record screen. Please wait a moment and try again.',
 
     // Desktop - Detailed edit dialog (kintone standard record screen in iframe)
     'desktop.detailedDialog.createTitle': 'Add record',
     'desktop.detailedDialog.editTitle': 'Edit record',
+    'desktop.detailedDialog.viewTitle': 'Record details',
     'desktop.detailedDialog.loading': 'Loading',
 
     // Config - Loading
@@ -455,9 +458,9 @@ const ui = mergeDeep(commonUi, {
     'config.section.recurrence.enableLabel': 'Enable recurring events',
     'config.section.editMode.title': 'Edit mode',
     'config.section.editMode.description':
-      "Choose how schedules are added and edited. Simple edit uses the plugin's own dialog. Detailed edit shows the kintone standard record add/edit screen in a dialog, so schedules can be added even when required fields are configured. Detailed edit is available on both desktop and mobile (on mobile, it is shown full screen)",
+      "Choose how schedules are added and edited. Simple edit uses the plugin's own dialog. Detailed edit shows the kintone standard record add/edit screen in a dialog, so schedules can be added even when required fields are configured. Detail view shows the kintone standard record details screen in a dialog when a schedule is clicked, and schedules are added and edited on the kintone standard screen as in detailed edit. Detailed edit and detail view are available on both desktop and mobile (on mobile, they are shown full screen)",
     'config.section.editMode.description2':
-      "When recurring events are enabled, detailed edit replaces the recurrence field on the record edit screen with the plugin's own input UI",
+      "When recurring events are enabled, detailed edit and detail view replace the recurrence field on the record edit screen with the plugin's own input UI",
     'config.section.advanced': 'Advanced settings',
     'config.section.initialView.title': 'Initial calendar view type',
     'config.section.initialView.description': 'Select the initial calendar view type',
@@ -492,6 +495,7 @@ const ui = mergeDeep(commonUi, {
     'config.form.editMode': 'Edit method',
     'config.form.editMode.simple': 'Simple edit (dedicated dialog)',
     'config.form.editMode.detailed': 'Detailed edit (kintone standard screen)',
+    'config.form.editMode.detailView': 'Detail view (kintone standard screen)',
     'config.form.colorLabel': 'Color {0}',
     'config.form.addColor': 'Add color setting',
     'config.form.deleteColor': 'Delete this color setting',
@@ -682,11 +686,12 @@ const ui = mergeDeep(commonUi, {
     'desktop.error.detailedRefreshFailed':
       'Error al reflejar el registro. Por favor actualice la lista para verificar.',
     'desktop.error.detailedOpenFailed':
-      'No se pudo abrir la pantalla de agregar/editar registro. Espere un momento e intente de nuevo.',
+      'No se pudo abrir la pantalla del registro. Espere un momento e intente de nuevo.',
 
     // Desktop - Detailed edit dialog (kintone standard record screen in iframe)
     'desktop.detailedDialog.createTitle': 'Agregar registro',
     'desktop.detailedDialog.editTitle': 'Editar registro',
+    'desktop.detailedDialog.viewTitle': 'Detalles del registro',
     'desktop.detailedDialog.loading': 'Cargando',
 
     // Config - Loading
@@ -753,9 +758,9 @@ const ui = mergeDeep(commonUi, {
     'config.section.recurrence.enableLabel': 'Habilitar eventos recurrentes',
     'config.section.editMode.title': 'Modo de edición',
     'config.section.editMode.description':
-      'Elija cómo se agregan y editan los horarios. La edición simple usa el propio diálogo del plugin. La edición detallada muestra la pantalla estándar de agregar/editar registro de kintone en un diálogo, para poder agregar horarios incluso cuando hay campos obligatorios configurados. La edición detallada está disponible tanto en la versión de escritorio como en la móvil (en la versión móvil se muestra a pantalla completa)',
+      'Elija cómo se agregan y editan los horarios. La edición simple usa el propio diálogo del plugin. La edición detallada muestra la pantalla estándar de agregar/editar registro de kintone en un diálogo, para poder agregar horarios incluso cuando hay campos obligatorios configurados. La vista de detalle muestra la pantalla estándar de detalles del registro de kintone en un diálogo al hacer clic en un horario, y los horarios se agregan y editan en la pantalla estándar de kintone igual que en la edición detallada. La edición detallada y la vista de detalle están disponibles tanto en la versión de escritorio como en la móvil (en la versión móvil se muestran a pantalla completa)',
     'config.section.editMode.description2':
-      'Cuando los eventos recurrentes están habilitados, la edición detallada reemplaza el campo de recurrencia en la pantalla de edición de registro con la interfaz propia del plugin',
+      'Cuando los eventos recurrentes están habilitados, la edición detallada y la vista de detalle reemplazan el campo de recurrencia en la pantalla de edición de registro con la interfaz propia del plugin',
     'config.section.advanced': 'Configuración avanzada',
     'config.section.initialView.title': 'Tipo de vista inicial del calendario',
     'config.section.initialView.description': 'Seleccione el tipo de vista inicial del calendario',
@@ -791,6 +796,7 @@ const ui = mergeDeep(commonUi, {
     'config.form.editMode': 'Método de edición',
     'config.form.editMode.simple': 'Edición simple (diálogo dedicado)',
     'config.form.editMode.detailed': 'Edición detallada (pantalla estándar de kintone)',
+    'config.form.editMode.detailView': 'Vista de detalle (pantalla estándar de kintone)',
     'config.form.colorLabel': 'Color {0}',
     'config.form.addColor': 'Agregar configuración de color',
     'config.form.deleteColor': 'Eliminar esta configuración de color',
@@ -976,11 +982,12 @@ const ui = mergeDeep(commonUi, {
     'desktop.error.recurrenceMasterNotFound': '未找到此重复日程的源记录，请刷新列表后重试。',
     'desktop.error.eventCopySuffix': '（副本）',
     'desktop.error.detailedRefreshFailed': '反映记录失败，请刷新列表确认。',
-    'desktop.error.detailedOpenFailed': '无法打开记录添加、编辑画面，请稍后重试。',
+    'desktop.error.detailedOpenFailed': '无法打开记录画面，请稍后重试。',
 
     // Desktop - Detailed edit dialog (kintone standard record screen in iframe)
     'desktop.detailedDialog.createTitle': '添加记录',
     'desktop.detailedDialog.editTitle': '编辑记录',
+    'desktop.detailedDialog.viewTitle': '记录详情',
     'desktop.detailedDialog.loading': '正在加载',
 
     // Config - Loading
@@ -1038,9 +1045,9 @@ const ui = mergeDeep(commonUi, {
     'config.section.recurrence.enableLabel': '启用重复日程',
     'config.section.editMode.title': '编辑模式',
     'config.section.editMode.description':
-      '选择日程的添加、编辑方式。简易编辑使用插件独有的对话框。详细编辑会在对话框中显示kintone标准的记录添加、编辑画面，因此即使设置了必填字段也可以添加日程。详细编辑同时支持电脑版和手机版（手机版以全屏显示）',
+      '选择日程的添加、编辑方式。简易编辑使用插件独有的对话框。详细编辑会在对话框中显示kintone标准的记录添加、编辑画面，因此即使设置了必填字段也可以添加日程。详细显示会在点击日程时于对话框中显示kintone标准的记录详情画面，日程的添加、编辑与详细编辑相同，在kintone标准画面中进行。详细编辑和详细显示同时支持电脑版和手机版（手机版以全屏显示）',
     'config.section.editMode.description2':
-      '启用重复日程时，详细编辑会将记录编辑画面上的重复设置字段替换为插件独有的输入界面',
+      '启用重复日程时，详细编辑和详细显示会将记录编辑画面上的重复设置字段替换为插件独有的输入界面',
     'config.section.advanced': '高级设置',
     'config.section.initialView.title': '初始日历视图类型',
     'config.section.initialView.description': '选择初始日历视图类型',
@@ -1070,6 +1077,7 @@ const ui = mergeDeep(commonUi, {
     'config.form.editMode': '编辑方式',
     'config.form.editMode.simple': '简易编辑（专用对话框）',
     'config.form.editMode.detailed': '详细编辑（kintone标准画面）',
+    'config.form.editMode.detailView': '详细显示（kintone标准画面）',
     'config.form.colorLabel': '颜色 {0}',
     'config.form.addColor': '添加颜色设置',
     'config.form.deleteColor': '删除此颜色设置',
@@ -1251,11 +1259,12 @@ const ui = mergeDeep(commonUi, {
     'desktop.error.recurrenceMasterNotFound': '找不到此重複行程的來源記錄，請重新整理列表後再試。',
     'desktop.error.eventCopySuffix': '（副本）',
     'desktop.error.detailedRefreshFailed': '反映記錄失敗，請重新整理列表確認。',
-    'desktop.error.detailedOpenFailed': '無法開啟記錄新增、編輯畫面，請稍後再試。',
+    'desktop.error.detailedOpenFailed': '無法開啟記錄畫面，請稍後再試。',
 
     // Desktop - Detailed edit dialog (kintone standard record screen in iframe)
     'desktop.detailedDialog.createTitle': '新增記錄',
     'desktop.detailedDialog.editTitle': '編輯記錄',
+    'desktop.detailedDialog.viewTitle': '記錄詳情',
     'desktop.detailedDialog.loading': '載入中',
 
     // Config - Loading
@@ -1313,9 +1322,9 @@ const ui = mergeDeep(commonUi, {
     'config.section.recurrence.enableLabel': '啟用重複行程',
     'config.section.editMode.title': '編輯模式',
     'config.section.editMode.description':
-      '選擇行程的新增、編輯方式。簡易編輯使用外掛獨有的對話方塊。詳細編輯會在對話方塊中顯示kintone標準的記錄新增、編輯畫面，因此即使設定了必填欄位也可以新增行程。詳細編輯同時支援電腦版與手機版（手機版以全螢幕顯示）',
+      '選擇行程的新增、編輯方式。簡易編輯使用外掛獨有的對話方塊。詳細編輯會在對話方塊中顯示kintone標準的記錄新增、編輯畫面，因此即使設定了必填欄位也可以新增行程。詳細顯示會在點擊行程時於對話方塊中顯示kintone標準的記錄詳情畫面，行程的新增、編輯與詳細編輯相同，在kintone標準畫面中進行。詳細編輯與詳細顯示同時支援電腦版與手機版（手機版以全螢幕顯示）',
     'config.section.editMode.description2':
-      '啟用重複行程時，詳細編輯會將記錄編輯畫面上的重複設定欄位替換為外掛獨有的輸入介面',
+      '啟用重複行程時，詳細編輯與詳細顯示會將記錄編輯畫面上的重複設定欄位替換為外掛獨有的輸入介面',
     'config.section.advanced': '進階設定',
     'config.section.initialView.title': '初始行事曆檢視類型',
     'config.section.initialView.description': '選擇初始行事曆檢視類型',
@@ -1345,6 +1354,7 @@ const ui = mergeDeep(commonUi, {
     'config.form.editMode': '編輯方式',
     'config.form.editMode.simple': '簡易編輯（專用對話方塊）',
     'config.form.editMode.detailed': '詳細編輯（kintone標準畫面）',
+    'config.form.editMode.detailView': '詳細顯示（kintone標準畫面）',
     'config.form.colorLabel': '顏色 {0}',
     'config.form.addColor': '新增顏色設定',
     'config.form.deleteColor': '刪除此顏色設定',

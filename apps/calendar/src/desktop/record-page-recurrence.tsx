@@ -1,5 +1,6 @@
 import { DEFAULT_RECURRENCE_FORM, RecurrenceFormInputs } from '@/desktop/components/recurrence-form';
 import { calendarDateInputToDateTime, getLoginUserTimezone } from '@/desktop/date-conversion';
+import { usesKintoneRecordScreen } from '@/desktop/inline-record';
 import {
   buildRRuleString,
   parseRecurrenceMeta,
@@ -24,7 +25,7 @@ import { FC, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 
 /**
- * 詳細編集モード(`editMode: 'detailed'`)で繰り返し予定が有効な場合、レコード追加・編集画面上の
+ * 詳細編集・詳細表示モード(`editMode: 'detailed' | 'detailView'`)で繰り返し予定が有効な場合、レコード追加・編集画面上の
  * 繰り返しJSONフィールドの入力コントロールを、プラグイン独自の繰り返し設定UIに置き換える。
  *
  * `getMetaFieldId_UNSTABLE(fieldCode)`で取得したメタフィールドIDから`.value-{id}`要素を
@@ -73,14 +74,14 @@ const getRecordHeaderSpace = (eventType: string): HTMLElement | null =>
     ? kintone.mobile.app.getHeaderSpaceElement()
     : kintone.app.record.getHeaderMenuSpaceElement();
 
-/** 詳細編集 + 繰り返し有効 + 繰り返しフィールド設定ありのconditionを、
+/** 詳細編集・詳細表示 + 繰り返し有効 + 繰り返しフィールド設定ありのconditionを、
  *  フィールドコードの重複を除いて返す(複数conditionが同じフィールドを共有する場合の対策) */
 const getTargetConditions = (): PluginCondition[] => {
   const config = restorePluginConfig();
   const seen = new Set<string>();
   return config.conditions.filter((condition) => {
     const fieldCode = condition.calendarEvent.recurrenceField;
-    if (condition.editMode !== 'detailed' || !condition.enablesRecurrence || !fieldCode) {
+    if (!usesKintoneRecordScreen(condition.editMode) || !condition.enablesRecurrence || !fieldCode) {
       return false;
     }
     if (seen.has(fieldCode)) {

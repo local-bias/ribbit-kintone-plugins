@@ -7,18 +7,23 @@ import {
   INLINE_MESSAGE,
   buildInlineCreateUrl,
   buildInlineEditUrl,
+  buildInlineViewUrl,
   buildMobileInlineCreateUrl,
   buildMobileInlineEditUrl,
+  buildMobileInlineViewUrl,
   canBuildMobilePageUrl,
+  isValidRecordId,
+  shouldUseDetailViewMode,
   shouldUseDetailedEditMode,
   type InlineInitialValue,
 } from '@/desktop/inline-record';
 import { isShownUnderFilters } from '@/desktop/event-filters';
+import { isRecordNotFoundError } from '@/lib/error';
 import { GUEST_SPACE_ID } from '@/lib/global';
 import { t } from '@/lib/i18n-plugin';
 import { getAppId, getRecord, isMobile } from '@konomi-app/kintone-utilities';
 import { produce } from 'immer';
-import { atom } from 'jotai';
+import { atom, type Getter } from 'jotai';
 import { enqueueSnackbar } from 'notistack';
 import { calendarEventsAtom, calendarFiltersAtom, type PluginCalendarEvent } from './calendar';
 import { appPropertiesAtom, loadingAtom, pluginConditionAtom } from './kintone';
@@ -39,18 +44,36 @@ export type DetailedDialogState =
       url: string;
       recordId: string;
     }
+  | {
+      mode: 'view';
+      /** iframeに読み込むkintone標準のレコード詳細画面のURL */
+      url: string;
+      recordId: string;
+    }
   | null;
 
 export const detailedDialogAtom = atom<DetailedDialogState>(null);
 
-/** モバイルでは`kintone.buildPageUrl`が使える場合のみ詳細編集を使い、それ以外は簡易編集
- *  ダイアログにフォールバックする(`shouldUseDetailedEditMode`を参照) */
+/** 詳細表示ダイアログ内(詳細画面からの編集・再利用など)で保存されたレコードのID。
+ *  ダイアログを閉じたときにまとめてカレンダーへ反映する */
+const viewSavedRecordIdsAtom = atom<readonly string[]>([]);
+
+const getEditModeEnvironment = (get: Getter) => ({
+  editMode: get(pluginConditionAtom)?.editMode,
+  isMobile: isMobile(),
+  canBuildMobilePageUrl: canBuildMobilePageUrl(),
+});
+
+/** 予定の追加・編集にkintone標準画面のiframeダイアログを使うかどうか(詳細編集・詳細表示)。
+ *  モバイルでは`kintone.buildPageUrl`が使える場合のみ使い、それ以外は簡易編集ダイアログに
+ *  フォールバックする(`shouldUseDetailedEditMode`を参照) */
 export const isDetailedModeAtom = atom((get) =>
-  shouldUseDetailedEditMode({
-    editMode: get(pluginConditionAtom)?.editMode,
-    isMobile: isMobile(),
-    canBuildMobilePageUrl: canBuildMobilePageUrl(),
-  })
+  shouldUseDetailedEditMode(getEditModeEnvironment(get))
+);
+
+/** 予定のクリック時に、kintone標準のレコード詳細画面のiframeダイアログを開くかどうか(詳細表示) */
+export const isDetailViewModeAtom = atom((get) =>
+  shouldUseDetailViewMode(getEditModeEnvironment(get))
 );
 
 /** URLの組み立て中(=ダイアログを開いている途中)かどうか。連打による多重起動を防ぐ */
@@ -111,10 +134,73 @@ export const openDetailedEditDialogAtom = atom(null, (_get, set, recordId: strin
   })
 );
 
+/** 既存レコードを詳細表示ダイアログ(iframe)で開きます */
+export const openDetailedViewDialogAtom = atom(null, (_get, set, recordId: string) =>
+  set(showDetailedDialogAtom, {
+    buildUrl: () =>
+      isMobile()
+        ? buildMobileInlineViewUrl({ appId: getRequiredAppId(), recordId })
+        : buildInlineViewUrl(recordId),
+    toState: (url) => ({ mode: 'view', url, recordId }),
+  })
+);
+
 /** `handleDetailedDialogClosedAtom`の多重実行を防ぐためのガード。編集の保存成功後、kintoneが
  *  詳細画面へ遷移して`app.record.detail.show`も追加で発火し、キャンセル用メッセージが
  *  二重に届くことがあるため。 */
 const isClosingDetailedDialogAtom = atom(false);
+
+/**
+ * 詳細表示ダイアログ内でレコードが保存されたことを記録します(ダイアログは閉じない)。
+ *
+ * iframe内では関連レコード等から別のアプリへ遷移できるため、このアプリのレコードの場合のみ記録する
+ * (別アプリの同じIDのレコードを、このアプリのレコードとして取得してしまわないように)。
+ * 閉じる処理の開始後に届いたものは、次に開いたダイアログに持ち越さないよう無視する。
+ */
+export const handleDetailedDialogMessageAtom = atom(
+  null,
+  (get, set, payload: { type?: string; recordId?: unknown; appId?: unknown }) => {
+    const state = get(detailedDialogAtom);
+    if (state?.mode !== 'view' || get(isClosingDetailedDialogAtom)) return;
+    if (payload.type !== INLINE_MESSAGE.viewRecordSaved) return;
+    const { recordId, appId } = payload;
+    if (!isValidRecordId(recordId) || appId !== String(getAppId())) return;
+    set(viewSavedRecordIdsAtom, (current) =>
+      current.includes(recordId) ? current : [...current, recordId]
+    );
+  }
+);
+
+/**
+ * 詳細表示ダイアログを閉じた際に、表示していたレコードと、ダイアログ内で保存されたレコードを
+ * カレンダーへ反映します。
+ *
+ * 表示していたレコードは、保存メッセージを伴わない変更(プロセス管理のステータス変更等)も
+ * 取りこぼさないよう常に再取得する。ダイアログ内で削除されたレコードは見つからないため、
+ * エラーとはせず一覧から除去するだけにする。それ以外のエラーは、残りのレコードを反映してから通知する。
+ */
+const reflectViewedRecordsAtom = atom(null, async (get, set, recordId: string) => {
+  const savedRecordIds = get(viewSavedRecordIdsAtom);
+  set(viewSavedRecordIdsAtom, []);
+
+  const targetIds = [recordId, ...savedRecordIds.filter((id) => id !== recordId)];
+  let firstError: unknown;
+  for (const targetId of targetIds) {
+    try {
+      await set(reflectSavedRecordAtom, targetId);
+    } catch (error) {
+      if (!isRecordNotFoundError(error)) firstError ??= error;
+    }
+  }
+  if (firstError !== undefined) throw firstError;
+
+  // 保存した予定が絞り込みで非表示になった場合のみ知らせる(通知は同時に1件しか表示されないため、
+  // 最後に保存したものを対象にする)
+  const lastSavedRecordId = savedRecordIds.at(-1);
+  if (lastSavedRecordId) {
+    set(notifyIfHiddenByFiltersAtom, lastSavedRecordId);
+  }
+});
 
 /**
  * 新規追加(空き日付クリック・FAB・この回のみ編集)のドラフトイベントから、詳細編集ダイアログ
@@ -184,8 +270,11 @@ const reflectSavedRecordAtom = atom(null, async (get, set, recordId: string) => 
       })
     );
   } catch (error) {
-    // レコードが見つからない(削除済み等)場合は一覧から除去する
-    set(calendarEventsAtom, (current) => current.filter((event) => event.id !== recordId));
+    // レコードが見つからない(削除済み等)場合のみ一覧から除去する。一時的な通信エラー等では、
+    // 表示中の予定が消えてしまわないようそのまま残す
+    if (isRecordNotFoundError(error)) {
+      set(calendarEventsAtom, (current) => current.filter((event) => event.id !== recordId));
+    }
     throw error;
   }
 });
@@ -197,6 +286,8 @@ const reflectSavedRecordAtom = atom(null, async (get, set, recordId: string) => 
  *   それ以外(キャンセル・手動クローズ)は何もkintoneに保存されていないため反映不要。
  * - 編集: 成功・キャンセル・手動クローズのいずれでも対象レコードを防御的に再取得する
  *   (保存直後にメッセージを取りこぼした場合でも取りこぼしなく反映するため)。
+ * - 詳細表示: 表示していたレコードと、ダイアログ内で保存されたレコードを再取得する
+ *   (`reflectViewedRecordsAtom`を参照)。
  */
 export const handleDetailedDialogClosedAtom = atom(
   null,
@@ -236,6 +327,8 @@ export const handleDetailedDialogClosedAtom = atom(
             await set(refreshComputedValuesAtom, updatedMaster.id);
           }
         }
+      } else if (state.mode === 'view') {
+        await set(reflectViewedRecordsAtom, state.recordId);
       } else {
         // 編集は取りこぼし対策としてキャンセル時も再取得するため、キャンセルした場合と、もともと
         // 絞り込みで非表示だった予定の場合は「保存しました」と通知しない

@@ -8,6 +8,7 @@ import { editModeState } from '../../states/plugin';
 const EDIT_MODE_LIST: { labelKey: Parameters<typeof t>[0]; value: EditMode }[] = [
   { labelKey: 'config.form.editMode.simple', value: 'simple' },
   { labelKey: 'config.form.editMode.detailed', value: 'detailed' },
+  { labelKey: 'config.form.editMode.detailView', value: 'detailView' },
 ];
 
 const handleEditModeChangeAtom = atom(

@@ -200,8 +200,10 @@ export const PluginConfigV5Schema = z.object({
  *
  * - simple: プラグイン独自のダイアログで編集する
  * - detailed: kintone標準のレコード追加・編集画面をダイアログ内にiframeで表示する
+ * - detailView: 予定のクリック時はkintone標準のレコード詳細画面をダイアログ内にiframeで表示する
+ *   (予定の追加・編集は`detailed`と同じくkintone標準の追加・編集画面で行う)
  */
-export const EditModeSchema = z.enum(['simple', 'detailed']);
+export const EditModeSchema = z.enum(['simple', 'detailed', 'detailView']);
 export type EditMode = z.infer<typeof EditModeSchema>;
 
 export const PluginConditionV6Schema = PluginConditionV5Schema.extend({

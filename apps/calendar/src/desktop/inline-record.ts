@@ -11,6 +11,7 @@ import type { EditMode, PluginCondition } from '@/schema/plugin-config';
 
 export const CALENDAR_INLINE_EDIT_PARAM = 'calendar_inline_edit';
 export const CALENDAR_INLINE_CREATE_PARAM = 'calendar_inline_create';
+export const CALENDAR_INLINE_VIEW_PARAM = 'calendar_inline_view';
 const CONDITION_ID_PARAM = 'calendar_inline_create_condition';
 const INITIAL_VALUES_PARAM = 'calendar_inline_create_values';
 const HISTORY_STATE_KEY = 'calendarInlineCreateCancelGuard';
@@ -27,6 +28,10 @@ export const INLINE_MESSAGE = {
   editCancelled: 'ribbit-calendar-edit-cancelled',
   createSubmitSuccess: 'ribbit-calendar-create-submit-success',
   createCancelled: 'ribbit-calendar-create-cancelled',
+  /** 詳細表示ダイアログ内で一覧画面へ遷移した(レコードの削除等) */
+  viewClosed: 'ribbit-calendar-view-closed',
+  /** 詳細表示ダイアログ内でレコードが保存された(ダイアログは閉じず、閉じたときに反映する) */
+  viewRecordSaved: 'ribbit-calendar-view-record-saved',
 } as const;
 
 export interface InlineInitialValue {
@@ -133,11 +138,11 @@ const pushCancelGuardState = (): void => {
   }
 };
 
-const postParentMessage = (type: string, recordId?: string): void => {
+const postParentMessage = (type: string, recordId?: string, appId?: string): void => {
   if (window.parent === window) {
     return;
   }
-  window.parent.postMessage({ type, recordId }, location.origin);
+  window.parent.postMessage({ type, recordId, appId }, location.origin);
 };
 
 /** モバイル版の画面URLの組み立てに必要な`kintone.buildPageUrl`が使える環境かどうか */
@@ -145,7 +150,24 @@ export const canBuildMobilePageUrl = (): boolean =>
   typeof kintone !== 'undefined' && typeof kintone.buildPageUrl === 'function';
 
 /**
- * 詳細編集(kintone標準画面のiframeダイアログ)を使用するかどうかを判定します。
+ * 予定の追加・編集にkintone標準のレコード追加・編集画面を使う編集モードかどうか。
+ * 詳細表示(`detailView`)も、予定の追加・編集は詳細編集と同じ画面で行う。
+ */
+export const usesKintoneRecordScreen = (editMode: EditMode | undefined): boolean =>
+  editMode === 'detailed' || editMode === 'detailView';
+
+interface EditModeEnvironment {
+  editMode: EditMode | undefined;
+  isMobile: boolean;
+  canBuildMobilePageUrl: boolean;
+}
+
+/** kintone標準画面のiframeダイアログを開ける環境かどうか(`shouldUseDetailedEditMode`を参照) */
+const canOpenKintoneScreenInDialog = (params: EditModeEnvironment): boolean =>
+  !params.isMobile || params.canBuildMobilePageUrl;
+
+/**
+ * 予定の追加・編集に、詳細編集(kintone標準画面のiframeダイアログ)を使用するかどうかを判定します。
  *
  * モバイル版のレコード画面URLはPC版と形式が異なる(PC版の`show#record=...`をそのまま開くと
  * レコードIDが渡らず、kintoneがCB_VA01エラーを表示する)ため、モバイルでは
@@ -153,18 +175,28 @@ export const canBuildMobilePageUrl = (): boolean =>
  * 使えない(提供前の)環境では、設定に関わらず簡易編集(プラグイン独自ダイアログ)へ
  * フォールバックします。
  */
-export const shouldUseDetailedEditMode = (params: {
-  editMode: EditMode | undefined;
-  isMobile: boolean;
-  canBuildMobilePageUrl: boolean;
-}): boolean =>
-  params.editMode === 'detailed' && (!params.isMobile || params.canBuildMobilePageUrl);
+export const shouldUseDetailedEditMode = (params: EditModeEnvironment): boolean =>
+  usesKintoneRecordScreen(params.editMode) && canOpenKintoneScreenInDialog(params);
+
+/**
+ * 予定のクリック時に、詳細表示(kintone標準のレコード詳細画面のiframeダイアログ)を使用するか
+ * どうかを判定します。詳細編集と同様、使えない環境では簡易編集へフォールバックします。
+ */
+export const shouldUseDetailViewMode = (params: EditModeEnvironment): boolean =>
+  params.editMode === 'detailView' && canOpenKintoneScreenInDialog(params);
+
+/** kintoneのレコードIDとして妥当な値(正の整数の文字列)かどうか。postMessageで受け取った値の検証用 */
+export const isValidRecordId = (value: unknown): value is string =>
+  typeof value === 'string' && /^[1-9]\d{0,18}$/.test(value);
 
 export const isInlineEditPage = (): boolean =>
   new URLSearchParams(location.search).has(CALENDAR_INLINE_EDIT_PARAM);
 
 export const isInlineCreatePage = (): boolean =>
   new URLSearchParams(location.search).has(CALENDAR_INLINE_CREATE_PARAM);
+
+export const isInlineViewPage = (): boolean =>
+  new URLSearchParams(location.search).has(CALENDAR_INLINE_VIEW_PARAM);
 
 /**
  * 詳細編集ダイアログのiframeに付与する`name`属性。
@@ -176,6 +208,7 @@ export const isInlineCreatePage = (): boolean =>
 export const INLINE_FRAME_NAME = {
   edit: 'ribbit-calendar-inline-edit',
   create: 'ribbit-calendar-inline-create',
+  view: 'ribbit-calendar-inline-view',
 } as const;
 
 const getWindowName = (): string => (typeof window !== 'undefined' ? window.name : '');
@@ -187,6 +220,10 @@ export const isInlineEditFrame = (): boolean =>
 /** 詳細編集ダイアログの「追加」iframe内かどうか(画面遷移後も判定できる) */
 export const isInlineCreateFrame = (): boolean =>
   isInlineCreatePage() || getWindowName() === INLINE_FRAME_NAME.create;
+
+/** 詳細表示ダイアログのiframe内かどうか(画面遷移後も判定できる) */
+export const isInlineViewFrame = (): boolean =>
+  isInlineViewPage() || getWindowName() === INLINE_FRAME_NAME.view;
 
 /**
  * 編集iframe内で詳細(閲覧)画面が表示されたとき、それを「編集のキャンセル」とみなすかどうか。
@@ -201,7 +238,10 @@ export const shouldTreatDetailShowAsEditCancel = (params: {
 }): boolean => params.hasShownEditScreen || !params.isOnInitialInlineUrl;
 
 export const buildInlineEditUrl = (recordId: string): string =>
-  `${location.pathname}show?${CALENDAR_INLINE_EDIT_PARAM}=1#record=${recordId}&mode=edit`;
+  `${location.pathname}show?${CALENDAR_INLINE_EDIT_PARAM}=1#record=${encodeURIComponent(recordId)}&mode=edit`;
+
+export const buildInlineViewUrl = (recordId: string): string =>
+  `${location.pathname}show?${CALENDAR_INLINE_VIEW_PARAM}=1#record=${encodeURIComponent(recordId)}`;
 
 /**
  * `kintone.buildPageUrl`で組み立てたモバイル版の画面URLに、iframe内での判定用パラメータを
@@ -209,7 +249,7 @@ export const buildInlineEditUrl = (recordId: string): string =>
  * 返された場合はエラーとします。
  */
 const buildMobilePageUrl = async (
-  page: 'APP_CREATE_MOBILE' | 'APP_EDIT_MOBILE',
+  page: 'APP_CREATE_MOBILE' | 'APP_EDIT_MOBILE' | 'APP_DETAIL_MOBILE',
   params: kintone.BuildPageUrlAppParams,
   searchParams: URLSearchParams
 ): Promise<string> => {
@@ -235,6 +275,16 @@ export const buildMobileInlineEditUrl = (params: {
     'APP_EDIT_MOBILE',
     params,
     new URLSearchParams({ [CALENDAR_INLINE_EDIT_PARAM]: '1' })
+  );
+
+export const buildMobileInlineViewUrl = (params: {
+  appId: string;
+  recordId: string;
+}): Promise<string> =>
+  buildMobilePageUrl(
+    'APP_DETAIL_MOBILE',
+    params,
+    new URLSearchParams({ [CALENDAR_INLINE_VIEW_PARAM]: '1' })
   );
 
 const buildInlineCreateSearchParams = (params: {
@@ -330,3 +380,9 @@ export const postInlineCreateSubmitSuccess = (recordId: string): void =>
 
 export const postInlineCreateCancelled = (): void =>
   postParentMessage(INLINE_MESSAGE.createCancelled);
+
+export const postInlineViewClosed = (): void => postParentMessage(INLINE_MESSAGE.viewClosed);
+
+/** iframe内では別のアプリへ遷移できるため、保存したレコードのアプリIDも併せて伝える */
+export const postInlineViewRecordSaved = (params: { recordId: string; appId: string }): void =>
+  postParentMessage(INLINE_MESSAGE.viewRecordSaved, params.recordId, params.appId);

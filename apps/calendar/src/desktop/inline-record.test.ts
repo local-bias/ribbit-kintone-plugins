@@ -100,6 +100,14 @@ const {
   isInlineEditFrame,
   isInlineCreateFrame,
   shouldTreatDetailShowAsEditCancel,
+  shouldUseDetailViewMode,
+  usesKintoneRecordScreen,
+  buildInlineViewUrl,
+  buildMobileInlineViewUrl,
+  CALENDAR_INLINE_VIEW_PARAM,
+  isInlineViewFrame,
+  isInlineViewPage,
+  isValidRecordId,
 } = await import('./inline-record');
 
 describe('isInlineEditFrame / isInlineCreateFrame', () => {
@@ -124,6 +132,21 @@ describe('isInlineEditFrame / isInlineCreateFrame', () => {
     window.name = INLINE_FRAME_NAME.create;
     expect(isInlineCreateFrame()).toBe(true);
     expect(isInlineEditFrame()).toBe(false);
+  });
+
+  it('detects the detail view frame by its marker or name, separately from the edit frame', () => {
+    setLocation('https://example.cybozu.com/k/1/show?calendar_inline_view=1#record=1');
+    expect(isInlineViewPage()).toBe(true);
+    expect(isInlineViewFrame()).toBe(true);
+    expect(isInlineEditFrame()).toBe(false);
+
+    // 詳細画面から編集画面へ遷移した後も、詳細表示のiframe内であることを判定できる
+    setLocation('https://example.cybozu.com/k/1/show#record=1&mode=edit');
+    window.name = INLINE_FRAME_NAME.view;
+    expect(isInlineViewPage()).toBe(false);
+    expect(isInlineViewFrame()).toBe(true);
+    expect(isInlineEditFrame()).toBe(false);
+    expect(isInlineCreateFrame()).toBe(false);
   });
 });
 
@@ -150,13 +173,21 @@ describe('shouldTreatDetailShowAsEditCancel', () => {
 describe('shouldUseDetailedEditMode', () => {
   it('uses the detailed (iframe) edit mode on desktop when configured', () => {
     expect(
-      shouldUseDetailedEditMode({ editMode: 'detailed', isMobile: false, canBuildMobilePageUrl: false })
+      shouldUseDetailedEditMode({
+        editMode: 'detailed',
+        isMobile: false,
+        canBuildMobilePageUrl: false,
+      })
     ).toBe(true);
   });
 
   it('uses the detailed edit mode on mobile when the mobile page URL can be built', () => {
     expect(
-      shouldUseDetailedEditMode({ editMode: 'detailed', isMobile: true, canBuildMobilePageUrl: true })
+      shouldUseDetailedEditMode({
+        editMode: 'detailed',
+        isMobile: true,
+        canBuildMobilePageUrl: true,
+      })
     ).toBe(true);
   });
 
@@ -164,7 +195,11 @@ describe('shouldUseDetailedEditMode', () => {
     // PC版のURLをモバイルで開くとkintoneがCB_VA01エラーを表示するため、モバイル版のURLを
     // 組み立てられない環境では簡易編集にフォールバックする
     expect(
-      shouldUseDetailedEditMode({ editMode: 'detailed', isMobile: true, canBuildMobilePageUrl: false })
+      shouldUseDetailedEditMode({
+        editMode: 'detailed',
+        isMobile: true,
+        canBuildMobilePageUrl: false,
+      })
     ).toBe(false);
   });
 
@@ -173,8 +208,116 @@ describe('shouldUseDetailedEditMode', () => {
       shouldUseDetailedEditMode({ editMode: 'simple', isMobile: true, canBuildMobilePageUrl: true })
     ).toBe(false);
     expect(
-      shouldUseDetailedEditMode({ editMode: undefined, isMobile: false, canBuildMobilePageUrl: true })
+      shouldUseDetailedEditMode({
+        editMode: undefined,
+        isMobile: false,
+        canBuildMobilePageUrl: true,
+      })
     ).toBe(false);
+  });
+});
+
+describe('usesKintoneRecordScreen', () => {
+  it('uses the kintone standard add/edit screen in both the detailed edit and detail view modes', () => {
+    expect(usesKintoneRecordScreen('detailed')).toBe(true);
+    expect(usesKintoneRecordScreen('detailView')).toBe(true);
+    expect(usesKintoneRecordScreen('simple')).toBe(false);
+    expect(usesKintoneRecordScreen(undefined)).toBe(false);
+  });
+});
+
+describe('shouldUseDetailViewMode', () => {
+  it('opens the detail screen on click only in the detail view mode', () => {
+    expect(
+      shouldUseDetailViewMode({
+        editMode: 'detailView',
+        isMobile: false,
+        canBuildMobilePageUrl: false,
+      })
+    ).toBe(true);
+    expect(
+      shouldUseDetailViewMode({
+        editMode: 'detailed',
+        isMobile: false,
+        canBuildMobilePageUrl: true,
+      })
+    ).toBe(false);
+    expect(
+      shouldUseDetailViewMode({ editMode: 'simple', isMobile: false, canBuildMobilePageUrl: true })
+    ).toBe(false);
+  });
+
+  it('adds and edits schedules on the kintone standard screen in the detail view mode', () => {
+    expect(
+      shouldUseDetailedEditMode({
+        editMode: 'detailView',
+        isMobile: false,
+        canBuildMobilePageUrl: false,
+      })
+    ).toBe(true);
+  });
+
+  it('falls back to the simple dialog on mobile when kintone.buildPageUrl is unavailable', () => {
+    expect(
+      shouldUseDetailViewMode({
+        editMode: 'detailView',
+        isMobile: true,
+        canBuildMobilePageUrl: true,
+      })
+    ).toBe(true);
+    expect(
+      shouldUseDetailViewMode({
+        editMode: 'detailView',
+        isMobile: true,
+        canBuildMobilePageUrl: false,
+      })
+    ).toBe(false);
+    expect(
+      shouldUseDetailedEditMode({
+        editMode: 'detailView',
+        isMobile: true,
+        canBuildMobilePageUrl: false,
+      })
+    ).toBe(false);
+  });
+});
+
+describe('isValidRecordId', () => {
+  it('accepts only positive integer strings received via postMessage', () => {
+    expect(isValidRecordId('1')).toBe(true);
+    expect(isValidRecordId('123456')).toBe(true);
+    expect(isValidRecordId('0')).toBe(false);
+    expect(isValidRecordId('')).toBe(false);
+    expect(isValidRecordId('1 or 1=1')).toBe(false);
+    expect(isValidRecordId('../1')).toBe(false);
+    expect(isValidRecordId(1)).toBe(false);
+    expect(isValidRecordId(undefined)).toBe(false);
+  });
+});
+
+describe('buildInlineViewUrl', () => {
+  it('builds a pathname-relative show URL without the edit mode', () => {
+    expect(buildInlineViewUrl('42')).toBe('/k/1/show?calendar_inline_view=1#record=42');
+  });
+});
+
+describe('buildMobileInlineViewUrl', () => {
+  it('requests the mobile detail page URL and appends the inline-view marker', async () => {
+    const buildPageUrl = vi.fn(async () => 'https://example.cybozu.com/k/m/1/show?record=42');
+    setBuildPageUrl(buildPageUrl);
+
+    const url = await buildMobileInlineViewUrl({ appId: '1', recordId: '42' });
+
+    expect(buildPageUrl).toHaveBeenCalledWith('APP_DETAIL_MOBILE', { appId: '1', recordId: '42' });
+    const parsed = new URL(url);
+    expect(parsed.pathname).toBe('/k/m/1/show');
+    expect(parsed.searchParams.get('record')).toBe('42');
+    expect(parsed.searchParams.get(CALENDAR_INLINE_VIEW_PARAM)).toBe('1');
+  });
+
+  it('rejects a URL on a different origin', async () => {
+    setBuildPageUrl(async () => 'https://evil.example.com/k/m/1/show?record=42');
+    await expect(buildMobileInlineViewUrl({ appId: '1', recordId: '42' })).rejects.toThrow();
   });
 });
 

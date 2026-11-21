@@ -1,6 +1,6 @@
 /**
- * 詳細編集モードでkintone標準のレコード追加・編集画面をiframeダイアログに埋め込んだ際、
- * 保存・キャンセルをkintoneの標準イベントで検知し、`window.parent`へpostMessageする。
+ * 詳細編集・詳細表示モードでkintone標準のレコード画面(追加・編集・詳細)をiframeダイアログに
+ * 埋め込んだ際、保存・キャンセル等をkintoneの標準イベントで検知し、`window.parent`へpostMessageする。
  *
  * `KintoneEventManager#add`はデスクトップ版のイベントを登録すると、対応する`mobile.*`
  * イベントも自動的に登録する。モバイル版の詳細編集も同じ仕組みで動作するため、PC版・
@@ -10,16 +10,20 @@
  * (`isInlineEditFrame`を参照)。ページの再読み込みを伴う遷移の後もキャンセルを検知するため。
  */
 import { listener } from '@/lib/listener';
+import { getAppId } from '@konomi-app/kintone-utilities';
 import {
   applyInlineCreateInitialValues,
   isInlineCreateFrame,
   isInlineCreatePage,
   isInlineEditFrame,
   isInlineEditPage,
+  isInlineViewFrame,
   postInlineCreateCancelled,
   postInlineCreateSubmitSuccess,
   postInlineEditCancelled,
   postInlineEditSubmitSuccess,
+  postInlineViewClosed,
+  postInlineViewRecordSaved,
   shouldTreatDetailShowAsEditCancel,
 } from './inline-record';
 import './record-page-recurrence';
@@ -73,6 +77,22 @@ if (isInlineCreateFrame()) {
     if (!isInlineCreatePage()) {
       postInlineCreateCancelled();
     }
+    return event;
+  });
+}
+
+if (isInlineViewFrame()) {
+  // 詳細画面からの編集・再利用(複製)・前後のレコードへの移動後の編集で保存されたレコードは、
+  // ダイアログを閉じずに親へ伝え、閉じたときにまとめてカレンダーへ反映してもらう
+  listener.add(['app.record.edit.submit.success', 'app.record.create.submit.success'], (event) => {
+    postInlineViewRecordSaved({ recordId: String(event.recordId), appId: String(getAppId()) });
+    return event;
+  });
+
+  // レコードの削除や「一覧に戻る」等で一覧画面へ遷移した場合は、詳細表示を終えたものとみなす
+  // (iframe内でカレンダーが描画されたまま残らないようにする)
+  listener.add(['app.record.index.show'], (event) => {
+    postInlineViewClosed();
     return event;
   });
 }

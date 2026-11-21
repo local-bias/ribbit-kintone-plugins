@@ -50,6 +50,7 @@ const LoadingOverlay = styled.div`
 export interface InlineDialogMessage {
   type?: string;
   recordId?: string;
+  appId?: string;
 }
 
 interface IframeDialogProps {
@@ -63,12 +64,16 @@ interface IframeDialogProps {
   editUrl: string;
   /** iframe内からのpostMessageのうち、ダイアログを閉じるべきものと判定するtype一覧 */
   closeMessageTypes: string[];
+  /** iframe内からのpostMessageのうち、ダイアログを閉じずに`onNotify`へ渡すtype一覧 */
+  notifyMessageTypes?: string[];
   /** 画面全体に表示するかどうか(モバイル等の狭い画面向け) */
   fullScreen?: boolean;
   /** iframeの`name`属性。iframe内の画面遷移後も、ダイアログ内であることを判定するために使う */
   frameName?: string;
   /** ダイアログが閉じられたときのコールバック。postMessage受信時はそのpayloadを渡す */
   onClose: (message?: InlineDialogMessage) => void;
+  /** `notifyMessageTypes`に該当するpostMessageを受信したときのコールバック */
+  onNotify?: (message: InlineDialogMessage) => void;
 }
 
 const WINDOWED_PAPER_SX = {
@@ -89,7 +94,7 @@ const FULL_SCREEN_PAPER_SX = {
 } as const;
 
 /**
- * kintone標準のレコード追加・編集画面をダイアログ内にiframeで埋め込む共通コンポーネント。
+ * kintone標準のレコード画面(追加・編集・詳細)をダイアログ内にiframeで埋め込む共通コンポーネント。
  *
  * iframe内(record-page.ts)がkintoneの保存/キャンセルイベントを検知して`window.parent`へ
  * postMessageすることで、このコンポーネントが自動的にダイアログを閉じる。
@@ -100,9 +105,11 @@ export const IframeDialog: FC<IframeDialogProps> = ({
   loadingText,
   editUrl,
   closeMessageTypes,
+  notifyMessageTypes,
   fullScreen = false,
   frameName,
   onClose,
+  onNotify,
 }) => {
   const [iframeLoading, setIframeLoading] = useState(true);
   const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -131,12 +138,14 @@ export const IframeDialog: FC<IframeDialogProps> = ({
       }
       if (closeMessageTypes.includes(event.data?.type)) {
         handleClose(event.data as InlineDialogMessage);
+      } else if (notifyMessageTypes?.includes(event.data?.type)) {
+        onNotify?.(event.data as InlineDialogMessage);
       }
     };
 
     window.addEventListener('message', handleMessage);
     return () => window.removeEventListener('message', handleMessage);
-  }, [open, handleClose, closeMessageTypes]);
+  }, [open, handleClose, closeMessageTypes, notifyMessageTypes, onNotify]);
 
   useEffect(() => {
     if (open) {

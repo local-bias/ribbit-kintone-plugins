@@ -8,7 +8,7 @@ import { reschedule } from '../actions';
 import { getRecordDetailUrl } from '../record-url';
 import { calendarEventsAtom } from '../states/calendar';
 import { requestConfirmAtom } from '../states/confirm';
-import { openEventEditorAtom } from '../states/event-operations';
+import { openClickedEventAtom } from '../states/event-operations';
 import { appPropertiesAtom, loadingAtom, pluginConditionAtom } from '../states/kintone';
 import { notifyIfHiddenByFiltersAtom } from '../states/filter-notice';
 import { refreshComputedValuesAtom } from '../states/refresh';
@@ -37,7 +37,7 @@ const handleCalendarEventClickAtom = atom(null, (_, set, props: EventClickArg) =
     return;
   }
   // 繰り返し予定の場合、クリックされた実際の回の日時はprops.event.startStr/endStrから取得する
-  set(openEventEditorAtom, {
+  set(openClickedEventAtom, {
     eventId: props.event.id,
     occurrenceStart: props.event.startStr,
     occurrenceEnd: props.event.endStr,

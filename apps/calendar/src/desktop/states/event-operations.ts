@@ -20,7 +20,12 @@ import {
 import { buildCopiedEvent } from '../event-field-values';
 import { calendarEventsAtom, type PluginCalendarEvent } from './calendar';
 import { requestConfirmAtom } from './confirm';
-import { isDetailedModeAtom, openDetailedEditDialogAtom } from './detailed-dialog';
+import {
+  isDetailedModeAtom,
+  isDetailViewModeAtom,
+  openDetailedEditDialogAtom,
+  openDetailedViewDialogAtom,
+} from './detailed-dialog';
 import { dialogPropsAtom, dialogShownAtom } from './dialog';
 import { appPropertiesAtom, loadingAtom, pluginConditionAtom } from './kintone';
 import {
@@ -70,6 +75,27 @@ export const openEventEditorAtom = atom(null, (get, set, target: EventOccurrence
 
   set(dialogPropsAtom, { new: false, event: foundEvent });
   set(dialogShownAtom, true);
+});
+
+/**
+ * 予定をクリックしたときの画面を開きます
+ *
+ * 詳細表示モードではkintone標準のレコード詳細画面を、それ以外は編集画面(`openEventEditorAtom`)を開く。
+ * 詳細画面はレコード単位のため、繰り返し予定の場合はどの回をクリックしてもシリーズ(マスター)の
+ * レコードを表示する
+ */
+export const openClickedEventAtom = atom(null, (get, set, target: EventOccurrenceTarget) => {
+  if (!get(isDetailViewModeAtom)) {
+    set(openEventEditorAtom, target);
+    return;
+  }
+
+  const foundEvent = findEvent(get(calendarEventsAtom), target.eventId);
+  if (!foundEvent?.id) {
+    enqueueSnackbar(t('desktop.error.eventClickFailed'), { variant: 'error' });
+    return;
+  }
+  void set(openDetailedViewDialogAtom, foundEvent.id);
 });
 
 /** 予定を複製して新しいレコードとして登録します */
