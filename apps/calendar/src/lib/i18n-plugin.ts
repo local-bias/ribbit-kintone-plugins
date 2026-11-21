@@ -225,6 +225,7 @@ const ui = mergeDeep(commonUi, {
     'desktop.contextMenu.copy': '複製',
     'desktop.contextMenu.delete': '削除',
     'desktop.contextMenu.changeCategory': '色（カテゴリー）を変更',
+    'desktop.dialog.backgroundEvent': '背景として表示',
     'desktop.legend.label': 'カテゴリーの凡例',
     'config.firstDay.today': '今日の曜日',
     'config.form.displayTitleField': '表示用タイトルのフィールド',
@@ -237,6 +238,8 @@ const ui = mergeDeep(commonUi, {
     'config.form.confirmsReschedule': '日時を変更する前に確認する',
     'config.form.preventsOverlap': '予定の時間帯の重複を禁止する',
     'config.form.showsLegend': 'カレンダーの上部にカテゴリーの凡例を表示する',
+    'config.form.backgroundEventValue': '背景イベントとする値',
+    'config.form.backgroundEventValueRequired': '背景イベントとする値を選択してください',
     'config.section.displayTitle.title': '表示用タイトル（任意）',
     'config.section.displayTitle.description':
       'カレンダー上に、スケジュールのタイトルの代わりに表示するフィールドを選択してください。未設定の場合はスケジュールのタイトルを表示します',
@@ -254,6 +257,12 @@ const ui = mergeDeep(commonUi, {
       'カレンダーの上部に表示する、表示形式の切り替えボタンを選択します',
     'config.section.visibleViews.description2':
       '何も選択しない場合は、すべてのボタンを表示します。1つだけ選択した場合は、切り替えボタン自体を表示しません。同じタブで再表示した場合は、前回の表示形式で表示されます',
+    'config.section.backgroundEvent.title': '背景イベント',
+    'config.section.backgroundEvent.description':
+      '祝日や休業日、勤務時間帯などの予定を、カレンダーの背景として表示します。背景イベントの上には通常の予定を登録できます',
+    'config.section.backgroundEvent.description2':
+      '使用できるフィールドタイプはチェックボックスです。指定した値にチェックが入っているレコードが背景イベントになります。週・日表示の背景イベントは、右クリックメニューの対象外です',
+    'config.section.backgroundEvent.enableLabel': '背景イベントを有効にする',
 
     // Common - Weekdays
     'common.weekday.sunday': '日曜日',
@@ -491,6 +500,7 @@ const ui = mergeDeep(commonUi, {
     'desktop.contextMenu.copy': 'Duplicate',
     'desktop.contextMenu.delete': 'Delete',
     'desktop.contextMenu.changeCategory': 'Change color (category)',
+    'desktop.dialog.backgroundEvent': 'Show as background',
     'desktop.legend.label': 'Category legend',
     'config.firstDay.today': "Today's day of the week",
     'config.form.displayTitleField': 'Display title field',
@@ -503,6 +513,8 @@ const ui = mergeDeep(commonUi, {
     'config.form.confirmsReschedule': 'Ask for confirmation before changing the time',
     'config.form.preventsOverlap': 'Prevent events from overlapping',
     'config.form.showsLegend': 'Show the category legend above the calendar',
+    'config.form.backgroundEventValue': 'Value for background events',
+    'config.form.backgroundEventValueRequired': 'Select the value for background events',
     'config.section.displayTitle.title': 'Display title (optional)',
     'config.section.displayTitle.description':
       'Select a field to display on the calendar instead of the event title. If not set, the event title is displayed.',
@@ -520,6 +532,12 @@ const ui = mergeDeep(commonUi, {
       'Select the view switch buttons shown above the calendar.',
     'config.section.visibleViews.description2':
       'If nothing is selected, all buttons are shown. If only one is selected, the switcher is hidden. When reopened in the same tab, the last used view is restored.',
+    'config.section.backgroundEvent.title': 'Background events',
+    'config.section.backgroundEvent.description':
+      'Show events such as holidays, closed days or working hours as the calendar background. Regular events can be added on top of them.',
+    'config.section.backgroundEvent.description2':
+      'Only checkbox fields can be used. Records with the specified value checked become background events. Background events in week and day views do not support the context menu.',
+    'config.section.backgroundEvent.enableLabel': 'Enable background events',
 
     // Common - Weekdays
     'common.weekday.sunday': 'Sunday',
@@ -759,6 +777,7 @@ const ui = mergeDeep(commonUi, {
     'desktop.contextMenu.copy': 'Duplicar',
     'desktop.contextMenu.delete': 'Eliminar',
     'desktop.contextMenu.changeCategory': 'Cambiar color (categoría)',
+    'desktop.dialog.backgroundEvent': 'Mostrar como fondo',
     'desktop.legend.label': 'Leyenda de categorías',
     'config.firstDay.today': 'Día de la semana de hoy',
     'config.form.displayTitleField': 'Campo del título mostrado',
@@ -772,6 +791,8 @@ const ui = mergeDeep(commonUi, {
     'config.form.confirmsReschedule': 'Pedir confirmación antes de cambiar la fecha',
     'config.form.preventsOverlap': 'Impedir que los eventos se superpongan',
     'config.form.showsLegend': 'Mostrar la leyenda de categorías encima del calendario',
+    'config.form.backgroundEventValue': 'Valor para eventos de fondo',
+    'config.form.backgroundEventValueRequired': 'Seleccione el valor para eventos de fondo',
     'config.section.displayTitle.title': 'Título mostrado (opcional)',
     'config.section.displayTitle.description':
       'Seleccione un campo para mostrar en el calendario en lugar del título del evento. Si no se establece, se muestra el título del evento.',
@@ -789,6 +810,12 @@ const ui = mergeDeep(commonUi, {
       'Seleccione los botones de cambio de vista que se muestran encima del calendario.',
     'config.section.visibleViews.description2':
       'Si no se selecciona nada, se muestran todos los botones. Si solo se selecciona uno, el selector se oculta. Al volver a abrir en la misma pestaña, se restaura la última vista utilizada.',
+    'config.section.backgroundEvent.title': 'Eventos de fondo',
+    'config.section.backgroundEvent.description':
+      'Muestre eventos como festivos, días de cierre u horarios laborales como fondo del calendario. Se pueden añadir eventos normales encima.',
+    'config.section.backgroundEvent.description2':
+      'Solo se pueden usar campos de casilla de verificación. Los registros con el valor indicado marcado se convierten en eventos de fondo. Los eventos de fondo en las vistas semanal y diaria no admiten el menú contextual.',
+    'config.section.backgroundEvent.enableLabel': 'Habilitar eventos de fondo',
 
     // Common - Weekdays
     'common.weekday.sunday': 'Domingo',
@@ -1007,6 +1034,7 @@ const ui = mergeDeep(commonUi, {
     'desktop.contextMenu.copy': '复制',
     'desktop.contextMenu.delete': '删除',
     'desktop.contextMenu.changeCategory': '更改颜色（类别）',
+    'desktop.dialog.backgroundEvent': '显示为背景',
     'desktop.legend.label': '类别图例',
     'config.firstDay.today': '今天的星期',
     'config.form.displayTitleField': '显示标题字段',
@@ -1019,6 +1047,8 @@ const ui = mergeDeep(commonUi, {
     'config.form.confirmsReschedule': '更改时间前进行确认',
     'config.form.preventsOverlap': '禁止日程时间重叠',
     'config.form.showsLegend': '在日历上方显示类别图例',
+    'config.form.backgroundEventValue': '作为背景事件的值',
+    'config.form.backgroundEventValueRequired': '请选择作为背景事件的值',
     'config.section.displayTitle.title': '显示标题（可选）',
     'config.section.displayTitle.description':
       '请选择在日历上代替日程标题显示的字段。未设置时显示日程标题',
@@ -1034,6 +1064,12 @@ const ui = mergeDeep(commonUi, {
     'config.section.visibleViews.description': '选择显示在日历上方的视图切换按钮',
     'config.section.visibleViews.description2':
       '未选择时显示所有按钮。仅选择一个时不显示切换按钮。在同一标签页中再次显示时，将恢复上次的视图',
+    'config.section.backgroundEvent.title': '背景事件',
+    'config.section.backgroundEvent.description':
+      '将节假日、休息日、工作时间等日程显示为日历背景。可以在背景事件上添加普通日程',
+    'config.section.backgroundEvent.description2':
+      '仅可使用复选框字段。勾选了指定值的记录将成为背景事件。周视图和日视图中的背景事件不支持右键菜单',
+    'config.section.backgroundEvent.enableLabel': '启用背景事件',
 
     // Common - Weekdays
     'common.weekday.sunday': '星期日',
@@ -1252,6 +1288,7 @@ const ui = mergeDeep(commonUi, {
     'desktop.contextMenu.copy': '複製',
     'desktop.contextMenu.delete': '刪除',
     'desktop.contextMenu.changeCategory': '變更顏色（類別）',
+    'desktop.dialog.backgroundEvent': '顯示為背景',
     'desktop.legend.label': '類別圖例',
     'config.firstDay.today': '今天的星期',
     'config.form.displayTitleField': '顯示標題欄位',
@@ -1264,6 +1301,8 @@ const ui = mergeDeep(commonUi, {
     'config.form.confirmsReschedule': '變更時間前進行確認',
     'config.form.preventsOverlap': '禁止行程時間重疊',
     'config.form.showsLegend': '在行事曆上方顯示類別圖例',
+    'config.form.backgroundEventValue': '作為背景事件的值',
+    'config.form.backgroundEventValueRequired': '請選擇作為背景事件的值',
     'config.section.displayTitle.title': '顯示標題（選填）',
     'config.section.displayTitle.description':
       '請選擇在行事曆上代替行程標題顯示的欄位。未設定時顯示行程標題',
@@ -1279,6 +1318,12 @@ const ui = mergeDeep(commonUi, {
     'config.section.visibleViews.description': '選擇顯示在行事曆上方的檢視切換按鈕',
     'config.section.visibleViews.description2':
       '未選擇時顯示所有按鈕。僅選擇一個時不顯示切換按鈕。在同一分頁中再次顯示時，將還原上次的檢視',
+    'config.section.backgroundEvent.title': '背景事件',
+    'config.section.backgroundEvent.description':
+      '將假日、休息日、工作時段等行程顯示為行事曆背景。可以在背景事件上新增一般行程',
+    'config.section.backgroundEvent.description2':
+      '僅可使用核取方塊欄位。勾選了指定值的記錄將成為背景事件。週檢視和日檢視中的背景事件不支援右鍵選單',
+    'config.section.backgroundEvent.enableLabel': '啟用背景事件',
 
     // Common - Weekdays
     'common.weekday.sunday': '星期日',

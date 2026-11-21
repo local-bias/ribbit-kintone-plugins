@@ -1,4 +1,5 @@
 import { GUEST_SPACE_ID } from '@/lib/global';
+import { isBackgroundEventAvailable } from '@/desktop/event-field-values';
 import { PREDEFINED_FIELDS } from '@/lib/kintone-rest-api';
 import { getSortedOptions } from '@/lib/utils';
 import { PluginCondition } from '@/schema/plugin-config';
@@ -93,4 +94,18 @@ export const calendarEventCategoryAtom = eagerAtom((get) => {
 
 export const loginUserAtom = atom<ReturnType<typeof kintone.getLoginUser>>(() => {
   return kintone.getLoginUser();
+});
+
+/** 背景イベントの設定が、現在のアプリのフィールド構成で使えるかどうか */
+export const isBackgroundEventAvailableAtom = eagerAtom((get) => {
+  const condition = get(pluginConditionAtom);
+  if (!condition) {
+    return false;
+  }
+  const properties = get(appPropertiesAtom);
+  return isBackgroundEventAvailable({
+    enablesBackgroundEvent: condition.enablesBackgroundEvent,
+    backgroundEventOption: condition.backgroundEventOption,
+    property: properties[condition.calendarEvent.backgroundEventField],
+  });
 });

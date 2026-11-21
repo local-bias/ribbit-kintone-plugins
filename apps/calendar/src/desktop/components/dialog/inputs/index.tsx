@@ -7,6 +7,7 @@ import Recurrence from './recurrence';
 import StartEnd from './start-end';
 import Title from './title';
 import DialogAllDayForm from './allday';
+import DialogBackgroundEventForm from './background';
 
 const Component: FCX = ({ className }) => (
   <div className={className}>
@@ -15,6 +16,9 @@ const Component: FCX = ({ className }) => (
     </div>
     <StartEnd />
     <DialogAllDayForm />
+    <Suspense fallback={null}>
+      <DialogBackgroundEventForm />
+    </Suspense>
     <Recurrence />
     <Note />
     <Suspense fallback={<Skeleton variant='text' />}>

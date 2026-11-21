@@ -32,6 +32,8 @@ import {
 import { produce } from 'immer';
 import {
   getDisplayTitle,
+  isBackgroundEventAvailable,
+  isBackgroundRecord,
 } from './event-field-values';
 import { PluginCalendarEvent } from './states/calendar';
 
@@ -135,6 +137,24 @@ export const getKintoneRecordFromCalendarEvent = async (params: {
   if (calendarConfig.categoryField) {
     record[calendarConfig.categoryField] = { value: calendarEvent.category ?? '' };
   }
+  if (
+    isBackgroundEventAvailable({
+      enablesBackgroundEvent: condition.enablesBackgroundEvent,
+      backgroundEventOption: condition.backgroundEventOption,
+      property: properties[calendarConfig.backgroundEventField],
+    })
+  ) {
+    // 背景イベント判定用の選択肢だけを付け外しし、それ以外の選択済みの値は維持する
+    const others = (calendarEvent.backgroundFieldValues ?? []).filter(
+      (value) => value !== condition.backgroundEventOption
+    );
+    record[calendarConfig.backgroundEventField] = {
+      value:
+        calendarEvent.display === 'background'
+          ? [...others, condition.backgroundEventOption]
+          : others,
+    };
+  }
 
   process.env.NODE_ENV === 'development' &&
     console.log('♻ カレンダーイベントがkintoneレコードに変換されました', {
@@ -193,13 +213,23 @@ export const getCalendarEventFromKintoneRecord = async (params: {
       )
     : null;
 
-  const { displayTitleField } = condition.calendarEvent;
+  const { displayTitleField, backgroundEventField } = condition.calendarEvent;
   const displayTitle = getDisplayTitle({
     record,
     fieldCode: displayTitleField,
     fieldExists: !!properties[displayTitleField],
     noPermissionLabel: t('desktop.calendar.noPermission'),
   });
+  const isBackground =
+    condition.enablesBackgroundEvent &&
+    isBackgroundRecord({
+      record,
+      fieldCode: backgroundEventField,
+      option: condition.backgroundEventOption,
+    });
+  const backgroundFieldValue = backgroundEventField
+    ? record[backgroundEventField]?.value
+    : undefined;
 
   const calendarEvent: PluginCalendarEvent = {
     id: record.$id.value as string | undefined,
@@ -207,6 +237,10 @@ export const getCalendarEventFromKintoneRecord = async (params: {
     end,
     allDay,
     ...(recurrenceMeta ? { extendedProps: { recurrence: recurrenceMeta } } : {}),
+    ...(isBackground ? { display: 'background' } : {}),
+    ...(Array.isArray(backgroundFieldValue)
+      ? { backgroundFieldValues: backgroundFieldValue as string[] }
+      : {}),
     title: record[condition.calendarEvent.inputTitleField]?.value as string | undefined,
     displayTitle,
     note: noteValue,

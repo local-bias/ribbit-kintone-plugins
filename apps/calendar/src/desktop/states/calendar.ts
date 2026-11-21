@@ -28,6 +28,8 @@ export type PluginCalendarEvent = EventInput & {
   category?: string;
   /** カレンダー上に表示するタイトル(表示用タイトルのフィールドが設定されている場合のみ) */
   displayTitle?: string;
+  /** 背景イベント判定用のチェックボックスで選択されている値(他の選択肢を保持するため) */
+  backgroundFieldValues?: string[];
   __quickSearch?: string;
   extendedProps?: {
     recurrence?: RecurrenceMeta;

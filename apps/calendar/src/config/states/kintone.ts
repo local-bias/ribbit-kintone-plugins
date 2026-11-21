@@ -3,7 +3,7 @@ import { t } from '@/lib/i18n-plugin';
 import { getAppId, getFormFields, kintoneAPI } from '@konomi-app/kintone-utilities';
 import { atom } from 'jotai';
 import { eagerAtom } from 'jotai-eager';
-import { calendarAllDayState } from './plugin';
+import { calendarAllDayState, calendarBackgroundEventState } from './plugin';
 
 const currentAppIdAtom = atom<number>(() => {
   const appId = getAppId();
@@ -125,4 +125,14 @@ export const alldayOptionsAtom = eagerAtom((get) => {
   }
 
   return Object.keys(field.options);
+});
+
+/** 背景イベント判定用のチェックボックスフィールドの選択肢 */
+export const backgroundEventOptionsAtom = eagerAtom((get) => {
+  const backgroundEventField = get(calendarBackgroundEventState);
+  if (!backgroundEventField) {
+    return [];
+  }
+  const field = get(checkboxFieldsAtom).find((field) => field.code === backgroundEventField);
+  return field ? Object.keys(field.options) : [];
 });

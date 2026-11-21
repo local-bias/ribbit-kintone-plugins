@@ -2,7 +2,7 @@ import { calendarDateInputToDateTime, getLoginUserTimezone } from '@/desktop/dat
 import { EventContentArg } from '@fullcalendar/core';
 
 export default function CalendarEvent(props: EventContentArg) {
-  const { allDay, backgroundColor, extendedProps } = props.event;
+  const { allDay, backgroundColor, display, extendedProps } = props.event;
   // 表示用タイトルのフィールドが設定されている場合は、入力用のタイトルの代わりに表示する
   const title: string = extendedProps.displayTitle || props.event.title;
   // FullCalendar invokes eventContent renderers via its own internal (preact-based)
@@ -17,6 +17,14 @@ export default function CalendarEvent(props: EventContentArg) {
     ? calendarDateInputToDateTime(props.event.end, timezone).setLocale('ja')
     : null;
   const isDayGridMonth = props.view.type === 'dayGridMonth';
+
+  if (display === 'background') {
+    return (
+      <div className='rad:px-1 rad:py-0.5 rad:text-[10px] rad:leading-tight rad:text-foreground/60 rad:truncate'>
+        {title}
+      </div>
+    );
+  }
 
   return (
     <div className='rad:grid rad:h-full rad:px-1 rad:py-0.5 rad:overflow-hidden rad:min-h-6'>

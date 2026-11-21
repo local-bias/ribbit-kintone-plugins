@@ -1,6 +1,7 @@
 import { JotaiSwitch } from '@/components/jotai/switch';
 import {
   enablesAllDayState,
+  enablesBackgroundEventState,
   enablesNoteState,
   enablesRecurrenceState,
   scrollsToNowState,
@@ -16,6 +17,7 @@ import { FC } from 'react';
 import DeleteButton from './condition-delete-button';
 import CreateNewView from './create-new-view';
 import FormAllday from './form-allday';
+import FormBackgroundEvent from './form-background-event';
 import FormCategory from './form-category';
 import FormColors from './form-colors';
 import DaysOfWeekForm from './form-days-of-week';
@@ -187,6 +189,20 @@ const Component: FC = () => (
           {t('config.section.colors.description2')}
         </PluginFormDescription>
         <FormColors />
+      </PluginFormSection>
+      <PluginFormSection>
+        <PluginFormTitle>{t('config.section.backgroundEvent.title')}</PluginFormTitle>
+        <PluginFormDescription>
+          {t('config.section.backgroundEvent.description')}
+        </PluginFormDescription>
+        <PluginFormDescription last>
+          {t('config.section.backgroundEvent.description2')}
+        </PluginFormDescription>
+        <JotaiSwitch
+          atom={enablesBackgroundEventState}
+          label={t('config.section.backgroundEvent.enableLabel')}
+        />
+        <FormBackgroundEvent />
       </PluginFormSection>
     </details>
     <DeleteButton />
