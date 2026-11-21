@@ -104,6 +104,8 @@ export const daysOfWeekAtom = getConditionPropertyAtom('daysOfWeek');
 export const firstDayAtom = getConditionPropertyAtom('firstDay');
 export const enablesRecurrenceState = getConditionPropertyAtom('enablesRecurrence');
 export const editModeState = getConditionPropertyAtom('editMode');
+export const slotDurationState = getConditionPropertyAtom('slotDuration');
+export const scrollsToNowState = getConditionPropertyAtom('scrollsToNow');
 
 export const calendarTitleState = getCalendarEventAtom('inputTitleField');
 export const calendarStartState = getCalendarEventAtom('startField');

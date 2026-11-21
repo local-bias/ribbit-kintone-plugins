@@ -1,5 +1,10 @@
 import { JotaiSwitch } from '@/components/jotai/switch';
-import { enablesAllDayState, enablesNoteState, enablesRecurrenceState } from '@/config/states/plugin';
+import {
+  enablesAllDayState,
+  enablesNoteState,
+  enablesRecurrenceState,
+  scrollsToNowState,
+} from '@/config/states/plugin';
 import { t } from '@/lib/i18n-plugin';
 import {
   PluginFormDescription,
@@ -21,6 +26,7 @@ import FormRecurrence from './form-recurrence';
 import FormScheduleEnd from './form-schedule-end';
 import FormScheduleStart from './form-schedule-start';
 import FormScheduleTitle from './form-schedule-title';
+import FormSlotDuration from './form-slot-duration';
 import FormSlotMinmax from './form-slot-minmax';
 import FormView from './form-view';
 import FirstDayForm from './form-first-day';
@@ -115,10 +121,15 @@ const Component: FC = () => (
       </PluginFormSection>
       <PluginFormSection>
         <PluginFormTitle>{t('config.section.slotMinmax.title')}</PluginFormTitle>
+        <PluginFormDescription>{t('config.section.slotMinmax.description')}</PluginFormDescription>
         <PluginFormDescription last>
-          {t('config.section.slotMinmax.description')}
+          {t('config.section.slotMinmax.description2')}
         </PluginFormDescription>
-        <FormSlotMinmax />
+        <div className='grid gap-4'>
+          <FormSlotMinmax />
+          <FormSlotDuration />
+          <JotaiSwitch atom={scrollsToNowState} label={t('config.form.scrollsToNow')} />
+        </div>
       </PluginFormSection>
       <PluginFormSection>
         <PluginFormTitle>{t('config.section.businessDays.title')}</PluginFormTitle>

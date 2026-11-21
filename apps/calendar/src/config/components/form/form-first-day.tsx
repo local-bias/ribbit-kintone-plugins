@@ -1,4 +1,5 @@
 import { WEEK_DAYS } from '@/lib/calendar';
+import { FIRST_DAY_TODAY } from '@/schema/calendar';
 import { t } from '@/lib/i18n-plugin';
 import { MenuItem, TextField } from '@mui/material';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
@@ -24,6 +25,7 @@ const FirstDayForm: FC = () => {
       onChange={onFirstDayChange}
       sx={{ width: '200px' }}
     >
+      <MenuItem value={FIRST_DAY_TODAY}>{t('config.firstDay.today')}</MenuItem>
       {WEEK_DAYS.map(({ label, value }) => (
         <MenuItem key={value} value={value}>
           {label}

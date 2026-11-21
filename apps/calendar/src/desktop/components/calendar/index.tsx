@@ -1,6 +1,12 @@
+import {
+  getScrollTimeAroundNow,
+  resolveFirstDay,
+  resolveSlotRange,
+} from '@/desktop/calendar-options';
 import { useCalendar } from '@/desktop/hooks/use-calendar';
 import { getSlotTime } from '@/lib/calendar';
 import { t } from '@/lib/i18n-plugin';
+import { DEFAULT_SLOT_DURATION } from '@/schema/calendar';
 import allLocales from '@fullcalendar/core/locales-all';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -8,7 +14,7 @@ import FullCalendar from '@fullcalendar/react';
 import rrulePlugin from '@fullcalendar/rrule';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import {
   fullcalendarApiAtom,
   fullcalendarRefAtom,
@@ -20,6 +26,9 @@ import { loginUserAtom, pluginConditionAtom } from '../../states/kintone';
 import DayHeader from './day-header';
 import CalendarEvent from './event';
 
+/** 現在時刻付近へ自動スクロールしない場合の初期スクロール位置(FullCalendarの既定値) */
+const DEFAULT_SCROLL_TIME = '06:00:00';
+
 function FullCalendarRoot() {
   const setFullcalendarRef = useSetAtom(fullcalendarRefAtom);
   const calendarEvents = useAtomValue(renderableCalendarEventsAtom);
@@ -28,6 +37,22 @@ function FullCalendarRoot() {
   const onCalendarEventAdd = useSetAtom(handleCalendarEventAddAtom);
   const { onCalendarEventClick, onCalendarEventChange, onCalendarEventRemove } = useCalendar();
   const loginUser = useAtomValue(loginUserAtom);
+  const scrollTime = useMemo(
+    () =>
+      pluginCondition?.scrollsToNow
+        ? getScrollTimeAroundNow(loginUser.timezone)
+        : DEFAULT_SCROLL_TIME,
+    [pluginCondition?.scrollsToNow, loginUser.timezone]
+  );
+  const firstDay = useMemo(
+    () => resolveFirstDay(pluginCondition?.firstDay ?? 0, loginUser.timezone),
+    [pluginCondition?.firstDay, loginUser.timezone]
+  );
+  const { slotMinTime, slotMaxTime } = resolveSlotRange({
+    slotMinTime: pluginCondition?.slotMinTime ?? '',
+    slotMaxTime: pluginCondition?.slotMaxTime ?? '',
+  });
+
 
   const locale = (() => {
     switch (loginUser.language) {
@@ -69,7 +94,7 @@ function FullCalendarRoot() {
           buttonText: t('desktop.calendar.viewType.fiveDay'),
         },
       }}
-      firstDay={pluginCondition?.firstDay}
+      firstDay={firstDay}
       headerToolbar={{
         left: 'title',
         center: '',
@@ -81,8 +106,10 @@ function FullCalendarRoot() {
       editable
       selectable
       selectMirror
-      slotMinTime={getSlotTime(pluginCondition?.slotMinTime || '0')}
-      slotMaxTime={getSlotTime(pluginCondition?.slotMaxTime || '24')}
+      slotMinTime={getSlotTime(slotMinTime)}
+      slotMaxTime={getSlotTime(slotMaxTime)}
+      slotDuration={pluginCondition?.slotDuration || DEFAULT_SLOT_DURATION}
+      scrollTime={scrollTime}
       themeSystem='normal'
       nowIndicator
       slotLabelContent={(props) => <span className='rad:text-foreground/50'>{props.text}</span>}
