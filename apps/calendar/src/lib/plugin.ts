@@ -41,7 +41,9 @@ export const getNewCondition = (): PluginCondition => ({
     sortField: '',
     assigneeField: '',
   },
-  editMode: 'simple',
+  // 新規作成時は、必須フィールドがあっても予定を追加できる詳細編集を既定にする
+  // (既存設定の移行時は、これまでの挙動を変えないよう`simple`で補完する)
+  editMode: 'detailed',
   slotDuration: DEFAULT_SLOT_DURATION,
   scrollsToNow: true,
   visibleViews: [],

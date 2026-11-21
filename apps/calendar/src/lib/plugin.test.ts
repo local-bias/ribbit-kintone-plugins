@@ -166,6 +166,6 @@ describe('createConfig / getNewCondition', () => {
     const config = createConfig();
     expect(config.version).toBe(8);
     expect(() => validateCondition(getNewCondition())).not.toThrow();
-    expect(getNewCondition().editMode).toBe('simple');
+    expect(getNewCondition().editMode).toBe('detailed');
   });
 });
