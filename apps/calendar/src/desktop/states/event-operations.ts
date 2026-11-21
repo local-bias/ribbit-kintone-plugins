@@ -10,7 +10,13 @@ import { deleteAllRecords, getAppId } from '@konomi-app/kintone-utilities';
 import { produce } from 'immer';
 import { atom } from 'jotai';
 import { enqueueSnackbar } from 'notistack';
-import { addNewRecord, completeCalendarEvent, getEventColors, reschedule } from '../actions';
+import {
+  addNewRecord,
+  completeCalendarEvent,
+  getEventColors,
+  reschedule,
+  withQuickSearch,
+} from '../actions';
 import { buildCopiedEvent } from '../event-field-values';
 import { calendarEventsAtom, type PluginCalendarEvent } from './calendar';
 import { requestConfirmAtom } from './confirm';
@@ -168,11 +174,11 @@ export const changeEventCategoryAtom = atom(
     try {
       const condition = get(pluginConditionAtom)!;
       const properties = await get(appPropertiesAtom);
-      const updated: PluginCalendarEvent = {
+      const updated = withQuickSearch({
         ...event,
         category: params.category,
         ...getEventColors({ value: params.category, condition, properties }),
-      };
+      });
       await reschedule({ calendarEvent: updated, condition, properties });
       set(calendarEventsAtom, (current) =>
         produce(current, (draft) => {

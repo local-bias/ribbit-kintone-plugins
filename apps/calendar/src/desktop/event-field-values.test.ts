@@ -2,6 +2,7 @@ import type { kintoneAPI } from '@konomi-app/kintone-utilities';
 import { describe, expect, it } from 'vitest';
 import {
   buildCopiedEvent,
+  buildQuickSearchSource,
   fieldValueToText,
   getDisplayTitle,
   getSortValue,
@@ -252,5 +253,27 @@ describe('buildCopiedEvent', () => {
       ''
     );
     expect(copied.extendedProps?.recurrence).toBeUndefined();
+  });
+});
+
+describe('buildQuickSearchSource', () => {
+  it('joins the searchable values of an event, skipping empty ones', () => {
+    expect(
+      buildQuickSearchSource({
+        title: '会議',
+        displayTitle: '定例会議',
+        note: undefined,
+        category: '社内',
+        assignees: [{ key: 'a', label: 'ユーザーA', isUser: true }],
+      })
+    ).toBe('会議_$$_定例会議_$$_社内_$$_ユーザーA');
+  });
+
+  it('joins the values of a multi-value category', () => {
+    expect(buildQuickSearchSource({ title: 'a', category: ['x', 'y'] })).toBe('a_$$_x,y');
+  });
+
+  it('returns an empty string when nothing is searchable', () => {
+    expect(buildQuickSearchSource({})).toBe('');
   });
 });

@@ -4,7 +4,13 @@ import { produce } from 'immer';
 import { atom } from 'jotai';
 import { enqueueSnackbar } from 'notistack';
 import { SetStateAction } from 'react';
-import { addNewRecord, getEventColors, patchMasterException, reschedule } from '../actions';
+import {
+  addNewRecord,
+  getEventColors,
+  patchMasterException,
+  reschedule,
+  withQuickSearch,
+} from '../actions';
 import { calendarEventsAtom, PluginCalendarEvent } from './calendar';
 import { refreshComputedValuesAtom } from './refresh';
 import { appPropertiesAtom, loadingAtom, pluginConditionAtom } from './kintone';
@@ -134,10 +140,10 @@ export const handleDialogSubmitAtom = atom(null, async (get, set) => {
       savedRecordId = calendarEvent.id;
       // getCalendarEventFromKintoneRecord(読み込み時の変換)でしか色は計算されないため、
       // ここで明示的に計算しないとカテゴリー変更が次のリロードまで書式に反映されない。
-      const updatedEvent = {
+      const updatedEvent = withQuickSearch({
         ...calendarEvent,
         ...getEventColors({ value: calendarEvent.category, condition: condition!, properties }),
-      };
+      });
       set(calendarEventsAtom, (current) =>
         produce(current, (draft) => {
           const index = draft.findIndex((event) => event.id === currentProps.event.id);

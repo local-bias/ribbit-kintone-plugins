@@ -95,7 +95,14 @@ export const textFilteredCalendarEventsAtom = atom<PluginCalendarEvent[]>((get) 
     return allEvents;
   }
 
+  // 編集中の新しい予定(保存前の下書き)は、検索語に関係なく表示する(操作中に消えないように)
+  const dialogProps = get(dialogPropsAtom);
+  const draftId = dialogProps.new ? dialogProps.event.id : undefined;
+
   return allEvents.filter((event) => {
+    if (draftId && event.id === draftId) {
+      return true;
+    }
     return searchWords.every((word) => event.__quickSearch && event.__quickSearch.includes(word));
   });
 });

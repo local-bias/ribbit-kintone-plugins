@@ -31,6 +31,7 @@ import {
 } from '@konomi-app/kintone-utilities';
 import { produce } from 'immer';
 import {
+  buildQuickSearchSource,
   getDisplayTitle,
   getSortValue,
   isBackgroundEventAvailable,
@@ -254,15 +255,13 @@ export const getCalendarEventFromKintoneRecord = async (params: {
     category: record[condition.calendarEvent.categoryField]?.value as string | undefined,
     assignees,
     __quickSearch: getYuruChara(
-      [
-        record[condition.calendarEvent.inputTitleField]?.value,
+      buildQuickSearchSource({
+        title: record[condition.calendarEvent.inputTitleField]?.value as string | undefined,
         displayTitle,
-        noteValue,
-        record[condition.calendarEvent.categoryField]?.value,
-        ...(assignees ?? []).map(({ label }) => label),
-      ]
-        .filter(Boolean)
-        .join('_$$_')
+        note: noteValue,
+        category: record[condition.calendarEvent.categoryField]?.value,
+        assignees,
+      })
     ),
     ...colors,
   };
@@ -276,6 +275,14 @@ export const getCalendarEventFromKintoneRecord = async (params: {
   return calendarEvent;
 };
 
+/**
+ * イベントの内容(タイトル・備考・カテゴリーなど)が変わった場合に、キーワード検索の対象を作り直します
+ */
+export const withQuickSearch = (event: PluginCalendarEvent): PluginCalendarEvent => ({
+  ...event,
+  __quickSearch: getYuruChara(buildQuickSearchSource(event)),
+});
+
 export const addNewRecord = async (params: {
   calendarEvent: PluginCalendarEvent;
   condition: PluginCondition;
@@ -283,13 +290,13 @@ export const addNewRecord = async (params: {
 }): Promise<PluginCalendarEvent> => {
   const { calendarEvent, condition, properties } = params;
 
-  const newEvent = {
+  // getCalendarEventFromKintoneRecord(読み込み時の変換)でしか色と検索対象は計算されないため、
+  // ここで明示的に計算しないと次のリロードまで書式(背景色等)や検索結果に反映されない。
+  const newEvent = withQuickSearch({
     ...calendarEvent,
     title: calendarEvent.title || t('desktop.calendar.noTitle'),
-    // getCalendarEventFromKintoneRecord(読み込み時の変換)でしか色は計算されないため、
-    // ここで明示的に計算しないと次のリロードまで書式(背景色等)が反映されない。
     ...getEventColors({ value: calendarEvent.category, condition, properties }),
-  };
+  });
 
   const record = await getKintoneRecordFromCalendarEvent({
     calendarEvent: newEvent,

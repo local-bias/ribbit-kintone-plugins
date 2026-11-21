@@ -176,3 +176,25 @@ export const buildCopiedEvent = (
     ...(Object.keys(copiedExtendedProps).length > 0 ? { extendedProps: copiedExtendedProps } : {}),
   };
 };
+
+/**
+ * キーワード検索の対象となる文字列(正規化前)を組み立てます
+ *
+ * レコードの読み込み時だけでなく、保存・複製などでイベントの内容が変わった時にも同じ規則で
+ * 組み立て直し、検索結果が古い内容のままにならないようにする
+ */
+export const buildQuickSearchSource = (
+  event: Pick<PluginCalendarEvent, 'title' | 'displayTitle' | 'note' | 'assignees'> & {
+    /** チェックボックスをカテゴリーにした場合は、複数の値を持つことがある */
+    category?: unknown;
+  }
+): string =>
+  [
+    event.title,
+    event.displayTitle,
+    event.note,
+    Array.isArray(event.category) ? event.category.join(',') : event.category,
+    ...(event.assignees ?? []).map(({ label }) => label),
+  ]
+    .filter(Boolean)
+    .join('_$$_');
