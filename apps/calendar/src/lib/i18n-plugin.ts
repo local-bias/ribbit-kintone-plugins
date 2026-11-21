@@ -226,6 +226,11 @@ const ui = mergeDeep(commonUi, {
       '計算フィールドなどで、複数の項目を組み合わせたタイトルを表示したい場合に使用します。カレンダーから入力・変更されるのは、スケジュールのタイトルのフィールドです',
     'config.section.slotMinmax.description2':
       '終了を24時より後にすると、夜勤のような日をまたぐ時間帯を1日の枠内に表示できます',
+    'config.section.visibleViews.title': '表示形式の切り替えボタン',
+    'config.section.visibleViews.description':
+      'カレンダーの上部に表示する、表示形式の切り替えボタンを選択します',
+    'config.section.visibleViews.description2':
+      '何も選択しない場合は、すべてのボタンを表示します。1つだけ選択した場合は、切り替えボタン自体を表示しません。同じタブで再表示した場合は、前回の表示形式で表示されます',
 
     // Common - Weekdays
     'common.weekday.sunday': '日曜日',
@@ -464,6 +469,11 @@ const ui = mergeDeep(commonUi, {
       'Use this to show a title that combines several values, e.g. with a calculated field. Input from the calendar is still saved to the event title field.',
     'config.section.slotMinmax.description2':
       'Setting the end later than 24:00 lets you show time ranges that span midnight, such as night shifts, within a single day.',
+    'config.section.visibleViews.title': 'View switch buttons',
+    'config.section.visibleViews.description':
+      'Select the view switch buttons shown above the calendar.',
+    'config.section.visibleViews.description2':
+      'If nothing is selected, all buttons are shown. If only one is selected, the switcher is hidden. When reopened in the same tab, the last used view is restored.',
 
     // Common - Weekdays
     'common.weekday.sunday': 'Sunday',
@@ -704,6 +714,11 @@ const ui = mergeDeep(commonUi, {
       'Úselo para mostrar un título que combine varios valores, por ejemplo con un campo calculado. Lo que se introduce desde el calendario se guarda en el campo del título del evento.',
     'config.section.slotMinmax.description2':
       'Si el final es posterior a las 24:00, puede mostrar rangos que pasan la medianoche, como turnos nocturnos, dentro de un solo día.',
+    'config.section.visibleViews.title': 'Botones de cambio de vista',
+    'config.section.visibleViews.description':
+      'Seleccione los botones de cambio de vista que se muestran encima del calendario.',
+    'config.section.visibleViews.description2':
+      'Si no se selecciona nada, se muestran todos los botones. Si solo se selecciona uno, el selector se oculta. Al volver a abrir en la misma pestaña, se restaura la última vista utilizada.',
 
     // Common - Weekdays
     'common.weekday.sunday': 'Domingo',
@@ -924,6 +939,10 @@ const ui = mergeDeep(commonUi, {
       '用于显示组合多个项目的标题（如计算字段）。从日历输入的内容仍保存到日程标题字段',
     'config.section.slotMinmax.description2':
       '将结束设为24点以后，可以在一天的范围内显示夜班等跨日的时间段',
+    'config.section.visibleViews.title': '视图切换按钮',
+    'config.section.visibleViews.description': '选择显示在日历上方的视图切换按钮',
+    'config.section.visibleViews.description2':
+      '未选择时显示所有按钮。仅选择一个时不显示切换按钮。在同一标签页中再次显示时，将恢复上次的视图',
 
     // Common - Weekdays
     'common.weekday.sunday': '星期日',
@@ -1144,6 +1163,10 @@ const ui = mergeDeep(commonUi, {
       '用於顯示組合多個項目的標題（如計算欄位）。從行事曆輸入的內容仍儲存到行程標題欄位',
     'config.section.slotMinmax.description2':
       '將結束設為24點以後，可以在一天的範圍內顯示夜班等跨日的時段',
+    'config.section.visibleViews.title': '檢視切換按鈕',
+    'config.section.visibleViews.description': '選擇顯示在行事曆上方的檢視切換按鈕',
+    'config.section.visibleViews.description2':
+      '未選擇時顯示所有按鈕。僅選擇一個時不顯示切換按鈕。在同一分頁中再次顯示時，將還原上次的檢視',
 
     // Common - Weekdays
     'common.weekday.sunday': '星期日',

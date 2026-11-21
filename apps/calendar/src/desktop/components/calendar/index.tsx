@@ -1,12 +1,17 @@
 import {
+  buildViewButtons,
+  isDayViewSelectable,
   getScrollTimeAroundNow,
   resolveFirstDay,
+  resolveInitialView,
   resolveSlotRange,
 } from '@/desktop/calendar-options';
 import { useCalendar } from '@/desktop/hooks/use-calendar';
+import { readStoredViewType, storeViewType } from '@/desktop/view-storage';
 import { getSlotTime } from '@/lib/calendar';
 import { t } from '@/lib/i18n-plugin';
 import { DEFAULT_SLOT_DURATION } from '@/schema/calendar';
+import { DatesSetArg } from '@fullcalendar/core';
 import allLocales from '@fullcalendar/core/locales-all';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -14,7 +19,7 @@ import FullCalendar from '@fullcalendar/react';
 import rrulePlugin from '@fullcalendar/rrule';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import { useAtomValue, useSetAtom } from 'jotai';
-import { useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   fullcalendarApiAtom,
   fullcalendarRefAtom,
@@ -37,6 +42,17 @@ function FullCalendarRoot() {
   const onCalendarEventAdd = useSetAtom(handleCalendarEventAddAtom);
   const { onCalendarEventClick, onCalendarEventChange, onCalendarEventRemove } = useCalendar();
   const loginUser = useAtomValue(loginUserAtom);
+  const conditionId = pluginCondition?.id ?? '';
+  const visibleViews = pluginCondition?.visibleViews ?? [];
+
+  // FullCalendarは`initialView`をマウント時にしか参照しないため、初回の描画時にのみ決定する
+  const [initialView] = useState(() =>
+    resolveInitialView({
+      stored: readStoredViewType(conditionId),
+      initialView: pluginCondition?.initialView ?? 'timeGridWeek',
+      visibleViews,
+    })
+  );
   const scrollTime = useMemo(
     () =>
       pluginCondition?.scrollsToNow
@@ -48,11 +64,20 @@ function FullCalendarRoot() {
     () => resolveFirstDay(pluginCondition?.firstDay ?? 0, loginUser.timezone),
     [pluginCondition?.firstDay, loginUser.timezone]
   );
+  const viewButtons = buildViewButtons(visibleViews);
+  // 日表示に切り替えられない設定では、日付のクリックで日表示へ移動させない(戻れなくなるため)
+  const enablesNavLinks = isDayViewSelectable(visibleViews);
   const { slotMinTime, slotMaxTime } = resolveSlotRange({
     slotMinTime: pluginCondition?.slotMinTime ?? '',
     slotMaxTime: pluginCondition?.slotMaxTime ?? '',
   });
 
+  const onDatesSet = useCallback(
+    ({ view }: DatesSetArg) => {
+      if (conditionId) storeViewType(conditionId, view.type);
+    },
+    [conditionId]
+  );
 
   const locale = (() => {
     switch (loginUser.language) {
@@ -76,7 +101,8 @@ function FullCalendarRoot() {
       timeZone={loginUser.timezone}
       locales={allLocales}
       plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, rrulePlugin]}
-      initialView={pluginCondition?.initialView ?? 'timeGridWeek'}
+      initialView={initialView}
+      datesSet={onDatesSet}
       businessHours={{
         daysOfWeek: pluginCondition?.daysOfWeek,
         startTime: '00:00',
@@ -98,9 +124,10 @@ function FullCalendarRoot() {
       headerToolbar={{
         left: 'title',
         center: '',
-        right:
-          'dayGridMonth,timeGridWeek,timeGridFiveDay,timeGridThreeDay,timeGridDay today prev,next',
+        right: [viewButtons, 'today prev,next'].filter(Boolean).join(' '),
       }}
+      navLinks={enablesNavLinks}
+      navLinkDayClick='timeGridDay'
       events={calendarEvents}
       allDaySlot={pluginCondition?.enablesAllDay}
       editable

@@ -29,6 +29,7 @@ import FormScheduleTitle from './form-schedule-title';
 import FormSlotDuration from './form-slot-duration';
 import FormSlotMinmax from './form-slot-minmax';
 import FormView from './form-view';
+import FormVisibleViews from './form-visible-views';
 import FirstDayForm from './form-first-day';
 
 const Component: FC = () => (
@@ -118,6 +119,16 @@ const Component: FC = () => (
           {t('config.section.initialView.description')}
         </PluginFormDescription>
         <FormInitialView />
+      </PluginFormSection>
+      <PluginFormSection>
+        <PluginFormTitle>{t('config.section.visibleViews.title')}</PluginFormTitle>
+        <PluginFormDescription>
+          {t('config.section.visibleViews.description')}
+        </PluginFormDescription>
+        <PluginFormDescription last>
+          {t('config.section.visibleViews.description2')}
+        </PluginFormDescription>
+        <FormVisibleViews />
       </PluginFormSection>
       <PluginFormSection>
         <PluginFormTitle>{t('config.section.slotMinmax.title')}</PluginFormTitle>

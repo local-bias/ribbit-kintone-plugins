@@ -106,6 +106,7 @@ export const enablesRecurrenceState = getConditionPropertyAtom('enablesRecurrenc
 export const editModeState = getConditionPropertyAtom('editMode');
 export const slotDurationState = getConditionPropertyAtom('slotDuration');
 export const scrollsToNowState = getConditionPropertyAtom('scrollsToNow');
+export const visibleViewsState = getConditionPropertyAtom('visibleViews');
 
 export const calendarTitleState = getCalendarEventAtom('inputTitleField');
 export const calendarStartState = getCalendarEventAtom('startField');
