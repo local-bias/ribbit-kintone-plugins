@@ -4,6 +4,7 @@ import {
   enablesNoteState,
   enablesRecurrenceState,
   scrollsToNowState,
+  showsLegendState,
 } from '@/config/states/plugin';
 import { t } from '@/lib/i18n-plugin';
 import {
@@ -177,6 +178,7 @@ const Component: FC = () => (
           {t('config.section.category.description3')}
         </PluginFormDescription>
         <FormCategory />
+        <JotaiSwitch atom={showsLegendState} label={t('config.form.showsLegend')} />
       </PluginFormSection>
       <PluginFormSection>
         <PluginFormTitle>{t('config.section.colors.title')}</PluginFormTitle>

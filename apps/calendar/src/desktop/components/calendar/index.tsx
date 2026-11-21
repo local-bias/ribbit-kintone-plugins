@@ -29,6 +29,7 @@ import {
   renderableCalendarEventsAtom,
 } from '../../states/calendar';
 import { loginUserAtom, pluginConditionAtom } from '../../states/kintone';
+import CalendarLegend from '../legend';
 import DayHeader from './day-header';
 import CalendarEvent from './event';
 
@@ -197,6 +198,7 @@ export default function FullCalendarContainer() {
 
   return (
     <div ref={containerRef}>
+      <CalendarLegend />
       <div
         className='rad:p-2 rad:md:p-4'
         onContextMenu={(event) => openContextMenu(event.nativeEvent)}

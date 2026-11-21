@@ -110,6 +110,7 @@ export const visibleViewsState = getConditionPropertyAtom('visibleViews');
 export const enablesDragAndDropState = getConditionPropertyAtom('enablesDragAndDrop');
 export const confirmsRescheduleState = getConditionPropertyAtom('confirmsReschedule');
 export const preventsOverlapState = getConditionPropertyAtom('preventsOverlap');
+export const showsLegendState = getConditionPropertyAtom('showsLegend');
 
 export const calendarTitleState = getCalendarEventAtom('inputTitleField');
 export const calendarStartState = getCalendarEventAtom('startField');

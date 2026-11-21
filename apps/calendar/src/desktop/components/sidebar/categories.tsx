@@ -1,6 +1,6 @@
 import { t } from '@/lib/i18n-plugin';
 import { cn } from '@/lib/utils';
-import { atom, useAtomValue, useSetAtom } from 'jotai';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { Eye, EyeOff } from 'lucide-react';
 import { FC, memo, Suspense } from 'react';
 import {
@@ -8,24 +8,12 @@ import {
   categoryFieldPropertyAtom,
   pluginConditionAtom,
 } from '../../states/kintone';
-import { displayingCategoriesAtom } from '../../states/sidebar';
+import { displayingCategoriesAtom, toggleDisplayingCategoryAtom } from '../../states/sidebar';
 import { DEFAULT_COLORS } from '../../static';
 
-const handleCategoryChangeAtom = atom(null, async (get, set, category: string) => {
-  const categories = (await get(calendarEventCategoryAtom)) ?? [];
-  set(displayingCategoriesAtom, (current) => {
-    const newArray = current === null ? categories : [...current];
-
-    if (newArray.includes(category)) {
-      return newArray.filter((item) => item !== category);
-    }
-    return [...newArray, category];
-  });
-});
-
-const Component: FC<{ categories: string[]; }> = memo(({ categories }) => {
+const Component: FC<{ categories: string[] }> = memo(({ categories }) => {
   const displayingCategories = useAtomValue(displayingCategoriesAtom);
-  const onCategoryChange = useSetAtom(handleCategoryChangeAtom);
+  const onCategoryChange = useSetAtom(toggleDisplayingCategoryAtom);
   const condition = useAtomValue(pluginConditionAtom);
   const colors = condition?.colors ?? DEFAULT_COLORS;
 
