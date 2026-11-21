@@ -41,6 +41,35 @@
 }
 
 /*
+ * サイドバーや凡例のボタン・リストも、kintoneの要素向けの既定スタイルが直接効く。
+ * 開閉ハンドルと同じく打ち消しだけをレイヤーの外で行い、余白・背景・文字色などの見た目は
+ * (レイヤー外の打ち消しに負けないよう)内側の要素にTailwindのユーティリティで指定する。
+ */
+.ribbit-calendar-plain-button {
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+}
+.ribbit-calendar-plain-button:focus-visible {
+  outline: 2px solid var(--🐸primary, #3b82f6);
+  outline-offset: 1px;
+}
+.ribbit-calendar-plain-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/*
  * kintoneのレコード追加・編集画面のフィールド要素(`getFieldElement`)へ直接マウントする
  * UI(繰り返し設定など)は、kintone標準のフォームスタイル(input/select/buttonの見た目を
  * 統一するルール)が直接効く場所に置かれる。
