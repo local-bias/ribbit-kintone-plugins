@@ -11,7 +11,7 @@ import { readStoredViewType, storeViewType } from '@/desktop/view-storage';
 import { getSlotTime } from '@/lib/calendar';
 import { t } from '@/lib/i18n-plugin';
 import { DEFAULT_SLOT_DURATION } from '@/schema/calendar';
-import { DatesSetArg } from '@fullcalendar/core';
+import { DatesSetArg, EventApi } from '@fullcalendar/core';
 import allLocales from '@fullcalendar/core/locales-all';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -33,6 +33,9 @@ import CalendarEvent from './event';
 
 /** 現在時刻付近へ自動スクロールしない場合の初期スクロール位置(FullCalendarの既定値) */
 const DEFAULT_SCROLL_TIME = '06:00:00';
+
+/** 予定の重複を禁止する場合でも、背景イベントの上には予定を配置できるようにする */
+const allowsOverlapWith = (stillEvent: EventApi) => stillEvent.display === 'background';
 
 function FullCalendarRoot() {
   const setFullcalendarRef = useSetAtom(fullcalendarRefAtom);
@@ -65,6 +68,7 @@ function FullCalendarRoot() {
     [pluginCondition?.firstDay, loginUser.timezone]
   );
   const viewButtons = buildViewButtons(visibleViews);
+  const preventsOverlap = !!pluginCondition?.preventsOverlap;
   // 日表示に切り替えられない設定では、日付のクリックで日表示へ移動させない(戻れなくなるため)
   const enablesNavLinks = isDayViewSelectable(visibleViews);
   const { slotMinTime, slotMaxTime } = resolveSlotRange({
@@ -130,7 +134,9 @@ function FullCalendarRoot() {
       navLinkDayClick='timeGridDay'
       events={calendarEvents}
       allDaySlot={pluginCondition?.enablesAllDay}
-      editable
+      editable={pluginCondition?.enablesDragAndDrop ?? true}
+      eventOverlap={preventsOverlap ? allowsOverlapWith : true}
+      selectOverlap={preventsOverlap ? allowsOverlapWith : true}
       selectable
       selectMirror
       slotMinTime={getSlotTime(slotMinTime)}

@@ -8,6 +8,7 @@ import { reschedule } from '../actions';
 import { calendarEventsAtom } from '../states/calendar';
 import { detailedDialogAtom, isDetailedModeAtom } from '../states/detailed-dialog';
 import { dialogPropsAtom, dialogShownAtom } from '../states/dialog';
+import { requestConfirmAtom } from '../states/confirm';
 import { appPropertiesAtom, loadingAtom, pluginConditionAtom } from '../states/kintone';
 import { openOccurrenceScopeDialogAtom } from '../states/recurrence';
 import { refreshComputedValuesAtom } from '../states/refresh';
@@ -58,11 +59,7 @@ const handleCalendarEventChangeAtom = atom(null, async (get, set, props: EventCh
 
     const properties = await get(appPropertiesAtom);
     const events = get(calendarEventsAtom);
-    let index = 0;
-    const targetEvent = events.find(({ id }, i) => {
-      index = i;
-      return id === props.event.id;
-    });
+    const targetEvent = events.find(({ id }) => id === props.event.id);
     if (!targetEvent) {
       console.warn('更新対象レコードに紐づくカレンダーイベントの取得に失敗しました');
       return;
@@ -77,7 +74,23 @@ const handleCalendarEventChangeAtom = atom(null, async (get, set, props: EventCh
       return;
     }
 
-    console.log({ changed, targetEvent });
+    const condition = get(pluginConditionAtom);
+    if (condition?.confirmsReschedule) {
+      // 確認ダイアログの表示中はローディング表示にしない
+      set(loadingAtom, false);
+      const confirmed = await set(requestConfirmAtom, {
+        title: t('desktop.confirm.rescheduleTitle'),
+        message: t(
+          'desktop.confirm.rescheduleMessage',
+          targetEvent.displayTitle || targetEvent.title || t('desktop.calendar.noTitle')
+        ),
+      });
+      if (!confirmed) {
+        props.revert();
+        return;
+      }
+      set(loadingAtom, true);
+    }
 
     // `changed.start`/`end` are FullCalendar's UTC-coerced marker Dates; use the string
     // getters instead, which are the canonical calendar-space values this plugin persists.
@@ -86,13 +99,11 @@ const handleCalendarEventChangeAtom = atom(null, async (get, set, props: EventCh
       start: changed.startStr || targetEvent.start,
       end: changed.endStr || targetEvent.end,
     };
-    set(calendarEventsAtom, (current) => {
-      const newEvents = [...current];
-      newEvents[index] = newEvent;
-      return newEvents;
-    });
+    // 確認ダイアログの表示中に一覧が更新されている可能性があるため、位置ではなくIDで置き換える
+    set(calendarEventsAtom, (current) =>
+      current.map((event) => (event.id === newEvent.id ? newEvent : event))
+    );
 
-    const condition = get(pluginConditionAtom);
     await reschedule({
       calendarEvent: newEvent,
       condition: condition!,

@@ -21,6 +21,7 @@ import DaysOfWeekForm from './form-days-of-week';
 import FormDisplayTitle from './form-display-title';
 import FormEditMode from './form-edit-mode';
 import FormInitialView from './form-initial-view';
+import FormInteraction from './form-interaction';
 import FormNote from './form-note';
 import FormRecurrence from './form-recurrence';
 import FormScheduleEnd from './form-schedule-end';
@@ -108,6 +109,14 @@ const Component: FC = () => (
         label={t('config.section.recurrence.enableLabel')}
       />
       <FormRecurrence />
+    </PluginFormSection>
+    <PluginFormSection>
+      <PluginFormTitle>{t('config.section.interaction.title')}</PluginFormTitle>
+      <PluginFormDescription>{t('config.section.interaction.description')}</PluginFormDescription>
+      <PluginFormDescription last>
+        {t('config.section.interaction.description2')}
+      </PluginFormDescription>
+      <FormInteraction />
     </PluginFormSection>
     <details className='mt-8'>
       <summary className='font-bold text-lg mb-4 cursor-pointer'>

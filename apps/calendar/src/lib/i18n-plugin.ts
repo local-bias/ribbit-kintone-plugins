@@ -212,6 +212,10 @@ const ui = mergeDeep(commonUi, {
 
     // Desktop/Config - Calendar features
     'desktop.calendar.noPermission': '（アクセス権がありません）',
+    'desktop.confirm.ok': 'OK',
+    'desktop.confirm.cancel': 'キャンセル',
+    'desktop.confirm.rescheduleTitle': '予定の日時の変更',
+    'desktop.confirm.rescheduleMessage': '「{0}」の日時を変更しますか？',
     'config.firstDay.today': '今日の曜日',
     'config.form.displayTitleField': '表示用タイトルのフィールド',
     'config.form.slotDuration': '時刻の間隔',
@@ -219,11 +223,19 @@ const ui = mergeDeep(commonUi, {
     'config.form.nextDayHour': '翌{0}時',
     'config.form.slotRangeInvalid': '終了は開始より後にしてください',
     'config.form.scrollsToNow': '表示時に現在時刻付近まで自動でスクロールする',
+    'config.form.enablesDragAndDrop': 'ドラッグ&ドロップで予定の日時を変更できるようにする',
+    'config.form.confirmsReschedule': '日時を変更する前に確認する',
+    'config.form.preventsOverlap': '予定の時間帯の重複を禁止する',
     'config.section.displayTitle.title': '表示用タイトル（任意）',
     'config.section.displayTitle.description':
       'カレンダー上に、スケジュールのタイトルの代わりに表示するフィールドを選択してください。未設定の場合はスケジュールのタイトルを表示します',
     'config.section.displayTitle.description2':
       '計算フィールドなどで、複数の項目を組み合わせたタイトルを表示したい場合に使用します。カレンダーから入力・変更されるのは、スケジュールのタイトルのフィールドです',
+    'config.section.interaction.title': '予定の操作',
+    'config.section.interaction.description':
+      'カレンダー上でのドラッグ&ドロップによる予定の操作を設定します',
+    'config.section.interaction.description2':
+      '重複の禁止は、カレンダー上でのドラッグ&ドロップ・範囲選択にのみ適用されます。背景イベントとの重複は禁止されません',
     'config.section.slotMinmax.description2':
       '終了を24時より後にすると、夜勤のような日をまたぐ時間帯を1日の枠内に表示できます',
     'config.section.visibleViews.title': '表示形式の切り替えボタン',
@@ -455,6 +467,10 @@ const ui = mergeDeep(commonUi, {
 
     // Desktop/Config - Calendar features
     'desktop.calendar.noPermission': '(No access permission)',
+    'desktop.confirm.ok': 'OK',
+    'desktop.confirm.cancel': 'Cancel',
+    'desktop.confirm.rescheduleTitle': 'Change event time',
+    'desktop.confirm.rescheduleMessage': 'Change the date and time of "{0}"?',
     'config.firstDay.today': "Today's day of the week",
     'config.form.displayTitleField': 'Display title field',
     'config.form.slotDuration': 'Time interval',
@@ -462,11 +478,19 @@ const ui = mergeDeep(commonUi, {
     'config.form.nextDayHour': '{0} (next day)',
     'config.form.slotRangeInvalid': 'The end must be later than the start',
     'config.form.scrollsToNow': 'Automatically scroll to around the current time when displayed',
+    'config.form.enablesDragAndDrop': 'Allow changing event times by drag and drop',
+    'config.form.confirmsReschedule': 'Ask for confirmation before changing the time',
+    'config.form.preventsOverlap': 'Prevent events from overlapping',
     'config.section.displayTitle.title': 'Display title (optional)',
     'config.section.displayTitle.description':
       'Select a field to display on the calendar instead of the event title. If not set, the event title is displayed.',
     'config.section.displayTitle.description2':
       'Use this to show a title that combines several values, e.g. with a calculated field. Input from the calendar is still saved to the event title field.',
+    'config.section.interaction.title': 'Event operations',
+    'config.section.interaction.description':
+      'Configure how events can be operated by drag and drop on the calendar.',
+    'config.section.interaction.description2':
+      'Overlap prevention applies only to drag and drop and range selection on the calendar. Overlapping background events is always allowed.',
     'config.section.slotMinmax.description2':
       'Setting the end later than 24:00 lets you show time ranges that span midnight, such as night shifts, within a single day.',
     'config.section.visibleViews.title': 'View switch buttons',
@@ -700,6 +724,10 @@ const ui = mergeDeep(commonUi, {
 
     // Desktop/Config - Calendar features
     'desktop.calendar.noPermission': '(Sin permiso de acceso)',
+    'desktop.confirm.ok': 'Aceptar',
+    'desktop.confirm.cancel': 'Cancelar',
+    'desktop.confirm.rescheduleTitle': 'Cambiar fecha del evento',
+    'desktop.confirm.rescheduleMessage': '¿Cambiar la fecha y hora de "{0}"?',
     'config.firstDay.today': 'Día de la semana de hoy',
     'config.form.displayTitleField': 'Campo del título mostrado',
     'config.form.slotDuration': 'Intervalo de tiempo',
@@ -707,11 +735,20 @@ const ui = mergeDeep(commonUi, {
     'config.form.nextDayHour': '{0} (día siguiente)',
     'config.form.slotRangeInvalid': 'El final debe ser posterior al inicio',
     'config.form.scrollsToNow': 'Desplazarse automáticamente a la hora actual al mostrar',
+    'config.form.enablesDragAndDrop':
+      'Permitir cambiar la fecha de los eventos arrastrando y soltando',
+    'config.form.confirmsReschedule': 'Pedir confirmación antes de cambiar la fecha',
+    'config.form.preventsOverlap': 'Impedir que los eventos se superpongan',
     'config.section.displayTitle.title': 'Título mostrado (opcional)',
     'config.section.displayTitle.description':
       'Seleccione un campo para mostrar en el calendario en lugar del título del evento. Si no se establece, se muestra el título del evento.',
     'config.section.displayTitle.description2':
       'Úselo para mostrar un título que combine varios valores, por ejemplo con un campo calculado. Lo que se introduce desde el calendario se guarda en el campo del título del evento.',
+    'config.section.interaction.title': 'Operaciones de eventos',
+    'config.section.interaction.description':
+      'Configure cómo se pueden manipular los eventos arrastrando y soltando en el calendario.',
+    'config.section.interaction.description2':
+      'La prevención de superposición solo se aplica al arrastrar y soltar y a la selección en el calendario. Siempre se permite superponer eventos de fondo.',
     'config.section.slotMinmax.description2':
       'Si el final es posterior a las 24:00, puede mostrar rangos que pasan la medianoche, como turnos nocturnos, dentro de un solo día.',
     'config.section.visibleViews.title': 'Botones de cambio de vista',
@@ -925,6 +962,10 @@ const ui = mergeDeep(commonUi, {
 
     // Desktop/Config - Calendar features
     'desktop.calendar.noPermission': '（无访问权限）',
+    'desktop.confirm.ok': '确定',
+    'desktop.confirm.cancel': '取消',
+    'desktop.confirm.rescheduleTitle': '更改日程时间',
+    'desktop.confirm.rescheduleMessage': '要更改“{0}”的日期和时间吗？',
     'config.firstDay.today': '今天的星期',
     'config.form.displayTitleField': '显示标题字段',
     'config.form.slotDuration': '时间间隔',
@@ -932,11 +973,18 @@ const ui = mergeDeep(commonUi, {
     'config.form.nextDayHour': '次日{0}点',
     'config.form.slotRangeInvalid': '结束时间必须晚于开始时间',
     'config.form.scrollsToNow': '显示时自动滚动到当前时间附近',
+    'config.form.enablesDragAndDrop': '允许通过拖放更改日程时间',
+    'config.form.confirmsReschedule': '更改时间前进行确认',
+    'config.form.preventsOverlap': '禁止日程时间重叠',
     'config.section.displayTitle.title': '显示标题（可选）',
     'config.section.displayTitle.description':
       '请选择在日历上代替日程标题显示的字段。未设置时显示日程标题',
     'config.section.displayTitle.description2':
       '用于显示组合多个项目的标题（如计算字段）。从日历输入的内容仍保存到日程标题字段',
+    'config.section.interaction.title': '日程操作',
+    'config.section.interaction.description': '设置在日历上通过拖放操作日程的方式',
+    'config.section.interaction.description2':
+      '禁止重叠仅适用于日历上的拖放和范围选择。与背景事件重叠不受限制',
     'config.section.slotMinmax.description2':
       '将结束设为24点以后，可以在一天的范围内显示夜班等跨日的时间段',
     'config.section.visibleViews.title': '视图切换按钮',
@@ -1149,6 +1197,10 @@ const ui = mergeDeep(commonUi, {
 
     // Desktop/Config - Calendar features
     'desktop.calendar.noPermission': '（無存取權限）',
+    'desktop.confirm.ok': '確定',
+    'desktop.confirm.cancel': '取消',
+    'desktop.confirm.rescheduleTitle': '變更行程時間',
+    'desktop.confirm.rescheduleMessage': '要變更「{0}」的日期和時間嗎？',
     'config.firstDay.today': '今天的星期',
     'config.form.displayTitleField': '顯示標題欄位',
     'config.form.slotDuration': '時間間隔',
@@ -1156,11 +1208,18 @@ const ui = mergeDeep(commonUi, {
     'config.form.nextDayHour': '隔天{0}點',
     'config.form.slotRangeInvalid': '結束時間必須晚於開始時間',
     'config.form.scrollsToNow': '顯示時自動捲動到目前時間附近',
+    'config.form.enablesDragAndDrop': '允許透過拖放變更行程時間',
+    'config.form.confirmsReschedule': '變更時間前進行確認',
+    'config.form.preventsOverlap': '禁止行程時間重疊',
     'config.section.displayTitle.title': '顯示標題（選填）',
     'config.section.displayTitle.description':
       '請選擇在行事曆上代替行程標題顯示的欄位。未設定時顯示行程標題',
     'config.section.displayTitle.description2':
       '用於顯示組合多個項目的標題（如計算欄位）。從行事曆輸入的內容仍儲存到行程標題欄位',
+    'config.section.interaction.title': '行程操作',
+    'config.section.interaction.description': '設定在行事曆上透過拖放操作行程的方式',
+    'config.section.interaction.description2':
+      '禁止重疊僅適用於行事曆上的拖放和範圍選擇。與背景事件重疊不受限制',
     'config.section.slotMinmax.description2':
       '將結束設為24點以後，可以在一天的範圍內顯示夜班等跨日的時段',
     'config.section.visibleViews.title': '檢視切換按鈕',

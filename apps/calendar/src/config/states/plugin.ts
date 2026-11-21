@@ -107,6 +107,9 @@ export const editModeState = getConditionPropertyAtom('editMode');
 export const slotDurationState = getConditionPropertyAtom('slotDuration');
 export const scrollsToNowState = getConditionPropertyAtom('scrollsToNow');
 export const visibleViewsState = getConditionPropertyAtom('visibleViews');
+export const enablesDragAndDropState = getConditionPropertyAtom('enablesDragAndDrop');
+export const confirmsRescheduleState = getConditionPropertyAtom('confirmsReschedule');
+export const preventsOverlapState = getConditionPropertyAtom('preventsOverlap');
 
 export const calendarTitleState = getCalendarEventAtom('inputTitleField');
 export const calendarStartState = getCalendarEventAtom('startField');

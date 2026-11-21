@@ -12,6 +12,7 @@ import { Suspense } from 'react';
 import { useInitialize } from '../hooks/use-initialize';
 import { useIsMobile } from '../hooks/use-mobile';
 import Calendar from './calendar';
+import ConfirmDialog from './confirm-dialog';
 import DetailedDialog from './detailed-dialog';
 import Dialog from './dialog';
 import OccurrenceScopeDialog from './dialog/occurrence-scope-dialog';
@@ -27,6 +28,7 @@ function DesktopLayout({ className }: { className?: string }) {
       <Dialog />
       <OccurrenceScopeDialog />
       <DetailedDialog />
+      <ConfirmDialog />
       <div className='🐸'>
         <div
           className={cn(`rad:grid rad:grid-cols-[auto_1fr] ${className}`, {
