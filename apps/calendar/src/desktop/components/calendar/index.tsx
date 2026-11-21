@@ -7,13 +7,21 @@ import {
   resolveInitialView,
   resolveSlotRange,
 } from '@/desktop/calendar-options';
+import { toCalendarIsoDate } from '@/desktop/calendar-focus';
 import { useCalendar } from '@/desktop/hooks/use-calendar';
+import { focusedDateAtom, syncCalendarFocusAtom } from '@/desktop/states/calendar-focus';
 import { EVENT_DATA_ATTRIBUTES, openEventContextMenuAtom } from '@/desktop/states/context-menu';
 import { readStoredViewType, storeViewType } from '@/desktop/view-storage';
 import { getSlotTime } from '@/lib/calendar';
 import { t } from '@/lib/i18n-plugin';
 import { DEFAULT_SLOT_DURATION } from '@/schema/calendar';
-import { DatesSetArg, EventApi, EventMountArg } from '@fullcalendar/core';
+import type {
+  DatesSetArg,
+  DayCellContentArg,
+  DayHeaderContentArg,
+  EventApi,
+  EventMountArg,
+} from '@fullcalendar/core';
 import allLocales from '@fullcalendar/core/locales-all';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -36,6 +44,9 @@ import CalendarEvent from './event';
 
 /** 現在時刻付近へ自動スクロールしない場合の初期スクロール位置(FullCalendarの既定値) */
 const DEFAULT_SCROLL_TIME = '06:00:00';
+
+/** ミニカレンダーで選択中の日付のセルに付与するクラス(スタイルはdesktop.cssで定義) */
+const FOCUSED_DAY_CLASS = 'ribbit-calendar-focused-day';
 
 /** 予定の重複を禁止する場合でも、背景イベントの上には予定を配置できるようにする */
 const allowsOverlapWith = (stillEvent: EventApi) => stillEvent.display === 'background';
@@ -90,16 +101,38 @@ function FullCalendarRoot() {
   const preventsOverlap = !!pluginCondition?.preventsOverlap;
   // 日表示に切り替えられない設定では、日付のクリックで日表示へ移動させない(戻れなくなるため)
   const enablesNavLinks = isDayViewSelectable(visibleViews);
+  const focusedDate = useAtomValue(focusedDateAtom);
+  const syncCalendarFocus = useSetAtom(syncCalendarFocusAtom);
   const { slotMinTime, slotMaxTime } = resolveSlotRange({
     slotMinTime: pluginCondition?.slotMinTime ?? '',
     slotMaxTime: pluginCondition?.slotMaxTime ?? '',
   });
 
   const onDatesSet = useCallback(
-    ({ view }: DatesSetArg) => {
-      if (conditionId) storeViewType(conditionId, view.type);
+    (arg: DatesSetArg) => {
+      if (conditionId) storeViewType(conditionId, arg.view.type);
+      syncCalendarFocus(arg);
     },
-    [conditionId]
+    [conditionId, syncCalendarFocus]
+  );
+
+  // 選択中の日付を強調する。月表示では日付セル、時間軸のある表示では列の見出しを強調する
+  // (月表示の見出しは曜日を表すため対象外)
+  const dayCellClassNames = useCallback(
+    ({ date }: DayCellContentArg) =>
+      focusedDate && toCalendarIsoDate(date, loginUser.timezone) === focusedDate
+        ? [FOCUSED_DAY_CLASS]
+        : [],
+    [focusedDate, loginUser.timezone]
+  );
+  const dayHeaderClassNames = useCallback(
+    ({ date, view }: DayHeaderContentArg) =>
+      focusedDate &&
+      view.type.startsWith('timeGrid') &&
+      toCalendarIsoDate(date, loginUser.timezone) === focusedDate
+        ? [FOCUSED_DAY_CLASS]
+        : [],
+    [focusedDate, loginUser.timezone]
   );
 
   const locale = (() => {
@@ -170,6 +203,8 @@ function FullCalendarRoot() {
       slotLabelContent={(props) => <span className='rad:text-foreground/50'>{props.text}</span>}
       allDayContent={(props) => <span className='rad:text-foreground/50'>{props.text}</span>}
       dayHeaderContent={DayHeader}
+      dayHeaderClassNames={dayHeaderClassNames}
+      dayCellClassNames={dayCellClassNames}
       // slotLaneContent={(props) => <pre>{JSON.stringify(props, null, 2)}</pre>}
       // weekNumberContent={(props) => <pre>{JSON.stringify(props, null, 2)}</pre>}
       // moreLinkContent={(props) => <pre>{JSON.stringify(props, null, 2)}</pre>}

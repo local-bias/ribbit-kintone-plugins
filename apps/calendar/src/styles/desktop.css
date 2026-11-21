@@ -70,6 +70,37 @@
 }
 
 /*
+ * サイドバーのミニカレンダーで選択中の日付(`ribbit-calendar-focused-day`)の強調表示。
+ * 色はミニカレンダー(MUIの既定テーマ)の選択色(primary)に揃える。選択直後の強調
+ * アニメーション(states/calendar-focus.ts)も同じ色を使っているため、変更時は併せて変更する。
+ * FullCalendarのCSSはレイヤー外に注入されるため、こちらもレイヤーの外で指定する。
+ *
+ * - 月表示: 日付セルを枠で囲み、日付の数字を強調する
+ * - 時間軸のある表示(週・日など): 列の見出しに下線を引き、文字を強調する
+ *
+ * 日付の数字・見出しの文字色と太さは、components/index.tsxで`!important`付きで一律に
+ * 指定されているため、こちらも`!important`で上書きする(セレクタの詳細度はこちらが高い)。
+ */
+.fc {
+  --ribbit-calendar-focus-color: #1976d2;
+}
+.fc .fc-view.fc-daygrid .fc-daygrid-day.ribbit-calendar-focused-day {
+  outline: 2px solid var(--ribbit-calendar-focus-color);
+  outline-offset: -2px;
+}
+.fc .fc-view.fc-daygrid .fc-daygrid-day.ribbit-calendar-focused-day .fc-daygrid-day-number {
+  color: var(--ribbit-calendar-focus-color) !important;
+  font-weight: 700 !important;
+}
+.fc .fc-view.fc-timegrid .fc-col-header-cell.ribbit-calendar-focused-day {
+  box-shadow: inset 0 -3px 0 0 var(--ribbit-calendar-focus-color);
+}
+.fc .fc-view.fc-timegrid .fc-col-header-cell.ribbit-calendar-focused-day .fc-col-header-cell-cushion {
+  color: var(--ribbit-calendar-focus-color) !important;
+  font-weight: 700 !important;
+}
+
+/*
  * kintoneのレコード追加・編集画面のフィールド要素(`getFieldElement`)へ直接マウントする
  * UI(繰り返し設定など)は、kintone標準のフォームスタイル(input/select/buttonの見た目を
  * 統一するルール)が直接効く場所に置かれる。
