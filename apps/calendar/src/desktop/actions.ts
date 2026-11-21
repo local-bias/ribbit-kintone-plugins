@@ -32,7 +32,9 @@ import {
 import { produce } from 'immer';
 import { PluginCalendarEvent } from './states/calendar';
 
-const toCalendarFieldType = (property: kintoneAPI.FieldProperty | undefined): CalendarFieldType | undefined => {
+const toCalendarFieldType = (
+  property: kintoneAPI.FieldProperty | undefined
+): CalendarFieldType | undefined => {
   if (!property) return undefined;
   return property.type === 'DATE' ? 'DATE' : 'DATETIME';
 };
@@ -124,7 +126,7 @@ export const getKintoneRecordFromCalendarEvent = async (params: {
     // リッチテキストフィールドの場合のみMarkdown→HTML変換を実施
     const noteValue = isRichText
       ? await markdownToHtml(calendarEvent.note ?? '')
-      : calendarEvent.note ?? '';
+      : (calendarEvent.note ?? '');
     record[calendarConfig.noteField] = { value: noteValue };
   }
   if (calendarConfig.categoryField) {
@@ -183,7 +185,9 @@ export const getCalendarEventFromKintoneRecord = async (params: {
   // 第1回の日時)を保持し、FullCalendar描画用のrrule/duration変換はレンダリング直前の
   // renderableCalendarEventsAtom(states/calendar.ts)でのみ行う。
   const recurrenceMeta = condition.calendarEvent.recurrenceField
-    ? parseRecurrenceMeta(record[condition.calendarEvent.recurrenceField]?.value as string | undefined)
+    ? parseRecurrenceMeta(
+        record[condition.calendarEvent.recurrenceField]?.value as string | undefined
+      )
     : null;
 
   const calendarEvent: PluginCalendarEvent = {
@@ -393,4 +397,3 @@ export const getEventColors = (params: {
     textColor: foreground,
   };
 };
-

@@ -28,7 +28,9 @@ const Component: FC = () => (
   <div className='p-4'>
     <PluginFormSection>
       <PluginFormTitle>{t('config.section.viewSettings.title')}</PluginFormTitle>
-      <PluginFormDescription last>{t('config.section.viewSettings.description')}</PluginFormDescription>
+      <PluginFormDescription last>
+        {t('config.section.viewSettings.description')}
+      </PluginFormDescription>
       <div className='flex items-center gap-8'>
         <FormView />
         <CreateNewView />
@@ -44,9 +46,7 @@ const Component: FC = () => (
     </PluginFormSection>
     <PluginFormSection>
       <PluginFormTitle>{t('config.section.scheduleTitle.title')}</PluginFormTitle>
-      <PluginFormDescription>
-        {t('config.section.scheduleTitle.description')}
-      </PluginFormDescription>
+      <PluginFormDescription>{t('config.section.scheduleTitle.description')}</PluginFormDescription>
       <PluginFormDescription last>
         {t('config.section.scheduleTitle.description2')}
       </PluginFormDescription>
@@ -54,9 +54,7 @@ const Component: FC = () => (
     </PluginFormSection>
     <PluginFormSection>
       <PluginFormTitle>{t('config.section.scheduleStart.title')}</PluginFormTitle>
-      <PluginFormDescription>
-        {t('config.section.scheduleStart.description')}
-      </PluginFormDescription>
+      <PluginFormDescription>{t('config.section.scheduleStart.description')}</PluginFormDescription>
       <PluginFormDescription last>
         {t('config.section.scheduleStart.description2')}
       </PluginFormDescription>
@@ -64,9 +62,7 @@ const Component: FC = () => (
     </PluginFormSection>
     <PluginFormSection>
       <PluginFormTitle>{t('config.section.scheduleEnd.title')}</PluginFormTitle>
-      <PluginFormDescription>
-        {t('config.section.scheduleEnd.description')}
-      </PluginFormDescription>
+      <PluginFormDescription>{t('config.section.scheduleEnd.description')}</PluginFormDescription>
       <PluginFormDescription last>
         {t('config.section.scheduleEnd.description2')}
       </PluginFormDescription>
@@ -80,12 +76,8 @@ const Component: FC = () => (
     </PluginFormSection>
     <PluginFormSection>
       <PluginFormTitle>{t('config.section.note.title')}</PluginFormTitle>
-      <PluginFormDescription>
-        {t('config.section.note.description')}
-      </PluginFormDescription>
-      <PluginFormDescription last>
-        {t('config.section.note.description2')}
-      </PluginFormDescription>
+      <PluginFormDescription>{t('config.section.note.description')}</PluginFormDescription>
+      <PluginFormDescription last>{t('config.section.note.description2')}</PluginFormDescription>
       <JotaiSwitch atom={enablesNoteState} label={t('config.section.note.enableLabel')} />
       <FormNote />
     </PluginFormSection>
@@ -102,7 +94,9 @@ const Component: FC = () => (
       <FormRecurrence />
     </PluginFormSection>
     <details className='mt-8'>
-      <summary className='font-bold text-lg mb-4 cursor-pointer'>{t('config.section.advanced')}</summary>
+      <summary className='font-bold text-lg mb-4 cursor-pointer'>
+        {t('config.section.advanced')}
+      </summary>
       <PluginFormSection>
         <PluginFormTitle>{t('config.section.initialView.title')}</PluginFormTitle>
         <PluginFormDescription last>
@@ -119,7 +113,9 @@ const Component: FC = () => (
       </PluginFormSection>
       <PluginFormSection>
         <PluginFormTitle>{t('config.section.businessDays.title')}</PluginFormTitle>
-        <PluginFormDescription>{t('config.section.businessDays.description')}</PluginFormDescription>
+        <PluginFormDescription>
+          {t('config.section.businessDays.description')}
+        </PluginFormDescription>
         <PluginFormDescription last>
           {t('config.section.businessDays.description2')}
         </PluginFormDescription>
@@ -135,9 +131,7 @@ const Component: FC = () => (
       </PluginFormSection>
       <PluginFormSection>
         <PluginFormTitle>{t('config.section.category.title')}</PluginFormTitle>
-        <PluginFormDescription>
-          {t('config.section.category.description')}
-        </PluginFormDescription>
+        <PluginFormDescription>{t('config.section.category.description')}</PluginFormDescription>
         <PluginFormDescription>{t('config.section.category.description2')}</PluginFormDescription>
         <PluginFormDescription last>
           {t('config.section.category.description3')}
@@ -146,9 +140,7 @@ const Component: FC = () => (
       </PluginFormSection>
       <PluginFormSection>
         <PluginFormTitle>{t('config.section.colors.title')}</PluginFormTitle>
-        <PluginFormDescription>
-          {t('config.section.colors.description')}
-        </PluginFormDescription>
+        <PluginFormDescription>{t('config.section.colors.description')}</PluginFormDescription>
         <PluginFormDescription last>
           {t('config.section.colors.description2')}
         </PluginFormDescription>

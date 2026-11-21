@@ -70,7 +70,9 @@ const handleCalendarEventChangeAtom = atom(null, async (get, set, props: EventCh
     // 繰り返し予定のマスターはeditable:falseでドラッグ・リサイズ不可のはずだが、念のための
     // 防御ガード(日時変更は編集ダイアログの「シリーズ全体を編集」からのみ行う)。
     if (targetEvent.extendedProps?.recurrence?.kind === 'master') {
-      console.warn('繰り返し予定のマスターはドラッグ操作の対象外です。予期しないeventChangeを無視します');
+      console.warn(
+        '繰り返し予定のマスターはドラッグ操作の対象外です。予期しないeventChangeを無視します'
+      );
       return;
     }
 

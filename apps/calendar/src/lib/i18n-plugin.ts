@@ -374,9 +374,9 @@ const ui = mergeDeep(commonUi, {
     'config.section.recurrence.enableLabel': 'Enable recurring events',
     'config.section.editMode.title': 'Edit mode',
     'config.section.editMode.description':
-      'Choose how schedules are added and edited. Simple edit uses the plugin\'s own dialog. Detailed edit shows the kintone standard record add/edit screen in a dialog, so schedules can be added even when required fields are configured. Detailed edit is available on desktop only; the mobile version always uses simple edit (if required fields are configured, schedules may not be addable from mobile)',
+      "Choose how schedules are added and edited. Simple edit uses the plugin's own dialog. Detailed edit shows the kintone standard record add/edit screen in a dialog, so schedules can be added even when required fields are configured. Detailed edit is available on desktop only; the mobile version always uses simple edit (if required fields are configured, schedules may not be addable from mobile)",
     'config.section.editMode.description2':
-      'When recurring events are enabled, detailed edit replaces the recurrence field on the record edit screen with the plugin\'s own input UI',
+      "When recurring events are enabled, detailed edit replaces the recurrence field on the record edit screen with the plugin's own input UI",
     'config.section.advanced': 'Advanced settings',
     'config.section.initialView.title': 'Initial calendar view type',
     'config.section.initialView.description': 'Select the initial calendar view type',

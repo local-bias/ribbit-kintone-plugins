@@ -18,7 +18,7 @@ import OccurrenceScopeDialog from './dialog/occurrence-scope-dialog';
 import Fab from './fab';
 import Sidebar from './sidebar';
 
-function DesktopLayout({ className }: { className?: string; }) {
+function DesktopLayout({ className }: { className?: string }) {
   useInitialize();
   const isMobile = useIsMobile();
 
