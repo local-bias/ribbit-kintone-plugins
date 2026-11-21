@@ -215,9 +215,50 @@ export const PluginConfigV6Schema = z.object({
   conditions: z.array(PluginConditionV6Schema),
 });
 
-export const LatestPluginConditionSchema = PluginConditionV6Schema;
+/** 同じ時刻の予定の並び順 */
+export const EventSortOrderSchema = z.enum(['asc', 'desc']);
+export type EventSortOrder = z.infer<typeof EventSortOrderSchema>;
 
-export type PluginConfig = z.infer<typeof PluginConfigV6Schema>;
+const PluginCalendarEventV7Schema = PluginCalendarEventV5Schema.extend({
+  // ------ 追加 ------
+  /** 背景イベントとして表示するかどうかを判定するチェックボックスフィールド */
+  backgroundEventField: z.string(),
+  /** 同じ時刻の予定の並び順を決めるフィールド(未指定の場合はタイトル順) */
+  sortField: z.string(),
+});
+export const PluginConditionV7Schema = PluginConditionV6Schema.extend({
+  calendarEvent: PluginCalendarEventV7Schema,
+  // ------ 追加 ------
+  /** 時間枠ビューの1マスあたりの時間(`HH:mm:ss`) */
+  slotDuration: z.string(),
+  /** 時間枠ビューの表示時に、現在時刻付近まで自動でスクロールするかどうか */
+  scrollsToNow: z.boolean(),
+  /** ヘッダーに表示する表示形式の切り替えボタン(空の場合はすべて表示) */
+  visibleViews: z.array(CalendarViewTypeSchema),
+  /** ドラッグ&ドロップ・リサイズによる日時の変更を許可するかどうか */
+  enablesDragAndDrop: z.boolean(),
+  /** ドラッグ&ドロップ・リサイズで日時を変更する前に確認するかどうか */
+  confirmsReschedule: z.boolean(),
+  /** 予定同士の時間帯の重複を禁止するかどうか(カレンダー上の操作のみ対象) */
+  preventsOverlap: z.boolean(),
+  /** カレンダーの上部にカテゴリーの凡例を表示するかどうか */
+  showsLegend: z.boolean(),
+  /** 背景イベントを有効にするかどうか */
+  enablesBackgroundEvent: z.boolean(),
+  /** `backgroundEventField`のうち、背景イベントとして扱う選択肢 */
+  backgroundEventOption: z.string(),
+  /** `calendarEvent.sortField`による並び順 */
+  sortOrder: EventSortOrderSchema,
+});
+export const PluginConfigV7Schema = z.object({
+  version: z.literal(7),
+  common: z.object({}),
+  conditions: z.array(PluginConditionV7Schema),
+});
+
+export const LatestPluginConditionSchema = PluginConditionV7Schema;
+
+export type PluginConfig = z.infer<typeof PluginConfigV7Schema>;
 export type PluginCommonConfig = PluginConfig['common'];
 export type PluginCondition = PluginConfig['conditions'][number];
 
@@ -228,6 +269,7 @@ export const AnyPluginConfigSchema = z.discriminatedUnion('version', [
   PluginConfigV4Schema,
   PluginConfigV5Schema,
   PluginConfigV6Schema,
+  PluginConfigV7Schema,
 ]);
 
 export type AnyPluginConfig = z.infer<typeof AnyPluginConfigSchema>;

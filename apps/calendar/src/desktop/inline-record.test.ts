@@ -19,7 +19,7 @@ globalThis.kintone = {
 
 const condition = {
   viewId: '1',
-  initialView: 'dayGridMonth',
+  initialView: 'dayGridMonth' as const,
   enablesAllDay: true,
   allDayOption: 'allDay',
   enablesNote: true,
@@ -35,16 +35,28 @@ const condition = {
     noteField: 'note',
     categoryField: 'category',
     recurrenceField: 'recurrence',
+    backgroundEventField: '',
+    sortField: '',
   },
   id: 'condition-1',
   daysOfWeek: [1, 2, 3, 4, 5] as const,
   firstDay: 0,
   enablesRecurrence: true,
   editMode: 'detailed' as const,
+  slotDuration: '00:30:00',
+  scrollsToNow: false,
+  visibleViews: [],
+  enablesDragAndDrop: true,
+  confirmsReschedule: false,
+  preventsOverlap: false,
+  showsLegend: false,
+  enablesBackgroundEvent: false,
+  backgroundEventOption: '',
+  sortOrder: 'asc' as const,
 };
 
 const storedConfig: AnyPluginConfig = {
-  version: 6,
+  version: 7,
   common: {},
   conditions: [condition],
 };

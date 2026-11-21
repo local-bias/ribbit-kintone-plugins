@@ -1,4 +1,5 @@
 import { DEFAULT_COLORS } from '@/desktop/static';
+import { DEFAULT_SLOT_DURATION } from '@/schema/calendar';
 import {
   AnyPluginConfig,
   LatestPluginConditionSchema,
@@ -36,15 +37,27 @@ export const getNewCondition = (): PluginCondition => ({
     noteField: '',
     categoryField: '',
     recurrenceField: '',
+    backgroundEventField: '',
+    sortField: '',
   },
   editMode: 'simple',
+  slotDuration: DEFAULT_SLOT_DURATION,
+  scrollsToNow: true,
+  visibleViews: [],
+  enablesDragAndDrop: true,
+  confirmsReschedule: false,
+  preventsOverlap: false,
+  showsLegend: true,
+  enablesBackgroundEvent: false,
+  backgroundEventOption: '',
+  sortOrder: 'asc',
 });
 
 /**
  * プラグインの設定情報のひな形を返却します
  */
 export const createConfig = (): PluginConfig => ({
-  version: 6,
+  version: 7,
   common: {},
   conditions: [getNewCondition()],
 });
@@ -114,6 +127,31 @@ export const migrateConfig = (config: AnyPluginConfig): PluginConfig => {
         conditions: config.conditions.map((condition) => ({
           ...condition,
           editMode: 'simple',
+        })),
+      });
+    }
+    case 6: {
+      // 追加項目は、これまでの挙動が変わらない値で補完する
+      return migrateConfig({
+        version: 7,
+        common: {},
+        conditions: config.conditions.map((condition) => ({
+          ...condition,
+          calendarEvent: {
+            ...condition.calendarEvent,
+            backgroundEventField: '',
+            sortField: '',
+          },
+          slotDuration: DEFAULT_SLOT_DURATION,
+          scrollsToNow: false,
+          visibleViews: [],
+          enablesDragAndDrop: true,
+          confirmsReschedule: false,
+          preventsOverlap: false,
+          showsLegend: false,
+          enablesBackgroundEvent: false,
+          backgroundEventOption: '',
+          sortOrder: 'asc',
         })),
       });
     }
