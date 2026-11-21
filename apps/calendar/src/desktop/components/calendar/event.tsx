@@ -2,7 +2,9 @@ import { calendarDateInputToDateTime, getLoginUserTimezone } from '@/desktop/dat
 import { EventContentArg } from '@fullcalendar/core';
 
 export default function CalendarEvent(props: EventContentArg) {
-  const { allDay, backgroundColor, title } = props.event;
+  const { allDay, backgroundColor, extendedProps } = props.event;
+  // 表示用タイトルのフィールドが設定されている場合は、入力用のタイトルの代わりに表示する
+  const title: string = extendedProps.displayTitle || props.event.title;
   // FullCalendar invokes eventContent renderers via its own internal (preact-based)
   // ContentInjector, not through @fullcalendar/react's hook-aware bridge — React hooks
   // (e.g. useAtomValue) throw "Invalid hook call" here, so read the timezone directly.

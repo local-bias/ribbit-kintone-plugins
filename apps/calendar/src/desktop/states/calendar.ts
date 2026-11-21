@@ -30,6 +30,8 @@ import { extractErrorMessage } from '@/lib/error';
 export type PluginCalendarEvent = EventInput & {
   note?: string;
   category?: string;
+  /** カレンダー上に表示するタイトル(表示用タイトルのフィールドが設定されている場合のみ) */
+  displayTitle?: string;
   __quickSearch?: string;
   extendedProps?: {
     recurrence?: RecurrenceMeta;

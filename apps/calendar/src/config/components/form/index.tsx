@@ -13,6 +13,7 @@ import FormAllday from './form-allday';
 import FormCategory from './form-category';
 import FormColors from './form-colors';
 import DaysOfWeekForm from './form-days-of-week';
+import FormDisplayTitle from './form-display-title';
 import FormEditMode from './form-edit-mode';
 import FormInitialView from './form-initial-view';
 import FormNote from './form-note';
@@ -51,6 +52,14 @@ const Component: FC = () => (
         {t('config.section.scheduleTitle.description2')}
       </PluginFormDescription>
       <FormScheduleTitle />
+    </PluginFormSection>
+    <PluginFormSection>
+      <PluginFormTitle>{t('config.section.displayTitle.title')}</PluginFormTitle>
+      <PluginFormDescription>{t('config.section.displayTitle.description')}</PluginFormDescription>
+      <PluginFormDescription last>
+        {t('config.section.displayTitle.description2')}
+      </PluginFormDescription>
+      <FormDisplayTitle />
     </PluginFormSection>
     <PluginFormSection>
       <PluginFormTitle>{t('config.section.scheduleStart.title')}</PluginFormTitle>

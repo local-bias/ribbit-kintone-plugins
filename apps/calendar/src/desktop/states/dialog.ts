@@ -6,6 +6,7 @@ import { enqueueSnackbar } from 'notistack';
 import { SetStateAction } from 'react';
 import { addNewRecord, getEventColors, patchMasterException, reschedule } from '../actions';
 import { calendarEventsAtom, PluginCalendarEvent } from './calendar';
+import { refreshComputedValuesAtom } from './refresh';
 import { appPropertiesAtom, loadingAtom, pluginConditionAtom } from './kintone';
 
 export const dialogShownAtom = atom<boolean>(false);
@@ -80,6 +81,8 @@ export const handleDialogSubmitAtom = atom(null, async (get, set) => {
     const properties = await get(appPropertiesAtom);
 
     const calendarEvent = currentProps.event;
+    /** 保存したレコードのID(計算フィールド等の値を再取得するために使用する) */
+    let savedRecordId: string | undefined;
 
     if (currentProps.new) {
       const newEvent = await addNewRecord({
@@ -87,6 +90,7 @@ export const handleDialogSubmitAtom = atom(null, async (get, set) => {
         condition: condition!,
         properties,
       });
+      savedRecordId = newEvent.id;
       set(dialogPropsAtom, (current) =>
         produce(current, (draft) => {
           draft.event = newEvent;
@@ -123,6 +127,7 @@ export const handleDialogSubmitAtom = atom(null, async (get, set) => {
         condition: condition!,
         properties,
       });
+      savedRecordId = calendarEvent.id;
       // getCalendarEventFromKintoneRecord(読み込み時の変換)でしか色は計算されないため、
       // ここで明示的に計算しないとカテゴリー変更が次のリロードまで書式に反映されない。
       const updatedEvent = {
@@ -139,6 +144,10 @@ export const handleDialogSubmitAtom = atom(null, async (get, set) => {
 
     set(dialogShownAtom, false);
     set(dialogPropsAtom, { new: false, event: {} });
+
+    if (savedRecordId) {
+      await set(refreshComputedValuesAtom, savedRecordId);
+    }
   } catch (error) {
     console.error(error);
     enqueueSnackbar(t('desktop.error.recordSaveFailed', extractErrorMessage(error)), {

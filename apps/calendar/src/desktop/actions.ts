@@ -30,6 +30,9 @@ import {
   updateRecord,
 } from '@konomi-app/kintone-utilities';
 import { produce } from 'immer';
+import {
+  getDisplayTitle,
+} from './event-field-values';
 import { PluginCalendarEvent } from './states/calendar';
 
 const toCalendarFieldType = (
@@ -190,6 +193,14 @@ export const getCalendarEventFromKintoneRecord = async (params: {
       )
     : null;
 
+  const { displayTitleField } = condition.calendarEvent;
+  const displayTitle = getDisplayTitle({
+    record,
+    fieldCode: displayTitleField,
+    fieldExists: !!properties[displayTitleField],
+    noPermissionLabel: t('desktop.calendar.noPermission'),
+  });
+
   const calendarEvent: PluginCalendarEvent = {
     id: record.$id.value as string | undefined,
     start,
@@ -197,11 +208,13 @@ export const getCalendarEventFromKintoneRecord = async (params: {
     allDay,
     ...(recurrenceMeta ? { extendedProps: { recurrence: recurrenceMeta } } : {}),
     title: record[condition.calendarEvent.inputTitleField]?.value as string | undefined,
+    displayTitle,
     note: noteValue,
     category: record[condition.calendarEvent.categoryField]?.value as string | undefined,
     __quickSearch: getYuruChara(
       [
         record[condition.calendarEvent.inputTitleField]?.value,
+        displayTitle,
         noteValue,
         record[condition.calendarEvent.categoryField]?.value,
       ]

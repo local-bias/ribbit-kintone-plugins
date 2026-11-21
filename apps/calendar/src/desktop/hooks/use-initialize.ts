@@ -20,11 +20,9 @@ const handleRecordsInitializeAtom = atom(null, async (get, set, condition: Plugi
       condition.calendarEvent.noteField,
       condition.calendarEvent.endField,
       condition.calendarEvent.recurrenceField,
-    ].filter((field) => field);
-
-    if (condition.calendarEvent.categoryField) {
-      fields.push(condition.calendarEvent.categoryField);
-    }
+      condition.calendarEvent.categoryField,
+      condition.calendarEvent.displayTitleField,
+    ].filter((field, index, all) => field && all.indexOf(field) === index);
 
     const properties = await get(appPropertiesAtom);
 

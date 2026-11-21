@@ -112,3 +112,4 @@ export const calendarAllDayState = getCalendarEventAtom('allDayField');
 export const calendarNoteState = getCalendarEventAtom('noteField');
 export const calendarCategoryState = getCalendarEventAtom('categoryField');
 export const calendarRecurrenceState = getCalendarEventAtom('recurrenceField');
+export const calendarDisplayTitleState = getCalendarEventAtom('displayTitleField');

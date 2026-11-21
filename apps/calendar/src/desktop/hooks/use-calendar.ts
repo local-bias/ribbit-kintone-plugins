@@ -10,6 +10,7 @@ import { detailedDialogAtom, isDetailedModeAtom } from '../states/detailed-dialo
 import { dialogPropsAtom, dialogShownAtom } from '../states/dialog';
 import { appPropertiesAtom, loadingAtom, pluginConditionAtom } from '../states/kintone';
 import { openOccurrenceScopeDialogAtom } from '../states/recurrence';
+import { refreshComputedValuesAtom } from '../states/refresh';
 
 const handleCalendarEventDeleteAtom = atom(null, (get, set, props: EventRemoveArg) => {
   console.info('📅 イベントが削除されました', props);
@@ -98,6 +99,9 @@ const handleCalendarEventChangeAtom = atom(null, async (get, set, props: EventCh
       properties,
     });
     isDev && console.info('レコードを更新しました');
+    if (newEvent.id) {
+      await set(refreshComputedValuesAtom, newEvent.id);
+    }
   } catch (error) {
     console.error(error);
     enqueueSnackbar(t('desktop.error.recordUpdateFailed', extractErrorMessage(error)), {

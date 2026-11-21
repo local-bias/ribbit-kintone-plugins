@@ -210,6 +210,15 @@ const ui = mergeDeep(commonUi, {
     'config.footer.backToPluginList': 'プラグイン一覧へ戻る',
     'config.footer.backToPluginListShort': 'プラグイン一覧に戻る',
 
+    // Desktop/Config - Calendar features
+    'desktop.calendar.noPermission': '（アクセス権がありません）',
+    'config.form.displayTitleField': '表示用タイトルのフィールド',
+    'config.section.displayTitle.title': '表示用タイトル（任意）',
+    'config.section.displayTitle.description':
+      'カレンダー上に、スケジュールのタイトルの代わりに表示するフィールドを選択してください。未設定の場合はスケジュールのタイトルを表示します',
+    'config.section.displayTitle.description2':
+      '計算フィールドなどで、複数の項目を組み合わせたタイトルを表示したい場合に使用します。カレンダーから入力・変更されるのは、スケジュールのタイトルのフィールドです',
+
     // Common - Weekdays
     'common.weekday.sunday': '日曜日',
     'common.weekday.monday': '月曜日',
@@ -430,6 +439,15 @@ const ui = mergeDeep(commonUi, {
     'config.footer.save': 'Save settings',
     'config.footer.backToPluginList': 'Back to plugin list',
     'config.footer.backToPluginListShort': 'Back to plugin list',
+
+    // Desktop/Config - Calendar features
+    'desktop.calendar.noPermission': '(No access permission)',
+    'config.form.displayTitleField': 'Display title field',
+    'config.section.displayTitle.title': 'Display title (optional)',
+    'config.section.displayTitle.description':
+      'Select a field to display on the calendar instead of the event title. If not set, the event title is displayed.',
+    'config.section.displayTitle.description2':
+      'Use this to show a title that combines several values, e.g. with a calculated field. Input from the calendar is still saved to the event title field.',
 
     // Common - Weekdays
     'common.weekday.sunday': 'Sunday',
@@ -654,6 +672,15 @@ const ui = mergeDeep(commonUi, {
     'config.footer.backToPluginList': 'Volver a lista de plugins',
     'config.footer.backToPluginListShort': 'Volver a lista de plugins',
 
+    // Desktop/Config - Calendar features
+    'desktop.calendar.noPermission': '(Sin permiso de acceso)',
+    'config.form.displayTitleField': 'Campo del título mostrado',
+    'config.section.displayTitle.title': 'Título mostrado (opcional)',
+    'config.section.displayTitle.description':
+      'Seleccione un campo para mostrar en el calendario en lugar del título del evento. Si no se establece, se muestra el título del evento.',
+    'config.section.displayTitle.description2':
+      'Úselo para mostrar un título que combine varios valores, por ejemplo con un campo calculado. Lo que se introduce desde el calendario se guarda en el campo del título del evento.',
+
     // Common - Weekdays
     'common.weekday.sunday': 'Domingo',
     'common.weekday.monday': 'Lunes',
@@ -857,6 +884,15 @@ const ui = mergeDeep(commonUi, {
     'config.footer.backToPluginList': '返回插件列表',
     'config.footer.backToPluginListShort': '返回插件列表',
 
+    // Desktop/Config - Calendar features
+    'desktop.calendar.noPermission': '（无访问权限）',
+    'config.form.displayTitleField': '显示标题字段',
+    'config.section.displayTitle.title': '显示标题（可选）',
+    'config.section.displayTitle.description':
+      '请选择在日历上代替日程标题显示的字段。未设置时显示日程标题',
+    'config.section.displayTitle.description2':
+      '用于显示组合多个项目的标题（如计算字段）。从日历输入的内容仍保存到日程标题字段',
+
     // Common - Weekdays
     'common.weekday.sunday': '星期日',
     'common.weekday.monday': '星期一',
@@ -1059,6 +1095,15 @@ const ui = mergeDeep(commonUi, {
     'config.footer.save': '儲存設定',
     'config.footer.backToPluginList': '返回外掛列表',
     'config.footer.backToPluginListShort': '返回外掛列表',
+
+    // Desktop/Config - Calendar features
+    'desktop.calendar.noPermission': '（無存取權限）',
+    'config.form.displayTitleField': '顯示標題欄位',
+    'config.section.displayTitle.title': '顯示標題（選填）',
+    'config.section.displayTitle.description':
+      '請選擇在行事曆上代替行程標題顯示的欄位。未設定時顯示行程標題',
+    'config.section.displayTitle.description2':
+      '用於顯示組合多個項目的標題（如計算欄位）。從行事曆輸入的內容仍儲存到行程標題欄位',
 
     // Common - Weekdays
     'common.weekday.sunday': '星期日',

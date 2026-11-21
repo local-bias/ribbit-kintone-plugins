@@ -67,6 +67,26 @@ export const recurrenceFieldsAtom = eagerAtom((get) => {
   )[];
 });
 
+/**
+ * カレンダーに表示するタイトルとして使用できるフィールド
+ *
+ * 計算フィールドなど、カレンダーから入力はできないが表示に使いたいフィールドも含める
+ */
+export const displayTitleFieldsAtom = eagerAtom((get) => {
+  const fields = get(appFieldsAtom);
+  const types: kintoneAPI.FieldPropertyType[] = [
+    'SINGLE_LINE_TEXT',
+    'MULTI_LINE_TEXT',
+    'RICH_TEXT',
+    'CALC',
+    'NUMBER',
+    'DROP_DOWN',
+    'RADIO_BUTTON',
+    'LINK',
+  ];
+  return fields.filter((field) => types.includes(field.type));
+});
+
 export const checkboxFieldsAtom = eagerAtom((get) => {
   const fields = get(appFieldsAtom);
   return fields.filter((field) => field.type === 'CHECK_BOX') as kintoneAPI.property.CheckBox[];
