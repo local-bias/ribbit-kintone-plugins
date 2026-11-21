@@ -48,6 +48,8 @@ export default function CalendarSidebar() {
       <div className='rad:sticky rad:top-12 rad:min-h-[calc(100svh-240px)]'>
         <div className='rad:overflow-hidden'>
           <div
+            // 閉じている間は、見えない絞り込みのボタンにキーボードでフォーカスが移らないようにする
+            inert={!expanded}
             className={cn('rad:w-64 rad:p-4 rad:transition-opacity rad:duration-150', {
               'rad:opacity-0 rad:pointer-events-none': !expanded,
             })}

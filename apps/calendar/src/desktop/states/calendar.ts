@@ -1,10 +1,11 @@
 import {
   applyRecurrenceMetaToEventInput,
   hasRecurrenceExpansion,
-  RecurrenceMeta,
+  type RecurrenceMeta,
 } from '@/desktop/recurrence';
+import { type Assignee, isShownForAssignees } from '@/desktop/assignee';
 import { isDev } from '@/lib/global';
-import { DateSelectArg, EventInput } from '@fullcalendar/core';
+import type { DateSelectArg, EventInput } from '@fullcalendar/core';
 import { getYuruChara } from '@konomi-app/kintone-utilities';
 import { produce } from 'immer';
 import { atom } from 'jotai';
@@ -19,9 +20,9 @@ import { isDetailedModeAtom, openDetailedCreateDialogAtom } from './detailed-dia
 import { dialogPropsAtom, dialogShownAtom } from './dialog';
 import { loginUserAtom } from './kintone';
 import { isTimeSupportedAtom } from './plugin';
-import { displayingCategoriesAtom } from './sidebar';
-import { ComponentRef } from 'react';
-import FullCalendar from '@fullcalendar/react';
+import { displayingAssigneesAtom, displayingCategoriesAtom } from './sidebar';
+import type { ComponentRef } from 'react';
+import type FullCalendar from '@fullcalendar/react';
 
 export type PluginCalendarEvent = EventInput & {
   note?: string;
@@ -32,6 +33,13 @@ export type PluginCalendarEvent = EventInput & {
   sortValue?: string | number | null;
   /** 背景イベント判定用のチェックボックスで選択されている値(他の選択肢を保持するため) */
   backgroundFieldValues?: string[];
+  /**
+   * 予定の担当者(サイドバーの絞り込みに使用する)
+   *
+   * `[]`は担当者なし、`undefined`は担当者のフィールドが未設定、または保存前・保存直後で
+   * まだ取得していないことを表す(取得していない予定は絞り込みの対象外として常に表示する)
+   */
+  assignees?: Assignee[];
   __quickSearch?: string;
   extendedProps?: {
     recurrence?: RecurrenceMeta;
@@ -62,8 +70,17 @@ export const categoryFilteredCalendarEventsAtom = atom<PluginCalendarEvent[]>((g
   return allEvents.filter((event) => !event.category || categories.includes(event.category));
 });
 
+/** カテゴリーで絞り込んだ予定を、さらに担当者で絞り込む(カテゴリーと担当者はAND条件) */
+export const assigneeFilteredCalendarEventsAtom = atom<PluginCalendarEvent[]>((get) => {
+  const events = get(categoryFilteredCalendarEventsAtom);
+  const displaying = get(displayingAssigneesAtom);
+  return displaying === null
+    ? events
+    : events.filter((event) => isShownForAssignees(event, displaying));
+});
+
 export const textFilteredCalendarEventsAtom = atom<PluginCalendarEvent[]>((get) => {
-  const allEvents = get(categoryFilteredCalendarEventsAtom);
+  const allEvents = get(assigneeFilteredCalendarEventsAtom);
   const searchInput = get(searchInputAtom);
 
   if (!searchInput) {

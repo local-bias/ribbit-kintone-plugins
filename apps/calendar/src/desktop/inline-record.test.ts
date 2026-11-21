@@ -37,6 +37,7 @@ const condition = {
     recurrenceField: 'recurrence',
     backgroundEventField: '',
     sortField: '',
+    assigneeField: '',
   },
   id: 'condition-1',
   daysOfWeek: [1, 2, 3, 4, 5] as const,
@@ -56,7 +57,7 @@ const condition = {
 };
 
 const storedConfig: AnyPluginConfig = {
-  version: 7,
+  version: 8,
   common: {},
   conditions: [condition],
 };

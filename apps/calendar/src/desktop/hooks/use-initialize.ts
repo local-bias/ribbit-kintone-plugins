@@ -1,5 +1,5 @@
 import { GUEST_SPACE_ID } from '@/lib/global';
-import { PluginCondition } from '@/schema/plugin-config';
+import type { PluginCondition } from '@/schema/plugin-config';
 import { getAllRecordsWithId, getAppId, getQueryCondition } from '@konomi-app/kintone-utilities';
 import { atom, useAtomValue, useSetAtom } from 'jotai';
 import { useEffect } from 'react';
@@ -24,6 +24,7 @@ const handleRecordsInitializeAtom = atom(null, async (get, set, condition: Plugi
       condition.calendarEvent.displayTitleField,
       condition.calendarEvent.sortField,
       condition.enablesBackgroundEvent ? condition.calendarEvent.backgroundEventField : '',
+      condition.calendarEvent.assigneeField,
     ].filter((field, index, all) => field && all.indexOf(field) === index);
 
     const properties = await get(appPropertiesAtom);

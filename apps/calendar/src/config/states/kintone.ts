@@ -1,6 +1,6 @@
 import { GUEST_SPACE_ID } from '@/lib/global';
 import { t } from '@/lib/i18n-plugin';
-import { getAppId, getFormFields, kintoneAPI } from '@konomi-app/kintone-utilities';
+import { getAppId, getFormFields, type kintoneAPI } from '@konomi-app/kintone-utilities';
 import { atom } from 'jotai';
 import { eagerAtom } from 'jotai-eager';
 import { calendarAllDayState, calendarBackgroundEventState } from './plugin';
@@ -99,6 +99,32 @@ export const sortableFieldsAtom = eagerAtom((get) => {
     'DATE',
     'DATETIME',
     'TIME',
+  ];
+  return fields.filter((field) => types.includes(field.type));
+});
+
+/**
+ * 予定の担当者として使用できるフィールド
+ *
+ * ユーザー系のフィールドに限らず、会議室や車両などの値で絞り込めるよう選択肢・文字列のフィールドも含める
+ */
+export const assigneeFieldsAtom = eagerAtom((get) => {
+  const fields = get(appFieldsAtom);
+  const types: kintoneAPI.FieldPropertyType[] = [
+    'USER_SELECT',
+    'CREATOR',
+    'MODIFIER',
+    'STATUS_ASSIGNEE',
+    'ORGANIZATION_SELECT',
+    'GROUP_SELECT',
+    'DROP_DOWN',
+    'RADIO_BUTTON',
+    'CHECK_BOX',
+    'MULTI_SELECT',
+    'SINGLE_LINE_TEXT',
+    'NUMBER',
+    'CALC',
+    'STATUS',
   ];
   return fields.filter((field) => types.includes(field.type));
 });

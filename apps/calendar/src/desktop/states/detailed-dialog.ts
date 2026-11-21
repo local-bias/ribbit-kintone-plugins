@@ -13,6 +13,7 @@ import { atom } from 'jotai';
 import { enqueueSnackbar } from 'notistack';
 import { calendarEventsAtom, PluginCalendarEvent } from './calendar';
 import { appPropertiesAtom, loadingAtom, pluginConditionAtom } from './kintone';
+import { refreshComputedValuesAtom } from './refresh';
 
 export type DetailedDialogState =
   | {
@@ -147,6 +148,10 @@ export const handleDetailedDialogClosedAtom = atom(
               if (index !== -1) draft[index] = updatedMaster;
             })
           );
+          // 更新者などkintoneが決める値を担当者等に使っている場合に備え、更新したマスターを再取得する
+          if (updatedMaster.id) {
+            await set(refreshComputedValuesAtom, updatedMaster.id);
+          }
         }
       } else {
         await set(reflectSavedRecordAtom, state.recordId);

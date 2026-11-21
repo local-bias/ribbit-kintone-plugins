@@ -1,10 +1,10 @@
 import { DEFAULT_COLORS } from '@/desktop/static';
 import { DEFAULT_SLOT_DURATION } from '@/schema/calendar';
 import {
-  AnyPluginConfig,
+  type AnyPluginConfig,
   LatestPluginConditionSchema,
-  PluginCondition,
-  PluginConfig,
+  type PluginCondition,
+  type PluginConfig,
 } from '@/schema/plugin-config';
 import { restorePluginConfig as restoreStorage } from '@konomi-app/kintone-utilities';
 import { produce } from 'immer';
@@ -39,6 +39,7 @@ export const getNewCondition = (): PluginCondition => ({
     recurrenceField: '',
     backgroundEventField: '',
     sortField: '',
+    assigneeField: '',
   },
   editMode: 'simple',
   slotDuration: DEFAULT_SLOT_DURATION,
@@ -57,7 +58,7 @@ export const getNewCondition = (): PluginCondition => ({
  * プラグインの設定情報のひな形を返却します
  */
 export const createConfig = (): PluginConfig => ({
-  version: 7,
+  version: 8,
   common: {},
   conditions: [getNewCondition()],
 });
@@ -152,6 +153,16 @@ export const migrateConfig = (config: AnyPluginConfig): PluginConfig => {
           enablesBackgroundEvent: false,
           backgroundEventOption: '',
           sortOrder: 'asc',
+        })),
+      });
+    }
+    case 7: {
+      return migrateConfig({
+        version: 8,
+        common: {},
+        conditions: config.conditions.map((condition) => ({
+          ...condition,
+          calendarEvent: { ...condition.calendarEvent, assigneeField: '' },
         })),
       });
     }

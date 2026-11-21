@@ -1,7 +1,7 @@
 import {
   calendarDateInputToDateTime,
   calendarEventDatesToKintone,
-  CalendarFieldType,
+  type CalendarFieldType,
   calendarRangeToAllDay,
   dateTimeToCalendarValue,
   getDefaultAllDayRange as getDefaultAllDayRangeInZone,
@@ -13,20 +13,20 @@ import {
 import {
   applyRecurrenceMetaToEventInput,
   parseRecurrenceMeta,
-  RecurrenceMasterMeta,
+  type RecurrenceMasterMeta,
   serializeRecurrenceMeta,
 } from '@/desktop/recurrence';
 import { GUEST_SPACE_ID } from '@/lib/global';
 import { htmlToMarkdown, markdownToHtml } from '@/lib/html-markdown-converter';
 import { t } from '@/lib/i18n-plugin';
 import { getSortedOptions } from '@/lib/utils';
-import { PluginCondition } from '@/schema/plugin-config';
+import type { PluginCondition } from '@/schema/plugin-config';
 import {
   addRecord,
-  AddRecordParams,
+  type AddRecordParams,
   getAppId,
   getYuruChara,
-  kintoneAPI,
+  type kintoneAPI,
   updateRecord,
 } from '@konomi-app/kintone-utilities';
 import { produce } from 'immer';
@@ -36,7 +36,8 @@ import {
   isBackgroundEventAvailable,
   isBackgroundRecord,
 } from './event-field-values';
-import { PluginCalendarEvent } from './states/calendar';
+import { extractAssignees } from './assignee';
+import type { PluginCalendarEvent } from './states/calendar';
 
 const toCalendarFieldType = (
   property: kintoneAPI.FieldProperty | undefined
@@ -232,6 +233,10 @@ export const getCalendarEventFromKintoneRecord = async (params: {
     ? record[backgroundEventField]?.value
     : undefined;
 
+  const assigneeField = condition.calendarEvent.assigneeField;
+  // 担当者のフィールドが設定されていない場合は、担当者による絞り込みの対象外(undefined)とする
+  const assignees = assigneeField ? extractAssignees(record[assigneeField]) : undefined;
+
   const calendarEvent: PluginCalendarEvent = {
     id: record.$id.value as string | undefined,
     start,
@@ -247,12 +252,14 @@ export const getCalendarEventFromKintoneRecord = async (params: {
     sortValue: getSortValue({ record, fieldCode: sortField, property: properties[sortField] }),
     note: noteValue,
     category: record[condition.calendarEvent.categoryField]?.value as string | undefined,
+    assignees,
     __quickSearch: getYuruChara(
       [
         record[condition.calendarEvent.inputTitleField]?.value,
         displayTitle,
         noteValue,
         record[condition.calendarEvent.categoryField]?.value,
+        ...(assignees ?? []).map(({ label }) => label),
       ]
         .filter(Boolean)
         .join('_$$_')
@@ -346,6 +353,8 @@ export const buildOverrideDraftEvent = (params: {
   return {
     ...master,
     id: undefined,
+    // 担当者はkintoneが新しいレコードに対して決める値の場合があるため、保存後に再取得する
+    assignees: undefined,
     start: occurrenceStart,
     end: occurrenceEnd,
     extendedProps: {

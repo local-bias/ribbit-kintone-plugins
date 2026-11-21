@@ -2,8 +2,8 @@ import { GUEST_SPACE_ID } from '@/lib/global';
 import { isBackgroundEventAvailable } from '@/desktop/event-field-values';
 import { PREDEFINED_FIELDS } from '@/lib/kintone-rest-api';
 import { getSortedOptions } from '@/lib/utils';
-import { PluginCondition } from '@/schema/plugin-config';
-import { getAppId, getFormFields, kintoneAPI } from '@konomi-app/kintone-utilities';
+import type { PluginCondition } from '@/schema/plugin-config';
+import { getAppId, getFormFields, type kintoneAPI } from '@konomi-app/kintone-utilities';
 import { atom } from 'jotai';
 import { eagerAtom } from 'jotai-eager';
 
@@ -31,12 +31,18 @@ export const richTextModeAtom = eagerAtom((get) => {
   return memoFieldProperty.type === 'RICH_TEXT';
 });
 
-export const appPropertiesAtom = atom<Promise<kintoneAPI.FieldProperties>>(async () => {
+/** アプリのすべてのフィールド(作成者・更新者などkintoneが初期状態で持つフィールドを含む) */
+const allAppPropertiesAtom = atom<Promise<kintoneAPI.FieldProperties>>(async () => {
   const { properties } = await getFormFields({
     app: getAppId()!,
     guestSpaceId: GUEST_SPACE_ID,
     debug: process.env.NODE_ENV === 'development',
   });
+  return properties;
+});
+
+export const appPropertiesAtom = atom<Promise<kintoneAPI.FieldProperties>>(async (get) => {
+  const properties = await get(allAppPropertiesAtom);
 
   const filtered = Object.entries(properties).reduce<kintoneAPI.FieldProperties>(
     (acc, [key, property]) => {
@@ -108,4 +114,13 @@ export const isBackgroundEventAvailableAtom = eagerAtom((get) => {
     backgroundEventOption: condition.backgroundEventOption,
     property: properties[condition.calendarEvent.backgroundEventField],
   });
+});
+
+/** 担当者として設定されたフィールド(作成者・更新者・作業者も指定できるため、すべてのフィールドから探す) */
+export const assigneeFieldPropertyAtom = eagerAtom((get) => {
+  const fieldCode = get(pluginConditionAtom)?.calendarEvent.assigneeField;
+  if (!fieldCode) {
+    return null;
+  }
+  return get(allAppPropertiesAtom)[fieldCode] ?? null;
 });

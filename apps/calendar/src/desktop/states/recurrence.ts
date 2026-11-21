@@ -14,6 +14,7 @@ import {
 } from './detailed-dialog';
 import { dialogPropsAtom, dialogShownAtom } from './dialog';
 import { appPropertiesAtom, loadingAtom, pluginConditionAtom } from './kintone';
+import { refreshComputedValuesAtom } from './refresh';
 
 export type OccurrenceContext = {
   master: PluginCalendarEvent;
@@ -126,6 +127,10 @@ export const handleDeleteSingleOccurrenceAtom = atom(null, async (get, set) => {
           if (index !== -1) draft[index] = updatedMaster;
         })
       );
+      // 更新者などkintoneが決める値を担当者等に使っている場合に備え、更新したマスターを再取得する
+      if (updatedMaster.id) {
+        await set(refreshComputedValuesAtom, updatedMaster.id);
+      }
     }
 
     enqueueSnackbar(t('desktop.toast.recordDeleted'), { variant: 'success' });
@@ -168,7 +173,9 @@ export const handleDeleteSeriesAtom = atom(null, async (get, set) => {
       debug: process.env.NODE_ENV === 'development',
     });
 
-    set(calendarEventsAtom, (current) => current.filter((event) => !idsToDelete.includes(event.id!)));
+    set(calendarEventsAtom, (current) =>
+      current.filter((event) => !idsToDelete.includes(event.id!))
+    );
     enqueueSnackbar(t('desktop.toast.recordDeleted'), { variant: 'success' });
   } catch (error) {
     console.error(error);

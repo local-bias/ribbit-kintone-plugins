@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+import SidebarAssignees from './assignees';
 import Categories from './categories';
 import SidebarSearchInput from './search-input';
 import SidebarDatePicker from './date-picker';
@@ -17,6 +18,7 @@ export default function SidebarContent() {
           <Categories />
         </Suspense>
       </div>
+      <SidebarAssignees />
     </div>
   );
 }

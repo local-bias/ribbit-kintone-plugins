@@ -13,10 +13,11 @@ import {
   PluginFormSection,
   PluginFormTitle,
 } from '@konomi-app/kintone-utilities-react';
-import { FC } from 'react';
+import type { FC } from 'react';
 import DeleteButton from './condition-delete-button';
 import CreateNewView from './create-new-view';
 import FormAllday from './form-allday';
+import FormAssignee from './form-assignee';
 import FormBackgroundEvent from './form-background-event';
 import FormCategory from './form-category';
 import FormColors from './form-colors';
@@ -182,6 +183,14 @@ const Component: FC = () => (
         </PluginFormDescription>
         <FormCategory />
         <JotaiSwitch atom={showsLegendState} label={t('config.form.showsLegend')} />
+      </PluginFormSection>
+      <PluginFormSection>
+        <PluginFormTitle>{t('config.section.assignee.title')}</PluginFormTitle>
+        <PluginFormDescription>{t('config.section.assignee.description')}</PluginFormDescription>
+        <PluginFormDescription last>
+          {t('config.section.assignee.description2')}
+        </PluginFormDescription>
+        <FormAssignee />
       </PluginFormSection>
       <PluginFormSection>
         <PluginFormTitle>{t('config.section.colors.title')}</PluginFormTitle>

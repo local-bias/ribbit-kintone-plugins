@@ -45,7 +45,7 @@ describe('migrateConfig', () => {
 
     const migrated = migrateConfig(v1);
 
-    expect(migrated.version).toBe(7);
+    expect(migrated.version).toBe(8);
     for (const condition of migrated.conditions) {
       expect(condition.editMode).toBe('simple');
     }
@@ -85,11 +85,11 @@ describe('migrateConfig', () => {
 
     const migrated = migrateConfig(v5);
 
-    expect(migrated.version).toBe(7);
+    expect(migrated.version).toBe(8);
     expect(migrated.conditions[0]!.editMode).toBe('simple');
   });
 
-  it('migrates a V6 config to V7 without changing the existing behavior', () => {
+  it('migrates a V6 config to the latest version without changing the existing behavior', () => {
     const v6: AnyPluginConfig = {
       version: 6,
       common: {},
@@ -125,7 +125,7 @@ describe('migrateConfig', () => {
     const migrated = migrateConfig(v6);
     const condition = migrated.conditions[0]!;
 
-    expect(migrated.version).toBe(7);
+    expect(migrated.version).toBe(8);
     expect(() => validateCondition(condition)).not.toThrow();
     // 既存の設定値は維持される
     expect(condition.editMode).toBe('detailed');
@@ -143,6 +143,7 @@ describe('migrateConfig', () => {
     expect(condition.sortOrder).toBe('asc');
     expect(condition.calendarEvent.backgroundEventField).toBe('');
     expect(condition.calendarEvent.sortField).toBe('');
+    expect(condition.calendarEvent.assigneeField).toBe('');
   });
 
   it('leaves an already-latest config untouched', () => {
@@ -151,10 +152,19 @@ describe('migrateConfig', () => {
   });
 });
 
+describe('migrateConfig (V7)', () => {
+  it('migrates a V7 config to V8 with the assignee filter disabled', () => {
+    const v7 = { ...createConfig(), version: 7 } as unknown as AnyPluginConfig;
+    const migrated = migrateConfig(v7);
+    expect(migrated.version).toBe(8);
+    expect(migrated.conditions[0]!.calendarEvent.assigneeField).toBe('');
+  });
+});
+
 describe('createConfig / getNewCondition', () => {
-  it('creates a V7 config template with a valid new condition', () => {
+  it('creates a V8 config template with a valid new condition', () => {
     const config = createConfig();
-    expect(config.version).toBe(7);
+    expect(config.version).toBe(8);
     expect(() => validateCondition(getNewCondition())).not.toThrow();
     expect(getNewCondition().editMode).toBe('simple');
   });

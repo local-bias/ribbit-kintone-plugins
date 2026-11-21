@@ -1,9 +1,9 @@
 import { restorePluginConfig } from '@/lib/plugin';
-import { PluginCondition, PluginConfig } from '@/schema/plugin-config';
+import type { PluginCondition, PluginConfig } from '@/schema/plugin-config';
 import { produce } from 'immer';
 import { atom } from 'jotai';
 import { atomWithDefault } from 'jotai/utils';
-import { SetStateAction } from 'react';
+import type { SetStateAction } from 'react';
 
 export const pluginConfigAtom = atom<PluginConfig>(restorePluginConfig());
 
@@ -125,3 +125,4 @@ export const calendarRecurrenceState = getCalendarEventAtom('recurrenceField');
 export const calendarDisplayTitleState = getCalendarEventAtom('displayTitleField');
 export const calendarBackgroundEventState = getCalendarEventAtom('backgroundEventField');
 export const calendarSortState = getCalendarEventAtom('sortField');
+export const calendarAssigneeState = getCalendarEventAtom('assigneeField');

@@ -120,6 +120,10 @@ export const handleDialogSubmitAtom = atom(null, async (get, set) => {
             if (index !== -1) draft[index] = updatedMaster;
           })
         );
+        // 更新者などkintoneが決める値を担当者等に使っている場合に備え、更新したマスターを再取得する
+        if (updatedMaster.id) {
+          await set(refreshComputedValuesAtom, updatedMaster.id);
+        }
       }
     } else {
       await reschedule({

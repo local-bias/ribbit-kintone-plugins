@@ -6,7 +6,7 @@ import { calendarEventsAtom } from './calendar';
 import { appPropertiesAtom, pluginConditionAtom } from './kintone';
 
 /**
- * 表示用タイトルや並び順のように、kintone側で計算される値を使用している場合は、
+ * 表示用タイトル・並び順・担当者のように、kintone側で決まる値を使用している場合は、
  * 保存後のレコードを再取得してカレンダーの表示に反映します
  *
  * 保存自体は完了しているため、再取得に失敗しても操作は失敗扱いにせず、表示中の予定もそのまま残す
@@ -17,8 +17,10 @@ export const refreshComputedValuesAtom = atom(null, async (get, set, recordId: s
   if (!condition) {
     return;
   }
-  const { displayTitleField, sortField } = condition.calendarEvent;
-  if (!displayTitleField && !sortField) {
+  // 表示用タイトル・並び順・担当者は、計算フィールドや作成者・更新者のようにkintone側で決まる値の
+  // 場合があるため、いずれかが設定されていれば保存後のレコードを再取得する
+  const { displayTitleField, sortField, assigneeField } = condition.calendarEvent;
+  if (!displayTitleField && !sortField && !assigneeField) {
     return;
   }
 

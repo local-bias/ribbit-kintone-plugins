@@ -207,6 +207,14 @@ describe('isBackgroundEventAvailable', () => {
 });
 
 describe('buildCopiedEvent', () => {
+  it('does not carry over the assignees, which kintone decides for the new record', () => {
+    const copied = buildCopiedEvent(
+      { id: '1', title: '会議', assignees: [{ key: 'a', label: 'A', isUser: true }] },
+      ''
+    );
+    expect(copied.assignees).toBeUndefined();
+  });
+
   it('drops the record id and appends the suffix to the title', () => {
     const copied = buildCopiedEvent({ id: '1', title: '会議', note: 'memo' }, ' (copy)');
     expect(copied.id).toBeUndefined();

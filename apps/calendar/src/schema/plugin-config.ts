@@ -256,9 +256,28 @@ export const PluginConfigV7Schema = z.object({
   conditions: z.array(PluginConditionV7Schema),
 });
 
-export const LatestPluginConditionSchema = PluginConditionV7Schema;
+const PluginCalendarEventV8Schema = PluginCalendarEventV7Schema.extend({
+  // ------ 追加 ------
+  /**
+   * 予定の担当者として扱うフィールド(未指定の場合は担当者による絞り込みを行わない)
+   *
+   * カテゴリーとは別の軸として、サイドバーで絞り込むために使用する。
+   * ユーザー系のフィールドの場合はアバターを表示する
+   */
+  assigneeField: z.string(),
+});
+export const PluginConditionV8Schema = PluginConditionV7Schema.extend({
+  calendarEvent: PluginCalendarEventV8Schema,
+});
+export const PluginConfigV8Schema = z.object({
+  version: z.literal(8),
+  common: z.object({}),
+  conditions: z.array(PluginConditionV8Schema),
+});
 
-export type PluginConfig = z.infer<typeof PluginConfigV7Schema>;
+export const LatestPluginConditionSchema = PluginConditionV8Schema;
+
+export type PluginConfig = z.infer<typeof PluginConfigV8Schema>;
 export type PluginCommonConfig = PluginConfig['common'];
 export type PluginCondition = PluginConfig['conditions'][number];
 
@@ -270,6 +289,7 @@ export const AnyPluginConfigSchema = z.discriminatedUnion('version', [
   PluginConfigV5Schema,
   PluginConfigV6Schema,
   PluginConfigV7Schema,
+  PluginConfigV8Schema,
 ]);
 
 export type AnyPluginConfig = z.infer<typeof AnyPluginConfigSchema>;

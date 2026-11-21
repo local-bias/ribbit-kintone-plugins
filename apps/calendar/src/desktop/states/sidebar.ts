@@ -1,6 +1,7 @@
 import { LOCAL_STORAGE_KEY } from '@/lib/static';
 import { atom } from 'jotai';
 import { atomWithStorage } from 'jotai/utils';
+import type { AssigneeFilter } from '@/desktop/assignee';
 import { calendarEventCategoryAtom } from './kintone';
 
 export const sidebarExpandedAtom = atomWithStorage<boolean>(
@@ -25,3 +26,10 @@ export const toggleDisplayingCategoryAtom = atom(null, async (get, set, category
     return [...newArray, category];
   });
 });
+
+/**
+ * 担当者による絞り込みの条件(`null`の場合は担当者で絞り込まない)
+ *
+ * @see AssigneeFilter
+ */
+export const displayingAssigneesAtom = atom<AssigneeFilter | null>(null);

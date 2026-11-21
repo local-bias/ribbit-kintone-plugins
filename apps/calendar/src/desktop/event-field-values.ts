@@ -152,12 +152,15 @@ export const isBackgroundRecord = (params: {
  *
  * - 繰り返し予定(シリーズ)の複製では、元のシリーズで分離・削除済みの回の情報は引き継がない
  * - 「この回のみ」として分離された予定の複製は、元のシリーズとは無関係な単発の予定にする
+ * - 担当者は引き継がない(保存後に再取得する)
  */
 export const buildCopiedEvent = (
   event: PluginCalendarEvent,
   titleSuffix: string
 ): PluginCalendarEvent => {
-  const { extendedProps, ...rest } = event;
+  // 担当者は作成者などkintoneが新しいレコードに対して決める値の場合があるため、引き継がずに
+  // 未取得(undefined)とし、保存後の再取得で確定させる
+  const { extendedProps, assignees: _assignees, ...rest } = event;
   const recurrence = extendedProps?.recurrence;
   const { recurrence: _, ...otherExtendedProps } = extendedProps ?? {};
 
