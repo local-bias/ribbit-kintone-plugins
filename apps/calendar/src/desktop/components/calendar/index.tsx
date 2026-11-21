@@ -1,4 +1,5 @@
 import {
+  buildEventOrder,
   buildViewButtons,
   isDayViewSelectable,
   getScrollTimeAroundNow,
@@ -77,6 +78,14 @@ function FullCalendarRoot() {
     () => resolveFirstDay(pluginCondition?.firstDay ?? 0, loginUser.timezone),
     [pluginCondition?.firstDay, loginUser.timezone]
   );
+  const eventOrder = useMemo(
+    () =>
+      buildEventOrder({
+        sortField: pluginCondition?.calendarEvent.sortField ?? '',
+        sortOrder: pluginCondition?.sortOrder ?? 'asc',
+      }),
+    [pluginCondition?.calendarEvent.sortField, pluginCondition?.sortOrder]
+  );
   const viewButtons = buildViewButtons(visibleViews);
   const preventsOverlap = !!pluginCondition?.preventsOverlap;
   // 日表示に切り替えられない設定では、日付のクリックで日表示へ移動させない(戻れなくなるため)
@@ -147,6 +156,9 @@ function FullCalendarRoot() {
       editable={pluginCondition?.enablesDragAndDrop ?? true}
       eventOverlap={preventsOverlap ? allowsOverlapWith : true}
       selectOverlap={preventsOverlap ? allowsOverlapWith : true}
+      // FullCalendarは実行時に文字列と比較関数が混在した配列を受け付けるが、型定義は
+      // 「文字列のみ」か「関数のみ」の配列しか表現できないため、ここでのみ型を合わせる
+      eventOrder={eventOrder as string[]}
       selectable
       selectMirror
       slotMinTime={getSlotTime(slotMinTime)}

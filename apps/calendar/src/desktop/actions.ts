@@ -32,6 +32,7 @@ import {
 import { produce } from 'immer';
 import {
   getDisplayTitle,
+  getSortValue,
   isBackgroundEventAvailable,
   isBackgroundRecord,
 } from './event-field-values';
@@ -213,7 +214,7 @@ export const getCalendarEventFromKintoneRecord = async (params: {
       )
     : null;
 
-  const { displayTitleField, backgroundEventField } = condition.calendarEvent;
+  const { displayTitleField, sortField, backgroundEventField } = condition.calendarEvent;
   const displayTitle = getDisplayTitle({
     record,
     fieldCode: displayTitleField,
@@ -243,6 +244,7 @@ export const getCalendarEventFromKintoneRecord = async (params: {
       : {}),
     title: record[condition.calendarEvent.inputTitleField]?.value as string | undefined,
     displayTitle,
+    sortValue: getSortValue({ record, fieldCode: sortField, property: properties[sortField] }),
     note: noteValue,
     category: record[condition.calendarEvent.categoryField]?.value as string | undefined,
     __quickSearch: getYuruChara(

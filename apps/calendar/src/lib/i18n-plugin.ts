@@ -240,6 +240,9 @@ const ui = mergeDeep(commonUi, {
     'config.form.showsLegend': 'カレンダーの上部にカテゴリーの凡例を表示する',
     'config.form.backgroundEventValue': '背景イベントとする値',
     'config.form.backgroundEventValueRequired': '背景イベントとする値を選択してください',
+    'config.form.sortOrder': '並び順',
+    'config.form.sortOrder.asc': '昇順',
+    'config.form.sortOrder.desc': '降順',
     'config.section.displayTitle.title': '表示用タイトル（任意）',
     'config.section.displayTitle.description':
       'カレンダー上に、スケジュールのタイトルの代わりに表示するフィールドを選択してください。未設定の場合はスケジュールのタイトルを表示します',
@@ -263,6 +266,11 @@ const ui = mergeDeep(commonUi, {
     'config.section.backgroundEvent.description2':
       '使用できるフィールドタイプはチェックボックスです。指定した値にチェックが入っているレコードが背景イベントになります。週・日表示の背景イベントは、右クリックメニューの対象外です',
     'config.section.backgroundEvent.enableLabel': '背景イベントを有効にする',
+    'config.section.sort.title': '予定の並び順',
+    'config.section.sort.description':
+      '同じ時刻に始まる予定を並べる順番を決めるフィールドを選択してください。未設定の場合はタイトル順になります',
+    'config.section.sort.description2':
+      '使用できるフィールドタイプは、数値、計算、文字列1行、ドロップダウン、ラジオボタン、日付、日時、時刻です。ドロップダウンとラジオボタンは選択肢の順番で並べます',
 
     // Common - Weekdays
     'common.weekday.sunday': '日曜日',
@@ -515,6 +523,9 @@ const ui = mergeDeep(commonUi, {
     'config.form.showsLegend': 'Show the category legend above the calendar',
     'config.form.backgroundEventValue': 'Value for background events',
     'config.form.backgroundEventValueRequired': 'Select the value for background events',
+    'config.form.sortOrder': 'Order',
+    'config.form.sortOrder.asc': 'Ascending',
+    'config.form.sortOrder.desc': 'Descending',
     'config.section.displayTitle.title': 'Display title (optional)',
     'config.section.displayTitle.description':
       'Select a field to display on the calendar instead of the event title. If not set, the event title is displayed.',
@@ -538,6 +549,11 @@ const ui = mergeDeep(commonUi, {
     'config.section.backgroundEvent.description2':
       'Only checkbox fields can be used. Records with the specified value checked become background events. Background events in week and day views do not support the context menu.',
     'config.section.backgroundEvent.enableLabel': 'Enable background events',
+    'config.section.sort.title': 'Event order',
+    'config.section.sort.description':
+      'Select a field that determines the order of events starting at the same time. If not set, events are ordered by title.',
+    'config.section.sort.description2':
+      'Available field types: number, calculated, text, drop-down, radio button, date, date and time, and time. Drop-down and radio button fields are ordered by their option order.',
 
     // Common - Weekdays
     'common.weekday.sunday': 'Sunday',
@@ -793,6 +809,9 @@ const ui = mergeDeep(commonUi, {
     'config.form.showsLegend': 'Mostrar la leyenda de categorías encima del calendario',
     'config.form.backgroundEventValue': 'Valor para eventos de fondo',
     'config.form.backgroundEventValueRequired': 'Seleccione el valor para eventos de fondo',
+    'config.form.sortOrder': 'Orden',
+    'config.form.sortOrder.asc': 'Ascendente',
+    'config.form.sortOrder.desc': 'Descendente',
     'config.section.displayTitle.title': 'Título mostrado (opcional)',
     'config.section.displayTitle.description':
       'Seleccione un campo para mostrar en el calendario en lugar del título del evento. Si no se establece, se muestra el título del evento.',
@@ -816,6 +835,11 @@ const ui = mergeDeep(commonUi, {
     'config.section.backgroundEvent.description2':
       'Solo se pueden usar campos de casilla de verificación. Los registros con el valor indicado marcado se convierten en eventos de fondo. Los eventos de fondo en las vistas semanal y diaria no admiten el menú contextual.',
     'config.section.backgroundEvent.enableLabel': 'Habilitar eventos de fondo',
+    'config.section.sort.title': 'Orden de los eventos',
+    'config.section.sort.description':
+      'Seleccione un campo que determine el orden de los eventos que comienzan a la misma hora. Si no se establece, se ordenan por título.',
+    'config.section.sort.description2':
+      'Tipos de campo disponibles: número, cálculo, texto, lista desplegable, botón de opción, fecha, fecha y hora y hora. Las listas desplegables y los botones de opción se ordenan según el orden de sus opciones.',
 
     // Common - Weekdays
     'common.weekday.sunday': 'Domingo',
@@ -1049,6 +1073,9 @@ const ui = mergeDeep(commonUi, {
     'config.form.showsLegend': '在日历上方显示类别图例',
     'config.form.backgroundEventValue': '作为背景事件的值',
     'config.form.backgroundEventValueRequired': '请选择作为背景事件的值',
+    'config.form.sortOrder': '排序',
+    'config.form.sortOrder.asc': '升序',
+    'config.form.sortOrder.desc': '降序',
     'config.section.displayTitle.title': '显示标题（可选）',
     'config.section.displayTitle.description':
       '请选择在日历上代替日程标题显示的字段。未设置时显示日程标题',
@@ -1070,6 +1097,11 @@ const ui = mergeDeep(commonUi, {
     'config.section.backgroundEvent.description2':
       '仅可使用复选框字段。勾选了指定值的记录将成为背景事件。周视图和日视图中的背景事件不支持右键菜单',
     'config.section.backgroundEvent.enableLabel': '启用背景事件',
+    'config.section.sort.title': '日程排序',
+    'config.section.sort.description':
+      '请选择决定同一时间开始的日程排列顺序的字段。未设置时按标题排序',
+    'config.section.sort.description2':
+      '可用的字段类型为数值、计算、单行文本、下拉菜单、单选框、日期、日期与时间、时间。下拉菜单和单选框按选项顺序排列',
 
     // Common - Weekdays
     'common.weekday.sunday': '星期日',
@@ -1303,6 +1335,9 @@ const ui = mergeDeep(commonUi, {
     'config.form.showsLegend': '在行事曆上方顯示類別圖例',
     'config.form.backgroundEventValue': '作為背景事件的值',
     'config.form.backgroundEventValueRequired': '請選擇作為背景事件的值',
+    'config.form.sortOrder': '排序',
+    'config.form.sortOrder.asc': '升冪',
+    'config.form.sortOrder.desc': '降冪',
     'config.section.displayTitle.title': '顯示標題（選填）',
     'config.section.displayTitle.description':
       '請選擇在行事曆上代替行程標題顯示的欄位。未設定時顯示行程標題',
@@ -1324,6 +1359,11 @@ const ui = mergeDeep(commonUi, {
     'config.section.backgroundEvent.description2':
       '僅可使用核取方塊欄位。勾選了指定值的記錄將成為背景事件。週檢視和日檢視中的背景事件不支援右鍵選單',
     'config.section.backgroundEvent.enableLabel': '啟用背景事件',
+    'config.section.sort.title': '行程排序',
+    'config.section.sort.description':
+      '請選擇決定同一時間開始的行程排列順序的欄位。未設定時依標題排序',
+    'config.section.sort.description2':
+      '可用的欄位類型為數值、計算、單行文字、下拉式選單、選項按鈕、日期、日期與時間、時間。下拉式選單和選項按鈕依選項順序排列',
 
     // Common - Weekdays
     'common.weekday.sunday': '星期日',

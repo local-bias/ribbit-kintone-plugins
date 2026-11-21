@@ -32,6 +32,7 @@ import FormScheduleStart from './form-schedule-start';
 import FormScheduleTitle from './form-schedule-title';
 import FormSlotDuration from './form-slot-duration';
 import FormSlotMinmax from './form-slot-minmax';
+import FormSort from './form-sort';
 import FormView from './form-view';
 import FormVisibleViews from './form-visible-views';
 import FirstDayForm from './form-first-day';
@@ -203,6 +204,12 @@ const Component: FC = () => (
           label={t('config.section.backgroundEvent.enableLabel')}
         />
         <FormBackgroundEvent />
+      </PluginFormSection>
+      <PluginFormSection>
+        <PluginFormTitle>{t('config.section.sort.title')}</PluginFormTitle>
+        <PluginFormDescription>{t('config.section.sort.description')}</PluginFormDescription>
+        <PluginFormDescription last>{t('config.section.sort.description2')}</PluginFormDescription>
+        <FormSort />
       </PluginFormSection>
     </details>
     <DeleteButton />

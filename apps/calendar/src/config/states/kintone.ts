@@ -87,6 +87,22 @@ export const displayTitleFieldsAtom = eagerAtom((get) => {
   return fields.filter((field) => types.includes(field.type));
 });
 
+/** 同じ時刻の予定の並び順を決めるフィールドとして使用できるフィールド */
+export const sortableFieldsAtom = eagerAtom((get) => {
+  const fields = get(appFieldsAtom);
+  const types: kintoneAPI.FieldPropertyType[] = [
+    'NUMBER',
+    'CALC',
+    'SINGLE_LINE_TEXT',
+    'DROP_DOWN',
+    'RADIO_BUTTON',
+    'DATE',
+    'DATETIME',
+    'TIME',
+  ];
+  return fields.filter((field) => types.includes(field.type));
+});
+
 export const checkboxFieldsAtom = eagerAtom((get) => {
   const fields = get(appFieldsAtom);
   return fields.filter((field) => field.type === 'CHECK_BOX') as kintoneAPI.property.CheckBox[];

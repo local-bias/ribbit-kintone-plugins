@@ -113,6 +113,7 @@ export const preventsOverlapState = getConditionPropertyAtom('preventsOverlap');
 export const showsLegendState = getConditionPropertyAtom('showsLegend');
 export const enablesBackgroundEventState = getConditionPropertyAtom('enablesBackgroundEvent');
 export const backgroundEventOptionState = getConditionPropertyAtom('backgroundEventOption');
+export const sortOrderState = getConditionPropertyAtom('sortOrder');
 
 export const calendarTitleState = getCalendarEventAtom('inputTitleField');
 export const calendarStartState = getCalendarEventAtom('startField');
@@ -123,3 +124,4 @@ export const calendarCategoryState = getCalendarEventAtom('categoryField');
 export const calendarRecurrenceState = getCalendarEventAtom('recurrenceField');
 export const calendarDisplayTitleState = getCalendarEventAtom('displayTitleField');
 export const calendarBackgroundEventState = getCalendarEventAtom('backgroundEventField');
+export const calendarSortState = getCalendarEventAtom('sortField');
