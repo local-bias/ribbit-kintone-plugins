@@ -38,7 +38,7 @@ export default function CalendarSidebar() {
   return (
     <div
       className={cn(
-        'rad:relative rad:border-r rad:border-r-border rad:w-8 rad:bg-background rad:shrink-0 rad:transition-[width] rad:duration-200 rad:ease-in-out',
+        'rad:relative rad:print:hidden rad:border-r rad:border-r-border rad:w-8 rad:bg-background rad:shrink-0 rad:transition-[width] rad:duration-200 rad:ease-in-out',
         {
           'rad:hidden': isMobile,
           'rad:w-64': expanded,

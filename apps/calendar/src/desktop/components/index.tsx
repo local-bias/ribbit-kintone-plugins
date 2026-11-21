@@ -41,7 +41,9 @@ function DesktopLayout({ className }: { className?: string }) {
           <Calendar />
         </div>
       </div>
-      <Fab />
+      <div className='rad:print:hidden'>
+        <Fab />
+      </div>
     </>
   );
 }
@@ -180,6 +182,29 @@ const StyledDesktopLayout = styled(DesktopLayout)`
 
   .MuiPickersDay-root {
     border-radius: 50% !important;
+  }
+
+  /*
+   * ブラウザの印刷機能でカレンダーを印刷する場合は、操作用のUIを除いてカレンダーだけを出力し、
+   * 長いカレンダーが複数ページにまたがっても切れないようにする
+   */
+  @media print {
+    grid-template-columns: 1fr !important;
+
+    .fc-header-toolbar .fc-button-group,
+    .fc-header-toolbar .fc-button {
+      display: none !important;
+    }
+
+    .fc-scroller {
+      overflow: visible !important;
+      height: auto !important;
+    }
+
+    .fc-timegrid-slot,
+    .fc-daygrid-day {
+      break-inside: avoid;
+    }
   }
 `;
 
