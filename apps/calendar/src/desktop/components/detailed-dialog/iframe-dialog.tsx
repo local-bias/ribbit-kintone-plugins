@@ -63,9 +63,30 @@ interface IframeDialogProps {
   editUrl: string;
   /** iframe内からのpostMessageのうち、ダイアログを閉じるべきものと判定するtype一覧 */
   closeMessageTypes: string[];
+  /** 画面全体に表示するかどうか(モバイル等の狭い画面向け) */
+  fullScreen?: boolean;
+  /** iframeの`name`属性。iframe内の画面遷移後も、ダイアログ内であることを判定するために使う */
+  frameName?: string;
   /** ダイアログが閉じられたときのコールバック。postMessage受信時はそのpayloadを渡す */
   onClose: (message?: InlineDialogMessage) => void;
 }
+
+const WINDOWED_PAPER_SX = {
+  width: '90vw',
+  height: '85vh',
+  maxWidth: '1200px',
+  maxHeight: '900px',
+  display: 'flex',
+  flexDirection: 'column',
+} as const;
+
+const FULL_SCREEN_PAPER_SX = {
+  display: 'flex',
+  flexDirection: 'column',
+  // iOSのノッチ・ホームインジケーターにヘッダーやiframe内の保存ボタンが隠れないようにする
+  paddingTop: 'env(safe-area-inset-top, 0px)',
+  paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+} as const;
 
 /**
  * kintone標準のレコード追加・編集画面をダイアログ内にiframeで埋め込む共通コンポーネント。
@@ -79,6 +100,8 @@ export const IframeDialog: FC<IframeDialogProps> = ({
   loadingText,
   editUrl,
   closeMessageTypes,
+  fullScreen = false,
+  frameName,
   onClose,
 }) => {
   const [iframeLoading, setIframeLoading] = useState(true);
@@ -126,16 +149,8 @@ export const IframeDialog: FC<IframeDialogProps> = ({
       open={open}
       onClose={() => handleClose()}
       maxWidth={false}
-      PaperProps={{
-        sx: {
-          width: '90vw',
-          height: '85vh',
-          maxWidth: '1200px',
-          maxHeight: '900px',
-          display: 'flex',
-          flexDirection: 'column',
-        },
-      }}
+      fullScreen={fullScreen}
+      PaperProps={{ sx: fullScreen ? FULL_SCREEN_PAPER_SX : WINDOWED_PAPER_SX }}
     >
       <StyledDialogTitle>
         <span>{title}</span>
@@ -146,7 +161,12 @@ export const IframeDialog: FC<IframeDialogProps> = ({
       <StyledDialogContent>
         <IframeWrapper>
           {open && editUrl && (
-            <StyledIframe ref={iframeRef} src={editUrl} onLoad={() => setIframeLoading(false)} />
+            <StyledIframe
+              ref={iframeRef}
+              name={frameName}
+              src={editUrl}
+              onLoad={() => setIframeLoading(false)}
+            />
           )}
           {iframeLoading && <LoadingOverlay>{loadingText}</LoadingOverlay>}
         </IframeWrapper>

@@ -140,19 +140,25 @@ const postParentMessage = (type: string, recordId?: string): void => {
   window.parent.postMessage({ type, recordId }, location.origin);
 };
 
+/** モバイル版の画面URLの組み立てに必要な`kintone.buildPageUrl`が使える環境かどうか */
+export const canBuildMobilePageUrl = (): boolean =>
+  typeof kintone !== 'undefined' && typeof kintone.buildPageUrl === 'function';
+
 /**
  * 詳細編集(kintone標準画面のiframeダイアログ)を使用するかどうかを判定します。
  *
- * iframeに読み込むURL(`show#record=...`等)と、保存・キャンセルを検知するイベント
- * (record-page.ts)はいずれもPC版前提のため、モバイルでは動作しません(モバイル版の
- * レコード画面は`show?record=...`形式のため、レコードIDが渡らずkintoneがCB_VA01エラーを
- * 表示すると考えられる)。
- * そのためモバイルでは、設定に関わらず簡易編集(プラグイン独自ダイアログ)へフォールバックします。
+ * モバイル版のレコード画面URLはPC版と形式が異なる(PC版の`show#record=...`をそのまま開くと
+ * レコードIDが渡らず、kintoneがCB_VA01エラーを表示する)ため、モバイルでは
+ * `kintone.buildPageUrl`でモバイル版のURLを組み立てます。`kintone.buildPageUrl`が
+ * 使えない(提供前の)環境では、設定に関わらず簡易編集(プラグイン独自ダイアログ)へ
+ * フォールバックします。
  */
 export const shouldUseDetailedEditMode = (params: {
   editMode: EditMode | undefined;
   isMobile: boolean;
-}): boolean => params.editMode === 'detailed' && !params.isMobile;
+  canBuildMobilePageUrl: boolean;
+}): boolean =>
+  params.editMode === 'detailed' && (!params.isMobile || params.canBuildMobilePageUrl);
 
 export const isInlineEditPage = (): boolean =>
   new URLSearchParams(location.search).has(CALENDAR_INLINE_EDIT_PARAM);
@@ -160,13 +166,81 @@ export const isInlineEditPage = (): boolean =>
 export const isInlineCreatePage = (): boolean =>
   new URLSearchParams(location.search).has(CALENDAR_INLINE_CREATE_PARAM);
 
+/**
+ * 詳細編集ダイアログのiframeに付与する`name`属性。
+ *
+ * iframe内でページの再読み込みを伴う画面遷移が起きると(モバイル版で起こり得る)、遷移後の
+ * URLからは判定用のクエリパラメータが失われる。iframeの`name`(=iframe内の`window.name`)は
+ * 同一origin内の遷移では保持されるため、遷移後もダイアログ内であることを判定できる。
+ */
+export const INLINE_FRAME_NAME = {
+  edit: 'ribbit-calendar-inline-edit',
+  create: 'ribbit-calendar-inline-create',
+} as const;
+
+const getWindowName = (): string => (typeof window !== 'undefined' ? window.name : '');
+
+/** 詳細編集ダイアログの「編集」iframe内かどうか(画面遷移後も判定できる) */
+export const isInlineEditFrame = (): boolean =>
+  isInlineEditPage() || getWindowName() === INLINE_FRAME_NAME.edit;
+
+/** 詳細編集ダイアログの「追加」iframe内かどうか(画面遷移後も判定できる) */
+export const isInlineCreateFrame = (): boolean =>
+  isInlineCreatePage() || getWindowName() === INLINE_FRAME_NAME.create;
+
+/**
+ * 編集iframe内で詳細(閲覧)画面が表示されたとき、それを「編集のキャンセル」とみなすかどうか。
+ *
+ * - 編集画面が表示された後の詳細画面 → キャンセル(または保存後の遷移)
+ * - 判定用パラメータ付きの最初のURLから別のページへ遷移した後の詳細画面 → 編集画面を離れた
+ * - 最初のURLのまま、編集画面より先に表示された詳細画面 → 編集画面を開く途中のため無視する
+ */
+export const shouldTreatDetailShowAsEditCancel = (params: {
+  hasShownEditScreen: boolean;
+  isOnInitialInlineUrl: boolean;
+}): boolean => params.hasShownEditScreen || !params.isOnInitialInlineUrl;
+
 export const buildInlineEditUrl = (recordId: string): string =>
   `${location.pathname}show?${CALENDAR_INLINE_EDIT_PARAM}=1#record=${recordId}&mode=edit`;
 
-export const buildInlineCreateUrl = (params: {
+/**
+ * `kintone.buildPageUrl`で組み立てたモバイル版の画面URLに、iframe内での判定用パラメータを
+ * 追加します。iframeからのpostMessageは同一originのみ受け付けるため、異なるoriginのURLが
+ * 返された場合はエラーとします。
+ */
+const buildMobilePageUrl = async (
+  page: 'APP_CREATE_MOBILE' | 'APP_EDIT_MOBILE',
+  params: kintone.BuildPageUrlAppParams,
+  searchParams: URLSearchParams
+): Promise<string> => {
+  const buildPageUrl = typeof kintone !== 'undefined' ? kintone.buildPageUrl : undefined;
+  if (typeof buildPageUrl !== 'function') {
+    throw new Error('kintone.buildPageUrl is not available in this environment');
+  }
+  const url = new URL(await buildPageUrl(page, params), location.origin);
+  if (url.origin !== location.origin) {
+    throw new Error(`Unexpected origin for the mobile record page: ${url.origin}`);
+  }
+  for (const [key, value] of searchParams) {
+    url.searchParams.set(key, value);
+  }
+  return url.href;
+};
+
+export const buildMobileInlineEditUrl = (params: {
+  appId: string;
+  recordId: string;
+}): Promise<string> =>
+  buildMobilePageUrl(
+    'APP_EDIT_MOBILE',
+    params,
+    new URLSearchParams({ [CALENDAR_INLINE_EDIT_PARAM]: '1' })
+  );
+
+const buildInlineCreateSearchParams = (params: {
   condition: PluginCondition;
   initialValues: InlineInitialValue[];
-}): string => {
+}): URLSearchParams => {
   const { condition, initialValues } = params;
 
   const searchParams = new URLSearchParams({
@@ -185,8 +259,24 @@ export const buildInlineCreateUrl = (params: {
     searchParams.set(INITIAL_VALUES_PARAM, serialized);
   }
 
-  return `${location.pathname}edit?${searchParams.toString()}`;
+  return searchParams;
 };
+
+export const buildInlineCreateUrl = (params: {
+  condition: PluginCondition;
+  initialValues: InlineInitialValue[];
+}): string => `${location.pathname}edit?${buildInlineCreateSearchParams(params).toString()}`;
+
+export const buildMobileInlineCreateUrl = (params: {
+  appId: string;
+  condition: PluginCondition;
+  initialValues: InlineInitialValue[];
+}): Promise<string> =>
+  buildMobilePageUrl(
+    'APP_CREATE_MOBILE',
+    { appId: params.appId },
+    buildInlineCreateSearchParams(params)
+  );
 
 export const installInlineCreateCancelGuard = (): void => {
   if (isCancelGuardInstalled || window.parent === window) {
@@ -237,3 +327,6 @@ export const postInlineEditCancelled = (): void => postParentMessage(INLINE_MESS
 
 export const postInlineCreateSubmitSuccess = (recordId: string): void =>
   postParentMessage(INLINE_MESSAGE.createSubmitSuccess, recordId);
+
+export const postInlineCreateCancelled = (): void =>
+  postParentMessage(INLINE_MESSAGE.createCancelled);

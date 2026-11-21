@@ -20,7 +20,7 @@ import {
 import { buildCopiedEvent } from '../event-field-values';
 import { calendarEventsAtom, type PluginCalendarEvent } from './calendar';
 import { requestConfirmAtom } from './confirm';
-import { detailedDialogAtom, isDetailedModeAtom } from './detailed-dialog';
+import { isDetailedModeAtom, openDetailedEditDialogAtom } from './detailed-dialog';
 import { dialogPropsAtom, dialogShownAtom } from './dialog';
 import { appPropertiesAtom, loadingAtom, pluginConditionAtom } from './kintone';
 import {
@@ -64,7 +64,7 @@ export const openEventEditorAtom = atom(null, (get, set, target: EventOccurrence
   }
 
   if (get(isDetailedModeAtom) && foundEvent.id) {
-    set(detailedDialogAtom, { mode: 'edit', recordId: foundEvent.id });
+    void set(openDetailedEditDialogAtom, foundEvent.id);
     return;
   }
 

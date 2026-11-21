@@ -14,7 +14,6 @@ import { restorePluginConfig } from '@/lib/plugin';
 import type { PluginCondition } from '@/schema/plugin-config';
 import {
   getCurrentRecord,
-  getHeaderSpace,
   getMetaFieldId_UNSTABLE,
   setCurrentRecord,
   setFieldShown,
@@ -38,8 +37,10 @@ import { createRoot } from 'react-dom/client';
  * APIのため、`@konomi-app/kintone-utilities`の更新時はこの経路の動作を確認すること。
  *
  * フィールド要素が取得できない画面(将来のkintone側の変更等)に備え、取得できない場合は
- * 従来通りヘッダー領域(`getHeaderSpace`)へのフォールバックマウント + `setFieldShown(false)`を行う。
+ * 従来通りヘッダー領域(`getRecordHeaderSpace`)へのフォールバックマウント + `setFieldShown(false)`を行う。
  * それも失敗する場合は、編集不能な非表示フィールドを残さないようフィールドを再表示する。
+ * モバイル版はフォームのDOM構造がPC版と異なり、`.value-{id}`要素が取得できない場合は
+ * このフォールバック(ヘッダーの下側の領域)で表示される。
  *
  * 一覧からのインライン編集(`app.record.index.edit.show`)には非対応(v1の既知の制限。
  * 生フィールドが表示されたままになる)。
@@ -60,6 +61,17 @@ const CONTAINER_ATTR = 'data-ribbit-calendar-recurrence';
 const latestFormState = new Map<string, RecurrenceFormState | null>();
 
 const isMobileEvent = (type: string): boolean => type.startsWith('mobile.');
+
+/**
+ * レコード追加・編集画面のヘッダー領域を取得します。
+ *
+ * `@konomi-app/kintone-utilities`の`getHeaderSpace`はモバイル版の分岐で要素を返さない
+ * (`return`が抜けている)ため使わず、PC版・モバイル版それぞれの公式APIを直接呼び出す。
+ */
+const getRecordHeaderSpace = (eventType: string): HTMLElement | null =>
+  isMobileEvent(eventType)
+    ? kintone.mobile.app.getHeaderSpaceElement()
+    : kintone.app.record.getHeaderMenuSpaceElement();
 
 /** 詳細編集 + 繰り返し有効 + 繰り返しフィールド設定ありのconditionを、
  *  フィールドコードの重複を除いて返す(複数conditionが同じフィールドを共有する場合の対策) */
@@ -198,6 +210,53 @@ const renderRecurrenceEditor = (params: {
   );
 };
 
+/** `getMetaFieldId_UNSTABLE`は内部で未宣言になり得るグローバル(`cybozu`)を参照するため、
+ *  例外は「フィールド要素を特定できなかった」として扱う */
+const findMetaFieldId = (fieldCode: string): string | null => {
+  try {
+    return getMetaFieldId_UNSTABLE(fieldCode);
+  } catch {
+    return null;
+  }
+};
+
+/** 繰り返しフィールドの入力コントロールを、プラグイン独自の繰り返し設定UIに置き換える */
+const mountRecurrenceEditor = (params: {
+  eventType: string;
+  condition: PluginCondition;
+  fieldCode: string;
+  initialMeta: RecurrenceMeta | null;
+}): void => {
+  const { eventType, condition, fieldCode, initialMeta } = params;
+
+  // 優先: フィールド自身の値/コントロール領域を取得し、ネイティブ入力を隠して置き換える
+  // (ラベルはこの要素に含まれないため、そのまま表示され続ける)
+  const targetMetaField = findMetaFieldId(fieldCode);
+  if (targetMetaField) {
+    const fieldElement =
+      document.querySelector<HTMLDivElement>(`.value-${targetMetaField} > div`) ||
+      document.querySelector<HTMLDivElement>(`.value-${targetMetaField}`);
+    if (fieldElement) {
+      hideNativeControlChildren(fieldElement);
+      const container = createMountContainer(fieldElement, fieldCode);
+      renderRecurrenceEditor({ container, condition, fieldCode, initialMeta });
+      return;
+    }
+  }
+
+  // フォールバック: フィールド要素が取得できない場合はフィールド全体を隠し、ヘッダー領域へ
+  // カード状のUIとしてマウントする
+  setFieldShown(fieldCode, false);
+  const host = getRecordHeaderSpace(eventType);
+  if (!host) {
+    // マウントできない場合は、編集不能な非表示フィールドを残さないよう再表示する
+    setFieldShown(fieldCode, true);
+    return;
+  }
+  const container = createMountContainer(host, fieldCode);
+  renderRecurrenceEditor({ container, condition, fieldCode, initialMeta });
+};
+
 listener.add(['app.record.create.show', 'app.record.edit.show'], (event) => {
   for (const condition of getTargetConditions()) {
     const fieldCode = condition.calendarEvent.recurrenceField;
@@ -206,42 +265,23 @@ listener.add(['app.record.create.show', 'app.record.edit.show'], (event) => {
 
     const initialMeta = parseRecurrenceMeta(event.record[fieldCode]?.value as string | undefined);
 
-    // 優先: フィールド自身の値/コントロール領域を取得し、ネイティブ入力を隠して置き換える
-    // (ラベルはこの要素に含まれないため、そのまま表示され続ける)
-    const targetMetaField = getMetaFieldId_UNSTABLE(fieldCode);
-    if (targetMetaField) {
-      const fieldElement =
-        document.querySelector<HTMLDivElement>(`.value-${targetMetaField} > div`) ||
-        document.querySelector<HTMLDivElement>(`.value-${targetMetaField}`);
-      if (fieldElement) {
-        hideNativeControlChildren(fieldElement);
-        const container = createMountContainer(fieldElement, fieldCode);
-        renderRecurrenceEditor({ container, condition, fieldCode, initialMeta });
-        continue;
+    try {
+      mountRecurrenceEditor({ eventType: event.type, condition, fieldCode, initialMeta });
+    } catch (error) {
+      // 繰り返しUIの失敗でレコード画面自体をエラーにしないよう、ネイティブの入力欄を残して続行する
+      console.error('[calendar] 繰り返し設定UIの表示に失敗しました', error);
+      try {
+        setFieldShown(fieldCode, true);
+      } catch {
+        // フィールドの再表示もできない場合は、kintone標準の表示のまま続行する
       }
     }
-
-    // フォールバック: フィールド要素が取得できない場合はフィールド全体を隠し、ヘッダー領域へ
-    // カード状のUIとしてマウントする
-    setFieldShown(fieldCode, false);
-    const host = getHeaderSpace(event.type);
-    if (!host) {
-      // マウントできない場合は、編集不能な非表示フィールドを残さないよう再表示する
-      setFieldShown(fieldCode, true);
-      continue;
-    }
-    const container = createMountContainer(host, fieldCode);
-    renderRecurrenceEditor({ container, condition, fieldCode, initialMeta });
   }
 
   return event;
 });
 
 listener.add(['app.record.create.submit', 'app.record.edit.submit'], (event) => {
-  if (isMobileEvent(event.type)) {
-    return event;
-  }
-
   for (const condition of getTargetConditions()) {
     const fieldCode = condition.calendarEvent.recurrenceField;
     if (!latestFormState.has(fieldCode)) {

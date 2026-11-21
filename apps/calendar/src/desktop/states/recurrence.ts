@@ -8,9 +8,9 @@ import { atom } from 'jotai';
 import { enqueueSnackbar } from 'notistack';
 import { calendarEventsAtom, PluginCalendarEvent } from './calendar';
 import {
-  detailedDialogAtom,
   isDetailedModeAtom,
   openDetailedCreateDialogAtom,
+  openDetailedEditDialogAtom,
 } from './detailed-dialog';
 import { dialogPropsAtom, dialogShownAtom } from './dialog';
 import { appPropertiesAtom, loadingAtom, pluginConditionAtom } from './kintone';
@@ -74,7 +74,7 @@ export const handleEditSeriesAtom = atom(null, (get, set) => {
   if (!context) return;
 
   if (get(isDetailedModeAtom) && context.master.id) {
-    set(detailedDialogAtom, { mode: 'edit', recordId: context.master.id });
+    void set(openDetailedEditDialogAtom, context.master.id);
     set(occurrenceScopeDialogShownAtom, false);
     set(occurrenceContextAtom, null);
     return;

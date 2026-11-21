@@ -3,8 +3,16 @@ import {
   getKintoneRecordFromCalendarEvent,
   patchMasterException,
 } from '@/desktop/actions';
-import type { InlineInitialValue } from '@/desktop/inline-record';
-import { INLINE_MESSAGE, shouldUseDetailedEditMode } from '@/desktop/inline-record';
+import {
+  INLINE_MESSAGE,
+  buildInlineCreateUrl,
+  buildInlineEditUrl,
+  buildMobileInlineCreateUrl,
+  buildMobileInlineEditUrl,
+  canBuildMobilePageUrl,
+  shouldUseDetailedEditMode,
+  type InlineInitialValue,
+} from '@/desktop/inline-record';
 import { isShownUnderFilters } from '@/desktop/event-filters';
 import { GUEST_SPACE_ID } from '@/lib/global';
 import { t } from '@/lib/i18n-plugin';
@@ -20,20 +28,86 @@ import { refreshComputedValuesAtom } from './refresh';
 export type DetailedDialogState =
   | {
       mode: 'create';
-      initialValues: InlineInitialValue[];
+      /** iframeに読み込むkintone標準のレコード追加画面のURL */
+      url: string;
       /** 「この回のみ編集」で分離オカレンスを作成する場合に設定する */
       override?: { masterId: string; originalStart: string };
     }
-  | { mode: 'edit'; recordId: string }
+  | {
+      mode: 'edit';
+      /** iframeに読み込むkintone標準のレコード編集画面のURL */
+      url: string;
+      recordId: string;
+    }
   | null;
 
 export const detailedDialogAtom = atom<DetailedDialogState>(null);
 
-/** 詳細編集はPC版のみ対応のため、モバイルでは簡易編集ダイアログにフォールバックする */
+/** モバイルでは`kintone.buildPageUrl`が使える場合のみ詳細編集を使い、それ以外は簡易編集
+ *  ダイアログにフォールバックする(`shouldUseDetailedEditMode`を参照) */
 export const isDetailedModeAtom = atom((get) =>
   shouldUseDetailedEditMode({
     editMode: get(pluginConditionAtom)?.editMode,
     isMobile: isMobile(),
+    canBuildMobilePageUrl: canBuildMobilePageUrl(),
+  })
+);
+
+/** URLの組み立て中(=ダイアログを開いている途中)かどうか。連打による多重起動を防ぐ */
+const isOpeningDetailedDialogAtom = atom(false);
+
+const getRequiredAppId = (): string => {
+  const appId = getAppId();
+  if (appId === null || appId === undefined) {
+    throw new Error('Failed to get the app id for the detailed edit dialog');
+  }
+  return String(appId);
+};
+
+/**
+ * iframeに読み込むURLを組み立ててから詳細編集ダイアログを開きます。
+ *
+ * モバイル版のURLは`kintone.buildPageUrl`(サーバー問い合わせを伴う非同期API)で組み立てるため、
+ * 組み立て中は待機表示を出し、その間の再操作は無視する。組み立てに失敗した場合は
+ * ダイアログを開かずにエラーを通知する。
+ */
+const showDetailedDialogAtom = atom(
+  null,
+  async (
+    get,
+    set,
+    params: {
+      buildUrl: () => string | Promise<string>;
+      toState: (url: string) => NonNullable<DetailedDialogState>;
+    }
+  ) => {
+    if (get(isOpeningDetailedDialogAtom) || get(detailedDialogAtom) !== null) return;
+
+    set(isOpeningDetailedDialogAtom, true);
+    set(loadingAtom, true);
+    try {
+      const url = await params.buildUrl();
+      if (get(detailedDialogAtom) === null) {
+        set(detailedDialogAtom, params.toState(url));
+      }
+    } catch (error) {
+      console.error(error);
+      enqueueSnackbar(t('desktop.error.detailedOpenFailed'), { variant: 'error' });
+    } finally {
+      set(loadingAtom, false);
+      set(isOpeningDetailedDialogAtom, false);
+    }
+  }
+);
+
+/** 既存レコードを詳細編集ダイアログ(iframe)で開きます */
+export const openDetailedEditDialogAtom = atom(null, (_get, set, recordId: string) =>
+  set(showDetailedDialogAtom, {
+    buildUrl: () =>
+      isMobile()
+        ? buildMobileInlineEditUrl({ appId: getRequiredAppId(), recordId })
+        : buildInlineEditUrl(recordId),
+    toState: (url) => ({ mode: 'edit', url, recordId }),
   })
 );
 
@@ -76,7 +150,13 @@ export const openDetailedCreateDialogAtom = atom(
         return value != null;
       });
 
-    set(detailedDialogAtom, { mode: 'create', initialValues, override: params.override });
+    await set(showDetailedDialogAtom, {
+      buildUrl: () =>
+        isMobile()
+          ? buildMobileInlineCreateUrl({ appId: getRequiredAppId(), condition, initialValues })
+          : buildInlineCreateUrl({ condition, initialValues }),
+      toState: (url) => ({ mode: 'create', url, override: params.override }),
+    });
   }
 );
 

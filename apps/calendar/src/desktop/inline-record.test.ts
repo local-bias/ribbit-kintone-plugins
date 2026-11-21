@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
-import type { AnyPluginConfig } from '@/schema/plugin-config';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import type { AnyPluginConfig, PluginCondition } from '@/schema/plugin-config';
 
 // Both `./inline-record` and `@/lib/plugin` (via `restorePluginConfig`) transitively touch
 // kintone JS API globals at module-load time, which only exist inside the real kintone
@@ -40,7 +40,7 @@ const condition = {
     assigneeField: '',
   },
   id: 'condition-1',
-  daysOfWeek: [1, 2, 3, 4, 5] as const,
+  daysOfWeek: [1, 2, 3, 4, 5] as PluginCondition['daysOfWeek'],
   firstDay: 0,
   enablesRecurrence: true,
   editMode: 'detailed' as const,
@@ -71,8 +71,17 @@ const setLocation = (href: string) => {
   (globalThis as { location?: Location }).location = url as unknown as Location;
 };
 
+/** `kintone.buildPageUrl`(テスト環境には存在しない)を差し替える。`undefined`で未提供の環境を再現する */
+const setBuildPageUrl = (impl: ((page: string, params: object) => Promise<string>) | undefined) => {
+  (globalThis.kintone as { buildPageUrl?: unknown }).buildPageUrl = impl;
+};
+
 beforeEach(() => {
   setLocation('https://example.cybozu.com/k/1/');
+});
+
+afterEach(() => {
+  setBuildPageUrl(undefined);
 });
 
 const {
@@ -84,22 +93,151 @@ const {
   CALENDAR_INLINE_CREATE_PARAM,
   CALENDAR_INLINE_EDIT_PARAM,
   shouldUseDetailedEditMode,
+  canBuildMobilePageUrl,
+  buildMobileInlineEditUrl,
+  buildMobileInlineCreateUrl,
+  INLINE_FRAME_NAME,
+  isInlineEditFrame,
+  isInlineCreateFrame,
+  shouldTreatDetailShowAsEditCancel,
 } = await import('./inline-record');
+
+describe('isInlineEditFrame / isInlineCreateFrame', () => {
+  afterEach(() => {
+    window.name = '';
+  });
+
+  it('detects the frame from the marker query param on the initial URL', () => {
+    setLocation('https://example.cybozu.com/k/m/1/show?record=1&calendar_inline_edit=1');
+    expect(isInlineEditFrame()).toBe(true);
+    expect(isInlineCreateFrame()).toBe(false);
+  });
+
+  it('keeps detecting the frame by its name after navigating to a URL without the marker', () => {
+    setLocation('https://example.cybozu.com/k/m/1/show?record=1');
+    expect(isInlineEditFrame()).toBe(false);
+
+    window.name = INLINE_FRAME_NAME.edit;
+    expect(isInlineEditFrame()).toBe(true);
+    expect(isInlineCreateFrame()).toBe(false);
+
+    window.name = INLINE_FRAME_NAME.create;
+    expect(isInlineCreateFrame()).toBe(true);
+    expect(isInlineEditFrame()).toBe(false);
+  });
+});
+
+describe('shouldTreatDetailShowAsEditCancel', () => {
+  it('ignores a detail screen shown before the edit screen on the initial URL', () => {
+    expect(
+      shouldTreatDetailShowAsEditCancel({ hasShownEditScreen: false, isOnInitialInlineUrl: true })
+    ).toBe(false);
+  });
+
+  it('treats a detail screen after the edit screen as a cancel', () => {
+    expect(
+      shouldTreatDetailShowAsEditCancel({ hasShownEditScreen: true, isOnInitialInlineUrl: true })
+    ).toBe(true);
+  });
+
+  it('treats a detail screen after leaving the initial URL as a cancel', () => {
+    expect(
+      shouldTreatDetailShowAsEditCancel({ hasShownEditScreen: false, isOnInitialInlineUrl: false })
+    ).toBe(true);
+  });
+});
 
 describe('shouldUseDetailedEditMode', () => {
   it('uses the detailed (iframe) edit mode on desktop when configured', () => {
-    expect(shouldUseDetailedEditMode({ editMode: 'detailed', isMobile: false })).toBe(true);
+    expect(
+      shouldUseDetailedEditMode({ editMode: 'detailed', isMobile: false, canBuildMobilePageUrl: false })
+    ).toBe(true);
   });
 
-  it('falls back to the simple dialog on mobile even when detailed mode is configured', () => {
-    // 詳細編集のiframe(PC版URL・PC版イベント前提)はモバイルで動作せず、kintoneが
-    // CB_VA01エラーを表示してしまうため、モバイルでは簡易編集にフォールバックする
-    expect(shouldUseDetailedEditMode({ editMode: 'detailed', isMobile: true })).toBe(false);
+  it('uses the detailed edit mode on mobile when the mobile page URL can be built', () => {
+    expect(
+      shouldUseDetailedEditMode({ editMode: 'detailed', isMobile: true, canBuildMobilePageUrl: true })
+    ).toBe(true);
+  });
+
+  it('falls back to the simple dialog on mobile when kintone.buildPageUrl is unavailable', () => {
+    // PC版のURLをモバイルで開くとkintoneがCB_VA01エラーを表示するため、モバイル版のURLを
+    // 組み立てられない環境では簡易編集にフォールバックする
+    expect(
+      shouldUseDetailedEditMode({ editMode: 'detailed', isMobile: true, canBuildMobilePageUrl: false })
+    ).toBe(false);
   });
 
   it('never uses the detailed edit mode when simple mode or no mode is configured', () => {
-    expect(shouldUseDetailedEditMode({ editMode: 'simple', isMobile: false })).toBe(false);
-    expect(shouldUseDetailedEditMode({ editMode: undefined, isMobile: false })).toBe(false);
+    expect(
+      shouldUseDetailedEditMode({ editMode: 'simple', isMobile: true, canBuildMobilePageUrl: true })
+    ).toBe(false);
+    expect(
+      shouldUseDetailedEditMode({ editMode: undefined, isMobile: false, canBuildMobilePageUrl: true })
+    ).toBe(false);
+  });
+});
+
+describe('canBuildMobilePageUrl', () => {
+  it('reports whether kintone.buildPageUrl exists', () => {
+    expect(canBuildMobilePageUrl()).toBe(false);
+    setBuildPageUrl(async () => '');
+    expect(canBuildMobilePageUrl()).toBe(true);
+  });
+});
+
+describe('buildMobileInlineEditUrl', () => {
+  it('requests the mobile edit page URL and appends the inline-edit marker', async () => {
+    const buildPageUrl = vi.fn(
+      async () => 'https://example.cybozu.com/k/m/1/show?record=42#mode=edit'
+    );
+    setBuildPageUrl(buildPageUrl);
+
+    const url = await buildMobileInlineEditUrl({ appId: '1', recordId: '42' });
+
+    expect(buildPageUrl).toHaveBeenCalledWith('APP_EDIT_MOBILE', { appId: '1', recordId: '42' });
+    const parsed = new URL(url);
+    expect(parsed.pathname).toBe('/k/m/1/show');
+    expect(parsed.searchParams.get('record')).toBe('42');
+    expect(parsed.searchParams.get(CALENDAR_INLINE_EDIT_PARAM)).toBe('1');
+    expect(parsed.hash).toBe('#mode=edit');
+  });
+
+  it('resolves a relative URL against the current origin', async () => {
+    setBuildPageUrl(async () => '/k/m/1/show?record=42#mode=edit');
+    const url = await buildMobileInlineEditUrl({ appId: '1', recordId: '42' });
+    expect(new URL(url).origin).toBe('https://example.cybozu.com');
+  });
+
+  it('rejects a URL on a different origin', async () => {
+    setBuildPageUrl(async () => 'https://evil.example.com/k/m/1/show?record=42');
+    await expect(buildMobileInlineEditUrl({ appId: '1', recordId: '42' })).rejects.toThrow();
+  });
+
+  it('rejects when kintone.buildPageUrl is unavailable', async () => {
+    await expect(buildMobileInlineEditUrl({ appId: '1', recordId: '42' })).rejects.toThrow();
+  });
+});
+
+describe('buildMobileInlineCreateUrl', () => {
+  it('requests the mobile create page URL and carries the initial values', async () => {
+    const buildPageUrl = vi.fn(async () => 'https://example.cybozu.com/k/m/1/edit');
+    setBuildPageUrl(buildPageUrl);
+
+    const url = await buildMobileInlineCreateUrl({
+      appId: '1',
+      condition,
+      initialValues: [{ fieldCode: 'start', value: '2026-07-14' }],
+    });
+
+    expect(buildPageUrl).toHaveBeenCalledWith('APP_CREATE_MOBILE', { appId: '1' });
+    const parsed = new URL(url);
+    expect(parsed.pathname).toBe('/k/m/1/edit');
+    expect(parsed.searchParams.get(CALENDAR_INLINE_CREATE_PARAM)).toBe('1');
+    expect(parsed.searchParams.get('calendar_inline_create_condition')).toBe('condition-1');
+    expect(JSON.parse(parsed.searchParams.get('calendar_inline_create_values')!)).toEqual([
+      { fieldCode: 'start', value: '2026-07-14' },
+    ]);
   });
 });
 
