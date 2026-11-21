@@ -1,7 +1,7 @@
 import { extractErrorMessage } from '@/lib/error';
 import { isDev } from '@/lib/global';
 import { t } from '@/lib/i18n-plugin';
-import { EventChangeArg, EventClickArg, EventRemoveArg } from '@fullcalendar/core';
+import type { EventChangeArg, EventClickArg, EventRemoveArg } from '@fullcalendar/core';
 import { atom, useSetAtom } from 'jotai';
 import { enqueueSnackbar } from 'notistack';
 import { reschedule } from '../actions';
@@ -10,6 +10,7 @@ import { calendarEventsAtom } from '../states/calendar';
 import { requestConfirmAtom } from '../states/confirm';
 import { openEventEditorAtom } from '../states/event-operations';
 import { appPropertiesAtom, loadingAtom, pluginConditionAtom } from '../states/kintone';
+import { notifyIfHiddenByFiltersAtom } from '../states/filter-notice';
 import { refreshComputedValuesAtom } from '../states/refresh';
 
 const handleCalendarEventDeleteAtom = atom(null, (get, set, props: EventRemoveArg) => {
@@ -104,6 +105,7 @@ const handleCalendarEventChangeAtom = atom(null, async (get, set, props: EventCh
     isDev && console.info('レコードを更新しました');
     if (newEvent.id) {
       await set(refreshComputedValuesAtom, newEvent.id);
+      set(notifyIfHiddenByFiltersAtom, newEvent.id);
     }
   } catch (error) {
     console.error(error);

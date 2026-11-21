@@ -5,14 +5,16 @@ import {
 } from '@/desktop/actions';
 import type { InlineInitialValue } from '@/desktop/inline-record';
 import { INLINE_MESSAGE, shouldUseDetailedEditMode } from '@/desktop/inline-record';
+import { isShownUnderFilters } from '@/desktop/event-filters';
 import { GUEST_SPACE_ID } from '@/lib/global';
 import { t } from '@/lib/i18n-plugin';
 import { getAppId, getRecord, isMobile } from '@konomi-app/kintone-utilities';
 import { produce } from 'immer';
 import { atom } from 'jotai';
 import { enqueueSnackbar } from 'notistack';
-import { calendarEventsAtom, PluginCalendarEvent } from './calendar';
+import { calendarEventsAtom, calendarFiltersAtom, type PluginCalendarEvent } from './calendar';
 import { appPropertiesAtom, loadingAtom, pluginConditionAtom } from './kintone';
+import { notifyIfHiddenByFiltersAtom } from './filter-notice';
 import { refreshComputedValuesAtom } from './refresh';
 
 export type DetailedDialogState =
@@ -131,6 +133,7 @@ export const handleDetailedDialogClosedAtom = atom(
         }
 
         await set(reflectSavedRecordAtom, payload.recordId);
+        set(notifyIfHiddenByFiltersAtom, payload.recordId);
 
         if (state.override) {
           const condition = get(pluginConditionAtom)!;
@@ -154,7 +157,14 @@ export const handleDetailedDialogClosedAtom = atom(
           }
         }
       } else {
+        // 編集は取りこぼし対策としてキャンセル時も再取得するため、キャンセルした場合と、もともと
+        // 絞り込みで非表示だった予定の場合は「保存しました」と通知しない
+        const before = get(calendarEventsAtom).find(({ id }) => id === state.recordId);
+        const wasShown = !before || isShownUnderFilters(before, get(calendarFiltersAtom));
         await set(reflectSavedRecordAtom, state.recordId);
+        if (payload?.type !== INLINE_MESSAGE.editCancelled && wasShown) {
+          set(notifyIfHiddenByFiltersAtom, state.recordId);
+        }
       }
     } catch (error) {
       console.error(error);

@@ -28,6 +28,7 @@ import {
   occurrenceContextAtom,
   openOccurrenceScopeDialogAtom,
 } from './recurrence';
+import { isHiddenByFiltersAtom, notifyIfHiddenByFiltersAtom } from './filter-notice';
 import { refreshComputedValuesAtom } from './refresh';
 
 export type EventOccurrenceTarget = {
@@ -93,7 +94,13 @@ export const copyCalendarEventAtom = atom(null, async (get, set, event: PluginCa
     if (newEvent.id) {
       await set(refreshComputedValuesAtom, newEvent.id);
     }
-    enqueueSnackbar(t('desktop.toast.eventCopied'), { variant: 'success' });
+    // 複製した予定が絞り込みで表示されない場合は、そのことの通知だけを出す
+    // (通知は同時に1件しか表示されず、成功の通知を出すとすぐに押し出されてしまうため)
+    if (set(isHiddenByFiltersAtom, newEvent.id)) {
+      set(notifyIfHiddenByFiltersAtom, newEvent.id);
+    } else {
+      enqueueSnackbar(t('desktop.toast.eventCopied'), { variant: 'success' });
+    }
     return true;
   } catch (error) {
     console.error(error);
@@ -187,6 +194,7 @@ export const changeEventCategoryAtom = atom(
         })
       );
       await set(refreshComputedValuesAtom, event.id);
+      set(notifyIfHiddenByFiltersAtom, event.id);
     } catch (error) {
       console.error(error);
       enqueueSnackbar(t('desktop.error.recordUpdateFailed', extractErrorMessage(error)), {

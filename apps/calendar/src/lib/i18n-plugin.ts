@@ -64,6 +64,9 @@ const ui = mergeDeep(commonUi, {
     // Desktop - Toast messages
     'desktop.toast.eventCopied': 'イベントのコピーしました',
     'desktop.toast.recordDeleted': 'レコードの削除が完了しました',
+    'desktop.toast.hiddenByFilters':
+      '保存しました。現在の絞り込みの条件では、この予定は表示されません',
+    'desktop.toast.clearFilters': '絞り込みを解除',
 
     // Desktop - Error messages
     'desktop.error.recordSaveFailed': 'レコードの保存に失敗しました: {0}',
@@ -360,6 +363,8 @@ const ui = mergeDeep(commonUi, {
     // Desktop - Toast messages
     'desktop.toast.eventCopied': 'Event copied',
     'desktop.toast.recordDeleted': 'Record deleted successfully',
+    'desktop.toast.hiddenByFilters': 'Saved. This event is hidden by the current filters.',
+    'desktop.toast.clearFilters': 'Clear filters',
 
     // Desktop - Error messages
     'desktop.error.recordSaveFailed': 'Failed to save record: {0}',
@@ -653,6 +658,8 @@ const ui = mergeDeep(commonUi, {
     // Desktop - Toast messages
     'desktop.toast.eventCopied': 'Evento copiado',
     'desktop.toast.recordDeleted': 'Registro eliminado exitosamente',
+    'desktop.toast.hiddenByFilters': 'Guardado. Este evento está oculto por los filtros actuales.',
+    'desktop.toast.clearFilters': 'Quitar filtros',
 
     // Desktop - Error messages
     'desktop.error.recordSaveFailed': 'Error al guardar registro: {0}',
@@ -948,6 +955,8 @@ const ui = mergeDeep(commonUi, {
     // Desktop - Toast messages
     'desktop.toast.eventCopied': '事件已复制',
     'desktop.toast.recordDeleted': '记录删除成功',
+    'desktop.toast.hiddenByFilters': '已保存。根据当前的筛选条件，此日程不会显示',
+    'desktop.toast.clearFilters': '清除筛选',
 
     // Desktop - Error messages
     'desktop.error.recordSaveFailed': '保存记录失败: {0}',
@@ -1220,6 +1229,8 @@ const ui = mergeDeep(commonUi, {
     // Desktop - Toast messages
     'desktop.toast.eventCopied': '事件已複製',
     'desktop.toast.recordDeleted': '記錄刪除成功',
+    'desktop.toast.hiddenByFilters': '已儲存。依目前的篩選條件，此行程不會顯示',
+    'desktop.toast.clearFilters': '清除篩選',
 
     // Desktop - Error messages
     'desktop.error.recordSaveFailed': '儲存記錄失敗：{0}',

@@ -3,7 +3,12 @@ import {
   hasRecurrenceExpansion,
   type RecurrenceMeta,
 } from '@/desktop/recurrence';
-import { type Assignee, isShownForAssignees } from '@/desktop/assignee';
+import type { Assignee } from '@/desktop/assignee';
+import {
+  type CalendarFilters,
+  hasActiveFilters,
+  isShownUnderFilters,
+} from '@/desktop/event-filters';
 import { isDev } from '@/lib/global';
 import type { DateSelectArg, EventInput } from '@fullcalendar/core';
 import { getYuruChara } from '@konomi-app/kintone-utilities';
@@ -59,52 +64,47 @@ export const handleSearchInputChangeAtom = atom(
   }
 );
 
-export const categoryFilteredCalendarEventsAtom = atom<PluginCalendarEvent[]>((get) => {
-  const allEvents = get(calendarEventsAtom);
-  const categories = get(displayingCategoriesAtom);
-
-  if (!categories) {
-    return allEvents;
-  }
-
-  return allEvents.filter((event) => !event.category || categories.includes(event.category));
-});
-
-/** カテゴリーで絞り込んだ予定を、さらに担当者で絞り込む(カテゴリーと担当者はAND条件) */
-export const assigneeFilteredCalendarEventsAtom = atom<PluginCalendarEvent[]>((get) => {
-  const events = get(categoryFilteredCalendarEventsAtom);
-  const displaying = get(displayingAssigneesAtom);
-  return displaying === null
-    ? events
-    : events.filter((event) => isShownForAssignees(event, displaying));
-});
-
-export const textFilteredCalendarEventsAtom = atom<PluginCalendarEvent[]>((get) => {
-  const allEvents = get(assigneeFilteredCalendarEventsAtom);
-  const searchInput = get(searchInputAtom);
-
-  if (!searchInput) {
-    return allEvents;
-  }
-
-  const searchWords = searchInput
+/** 正規化済みの検索語 */
+const searchWordsAtom = atom<string[]>((get) =>
+  get(searchInputAtom)
     .split(/\s+/)
+    .map((word) => word.trim())
     .filter((word) => word.length > 0)
-    .map((word) => getYuruChara(word.trim()));
-  if (searchWords.length === 0) {
+    .map((word) => getYuruChara(word))
+);
+
+/** サイドバーで指定されている絞り込みの条件(カテゴリー・担当者・キーワード検索) */
+export const calendarFiltersAtom = atom<CalendarFilters>((get) => ({
+  categories: get(displayingCategoriesAtom),
+  assignees: get(displayingAssigneesAtom),
+  searchWords: get(searchWordsAtom),
+}));
+
+/**
+ * 編集中の新しい予定(保存前の下書き)のID
+ *
+ * ダイアログの入力内容(`dialogPropsAtom`)を直接参照すると、打鍵のたびにカレンダー全体の予定が
+ * 再計算されるため、IDだけを取り出して値が変わったときのみ下流を再計算させる
+ */
+const draftEventIdAtom = atom((get) => {
+  const { new: isNew, event } = get(dialogPropsAtom);
+  return isNew ? event.id : undefined;
+});
+
+/** サイドバーの絞り込みの条件をすべて満たす予定(カテゴリー・担当者・キーワード検索はAND条件) */
+export const filteredCalendarEventsAtom = atom<PluginCalendarEvent[]>((get) => {
+  const allEvents = get(calendarEventsAtom);
+  const filters = get(calendarFiltersAtom);
+  if (!hasActiveFilters(filters)) {
     return allEvents;
   }
 
-  // 編集中の新しい予定(保存前の下書き)は、検索語に関係なく表示する(操作中に消えないように)
-  const dialogProps = get(dialogPropsAtom);
-  const draftId = dialogProps.new ? dialogProps.event.id : undefined;
+  // 編集中の新しい予定(保存前の下書き)は、絞り込みに関係なく表示する(操作中に消えないように)
+  const draftId = get(draftEventIdAtom);
 
-  return allEvents.filter((event) => {
-    if (draftId && event.id === draftId) {
-      return true;
-    }
-    return searchWords.every((word) => event.__quickSearch && event.__quickSearch.includes(word));
-  });
+  return allEvents.filter(
+    (event) => (draftId && event.id === draftId) || isShownUnderFilters(event, filters)
+  );
 });
 
 /**
@@ -116,7 +116,7 @@ export const textFilteredCalendarEventsAtom = atom<PluginCalendarEvent[]>((get) 
  * 描画直前のこの一段でのみマスターを変換する。
  */
 export const renderableCalendarEventsAtom = atom<PluginCalendarEvent[]>((get) => {
-  const events = get(textFilteredCalendarEventsAtom);
+  const events = get(filteredCalendarEventsAtom);
   const { timezone } = get(loginUserAtom);
 
   return events.map((event) => {

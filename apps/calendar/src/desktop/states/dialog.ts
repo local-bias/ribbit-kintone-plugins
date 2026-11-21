@@ -3,7 +3,7 @@ import { t } from '@/lib/i18n-plugin';
 import { produce } from 'immer';
 import { atom } from 'jotai';
 import { enqueueSnackbar } from 'notistack';
-import { SetStateAction } from 'react';
+import type { SetStateAction } from 'react';
 import {
   addNewRecord,
   getEventColors,
@@ -11,7 +11,8 @@ import {
   reschedule,
   withQuickSearch,
 } from '../actions';
-import { calendarEventsAtom, PluginCalendarEvent } from './calendar';
+import { calendarEventsAtom, type PluginCalendarEvent } from './calendar';
+import { notifyIfHiddenByFiltersAtom } from './filter-notice';
 import { refreshComputedValuesAtom } from './refresh';
 import { appPropertiesAtom, loadingAtom, pluginConditionAtom } from './kintone';
 
@@ -157,6 +158,7 @@ export const handleDialogSubmitAtom = atom(null, async (get, set) => {
 
     if (savedRecordId) {
       await set(refreshComputedValuesAtom, savedRecordId);
+      set(notifyIfHiddenByFiltersAtom, savedRecordId);
     }
   } catch (error) {
     console.error(error);
