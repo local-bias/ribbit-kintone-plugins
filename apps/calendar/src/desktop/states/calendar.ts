@@ -3,15 +3,12 @@ import {
   hasRecurrenceExpansion,
   RecurrenceMeta,
 } from '@/desktop/recurrence';
-import { GUEST_SPACE_ID, isDev } from '@/lib/global';
-import { t } from '@/lib/i18n-plugin';
+import { isDev } from '@/lib/global';
 import { DateSelectArg, EventInput } from '@fullcalendar/core';
-import { deleteAllRecords, getAppId, getYuruChara } from '@konomi-app/kintone-utilities';
+import { getYuruChara } from '@konomi-app/kintone-utilities';
 import { produce } from 'immer';
 import { atom } from 'jotai';
-import { enqueueSnackbar } from 'notistack';
 import {
-  addNewRecord,
   completeCalendarEvent,
   forceAllDayCalendarEvent,
   getDefaultAllDayRange,
@@ -20,12 +17,11 @@ import {
 } from '../actions';
 import { isDetailedModeAtom, openDetailedCreateDialogAtom } from './detailed-dialog';
 import { dialogPropsAtom, dialogShownAtom } from './dialog';
-import { appPropertiesAtom, loadingAtom, loginUserAtom, pluginConditionAtom } from './kintone';
+import { loginUserAtom } from './kintone';
 import { isTimeSupportedAtom } from './plugin';
 import { displayingCategoriesAtom } from './sidebar';
 import { ComponentRef } from 'react';
 import FullCalendar from '@fullcalendar/react';
-import { extractErrorMessage } from '@/lib/error';
 
 export type PluginCalendarEvent = EventInput & {
   note?: string;
@@ -177,65 +173,4 @@ export const handleTemporaryEventAddAtom = atom(null, async (get, set) => {
   set(calendarEventsAtom, (current) => produce(current, (draft) => [...draft, completed]));
   set(dialogPropsAtom, { new: true, event: completed });
   set(dialogShownAtom, true);
-});
-
-/**
- * カレンダーイベントをコピーして新規追加する
- */
-export const handleCalendarEventCopyAtom = atom(null, async (get, set) => {
-  try {
-    set(loadingAtom, true);
-
-    const currentProps = get(dialogPropsAtom);
-    if (!currentProps.event.id) {
-      throw new Error(t('desktop.error.cannotCopyNewEvent'));
-    }
-
-    const condition = get(pluginConditionAtom);
-    const properties = await get(appPropertiesAtom);
-    const newEvent = await addNewRecord({
-      calendarEvent: completeCalendarEvent({
-        ...currentProps.event,
-        id: undefined,
-        title: `${currentProps.event.title}${t('desktop.error.eventCopySuffix')}`,
-      }),
-      condition: condition!,
-      properties,
-    });
-    set(calendarEventsAtom, (current) => [...current, newEvent]);
-    set(dialogShownAtom, false);
-    enqueueSnackbar(t('desktop.toast.eventCopied'), { variant: 'success' });
-  } finally {
-    set(loadingAtom, false);
-  }
-});
-
-export const handleCalendarEventDeleteAtom = atom(null, async (get, set) => {
-  set(loadingAtom, true);
-  try {
-    const currentProps = await get(dialogPropsAtom);
-    const eventId = currentProps.event.id;
-    if (!eventId) {
-      throw t('desktop.error.eventRecordNotFound');
-    }
-
-    set(calendarEventsAtom, (current) => current.filter((event) => event.id !== eventId));
-    set(dialogShownAtom, false);
-    set(dialogPropsAtom, { new: false, event: {} });
-    const app = getAppId()!;
-    await deleteAllRecords({
-      app,
-      ids: [Number(eventId)],
-      guestSpaceId: GUEST_SPACE_ID,
-      debug: process.env.NODE_ENV === 'development',
-    });
-    enqueueSnackbar(t('desktop.toast.recordDeleted'), { variant: 'success' });
-  } catch (error) {
-    console.error(error);
-    enqueueSnackbar(t('desktop.error.recordDeleteFailed', extractErrorMessage(error)), {
-      variant: 'error',
-    });
-  } finally {
-    set(loadingAtom, false);
-  }
 });

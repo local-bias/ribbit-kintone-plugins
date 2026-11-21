@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
-import { isMobile } from '@konomi-app/kintone-utilities';
+import { getRecordDetailUrl } from '@/desktop/record-url';
+import { t } from '@/lib/i18n-plugin';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import {
   Divider,
@@ -13,13 +14,13 @@ import {
 import { useAtomValue, useSetAtom } from 'jotai';
 import { Copy, File, Trash2 } from 'lucide-react';
 import { FCX, useState } from 'react';
-import { handleCalendarEventCopyAtom, handleCalendarEventDeleteAtom } from '../../states/calendar';
+import { copyDialogEventAtom, deleteDialogEventAtom } from '../../states/event-operations';
 import { dialogPropsAtom } from '../../states/dialog';
 
 const Component: FCX = ({ className }) => {
   const props = useAtomValue(dialogPropsAtom);
-  const handleEventDelete = useSetAtom(handleCalendarEventDeleteAtom);
-  const handleEventCopy = useSetAtom(handleCalendarEventCopyAtom);
+  const handleEventDelete = useSetAtom(deleteDialogEventAtom);
+  const handleEventCopy = useSetAtom(copyDialogEventAtom);
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -53,27 +54,37 @@ const Component: FCX = ({ className }) => {
             >
               <a
                 className='rad:contents rad:text-inherit'
-                href={`${location.pathname}show${isMobile() ? '?' : '#'}record=${props.event.id}`}
+                href={getRecordDetailUrl(String(props.event.id))}
               >
                 <MenuItem>
                   <ListItemIcon>
                     <File className='rad:w-5 rad:h-5' />
                   </ListItemIcon>
-                  <ListItemText>詳細</ListItemText>
+                  <ListItemText>{t('desktop.contextMenu.showDetail')}</ListItemText>
                 </MenuItem>
               </a>
-              <MenuItem onClick={handleEventCopy}>
+              <MenuItem
+                onClick={() => {
+                  handleClose();
+                  handleEventCopy();
+                }}
+              >
                 <ListItemIcon>
                   <Copy className='rad:w-5 rad:h-5' />
                 </ListItemIcon>
-                <ListItemText>コピー</ListItemText>
+                <ListItemText>{t('desktop.contextMenu.copy')}</ListItemText>
               </MenuItem>
               <Divider />
-              <MenuItem onClick={handleEventDelete}>
+              <MenuItem
+                onClick={() => {
+                  handleClose();
+                  handleEventDelete();
+                }}
+              >
                 <ListItemIcon>
                   <Trash2 className='rad:w-5 rad:h-5' />
                 </ListItemIcon>
-                <ListItemText>削除</ListItemText>
+                <ListItemText>{t('desktop.contextMenu.delete')}</ListItemText>
               </MenuItem>
             </MenuList>
           </Menu>

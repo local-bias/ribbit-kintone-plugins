@@ -7,11 +7,12 @@ import {
   resolveSlotRange,
 } from '@/desktop/calendar-options';
 import { useCalendar } from '@/desktop/hooks/use-calendar';
+import { EVENT_DATA_ATTRIBUTES, openEventContextMenuAtom } from '@/desktop/states/context-menu';
 import { readStoredViewType, storeViewType } from '@/desktop/view-storage';
 import { getSlotTime } from '@/lib/calendar';
 import { t } from '@/lib/i18n-plugin';
 import { DEFAULT_SLOT_DURATION } from '@/schema/calendar';
-import { DatesSetArg, EventApi } from '@fullcalendar/core';
+import { DatesSetArg, EventApi, EventMountArg } from '@fullcalendar/core';
 import allLocales from '@fullcalendar/core/locales-all';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
@@ -36,6 +37,14 @@ const DEFAULT_SCROLL_TIME = '06:00:00';
 
 /** 予定の重複を禁止する場合でも、背景イベントの上には予定を配置できるようにする */
 const allowsOverlapWith = (stillEvent: EventApi) => stillEvent.display === 'background';
+
+/** 右クリックメニューで操作対象の予定を特定できるよう、予定の要素に識別情報を付与する */
+const handleEventDidMount = ({ el, event }: EventMountArg) => {
+  if (!event.id) return;
+  el.setAttribute(EVENT_DATA_ATTRIBUTES.id, event.id);
+  el.setAttribute(EVENT_DATA_ATTRIBUTES.start, event.startStr);
+  el.setAttribute(EVENT_DATA_ATTRIBUTES.end, event.endStr);
+};
 
 function FullCalendarRoot() {
   const setFullcalendarRef = useSetAtom(fullcalendarRefAtom);
@@ -152,6 +161,7 @@ function FullCalendarRoot() {
       // weekNumberContent={(props) => <pre>{JSON.stringify(props, null, 2)}</pre>}
       // moreLinkContent={(props) => <pre>{JSON.stringify(props, null, 2)}</pre>}
       eventContent={CalendarEvent}
+      eventDidMount={handleEventDidMount}
       select={onCalendarDateSelect}
       eventClick={onCalendarEventClick}
       eventChange={onCalendarEventChange}
@@ -166,6 +176,7 @@ function FullCalendarRoot() {
 export default function FullCalendarContainer() {
   const containerRef = useRef<HTMLDivElement>(null);
   const fullcalendarApi = useAtomValue(fullcalendarApiAtom);
+  const openContextMenu = useSetAtom(openEventContextMenuAtom);
 
   // サイドバーの開閉アニメーションなど、window自体はリサイズされないがコンテナ幅が
   // 変化するケースをFullCalendarの`handleWindowResize`は検知できないため、
@@ -185,8 +196,13 @@ export default function FullCalendarContainer() {
   }, [fullcalendarApi]);
 
   return (
-    <div ref={containerRef} className='rad:p-2 rad:md:p-4'>
-      <FullCalendarRoot />
+    <div ref={containerRef}>
+      <div
+        className='rad:p-2 rad:md:p-4'
+        onContextMenu={(event) => openContextMenu(event.nativeEvent)}
+      >
+        <FullCalendarRoot />
+      </div>
     </div>
   );
 }

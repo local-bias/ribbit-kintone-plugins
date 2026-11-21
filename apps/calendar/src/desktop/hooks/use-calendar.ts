@@ -5,50 +5,42 @@ import { EventChangeArg, EventClickArg, EventRemoveArg } from '@fullcalendar/cor
 import { atom, useSetAtom } from 'jotai';
 import { enqueueSnackbar } from 'notistack';
 import { reschedule } from '../actions';
+import { getRecordDetailUrl } from '../record-url';
 import { calendarEventsAtom } from '../states/calendar';
-import { detailedDialogAtom, isDetailedModeAtom } from '../states/detailed-dialog';
-import { dialogPropsAtom, dialogShownAtom } from '../states/dialog';
 import { requestConfirmAtom } from '../states/confirm';
+import { openEventEditorAtom } from '../states/event-operations';
 import { appPropertiesAtom, loadingAtom, pluginConditionAtom } from '../states/kintone';
-import { openOccurrenceScopeDialogAtom } from '../states/recurrence';
 import { refreshComputedValuesAtom } from '../states/refresh';
 
 const handleCalendarEventDeleteAtom = atom(null, (get, set, props: EventRemoveArg) => {
   console.info('📅 イベントが削除されました', props);
 });
 
-const handleCalendarEventClickAtom = atom(null, (get, set, props: EventClickArg) => {
-  const calendarEvents = get(calendarEventsAtom);
-  const foundEvent = calendarEvents.find(
-    (event) => event.id && props.event.id && event.id === props.event.id
-  );
-  if (!foundEvent) {
-    enqueueSnackbar(t('desktop.error.eventClickFailed'), { variant: 'error' });
+/**
+ * 修飾キー付きのクリックで、レコードの詳細画面を別タブ(Ctrl/⌘)・別ウィンドウ(Shift)に開きます
+ *
+ * @returns 別タブ・別ウィンドウで開いた場合は`true`
+ */
+const openInNewContextIfRequested = (jsEvent: MouseEvent, recordId: string | undefined) => {
+  if (!recordId || !(jsEvent.ctrlKey || jsEvent.metaKey || jsEvent.shiftKey)) {
+    return false;
+  }
+  jsEvent.preventDefault();
+  const features = jsEvent.shiftKey ? 'noopener,popup' : 'noopener';
+  window.open(getRecordDetailUrl(recordId), '_blank', features);
+  return true;
+};
+
+const handleCalendarEventClickAtom = atom(null, (_, set, props: EventClickArg) => {
+  if (openInNewContextIfRequested(props.jsEvent, props.event.id)) {
     return;
   }
-
-  // 繰り返し予定のマスターの場合、クリックされたのは仮想オカレンスなので通常の編集ダイアログの
-  // 代わりに「この回のみ/シリーズ全体」選択ダイアログを開く。クリックされた実際のオカレンス日時は
-  // props.event.startStr/endStrから取得する(foundEvent.start/endはマスター=第1回の日時のため)。
-  if (foundEvent.extendedProps?.recurrence?.kind === 'master') {
-    set(openOccurrenceScopeDialogAtom, {
-      master: foundEvent,
-      occurrenceStart: props.event.startStr,
-      occurrenceEnd: props.event.endStr,
-    });
-    return;
-  }
-
-  if (get(isDetailedModeAtom) && foundEvent.id) {
-    set(detailedDialogAtom, { mode: 'edit', recordId: foundEvent.id });
-    return;
-  }
-
-  set(dialogPropsAtom, {
-    new: false,
-    event: foundEvent,
+  // 繰り返し予定の場合、クリックされた実際の回の日時はprops.event.startStr/endStrから取得する
+  set(openEventEditorAtom, {
+    eventId: props.event.id,
+    occurrenceStart: props.event.startStr,
+    occurrenceEnd: props.event.endStr,
   });
-  set(dialogShownAtom, true);
 });
 
 const handleCalendarEventChangeAtom = atom(null, async (get, set, props: EventChangeArg) => {
