@@ -84,6 +84,9 @@ catalogs:
     vitest:
       specifier: ^4.1.8
       version: 4.1.11
+    zod:
+      specifier: ^4.6.7
+      version: 4.6.7
 
 importers:
 
@@ -142,16 +145,16 @@ importers:
         version: 0.4.0
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-jotai':
         specifier: 'catalog:'
-        version: 3.0.0(f7e508f827b95405a76441369bbf1019)
+        version: 3.0.0(a4636fb22d54c2e4888717bc728d9395)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(f93f0475e6e3fe0db6aabba650671df5)
+        version: 4.0.0(af7de5c9c5ae44fc7e377ef948706e15)
       '@konomi-app/ui':
         specifier: 'catalog:'
-        version: 7.2.0(lit@3.3.3)(zod@4.6.5)
+        version: 7.2.0(lit@3.3.3)(zod@4.6.7)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -220,7 +223,7 @@ importers:
         version: 3.0.2(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       openai:
         specifier: ^6.17.0
-        version: 6.49.0(ws@8.21.3)(zod@4.6.5)
+        version: 6.49.0(ws@8.21.3)(zod@4.6.7)
       react:
         specifier: 'catalog:'
         version: 19.3.0
@@ -240,8 +243,8 @@ importers:
         specifier: ^1.3.3
         version: 1.3.3
       zod:
-        specifier: ^4.3.6
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@kintone/dts-gen':
         specifier: ^9.0.2
@@ -299,7 +302,7 @@ importers:
     dependencies:
       '@ai-sdk/openai':
         specifier: ^3.0.25
-        version: 3.0.117(zod@4.6.5)
+        version: 3.0.117(zod@4.6.7)
       '@dnd-kit/core':
         specifier: ^6.3.1
         version: 6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -329,16 +332,16 @@ importers:
         version: 0.4.0
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-jotai':
         specifier: 'catalog:'
-        version: 3.0.0(f7e508f827b95405a76441369bbf1019)
+        version: 3.0.0(a4636fb22d54c2e4888717bc728d9395)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(6f0daa6ce2def91c9e49a49375c4857c)
+        version: 4.0.0(1eda6d37c706d4cde24a327fb7d8b8bd)
       '@konomi-app/ui':
         specifier: 'catalog:'
-        version: 7.2.0(lit@3.3.3)(zod@4.6.5)
+        version: 7.2.0(lit@3.3.3)(zod@4.6.7)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -350,7 +353,7 @@ importers:
         version: 7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@openrouter/ai-sdk-provider':
         specifier: ^2.1.1
-        version: 2.10.0(ai@6.0.290(zod@4.6.5))(zod@4.6.5)
+        version: 2.10.0(ai@6.0.290(zod@4.6.7))(zod@4.6.7)
       '@openrouter/sdk':
         specifier: ^0.8.0
         version: 0.8.0
@@ -377,7 +380,7 @@ importers:
         version: link:../../packages/jotai
       ai:
         specifier: ^6.0.70
-        version: 6.0.290(zod@4.6.5)
+        version: 6.0.290(zod@4.6.7)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -419,7 +422,7 @@ importers:
         version: 3.0.2(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       openai:
         specifier: ^6.17.0
-        version: 6.49.0(ws@8.21.3)(zod@4.6.5)
+        version: 6.49.0(ws@8.21.3)(zod@4.6.7)
       react:
         specifier: 'catalog:'
         version: 19.3.0
@@ -488,26 +491,26 @@ importers:
         specifier: 'catalog:'
         version: 6.0.3
       zod:
-        specifier: ^4.3.6
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
 
   apps/ai-customize:
     dependencies:
       '@ai-sdk/anthropic':
         specifier: ^4.0.84
-        version: 4.0.85(zod@4.6.5)
+        version: 4.0.85(zod@4.6.7)
       '@ai-sdk/azure':
         specifier: ^4.0.106
-        version: 4.0.107(zod@4.6.5)
+        version: 4.0.107(zod@4.6.7)
       '@ai-sdk/google':
         specifier: ^4.0.101
-        version: 4.0.102(zod@4.6.5)
+        version: 4.0.102(zod@4.6.7)
       '@ai-sdk/openai':
         specifier: ^4.0.98
-        version: 4.0.99(zod@4.6.5)
+        version: 4.0.99(zod@4.6.7)
       '@ai-sdk/openai-compatible':
         specifier: ^3.0.74
-        version: 3.0.75(zod@4.6.5)
+        version: 3.0.75(zod@4.6.7)
       '@dnd-kit/core':
         specifier: ^6.3.1
         version: 6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -531,16 +534,16 @@ importers:
         version: 0.4.0
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-jotai':
         specifier: 'catalog:'
-        version: 3.0.0(553ff157fc8be96e7e18f556c280e4a5)
+        version: 3.0.0(0ce6a2f0cd98a88e3582a5f5ecb897ea)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(5db14253a93a4da9f94816cdb2651fb3)
+        version: 4.0.0(5c32361a8f7d6025f84925eb0244c853)
       '@konomi-app/ui':
         specifier: 'catalog:'
-        version: 7.2.0(lit@3.3.3)(zod@4.6.5)
+        version: 7.2.0(lit@3.3.3)(zod@4.6.7)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -564,7 +567,7 @@ importers:
         version: link:../../packages/utils
       ai:
         specifier: ^7.0.146
-        version: 7.0.148(zod@4.6.5)
+        version: 7.0.148(zod@4.6.7)
       jotai:
         specifier: 'catalog:'
         version: 2.20.3(@babel/template@7.29.7)(@types/react@19.3.0)(react@19.3.0)
@@ -590,8 +593,8 @@ importers:
         specifier: ^1.3.3
         version: 1.3.3
       zod:
-        specifier: ^4.3.6
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@kintone/dts-gen':
         specifier: ^9.0.2
@@ -667,16 +670,16 @@ importers:
         version: 0.4.0
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-jotai':
         specifier: 'catalog:'
-        version: 3.0.0(f7e508f827b95405a76441369bbf1019)
+        version: 3.0.0(a4636fb22d54c2e4888717bc728d9395)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(7b14716120eecd460a24f94b43baa140)
+        version: 4.0.0(bf9c842db05be7c7e22fb1923b111093)
       '@konomi-app/ui':
         specifier: 'catalog:'
-        version: 7.2.0(lit@3.3.3)(zod@4.6.5)
+        version: 7.2.0(lit@3.3.3)(zod@4.6.7)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -768,8 +771,8 @@ importers:
         specifier: ^1.3.3
         version: 1.3.3
       zod:
-        specifier: ^4.3.6
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@kintone/dts-gen':
         specifier: ^9.0.2
@@ -836,16 +839,16 @@ importers:
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-jotai':
         specifier: 'catalog:'
-        version: 3.0.0(f7e508f827b95405a76441369bbf1019)
+        version: 3.0.0(a4636fb22d54c2e4888717bc728d9395)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(2a4b90ab38aea9bac064e745fad21971)
+        version: 4.0.0(f9d458c043114c3679c07208997ade39)
       '@konomi-app/ui':
         specifier: 'catalog:'
-        version: 7.2.0(lit@3.3.3)(zod@4.6.5)
+        version: 7.2.0(lit@3.3.3)(zod@4.6.7)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -937,8 +940,8 @@ importers:
         specifier: ^0.18.5
         version: 0.18.5
       zod:
-        specifier: ^4.2.1
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@kintone/dts-gen':
         specifier: ^9.0.0
@@ -1002,16 +1005,16 @@ importers:
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-jotai':
         specifier: 'catalog:'
-        version: 3.0.0(8334e74142779c3537f15e68af022ced)
+        version: 3.0.0(4872ef3aca2335a976d5371d8c17d317)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(bb3ac9d32413d9b369af071870070d5f)
+        version: 4.0.0(d71e4ce60a99ec410a6ea36cccb9adf8)
       '@konomi-app/ui':
         specifier: 'catalog:'
-        version: 7.2.0(lit@3.3.3)(zod@4.6.5)
+        version: 7.2.0(lit@3.3.3)(zod@4.6.7)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -1103,8 +1106,8 @@ importers:
         specifier: ^1.3.3
         version: 1.3.3
       zod:
-        specifier: ^4.2.1
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@kintone/dts-gen':
         specifier: 9.0.0
@@ -1177,16 +1180,16 @@ importers:
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-jotai':
         specifier: 'catalog:'
-        version: 3.0.0(f7e508f827b95405a76441369bbf1019)
+        version: 3.0.0(a4636fb22d54c2e4888717bc728d9395)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(f93f0475e6e3fe0db6aabba650671df5)
+        version: 4.0.0(af7de5c9c5ae44fc7e377ef948706e15)
       '@konomi-app/ui':
         specifier: 'catalog:'
-        version: 7.2.0(lit@3.3.3)(zod@4.6.5)
+        version: 7.2.0(lit@3.3.3)(zod@4.6.7)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -1263,8 +1266,8 @@ importers:
         specifier: ^1.4.0
         version: 1.4.0
       zod:
-        specifier: ^4.3.6
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@kintone/dts-gen':
         specifier: ^9.0.4
@@ -1331,16 +1334,16 @@ importers:
         version: 0.4.0
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-jotai':
         specifier: 'catalog:'
-        version: 3.0.0(f7e508f827b95405a76441369bbf1019)
+        version: 3.0.0(a4636fb22d54c2e4888717bc728d9395)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(7b14716120eecd460a24f94b43baa140)
+        version: 4.0.0(bf9c842db05be7c7e22fb1923b111093)
       '@konomi-app/ui':
         specifier: 'catalog:'
-        version: 7.2.0(lit@3.3.3)(zod@4.6.5)
+        version: 7.2.0(lit@3.3.3)(zod@4.6.7)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -1432,8 +1435,8 @@ importers:
         specifier: ^1.3.3
         version: 1.3.3
       zod:
-        specifier: ^4.3.6
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@kintone/dts-gen':
         specifier: ^9.0.2
@@ -1521,10 +1524,10 @@ importers:
         version: 6.1.3(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(2a4b90ab38aea9bac064e745fad21971)
+        version: 4.0.0(f9d458c043114c3679c07208997ade39)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -1634,8 +1637,8 @@ importers:
         specifier: ^11.0.5
         version: 11.0.5
       zod:
-        specifier: ^4.3.5
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@kintone/dts-gen':
         specifier: ^9.0.1
@@ -1699,16 +1702,16 @@ importers:
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-jotai':
         specifier: 'catalog:'
-        version: 3.0.0(8334e74142779c3537f15e68af022ced)
+        version: 3.0.0(4872ef3aca2335a976d5371d8c17d317)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(a3813287b7c150b1e6056b3aabe8e240)
+        version: 4.0.0(27713989add07c0ad3ac0c653065e791)
       '@konomi-app/ui':
         specifier: 'catalog:'
-        version: 7.2.0(lit@3.3.3)(zod@4.6.5)
+        version: 7.2.0(lit@3.3.3)(zod@4.6.7)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -1820,16 +1823,16 @@ importers:
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-jotai':
         specifier: 'catalog:'
-        version: 3.0.0(f7e508f827b95405a76441369bbf1019)
+        version: 3.0.0(a4636fb22d54c2e4888717bc728d9395)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(2a4b90ab38aea9bac064e745fad21971)
+        version: 4.0.0(f9d458c043114c3679c07208997ade39)
       '@konomi-app/ui':
         specifier: 'catalog:'
-        version: 7.2.0(lit@3.3.3)(zod@4.6.5)
+        version: 7.2.0(lit@3.3.3)(zod@4.6.7)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -1918,8 +1921,8 @@ importers:
         specifier: ^1.3.3
         version: 1.3.3
       zod:
-        specifier: ^4.2.1
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@kintone/dts-gen':
         specifier: ^9.0.0
@@ -1977,13 +1980,13 @@ importers:
         version: 6.1.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-jotai':
         specifier: 'catalog:'
-        version: 3.0.0(44e0d52adc87d1ea4b208f0651d08342)
+        version: 3.0.0(f2d2bea12b164b1e608b7dce6d8fc5fa)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(f93f0475e6e3fe0db6aabba650671df5)
+        version: 4.0.0(af7de5c9c5ae44fc7e377ef948706e15)
       '@konomi-app/kintone-utility-component':
         specifier: ^1.3.1
         version: 1.3.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(supports-color@8.1.1)
@@ -2045,8 +2048,8 @@ importers:
         specifier: ^1.3.3
         version: 1.3.3
       zod:
-        specifier: ^4.2.1
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@kintone/dts-gen':
         specifier: 9.0.0
@@ -2122,16 +2125,16 @@ importers:
         version: 0.4.0
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-jotai':
         specifier: 'catalog:'
-        version: 3.0.0(f7e508f827b95405a76441369bbf1019)
+        version: 3.0.0(a4636fb22d54c2e4888717bc728d9395)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(9b6e488c795821e0fdb64aef171ec38e)
+        version: 4.0.0(34b649aebf0c7a9a4a3ae4f716809477)
       '@konomi-app/ui':
         specifier: 'catalog:'
-        version: 7.2.0(lit@3.3.3)(zod@4.6.5)
+        version: 7.2.0(lit@3.3.3)(zod@4.6.7)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -2214,8 +2217,8 @@ importers:
         specifier: ^1.3.3
         version: 1.3.3
       zod:
-        specifier: ^4.3.6
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@kintone/dts-gen':
         specifier: ^9.0.2
@@ -2294,16 +2297,16 @@ importers:
         version: 0.4.0
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-jotai':
         specifier: 'catalog:'
-        version: 3.0.0(f7e508f827b95405a76441369bbf1019)
+        version: 3.0.0(a4636fb22d54c2e4888717bc728d9395)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(f93f0475e6e3fe0db6aabba650671df5)
+        version: 4.0.0(af7de5c9c5ae44fc7e377ef948706e15)
       '@konomi-app/ui':
         specifier: 'catalog:'
-        version: 7.2.0(lit@3.3.3)(zod@4.6.5)
+        version: 7.2.0(lit@3.3.3)(zod@4.6.7)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -2392,8 +2395,8 @@ importers:
         specifier: ^1.3.3
         version: 1.3.3
       zod:
-        specifier: ^4.3.6
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@kintone/dts-gen':
         specifier: ^9.0.2
@@ -2472,16 +2475,16 @@ importers:
         version: 0.4.0
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-jotai':
         specifier: 'catalog:'
-        version: 3.0.0(f7e508f827b95405a76441369bbf1019)
+        version: 3.0.0(a4636fb22d54c2e4888717bc728d9395)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(f93f0475e6e3fe0db6aabba650671df5)
+        version: 4.0.0(af7de5c9c5ae44fc7e377ef948706e15)
       '@konomi-app/ui':
         specifier: 'catalog:'
-        version: 7.2.0(lit@3.3.3)(zod@4.6.5)
+        version: 7.2.0(lit@3.3.3)(zod@4.6.7)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -2567,8 +2570,8 @@ importers:
         specifier: ^1.3.3
         version: 1.3.3
       zod:
-        specifier: ^4.3.6
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@kintone/dts-gen':
         specifier: ^9.0.2
@@ -2641,16 +2644,16 @@ importers:
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-jotai':
         specifier: 'catalog:'
-        version: 3.0.0(f7e508f827b95405a76441369bbf1019)
+        version: 3.0.0(a4636fb22d54c2e4888717bc728d9395)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(2a4b90ab38aea9bac064e745fad21971)
+        version: 4.0.0(f9d458c043114c3679c07208997ade39)
       '@konomi-app/ui':
         specifier: 'catalog:'
-        version: 7.2.0(lit@3.3.3)(zod@4.6.5)
+        version: 7.2.0(lit@3.3.3)(zod@4.6.7)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -2742,8 +2745,8 @@ importers:
         specifier: ^1.3.3
         version: 1.3.3
       zod:
-        specifier: ^4.2.1
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@kintone/dts-gen':
         specifier: ^9.0.0
@@ -2813,16 +2816,16 @@ importers:
         version: 0.4.0
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-jotai':
         specifier: 'catalog:'
-        version: 3.0.0(f7e508f827b95405a76441369bbf1019)
+        version: 3.0.0(a4636fb22d54c2e4888717bc728d9395)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(9b6e488c795821e0fdb64aef171ec38e)
+        version: 4.0.0(34b649aebf0c7a9a4a3ae4f716809477)
       '@konomi-app/ui':
         specifier: 'catalog:'
-        version: 7.2.0(lit@3.3.3)(zod@4.6.5)
+        version: 7.2.0(lit@3.3.3)(zod@4.6.7)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -2899,8 +2902,8 @@ importers:
         specifier: ^1.3.3
         version: 1.3.3
       zod:
-        specifier: ^4.3.6
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@kintone/dts-gen':
         specifier: ^9.0.2
@@ -2971,16 +2974,16 @@ importers:
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-jotai':
         specifier: 'catalog:'
-        version: 3.0.0(f7e508f827b95405a76441369bbf1019)
+        version: 3.0.0(a4636fb22d54c2e4888717bc728d9395)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(2a4b90ab38aea9bac064e745fad21971)
+        version: 4.0.0(f9d458c043114c3679c07208997ade39)
       '@konomi-app/ui':
         specifier: 'catalog:'
-        version: 7.2.0(lit@3.3.3)(zod@4.6.5)
+        version: 7.2.0(lit@3.3.3)(zod@4.6.7)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -3066,8 +3069,8 @@ importers:
         specifier: ^1.3.3
         version: 1.3.3
       zod:
-        specifier: ^4.2.1
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@kintone/dts-gen':
         specifier: ^9.0.0
@@ -3140,16 +3143,16 @@ importers:
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-jotai':
         specifier: 'catalog:'
-        version: 3.0.0(f7e508f827b95405a76441369bbf1019)
+        version: 3.0.0(a4636fb22d54c2e4888717bc728d9395)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(2a4b90ab38aea9bac064e745fad21971)
+        version: 4.0.0(f9d458c043114c3679c07208997ade39)
       '@konomi-app/ui':
         specifier: 'catalog:'
-        version: 7.2.0(lit@3.3.3)(zod@4.6.5)
+        version: 7.2.0(lit@3.3.3)(zod@4.6.7)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -3247,8 +3250,8 @@ importers:
         specifier: ^1.3.3
         version: 1.3.3
       zod:
-        specifier: ^4.2.1
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@kintone/dts-gen':
         specifier: ^9.0.0
@@ -3324,16 +3327,16 @@ importers:
         version: 0.4.0
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-jotai':
         specifier: 'catalog:'
-        version: 3.0.0(f7e508f827b95405a76441369bbf1019)
+        version: 3.0.0(a4636fb22d54c2e4888717bc728d9395)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(f93f0475e6e3fe0db6aabba650671df5)
+        version: 4.0.0(af7de5c9c5ae44fc7e377ef948706e15)
       '@konomi-app/ui':
         specifier: 'catalog:'
-        version: 7.2.0(lit@3.3.3)(zod@4.6.5)
+        version: 7.2.0(lit@3.3.3)(zod@4.6.7)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -3419,8 +3422,8 @@ importers:
         specifier: ^1.3.3
         version: 1.3.3
       zod:
-        specifier: ^4.3.6
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@kintone/dts-gen':
         specifier: ^9.0.2
@@ -3499,13 +3502,13 @@ importers:
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-jotai':
         specifier: 'catalog:'
-        version: 3.0.0(f7e508f827b95405a76441369bbf1019)
+        version: 3.0.0(a4636fb22d54c2e4888717bc728d9395)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(2a4b90ab38aea9bac064e745fad21971)
+        version: 4.0.0(f9d458c043114c3679c07208997ade39)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -3579,8 +3582,8 @@ importers:
         specifier: ^3.11.0
         version: 3.11.0
       zod:
-        specifier: ^4.2.1
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@biomejs/biome':
         specifier: 'catalog:'
@@ -3656,13 +3659,13 @@ importers:
         version: 3.1.2(@rspack/core@1.7.12(@swc/helpers@0.5.23))(clean-css@5.3.3)(cssnano@7.1.9(postcss@8.5.28))(csso@5.0.5)(html-minifier-terser@7.2.0)(lightningcss@1.33.0)(postcss@8.5.28)(svgo@4.1.0)(typescript@6.0.3)
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utility-component':
         specifier: ^1.3.1
         version: 1.3.1(@emotion/react@11.13.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(supports-color@8.1.1)
       '@konomi-app/ui':
         specifier: 'catalog:'
-        version: 7.2.0(lit@3.3.3)(zod@4.6.5)
+        version: 7.2.0(lit@3.3.3)(zod@4.6.7)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.13.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.13.0(@emotion/react@11.13.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -3740,16 +3743,16 @@ importers:
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-jotai':
         specifier: 'catalog:'
-        version: 3.0.0(f7e508f827b95405a76441369bbf1019)
+        version: 3.0.0(a4636fb22d54c2e4888717bc728d9395)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(f93f0475e6e3fe0db6aabba650671df5)
+        version: 4.0.0(af7de5c9c5ae44fc7e377ef948706e15)
       '@konomi-app/ui':
         specifier: 'catalog:'
-        version: 7.2.0(lit@3.3.3)(zod@4.6.5)
+        version: 7.2.0(lit@3.3.3)(zod@4.6.7)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -3811,8 +3814,8 @@ importers:
         specifier: ^1.3.3
         version: 1.3.3
       zod:
-        specifier: ^4.3.6
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@kintone/dts-gen':
         specifier: ^9.0.2
@@ -3882,13 +3885,13 @@ importers:
         version: 6.1.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-jotai':
         specifier: 'catalog:'
-        version: 3.0.0(0684ff7e913a35745df95954239d6318)
+        version: 3.0.0(70ae60f637c703e2680cf77ed851f4a4)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(bb3ac9d32413d9b369af071870070d5f)
+        version: 4.0.0(d71e4ce60a99ec410a6ea36cccb9adf8)
       '@konomi-app/kintone-utility-component':
         specifier: ^1.3.1
         version: 1.3.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(supports-color@8.1.1)
@@ -3962,8 +3965,8 @@ importers:
         specifier: ^1.3.3
         version: 1.3.3
       zod:
-        specifier: ^4.2.1
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@konomi-app/k2':
         specifier: 'catalog:'
@@ -4021,13 +4024,13 @@ importers:
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(bb3ac9d32413d9b369af071870070d5f)
+        version: 4.0.0(d71e4ce60a99ec410a6ea36cccb9adf8)
       '@konomi-app/ui':
         specifier: 'catalog:'
-        version: 7.2.0(lit@3.3.3)(zod@4.6.5)
+        version: 7.2.0(lit@3.3.3)(zod@4.6.7)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -4089,8 +4092,8 @@ importers:
         specifier: ^1.3.3
         version: 1.3.3
       zod:
-        specifier: ^4.2.1
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@kintone/dts-gen':
         specifier: 9.0.0
@@ -4151,13 +4154,13 @@ importers:
         version: 6.1.0(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(25013c09d3a9f7f7d089dc7bf5fc29b5)
+        version: 4.0.0(6979c0e7bcf8afafd7994475df249af9)
       '@konomi-app/ui':
         specifier: 'catalog:'
-        version: 7.2.0(lit@3.3.3)(zod@4.6.5)
+        version: 7.2.0(lit@3.3.3)(zod@4.6.7)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -4222,8 +4225,8 @@ importers:
         specifier: ^1.3.3
         version: 1.3.3
       zod:
-        specifier: ^4.3.3
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@kintone/dts-gen':
         specifier: 9.0.0
@@ -4299,13 +4302,13 @@ importers:
         version: 2.2.0(react@19.3.0)
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-jotai':
         specifier: 'catalog:'
-        version: 3.0.0(f7e508f827b95405a76441369bbf1019)
+        version: 3.0.0(a4636fb22d54c2e4888717bc728d9395)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(7b14716120eecd460a24f94b43baa140)
+        version: 4.0.0(bf9c842db05be7c7e22fb1923b111093)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -4400,8 +4403,8 @@ importers:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@4.3.3)
       zod:
-        specifier: ^4.3.6
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@kintone/dts-gen':
         specifier: 9.0.2
@@ -4471,16 +4474,16 @@ importers:
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-jotai':
         specifier: 'catalog:'
-        version: 3.0.0(7cf71e98df6641b49973be835014b739)
+        version: 3.0.0(844b305ad8145aa313f65f0793be6d6d)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(a8f0d513249ba597dd5a5117b61e0b23)
+        version: 4.0.0(333306b962a91c0330a7f55bc8f4ac68)
       '@konomi-app/ui':
         specifier: 'catalog:'
-        version: 7.2.0(lit@3.3.3)(zod@4.6.5)
+        version: 7.2.0(lit@3.3.3)(zod@4.6.7)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -4551,8 +4554,8 @@ importers:
         specifier: ^14.0.0
         version: 14.0.2
       zod:
-        specifier: ^4.3.6
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@kintone/dts-gen':
         specifier: ^9.0.5
@@ -4610,16 +4613,16 @@ importers:
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-jotai':
         specifier: 'catalog:'
-        version: 3.0.0(f7e508f827b95405a76441369bbf1019)
+        version: 3.0.0(a4636fb22d54c2e4888717bc728d9395)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(6f0daa6ce2def91c9e49a49375c4857c)
+        version: 4.0.0(1eda6d37c706d4cde24a327fb7d8b8bd)
       '@konomi-app/ui':
         specifier: 'catalog:'
-        version: 7.2.0(lit@3.3.3)(zod@4.6.5)
+        version: 7.2.0(lit@3.3.3)(zod@4.6.7)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -4708,8 +4711,8 @@ importers:
         specifier: ^1.3.3
         version: 1.3.3
       zod:
-        specifier: ^4.3.6
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@kintone/dts-gen':
         specifier: ^9.0.2
@@ -4794,16 +4797,16 @@ importers:
         version: 0.4.0
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-jotai':
         specifier: 'catalog:'
-        version: 3.0.0(f7e508f827b95405a76441369bbf1019)
+        version: 3.0.0(a4636fb22d54c2e4888717bc728d9395)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(f93f0475e6e3fe0db6aabba650671df5)
+        version: 4.0.0(af7de5c9c5ae44fc7e377ef948706e15)
       '@konomi-app/ui':
         specifier: 'catalog:'
-        version: 7.2.0(lit@3.3.3)(zod@4.6.5)
+        version: 7.2.0(lit@3.3.3)(zod@4.6.7)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -4889,8 +4892,8 @@ importers:
         specifier: ^1.3.3
         version: 1.3.3
       zod:
-        specifier: ^4.3.6
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@kintone/dts-gen':
         specifier: ^9.0.2
@@ -4963,16 +4966,16 @@ importers:
         version: 6.1.3(debug@4.4.3(supports-color@8.1.1))(supports-color@8.1.1)
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-jotai':
         specifier: 'catalog:'
-        version: 3.0.0(f7e508f827b95405a76441369bbf1019)
+        version: 3.0.0(a4636fb22d54c2e4888717bc728d9395)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(f93f0475e6e3fe0db6aabba650671df5)
+        version: 4.0.0(af7de5c9c5ae44fc7e377ef948706e15)
       '@konomi-app/ui':
         specifier: 'catalog:'
-        version: 7.2.0(lit@3.3.3)(zod@4.6.5)
+        version: 7.2.0(lit@3.3.3)(zod@4.6.7)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -5037,8 +5040,8 @@ importers:
         specifier: ^1.2.0
         version: 1.2.0
       zod:
-        specifier: ^4.3.6
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@kintone/dts-gen':
         specifier: 9.0.2
@@ -5096,16 +5099,16 @@ importers:
         version: 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-jotai':
         specifier: 'catalog:'
-        version: 3.0.0(f7e508f827b95405a76441369bbf1019)
+        version: 3.0.0(a4636fb22d54c2e4888717bc728d9395)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(2a4b90ab38aea9bac064e745fad21971)
+        version: 4.0.0(f9d458c043114c3679c07208997ade39)
       '@konomi-app/ui':
         specifier: 'catalog:'
-        version: 7.2.0(lit@3.3.3)(zod@4.6.5)
+        version: 7.2.0(lit@3.3.3)(zod@4.6.7)
       '@konomi-app/ui-react':
         specifier: 'catalog:'
         version: 3.0.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(react@19.3.0)
@@ -5194,8 +5197,8 @@ importers:
         specifier: ^1.3.3
         version: 1.3.3
       zod:
-        specifier: ^4.2.1
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
     devDependencies:
       '@kintone/dts-gen':
         specifier: ^9.0.0
@@ -5259,7 +5262,7 @@ importers:
     devDependencies:
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@repo/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -5273,8 +5276,8 @@ importers:
         specifier: 'catalog:'
         version: 4.1.11(@opentelemetry/api@1.9.1)(@types/node@26.6.2)(vite@8.3.0(@types/node@26.6.2)(esbuild@0.28.2)(jiti@2.7.0)(sass@1.105.0)(terser@5.51.2)(tsx@4.23.15))
       zod:
-        specifier: ^4.3.6
-        version: 4.6.5
+        specifier: 'catalog:'
+        version: 4.6.7
 
   packages/jotai:
     dependencies:
@@ -5284,7 +5287,7 @@ importers:
     devDependencies:
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@mui/material':
         specifier: ^7.3.9
         version: 7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -5347,10 +5350,10 @@ importers:
     devDependencies:
       '@konomi-app/kintone-utilities':
         specifier: 'catalog:'
-        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+        version: 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@konomi-app/kintone-utilities-react':
         specifier: 'catalog:'
-        version: 4.0.0(f93f0475e6e3fe0db6aabba650671df5)
+        version: 4.0.0(af7de5c9c5ae44fc7e377ef948706e15)
       '@mui/icons-material':
         specifier: ^7.3.6
         version: 7.3.9(@mui/material@7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(react@19.3.0)
@@ -13063,88 +13066,88 @@ packages:
   zod@3.23.8:
     resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
 
-  zod@4.6.5:
-    resolution: {integrity: sha512-v5l/aFXZQeai4awLbOpSoHecE9UiMrnfx75tEXLjNonXVARxQ5mOeipTjROUchszUNCqnE+hqAMujRsRHsut2Q==}
+  zod@4.6.7:
+    resolution: {integrity: sha512-g8W2D2kU6a8untc053fX1uVBKzM7yqAxW/3zwk83+6RyF2+SKOuV+c0wBDhUwzV1PaGapmZH+rmcUzPf+3CGwg==}
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
 
 snapshots:
 
-  '@ai-sdk/anthropic@4.0.85(zod@4.6.5)':
+  '@ai-sdk/anthropic@4.0.85(zod@4.6.7)':
     dependencies:
       '@ai-sdk/provider': 4.0.31
-      '@ai-sdk/provider-utils': 5.0.65(zod@4.6.5)
-      zod: 4.6.5
+      '@ai-sdk/provider-utils': 5.0.65(zod@4.6.7)
+      zod: 4.6.7
 
-  '@ai-sdk/azure@4.0.107(zod@4.6.5)':
+  '@ai-sdk/azure@4.0.107(zod@4.6.7)':
     dependencies:
-      '@ai-sdk/deepseek': 3.0.70(zod@4.6.5)
-      '@ai-sdk/openai': 4.0.99(zod@4.6.5)
+      '@ai-sdk/deepseek': 3.0.70(zod@4.6.7)
+      '@ai-sdk/openai': 4.0.99(zod@4.6.7)
       '@ai-sdk/provider': 4.0.31
-      '@ai-sdk/provider-utils': 5.0.65(zod@4.6.5)
-      zod: 4.6.5
+      '@ai-sdk/provider-utils': 5.0.65(zod@4.6.7)
+      zod: 4.6.7
 
-  '@ai-sdk/deepseek@3.0.70(zod@4.6.5)':
+  '@ai-sdk/deepseek@3.0.70(zod@4.6.7)':
     dependencies:
       '@ai-sdk/provider': 4.0.31
-      '@ai-sdk/provider-utils': 5.0.65(zod@4.6.5)
-      zod: 4.6.5
+      '@ai-sdk/provider-utils': 5.0.65(zod@4.6.7)
+      zod: 4.6.7
 
-  '@ai-sdk/gateway@3.0.200(zod@4.6.5)':
+  '@ai-sdk/gateway@3.0.200(zod@4.6.7)':
     dependencies:
       '@ai-sdk/provider': 3.0.17
-      '@ai-sdk/provider-utils': 4.0.54(zod@4.6.5)
+      '@ai-sdk/provider-utils': 4.0.54(zod@4.6.7)
       '@vercel/oidc': 3.2.0
-      zod: 4.6.5
+      zod: 4.6.7
 
-  '@ai-sdk/gateway@4.0.121(zod@4.6.5)':
+  '@ai-sdk/gateway@4.0.121(zod@4.6.7)':
     dependencies:
       '@ai-sdk/provider': 4.0.31
-      '@ai-sdk/provider-utils': 5.0.65(zod@4.6.5)
+      '@ai-sdk/provider-utils': 5.0.65(zod@4.6.7)
       '@vercel/oidc': 3.2.0
-      zod: 4.6.5
+      zod: 4.6.7
 
-  '@ai-sdk/google@4.0.102(zod@4.6.5)':
+  '@ai-sdk/google@4.0.102(zod@4.6.7)':
     dependencies:
       '@ai-sdk/provider': 4.0.31
-      '@ai-sdk/provider-utils': 5.0.65(zod@4.6.5)
-      zod: 4.6.5
+      '@ai-sdk/provider-utils': 5.0.65(zod@4.6.7)
+      zod: 4.6.7
 
-  '@ai-sdk/openai-compatible@3.0.75(zod@4.6.5)':
+  '@ai-sdk/openai-compatible@3.0.75(zod@4.6.7)':
     dependencies:
       '@ai-sdk/provider': 4.0.31
-      '@ai-sdk/provider-utils': 5.0.65(zod@4.6.5)
-      zod: 4.6.5
+      '@ai-sdk/provider-utils': 5.0.65(zod@4.6.7)
+      zod: 4.6.7
 
-  '@ai-sdk/openai@3.0.117(zod@4.6.5)':
+  '@ai-sdk/openai@3.0.117(zod@4.6.7)':
     dependencies:
       '@ai-sdk/provider': 3.0.17
-      '@ai-sdk/provider-utils': 4.0.54(zod@4.6.5)
-      zod: 4.6.5
+      '@ai-sdk/provider-utils': 4.0.54(zod@4.6.7)
+      zod: 4.6.7
 
-  '@ai-sdk/openai@4.0.99(zod@4.6.5)':
+  '@ai-sdk/openai@4.0.99(zod@4.6.7)':
     dependencies:
       '@ai-sdk/provider': 4.0.31
-      '@ai-sdk/provider-utils': 5.0.65(zod@4.6.5)
-      zod: 4.6.5
+      '@ai-sdk/provider-utils': 5.0.65(zod@4.6.7)
+      zod: 4.6.7
 
-  '@ai-sdk/provider-utils@4.0.54(zod@4.6.5)':
+  '@ai-sdk/provider-utils@4.0.54(zod@4.6.7)':
     dependencies:
       '@ai-sdk/provider': 3.0.17
       '@standard-schema/spec': 1.1.0
       eventsource-parser: 3.1.1
       undici: 6.28.1
-      zod: 4.6.5
+      zod: 4.6.7
 
-  '@ai-sdk/provider-utils@5.0.65(zod@4.6.5)':
+  '@ai-sdk/provider-utils@5.0.65(zod@4.6.7)':
     dependencies:
       '@ai-sdk/provider': 4.0.31
       '@standard-schema/spec': 1.1.0
       '@workflow/serde': 4.1.0
       eventsource-parser: 3.1.1
       undici: 7.30.1
-      zod: 4.6.5
+      zod: 4.6.7
 
   '@ai-sdk/provider@3.0.17':
     dependencies:
@@ -14365,57 +14368,13 @@ snapshots:
 
   '@konomi-app/ketch@0.4.0': {}
 
-  '@konomi-app/kintone-utilities-jotai@3.0.0(0684ff7e913a35745df95954239d6318)':
+  '@konomi-app/kintone-utilities-jotai@3.0.0(0ce6a2f0cd98a88e3582a5f5ecb897ea)':
     dependencies:
       '@dnd-kit/core': 6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@dnd-kit/modifiers': 9.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
       '@dnd-kit/sortable': 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
       '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
-      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
-      '@mui/icons-material': 7.3.6(@mui/material@7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(react@19.3.0)
-      '@mui/material': 7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@radix-ui/react-slot': 1.3.3(@types/react@19.3.0)(react@19.3.0)
-      immer: 11.1.0
-      jotai: 2.20.3(@babel/template@7.29.7)(@types/react@19.3.0)(react@19.3.0)
-      jotai-family: 1.1.0(jotai@2.20.3(@babel/template@7.29.7)(@types/react@19.3.0)(react@19.3.0))
-      jotai-optics: 0.4.0(jotai@2.20.3(@babel/template@7.29.7)(@types/react@19.3.0)(react@19.3.0))(optics-ts@2.4.1)
-      nanoid: 5.1.16
-      optics-ts: 2.4.1
-      react: 19.3.0
-      react-dom: 19.3.0(react@19.3.0)
-      react-error-boundary: 6.0.0(react@19.3.0)
-      remeda: 2.50.0
-      tiny-invariant: 1.3.3
-
-  '@konomi-app/kintone-utilities-jotai@3.0.0(44e0d52adc87d1ea4b208f0651d08342)':
-    dependencies:
-      '@dnd-kit/core': 6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@dnd-kit/modifiers': 9.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
-      '@dnd-kit/sortable': 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
-      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
-      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
-      '@mui/icons-material': 7.3.9(@mui/material@7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(react@19.3.0)
-      '@mui/material': 7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@radix-ui/react-slot': 1.3.3(@types/react@19.3.0)(react@19.3.0)
-      immer: 11.1.0
-      jotai: 2.20.3(@babel/template@7.29.7)(@types/react@19.3.0)(react@19.3.0)
-      jotai-family: 1.1.0(jotai@2.20.3(@babel/template@7.29.7)(@types/react@19.3.0)(react@19.3.0))
-      jotai-optics: 0.4.0(jotai@2.20.3(@babel/template@7.29.7)(@types/react@19.3.0)(react@19.3.0))(optics-ts@2.4.1)
-      nanoid: 5.1.16
-      optics-ts: 2.4.1
-      react: 19.3.0
-      react-dom: 19.3.0(react@19.3.0)
-      react-error-boundary: 6.0.0(react@19.3.0)
-      remeda: 2.50.0
-      tiny-invariant: 1.3.3
-
-  '@konomi-app/kintone-utilities-jotai@3.0.0(553ff157fc8be96e7e18f556c280e4a5)':
-    dependencies:
-      '@dnd-kit/core': 6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@dnd-kit/modifiers': 9.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
-      '@dnd-kit/sortable': 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
-      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
-      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@mui/icons-material': 9.4.0(@mui/material@7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(react@19.3.0)
       '@mui/material': 7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@radix-ui/react-slot': 1.3.3(@types/react@19.3.0)(react@19.3.0)
@@ -14431,13 +14390,57 @@ snapshots:
       remeda: 2.50.0
       tiny-invariant: 1.3.3
 
-  '@konomi-app/kintone-utilities-jotai@3.0.0(7cf71e98df6641b49973be835014b739)':
+  '@konomi-app/kintone-utilities-jotai@3.0.0(4872ef3aca2335a976d5371d8c17d317)':
     dependencies:
       '@dnd-kit/core': 6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@dnd-kit/modifiers': 9.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
       '@dnd-kit/sortable': 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
       '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
-      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
+      '@mui/icons-material': 7.3.6(@mui/material@7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(react@19.3.0)
+      '@mui/material': 7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@radix-ui/react-slot': 1.3.3(@types/react@19.3.0)(react@19.3.0)
+      immer: 11.1.4
+      jotai: 2.20.3(@babel/template@7.29.7)(@types/react@19.3.0)(react@19.3.0)
+      jotai-family: 1.1.0(jotai@2.20.3(@babel/template@7.29.7)(@types/react@19.3.0)(react@19.3.0))
+      jotai-optics: 0.4.0(jotai@2.20.3(@babel/template@7.29.7)(@types/react@19.3.0)(react@19.3.0))(optics-ts@2.4.1)
+      nanoid: 5.1.16
+      optics-ts: 2.4.1
+      react: 19.3.0
+      react-dom: 19.3.0(react@19.3.0)
+      react-error-boundary: 6.1.1(react@19.3.0)
+      remeda: 2.50.0
+      tiny-invariant: 1.3.3
+
+  '@konomi-app/kintone-utilities-jotai@3.0.0(70ae60f637c703e2680cf77ed851f4a4)':
+    dependencies:
+      '@dnd-kit/core': 6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@dnd-kit/modifiers': 9.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
+      '@dnd-kit/sortable': 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
+      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
+      '@mui/icons-material': 7.3.6(@mui/material@7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(react@19.3.0)
+      '@mui/material': 7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@radix-ui/react-slot': 1.3.3(@types/react@19.3.0)(react@19.3.0)
+      immer: 11.1.0
+      jotai: 2.20.3(@babel/template@7.29.7)(@types/react@19.3.0)(react@19.3.0)
+      jotai-family: 1.1.0(jotai@2.20.3(@babel/template@7.29.7)(@types/react@19.3.0)(react@19.3.0))
+      jotai-optics: 0.4.0(jotai@2.20.3(@babel/template@7.29.7)(@types/react@19.3.0)(react@19.3.0))(optics-ts@2.4.1)
+      nanoid: 5.1.16
+      optics-ts: 2.4.1
+      react: 19.3.0
+      react-dom: 19.3.0(react@19.3.0)
+      react-error-boundary: 6.0.0(react@19.3.0)
+      remeda: 2.50.0
+      tiny-invariant: 1.3.3
+
+  '@konomi-app/kintone-utilities-jotai@3.0.0(844b305ad8145aa313f65f0793be6d6d)':
+    dependencies:
+      '@dnd-kit/core': 6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@dnd-kit/modifiers': 9.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
+      '@dnd-kit/sortable': 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
+      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@mui/icons-material': 9.4.0(@mui/material@9.4.0(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(react@19.3.0)
       '@mui/material': 9.4.0(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@radix-ui/react-slot': 1.3.3(@types/react@19.3.0)(react@19.3.0)
@@ -14453,35 +14456,13 @@ snapshots:
       remeda: 2.50.0
       tiny-invariant: 1.3.3
 
-  '@konomi-app/kintone-utilities-jotai@3.0.0(8334e74142779c3537f15e68af022ced)':
+  '@konomi-app/kintone-utilities-jotai@3.0.0(a4636fb22d54c2e4888717bc728d9395)':
     dependencies:
       '@dnd-kit/core': 6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@dnd-kit/modifiers': 9.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
       '@dnd-kit/sortable': 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
       '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
-      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
-      '@mui/icons-material': 7.3.6(@mui/material@7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(react@19.3.0)
-      '@mui/material': 7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@radix-ui/react-slot': 1.3.3(@types/react@19.3.0)(react@19.3.0)
-      immer: 11.1.4
-      jotai: 2.20.3(@babel/template@7.29.7)(@types/react@19.3.0)(react@19.3.0)
-      jotai-family: 1.1.0(jotai@2.20.3(@babel/template@7.29.7)(@types/react@19.3.0)(react@19.3.0))
-      jotai-optics: 0.4.0(jotai@2.20.3(@babel/template@7.29.7)(@types/react@19.3.0)(react@19.3.0))(optics-ts@2.4.1)
-      nanoid: 5.1.16
-      optics-ts: 2.4.1
-      react: 19.3.0
-      react-dom: 19.3.0(react@19.3.0)
-      react-error-boundary: 6.1.1(react@19.3.0)
-      remeda: 2.50.0
-      tiny-invariant: 1.3.3
-
-  '@konomi-app/kintone-utilities-jotai@3.0.0(f7e508f827b95405a76441369bbf1019)':
-    dependencies:
-      '@dnd-kit/core': 6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@dnd-kit/modifiers': 9.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
-      '@dnd-kit/sortable': 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
-      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
-      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@mui/icons-material': 7.3.9(@mui/material@7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(react@19.3.0)
       '@mui/material': 7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@radix-ui/react-slot': 1.3.3(@types/react@19.3.0)(react@19.3.0)
@@ -14497,59 +14478,29 @@ snapshots:
       remeda: 2.50.0
       tiny-invariant: 1.3.3
 
-  '@konomi-app/kintone-utilities-react@4.0.0(25013c09d3a9f7f7d089dc7bf5fc29b5)':
+  '@konomi-app/kintone-utilities-jotai@3.0.0(f2d2bea12b164b1e608b7dce6d8fc5fa)':
     dependencies:
       '@dnd-kit/core': 6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@dnd-kit/modifiers': 9.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
       '@dnd-kit/sortable': 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
-      '@dnd-kit/utilities': 3.2.2(react@19.3.0)
-      '@emotion/react': 11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
       '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
-      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
-      '@mui/icons-material': 7.3.6(@mui/material@7.3.6(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(react@19.3.0)
-      '@mui/material': 7.3.6(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@radix-ui/react-context-menu': 2.3.7(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@tiptap/core': 3.31.3(@tiptap/pm@3.31.3)
-      '@tiptap/extension-document': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
-      '@tiptap/extension-paragraph': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
-      '@tiptap/extension-text': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
-      '@tiptap/pm': 3.31.3
-      '@tiptap/react': 3.31.3(@floating-ui/dom@1.8.0)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      clsx: 2.1.1
-      date-fns: 4.4.0
-      lucide-react: 0.562.0(react@19.3.0)
-      nanoid: 5.1.16
-      react: 19.3.0
-      react-dom: 19.3.0(react@19.3.0)
-      tiny-invariant: 1.3.3
-
-  '@konomi-app/kintone-utilities-react@4.0.0(2a4b90ab38aea9bac064e745fad21971)':
-    dependencies:
-      '@dnd-kit/core': 6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@dnd-kit/modifiers': 9.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
-      '@dnd-kit/sortable': 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
-      '@dnd-kit/utilities': 3.2.2(react@19.3.0)
-      '@emotion/react': 11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
-      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
-      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@mui/icons-material': 7.3.9(@mui/material@7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(react@19.3.0)
       '@mui/material': 7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@radix-ui/react-context-menu': 2.3.7(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@tiptap/core': 3.31.3(@tiptap/pm@3.31.3)
-      '@tiptap/extension-document': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
-      '@tiptap/extension-paragraph': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
-      '@tiptap/extension-text': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
-      '@tiptap/pm': 3.31.3
-      '@tiptap/react': 3.31.3(@floating-ui/dom@1.8.0)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      clsx: 2.1.1
-      date-fns: 4.4.0
-      lucide-react: 0.562.0(react@19.3.0)
+      '@radix-ui/react-slot': 1.3.3(@types/react@19.3.0)(react@19.3.0)
+      immer: 11.1.0
+      jotai: 2.20.3(@babel/template@7.29.7)(@types/react@19.3.0)(react@19.3.0)
+      jotai-family: 1.1.0(jotai@2.20.3(@babel/template@7.29.7)(@types/react@19.3.0)(react@19.3.0))
+      jotai-optics: 0.4.0(jotai@2.20.3(@babel/template@7.29.7)(@types/react@19.3.0)(react@19.3.0))(optics-ts@2.4.1)
       nanoid: 5.1.16
+      optics-ts: 2.4.1
       react: 19.3.0
       react-dom: 19.3.0(react@19.3.0)
+      react-error-boundary: 6.0.0(react@19.3.0)
+      remeda: 2.50.0
       tiny-invariant: 1.3.3
 
-  '@konomi-app/kintone-utilities-react@4.0.0(5db14253a93a4da9f94816cdb2651fb3)':
+  '@konomi-app/kintone-utilities-react@4.0.0(1eda6d37c706d4cde24a327fb7d8b8bd)':
     dependencies:
       '@dnd-kit/core': 6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@dnd-kit/modifiers': 9.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
@@ -14557,33 +14508,7 @@ snapshots:
       '@dnd-kit/utilities': 3.2.2(react@19.3.0)
       '@emotion/react': 11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
       '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
-      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
-      '@mui/icons-material': 9.4.0(@mui/material@7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(react@19.3.0)
-      '@mui/material': 7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@radix-ui/react-context-menu': 2.3.7(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@tiptap/core': 3.31.3(@tiptap/pm@3.31.3)
-      '@tiptap/extension-document': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
-      '@tiptap/extension-paragraph': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
-      '@tiptap/extension-text': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
-      '@tiptap/pm': 3.31.3
-      '@tiptap/react': 3.31.3(@floating-ui/dom@1.8.0)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      clsx: 2.1.1
-      date-fns: 4.4.0
-      lucide-react: 1.48.0(react@19.3.0)
-      nanoid: 5.1.16
-      react: 19.3.0
-      react-dom: 19.3.0(react@19.3.0)
-      tiny-invariant: 1.3.3
-
-  '@konomi-app/kintone-utilities-react@4.0.0(6f0daa6ce2def91c9e49a49375c4857c)':
-    dependencies:
-      '@dnd-kit/core': 6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@dnd-kit/modifiers': 9.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
-      '@dnd-kit/sortable': 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
-      '@dnd-kit/utilities': 3.2.2(react@19.3.0)
-      '@emotion/react': 11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
-      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
-      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@mui/icons-material': 7.3.9(@mui/material@7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(react@19.3.0)
       '@mui/material': 7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@radix-ui/react-context-menu': 2.3.7(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -14601,7 +14526,7 @@ snapshots:
       react-dom: 19.3.0(react@19.3.0)
       tiny-invariant: 1.3.3
 
-  '@konomi-app/kintone-utilities-react@4.0.0(7b14716120eecd460a24f94b43baa140)':
+  '@konomi-app/kintone-utilities-react@4.0.0(27713989add07c0ad3ac0c653065e791)':
     dependencies:
       '@dnd-kit/core': 6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@dnd-kit/modifiers': 9.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
@@ -14609,59 +14534,7 @@ snapshots:
       '@dnd-kit/utilities': 3.2.2(react@19.3.0)
       '@emotion/react': 11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
       '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
-      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
-      '@mui/icons-material': 7.3.9(@mui/material@7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(react@19.3.0)
-      '@mui/material': 7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@radix-ui/react-context-menu': 2.3.7(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@tiptap/core': 3.31.3(@tiptap/pm@3.31.3)
-      '@tiptap/extension-document': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
-      '@tiptap/extension-paragraph': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
-      '@tiptap/extension-text': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
-      '@tiptap/pm': 3.31.3
-      '@tiptap/react': 3.31.3(@floating-ui/dom@1.8.0)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      clsx: 2.1.1
-      date-fns: 4.4.0
-      lucide-react: 0.577.0(react@19.3.0)
-      nanoid: 5.1.16
-      react: 19.3.0
-      react-dom: 19.3.0(react@19.3.0)
-      tiny-invariant: 1.3.3
-
-  '@konomi-app/kintone-utilities-react@4.0.0(9b6e488c795821e0fdb64aef171ec38e)':
-    dependencies:
-      '@dnd-kit/core': 6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@dnd-kit/modifiers': 9.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
-      '@dnd-kit/sortable': 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
-      '@dnd-kit/utilities': 3.2.2(react@19.3.0)
-      '@emotion/react': 11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
-      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
-      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
-      '@mui/icons-material': 7.3.9(@mui/material@7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(react@19.3.0)
-      '@mui/material': 7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@radix-ui/react-context-menu': 2.3.7(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@tiptap/core': 3.31.3(@tiptap/pm@3.31.3)
-      '@tiptap/extension-document': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
-      '@tiptap/extension-paragraph': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
-      '@tiptap/extension-text': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
-      '@tiptap/pm': 3.31.3
-      '@tiptap/react': 3.31.3(@floating-ui/dom@1.8.0)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      clsx: 2.1.1
-      date-fns: 4.4.0
-      lucide-react: 0.574.0(react@19.3.0)
-      nanoid: 5.1.16
-      react: 19.3.0
-      react-dom: 19.3.0(react@19.3.0)
-      tiny-invariant: 1.3.3
-
-  '@konomi-app/kintone-utilities-react@4.0.0(a3813287b7c150b1e6056b3aabe8e240)':
-    dependencies:
-      '@dnd-kit/core': 6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@dnd-kit/modifiers': 9.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
-      '@dnd-kit/sortable': 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
-      '@dnd-kit/utilities': 3.2.2(react@19.3.0)
-      '@emotion/react': 11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
-      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
-      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@mui/icons-material': 7.3.6(@mui/material@7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(react@19.3.0)
       '@mui/material': 7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@radix-ui/react-context-menu': 2.3.7(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -14679,7 +14552,7 @@ snapshots:
       react-dom: 19.3.0(react@19.3.0)
       tiny-invariant: 1.3.3
 
-  '@konomi-app/kintone-utilities-react@4.0.0(a8f0d513249ba597dd5a5117b61e0b23)':
+  '@konomi-app/kintone-utilities-react@4.0.0(333306b962a91c0330a7f55bc8f4ac68)':
     dependencies:
       '@dnd-kit/core': 6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@dnd-kit/modifiers': 9.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
@@ -14687,7 +14560,7 @@ snapshots:
       '@dnd-kit/utilities': 3.2.2(react@19.3.0)
       '@emotion/react': 11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
       '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
-      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@mui/icons-material': 9.4.0(@mui/material@9.4.0(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(react@19.3.0)
       '@mui/material': 9.4.0(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@radix-ui/react-context-menu': 2.3.7(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -14705,7 +14578,7 @@ snapshots:
       react-dom: 19.3.0(react@19.3.0)
       tiny-invariant: 1.3.3
 
-  '@konomi-app/kintone-utilities-react@4.0.0(bb3ac9d32413d9b369af071870070d5f)':
+  '@konomi-app/kintone-utilities-react@4.0.0(34b649aebf0c7a9a4a3ae4f716809477)':
     dependencies:
       '@dnd-kit/core': 6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@dnd-kit/modifiers': 9.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
@@ -14713,9 +14586,61 @@ snapshots:
       '@dnd-kit/utilities': 3.2.2(react@19.3.0)
       '@emotion/react': 11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
       '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
-      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
-      '@mui/icons-material': 7.3.6(@mui/material@7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(react@19.3.0)
+      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
+      '@mui/icons-material': 7.3.9(@mui/material@7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(react@19.3.0)
       '@mui/material': 7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@radix-ui/react-context-menu': 2.3.7(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@tiptap/core': 3.31.3(@tiptap/pm@3.31.3)
+      '@tiptap/extension-document': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
+      '@tiptap/extension-paragraph': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
+      '@tiptap/extension-text': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
+      '@tiptap/pm': 3.31.3
+      '@tiptap/react': 3.31.3(@floating-ui/dom@1.8.0)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      clsx: 2.1.1
+      date-fns: 4.4.0
+      lucide-react: 0.574.0(react@19.3.0)
+      nanoid: 5.1.16
+      react: 19.3.0
+      react-dom: 19.3.0(react@19.3.0)
+      tiny-invariant: 1.3.3
+
+  '@konomi-app/kintone-utilities-react@4.0.0(5c32361a8f7d6025f84925eb0244c853)':
+    dependencies:
+      '@dnd-kit/core': 6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@dnd-kit/modifiers': 9.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
+      '@dnd-kit/sortable': 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
+      '@dnd-kit/utilities': 3.2.2(react@19.3.0)
+      '@emotion/react': 11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
+      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
+      '@mui/icons-material': 9.4.0(@mui/material@7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(react@19.3.0)
+      '@mui/material': 7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@radix-ui/react-context-menu': 2.3.7(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@tiptap/core': 3.31.3(@tiptap/pm@3.31.3)
+      '@tiptap/extension-document': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
+      '@tiptap/extension-paragraph': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
+      '@tiptap/extension-text': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
+      '@tiptap/pm': 3.31.3
+      '@tiptap/react': 3.31.3(@floating-ui/dom@1.8.0)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      clsx: 2.1.1
+      date-fns: 4.4.0
+      lucide-react: 1.48.0(react@19.3.0)
+      nanoid: 5.1.16
+      react: 19.3.0
+      react-dom: 19.3.0(react@19.3.0)
+      tiny-invariant: 1.3.3
+
+  '@konomi-app/kintone-utilities-react@4.0.0(6979c0e7bcf8afafd7994475df249af9)':
+    dependencies:
+      '@dnd-kit/core': 6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@dnd-kit/modifiers': 9.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
+      '@dnd-kit/sortable': 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
+      '@dnd-kit/utilities': 3.2.2(react@19.3.0)
+      '@emotion/react': 11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
+      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
+      '@mui/icons-material': 7.3.6(@mui/material@7.3.6(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(react@19.3.0)
+      '@mui/material': 7.3.6(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@radix-ui/react-context-menu': 2.3.7(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@tiptap/core': 3.31.3(@tiptap/pm@3.31.3)
       '@tiptap/extension-document': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
@@ -14731,7 +14656,7 @@ snapshots:
       react-dom: 19.3.0(react@19.3.0)
       tiny-invariant: 1.3.3
 
-  '@konomi-app/kintone-utilities-react@4.0.0(f93f0475e6e3fe0db6aabba650671df5)':
+  '@konomi-app/kintone-utilities-react@4.0.0(af7de5c9c5ae44fc7e377ef948706e15)':
     dependencies:
       '@dnd-kit/core': 6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@dnd-kit/modifiers': 9.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
@@ -14739,7 +14664,7 @@ snapshots:
       '@dnd-kit/utilities': 3.2.2(react@19.3.0)
       '@emotion/react': 11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
       '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
-      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)
+      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
       '@mui/icons-material': 7.3.9(@mui/material@7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(react@19.3.0)
       '@mui/material': 7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
       '@radix-ui/react-context-menu': 2.3.7(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -14757,10 +14682,88 @@ snapshots:
       react-dom: 19.3.0(react@19.3.0)
       tiny-invariant: 1.3.3
 
-  '@konomi-app/kintone-utilities@6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.5)':
+  '@konomi-app/kintone-utilities-react@4.0.0(bf9c842db05be7c7e22fb1923b111093)':
+    dependencies:
+      '@dnd-kit/core': 6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@dnd-kit/modifiers': 9.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
+      '@dnd-kit/sortable': 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
+      '@dnd-kit/utilities': 3.2.2(react@19.3.0)
+      '@emotion/react': 11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
+      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
+      '@mui/icons-material': 7.3.9(@mui/material@7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(react@19.3.0)
+      '@mui/material': 7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@radix-ui/react-context-menu': 2.3.7(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@tiptap/core': 3.31.3(@tiptap/pm@3.31.3)
+      '@tiptap/extension-document': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
+      '@tiptap/extension-paragraph': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
+      '@tiptap/extension-text': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
+      '@tiptap/pm': 3.31.3
+      '@tiptap/react': 3.31.3(@floating-ui/dom@1.8.0)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      clsx: 2.1.1
+      date-fns: 4.4.0
+      lucide-react: 0.577.0(react@19.3.0)
+      nanoid: 5.1.16
+      react: 19.3.0
+      react-dom: 19.3.0(react@19.3.0)
+      tiny-invariant: 1.3.3
+
+  '@konomi-app/kintone-utilities-react@4.0.0(d71e4ce60a99ec410a6ea36cccb9adf8)':
+    dependencies:
+      '@dnd-kit/core': 6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@dnd-kit/modifiers': 9.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
+      '@dnd-kit/sortable': 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
+      '@dnd-kit/utilities': 3.2.2(react@19.3.0)
+      '@emotion/react': 11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
+      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
+      '@mui/icons-material': 7.3.6(@mui/material@7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(react@19.3.0)
+      '@mui/material': 7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@radix-ui/react-context-menu': 2.3.7(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@tiptap/core': 3.31.3(@tiptap/pm@3.31.3)
+      '@tiptap/extension-document': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
+      '@tiptap/extension-paragraph': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
+      '@tiptap/extension-text': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
+      '@tiptap/pm': 3.31.3
+      '@tiptap/react': 3.31.3(@floating-ui/dom@1.8.0)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      clsx: 2.1.1
+      date-fns: 4.4.0
+      lucide-react: 0.562.0(react@19.3.0)
+      nanoid: 5.1.16
+      react: 19.3.0
+      react-dom: 19.3.0(react@19.3.0)
+      tiny-invariant: 1.3.3
+
+  '@konomi-app/kintone-utilities-react@4.0.0(f9d458c043114c3679c07208997ade39)':
+    dependencies:
+      '@dnd-kit/core': 6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@dnd-kit/modifiers': 9.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
+      '@dnd-kit/sortable': 10.0.0(@dnd-kit/core@6.3.1(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(react@19.3.0)
+      '@dnd-kit/utilities': 3.2.2(react@19.3.0)
+      '@emotion/react': 11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
+      '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
+      '@konomi-app/kintone-utilities': 6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)
+      '@mui/icons-material': 7.3.9(@mui/material@7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0))(@types/react@19.3.0)(react@19.3.0)
+      '@mui/material': 7.3.9(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@emotion/styled@11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@radix-ui/react-context-menu': 2.3.7(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      '@tiptap/core': 3.31.3(@tiptap/pm@3.31.3)
+      '@tiptap/extension-document': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
+      '@tiptap/extension-paragraph': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
+      '@tiptap/extension-text': 3.31.3(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))
+      '@tiptap/pm': 3.31.3
+      '@tiptap/react': 3.31.3(@floating-ui/dom@1.8.0)(@tiptap/core@3.31.3(@tiptap/pm@3.31.3))(@tiptap/pm@3.31.3)(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
+      clsx: 2.1.1
+      date-fns: 4.4.0
+      lucide-react: 0.562.0(react@19.3.0)
+      nanoid: 5.1.16
+      react: 19.3.0
+      react-dom: 19.3.0(react@19.3.0)
+      tiny-invariant: 1.3.3
+
+  '@konomi-app/kintone-utilities@6.3.0(@emotion/css@11.13.5(supports-color@8.1.1))(zod@4.6.7)':
     optionalDependencies:
       '@emotion/css': 11.13.5(supports-color@8.1.1)
-      zod: 4.6.5
+      zod: 4.6.7
 
   '@konomi-app/kintone-utility-component@1.3.1(@emotion/react@11.13.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(supports-color@8.1.1)':
     dependencies:
@@ -14800,11 +14803,11 @@ snapshots:
       '@emotion/styled': 11.14.1(@emotion/react@11.14.0(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1))(@types/react@19.3.0)(react@19.3.0)(supports-color@8.1.1)
       react: 19.3.0
 
-  '@konomi-app/ui@7.2.0(lit@3.3.3)(zod@4.6.5)':
+  '@konomi-app/ui@7.2.0(lit@3.3.3)(zod@4.6.7)':
     dependencies:
       lit: 3.3.3
     optionalDependencies:
-      zod: 4.6.5
+      zod: 4.6.7
 
   '@lb-ribbit/kintone-secrets@0.3.0': {}
 
@@ -15349,14 +15352,14 @@ snapshots:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.20.3
 
-  '@openrouter/ai-sdk-provider@2.10.0(ai@6.0.290(zod@4.6.5))(zod@4.6.5)':
+  '@openrouter/ai-sdk-provider@2.10.0(ai@6.0.290(zod@4.6.7))(zod@4.6.7)':
     dependencies:
-      ai: 6.0.290(zod@4.6.5)
-      zod: 4.6.5
+      ai: 6.0.290(zod@4.6.7)
+      zod: 4.6.7
 
   '@openrouter/sdk@0.8.0':
     dependencies:
-      zod: 4.6.5
+      zod: 4.6.7
 
   '@opentelemetry/api@1.9.1': {}
 
@@ -17258,20 +17261,20 @@ snapshots:
 
   agent-base@7.1.4: {}
 
-  ai@6.0.290(zod@4.6.5):
+  ai@6.0.290(zod@4.6.7):
     dependencies:
-      '@ai-sdk/gateway': 3.0.200(zod@4.6.5)
+      '@ai-sdk/gateway': 3.0.200(zod@4.6.7)
       '@ai-sdk/provider': 3.0.17
-      '@ai-sdk/provider-utils': 4.0.54(zod@4.6.5)
+      '@ai-sdk/provider-utils': 4.0.54(zod@4.6.7)
       '@opentelemetry/api': 1.9.1
-      zod: 4.6.5
+      zod: 4.6.7
 
-  ai@7.0.148(zod@4.6.5):
+  ai@7.0.148(zod@4.6.7):
     dependencies:
-      '@ai-sdk/gateway': 4.0.121(zod@4.6.5)
+      '@ai-sdk/gateway': 4.0.121(zod@4.6.7)
       '@ai-sdk/provider': 4.0.31
-      '@ai-sdk/provider-utils': 5.0.65(zod@4.6.5)
-      zod: 4.6.5
+      '@ai-sdk/provider-utils': 5.0.65(zod@4.6.7)
+      zod: 4.6.7
 
   ajv-formats@3.0.1(ajv@8.20.0):
     optionalDependencies:
@@ -20421,10 +20424,10 @@ snapshots:
     dependencies:
       mimic-fn: 2.1.0
 
-  openai@6.49.0(ws@8.21.3)(zod@4.6.5):
+  openai@6.49.0(ws@8.21.3)(zod@4.6.7):
     optionalDependencies:
       ws: 8.21.3
-      zod: 4.6.5
+      zod: 4.6.7
 
   optics-ts@2.4.1: {}
 
@@ -22248,6 +22251,6 @@ snapshots:
 
   zod@3.23.8: {}
 
-  zod@4.6.5: {}
+  zod@4.6.7: {}
 
   zwitch@2.0.4: {}

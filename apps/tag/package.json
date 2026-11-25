@@ -53,7 +53,7 @@
     "react-dom": "catalog:",
     "react-error-boundary": "6.0.0",
     "tiny-invariant": "^1.3.3",
-    "zod": "^4.2.1"
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@konomi-app/k2": "catalog:",

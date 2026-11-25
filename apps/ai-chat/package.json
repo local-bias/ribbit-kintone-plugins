@@ -85,6 +85,6 @@
     "tailwindcss": "catalog:",
     "ts-loader": "^9.5.4",
     "typescript": "catalog:",
-    "zod": "^4.3.6"
+    "zod": "catalog:"
   }
 }
